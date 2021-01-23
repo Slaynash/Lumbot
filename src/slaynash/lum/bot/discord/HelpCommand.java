@@ -21,7 +21,7 @@ protected void onServer(String command, MessageReceivedEvent event)
   {
     String[] split = command.split(" ", 2);
     String path = split.length > 1 ? command.split(" ", 2)[1].trim() : "";
-    String helpMessage = "**__Aide " + path + ":__**\n\n";
+    String helpMessage = "**__Help " + path + ":__**\n\n";
     boolean empty = true;
     for (Command cmd : CommandManager.getCommands()) {
       if ((cmd.getHelpPath() != null) && (cmd.getHelpPath().equals(path)))

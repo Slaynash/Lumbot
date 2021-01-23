@@ -1,8 +1,8 @@
-package slaynash.lum.bot.discord.vrcmg;
+package slaynash.lum.bot.discord.logscanner;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ModVersionDetails {
+public class VRCModVersionDetails {
 	public int _version;
 	@SerializedName("ApprovalStatus")
 	public int approvalstatus;

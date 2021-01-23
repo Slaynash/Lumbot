@@ -61,6 +61,8 @@ public class Main extends ListenerAdapter {
         loadReactionsList();
         loadNameBlacklist();
         loadMelonLoaderVersions();
+        loadMLHashes();
+        loadMLReportChannels();
         MelonLoaderScanner.Init();
         
         CommandManager.init();
@@ -100,6 +102,38 @@ public class Main extends ListenerAdapter {
 		}
 	}
     
+    private static void loadMLHashes() {
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader("mlhashes.txt"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (!line.trim().equals(""))
+					CommandManager.melonLoaderHashes.add(line.trim());
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    private static void loadMLReportChannels() {
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader("mlreportchannels.txt"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(" ", 4);
+				if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
+					CommandManager.mlReportChannels.put(Long.parseLong(parts[0]), parts[1]);
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
     private static void loadNameBlacklist() {
     	BufferedReader reader;
 		try {
@@ -107,7 +141,7 @@ public class Main extends ListenerAdapter {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				if (!line.trim().equals(""))
-				CommandManager.blacklistedNames.add(line.trim());
+					CommandManager.blacklistedNames.add(line.trim());
 			}
 			reader.close();
 		} catch (IOException e) {

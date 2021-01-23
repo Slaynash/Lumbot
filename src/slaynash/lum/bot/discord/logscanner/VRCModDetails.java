@@ -1,10 +1,10 @@
-package slaynash.lum.bot.discord.vrcmg;
+package slaynash.lum.bot.discord.logscanner;
 
-public class ModDetails {
+public class VRCModDetails {
 	public int _id;
 	public String mention;
 	public long messageid;
 	public int versionofmsg;
 	public String uploaddate;
-	public ModVersionDetails[] versions;
+	public VRCModVersionDetails[] versions;
 }

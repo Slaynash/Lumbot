@@ -40,6 +40,9 @@ public class CommandManager {
 	public static Map<Long, String> logChannels = new HashMap<>();
 	public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
 	public static List<String> blacklistedNames = new ArrayList<String>();
+	
+	public static List<String> melonLoaderHashes = new ArrayList<>();
+	public static Map<Long, String> mlReportChannels = new HashMap<>();
 
     protected static void registerCommand(Command command) {
         HelpCommand.registerCommand(command);
@@ -88,6 +91,9 @@ public class CommandManager {
         CommandManager.registerCommandLaunch();
         CommandManager.registerVerifyCommand();
         CommandManager.registerRubybotOverDynobot();
+
+        CommandManager.registerMLHashRegister();
+        CommandManager.registerSetMLReportChannel();
         
         //CommandManager.registerModNotWorkingRegex();
     }
@@ -135,6 +141,124 @@ public class CommandManager {
 			@Override
 			protected String getHelpDescription() {
 				return "Set the log channel to the current one.";
+			}
+		});
+	}
+    
+    private static void registerMLHashRegister() {
+    	CommandManager.registerCommand(new Command() {
+			
+			@Override
+			protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+				String hash = paramString.split(" ", 2)[1];
+				System.out.println("hash: " + paramString);
+				if (paramMessageReceivedEvent.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
+					return;
+				
+				List<Role> memberRoles = paramMessageReceivedEvent.getMember().getRoles();
+				boolean isLavaGang = false;
+				for (Role memberRole : memberRoles) {
+					if (memberRole.getIdLong() == 663450403194798140L) { // Lava Gang
+						isLavaGang = true;
+						break;
+					}
+				}
+				
+				if (!isLavaGang)
+					return;
+				
+				
+				try {
+					Integer.parseInt(hash);
+				}
+				catch (Exception e) {
+					paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <ml hash>").queue();
+					return;
+				}
+				
+				melonLoaderHashes.add(hash);
+				saveMLHashes();
+				paramMessageReceivedEvent.getChannel().sendMessage("Added hash " + hash).queue();
+			}
+			
+			@Override
+			protected void onLUM(String paramString) {
+			}
+			
+			@Override
+			protected void onClient(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+			}
+			
+			@Override
+			protected boolean matchPattern(String paramString) {
+				return paramString.startsWith("l!registermlhash");
+			}
+			
+			@Override
+			protected String getHelpPath() {
+				return null;
+			}
+			
+			@Override
+			protected String getHelpName() {
+				return null;
+			}
+			
+			@Override
+			protected String getHelpDescription() {
+				return null;
+			}
+		});
+	}
+    
+    private static void registerSetMLReportChannel() {
+    	CommandManager.registerCommand(new Command() {
+			
+			@Override
+			protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+				if(!paramMessageReceivedEvent.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+					paramMessageReceivedEvent.getChannel().sendMessage("Error: You need to have the Administrator permission").queue();
+					return;
+				}
+				
+				if (paramMessageReceivedEvent.getChannel().getId().equals( mlReportChannels.get(paramMessageReceivedEvent.getGuild().getIdLong()) )) {
+					mlReportChannels.remove(paramMessageReceivedEvent.getGuild().getIdLong());
+					saveMLReportChannels();
+					paramMessageReceivedEvent.getChannel().sendMessage("Successfully unset ML report channel").queue();
+				}
+				else {
+					mlReportChannels.put(paramMessageReceivedEvent.getGuild().getIdLong(), paramMessageReceivedEvent.getChannel().getId());
+					saveMLReportChannels();
+					paramMessageReceivedEvent.getChannel().sendMessage("Successfully set ML report channel").queue();
+				}
+			}
+			
+			@Override
+			protected void onLUM(String paramString) {
+			}
+			
+			@Override
+			protected void onClient(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+			}
+			
+			@Override
+			protected boolean matchPattern(String paramString) {
+				return paramString.startsWith("l!setmlreportchannel");
+			}
+			
+			@Override
+			protected String getHelpPath() {
+				return null;
+			}
+			
+			@Override
+			protected String getHelpName() {
+				return null;
+			}
+			
+			@Override
+			protected String getHelpDescription() {
+				return null;
 			}
 		});
 	}
@@ -346,6 +470,28 @@ public class CommandManager {
 		{
 			for(Entry<Long, String> logchannel : logChannels.entrySet()) {
 				writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void saveMLReportChannels() {
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt")))
+		{
+			for(Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
+				writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void saveMLHashes() {
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt")))
+		{
+			for(String s : melonLoaderHashes) {
+				writer.write(s + "\n");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
