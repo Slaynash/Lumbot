@@ -284,50 +284,6 @@ public class MelonLoaderScanner {
 									}
 								}
 							}
-							/*
-							else {
-								if (line.matches("\\[[0-9.:]+\\] ------------------------------"));
-								else if (preListingMods && (line.matches("\\[[0-9.:]+\\] No Plugins Loaded!") || line.matches("\\[[0-9.:]+\\] No Mods Loaded!"))) {
-									preListingMods = false;
-									listingMods = true;
-									System.out.println("No mod/plugins loaded for this pass");
-									
-									continue;
-								}
-								else if (line.matches("\\[[0-9.:]+\\] .* by .*")) {
-									preListingMods = false;
-									listingMods = true;
-									
-									//System.out.println("line: " + line);
-									String[] modAndAuthor = line.split(" ", 2)[1].split("by", 2);
-									String[] nameAndVersion = modAndAuthor[0].trim().split(" v");
-									if (loadedMods.containsKey(nameAndVersion[0]) && !duplicatedMods.contains(nameAndVersion[0]))
-										duplicatedMods.add(nameAndVersion[0].trim());
-									loadedMods.put(nameAndVersion[0].trim(), new LogsModDetails(nameAndVersion.length > 1 ? nameAndVersion[1].trim() : "", null));
-									if (modAndAuthor.length > 1)
-										modAuthors.put(nameAndVersion[0].trim(), modAndAuthor[1].split("\\(")[0].trim());
-									lastModName = nameAndVersion[0].trim();
-
-									System.out.println("Found mod " + nameAndVersion[0].trim() + ", version is " + (nameAndVersion.length > 1 ? nameAndVersion[1].trim() : ""));
-									
-									continue;
-								}
-								else if (line.matches("\\[[0-9.:]+\\] Game Compatibility: .*")) {
-									String compatibility = line.split(" ", 4)[3];
-									if (compatibility.equals("Universal"))
-										universalMods.add(lastModName);
-									else if (compatibility.equals("Compatible")) {}
-									else
-										incompatibleMods.add(lastModName);
-									
-									continue;
-								}
-								else if (listingMods) {
-									listingMods = false;
-									System.out.println("Done scanning mods");
-								}
-							}
-							*/
 							
 						}
 						if (line.isEmpty());
@@ -456,44 +412,10 @@ public class MelonLoaderScanner {
 					if (modVersion.split("\\.").length == 2)
 						modVersion += ".0";
 					
-					/*
-					if (modName.equals("emmVRCLoader")) {
-						modName = "emmVRC";
-						modVersion = "Loader " + modVersion;
-						modAuthors.put("emmVRC", modAuthors.get("emmVRCLoader"));
-					}
-					*/
-					
-					/*
-					if (modName.equals("MultiplayerDynamicBones") && modVersion.startsWith("release ")) {
-						modVersion = modVersion.substring("release ".length());
-					}
-					*/
-					
 					String matchedModName = modNameMatcher.get(entry.getKey().trim());
-					//System.out.println("matchedModName: " + matchedModName);
 					if (matchedModName != null) {
 						modAuthors.put(matchedModName, modAuthors.get(modName));
-						//modName = matchedModName;
 					}
-					
-					/* OLD, Ruby API only
-					String latestModVersion = null;
-					for (VRCModDetails modDetail : mods) {
-						boolean isCurrentMod = false;
-						for (VRCModVersionDetails modVersionDetail : modDetail.versions) {
-							//System.out.println("\"" + modVersionDetail.name + "\" vs \"" + matchedModName + "\":" + modVersionDetail.name.equals(matchedModName));
-							if (isCurrentMod || modVersionDetail.name.equals(modName) || (matchedModName != null && modVersionDetail.name.equals(matchedModName))) {
-								latestModVersion = modVersionDetail.modversion;
-								if (latestModVersion.startsWith("v"))
-									latestModVersion = latestModVersion.substring(1);
-								if (latestModVersion.split("\\.").length == 2)
-									latestModVersion += ".0";
-								isCurrentMod = true;
-							}
-						}
-					}
-					*/
 					
 					String latestModVersion = null;
 					String latestModHash = null;
@@ -533,22 +455,6 @@ public class MelonLoaderScanner {
 				}
 			}
 		}
-		/*
-		if (game.equals("Phasmophobia")) {
-			event.getChannel().sendMessage("**MelonLoader log autocheck:** This game isn't supported by the autochecker").queue();
-			
-			if (event.getGuild().getIdLong() == 663449315876012052L) { // MelonLoader
-				event.getGuild().addRoleToMember(
-					event.getAuthor().getIdLong(),
-					event.getGuild().getRoleById(665739123323043851L)); // @Voided
-			
-				event.getGuild().getTextChannelById(712504192974979133L) // #bot-moderation-logs
-					.sendMessage("Voided user <@" + event.getAuthor().getId() + ">: Phasmophobia logs detected by autochecker").queue();
-			}
-				
-		}
-		else
-		*/
 		
 		if (mlHashCode != null) {
 			boolean found = false;

@@ -17,15 +17,10 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.events.guild.GuildAvailableEvent;
-import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
@@ -33,8 +28,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
-
-	private static int lastAMLUsesCount;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
         System.setProperty("jsse.enableSNIExtension", "false");
@@ -66,22 +59,9 @@ public class Main extends ListenerAdapter {
         MelonLoaderScanner.Init();
         
         CommandManager.init();
-        //new slaynash.lum.bot.discord.Console();
         JDAManager.init(args[0]);
         
-        /*
-        JDAManager.getJDA().getGuildById("365589812616364036").retrieveInvites().queue((list) -> {
-			for(Invite inv : list) {
-				if(inv.getCode().equals("V35fm3u")) {
-					lastAMLUsesCount = inv.getUses();
-					//System.out.println("lastAMLUsesCount: " + lastAMLUsesCount);
-					break;
-				}
-			}
-		});
-        */
         
-        ServerManager.Start();
         System.out.println("LUM Started!");
     }
 
@@ -217,38 +197,6 @@ public class Main extends ListenerAdapter {
                 return;
     		}
     	}
-    	/*
-        if(true)
-        	return;
-        if (event.getMessageId().equals("446648726648520704") && event.getReactionEmote().getName().equals("\u2705")) { // MetrixVR
-            //System.out.println("Adding Member role to " + event.getMember().getUser().getId());
-        	for(Role role : event.getMember().getRoles())
-        		if(role.getId().equals("446708059247607809")) {
-                    event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("446708059247607809")).queue();
-                    return;
-        		}
-            event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById("446708059247607809")).queue();
-            //event.getReaction().removeReaction().queue();
-            return;
-        }//548534015108448256
-        if (event.getMessageId().equals("548538000552886273") && event.getReactionEmote().getName().equals("\u2705")) { // VRCTools
-            //System.out.println("Adding Member role to " + event.getMember().getUser().getId());
-        	for(Role role : event.getMember().getRoles())
-        		if(role.getId().equals("548534015108448256")) {
-                    event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("548534015108448256")).queue();
-                    return;
-        		}
-            event.getGuild().getController().addSingleRoleToMember(event.getMember(), event.getGuild().getRoleById("548534015108448256")).queue();
-            //event.getReaction().removeReaction().queue();
-            return;
-        }
-        */
-        /*
-        for(RoleAutoAssignDesc v : autoAssignList) {
-        	if( v.messageId.equals(event.getMessageId()) && v.reactionName.equals(event.getReactionEmote().getName()) )
-        		event.getGuild().getController().addSingleRoleToMember( event.getMember(), event.getGuild().getRoleById(v.roleId) ).queue();
-        }
-        */
     }
     
     private void WriteLogMessage(Guild guild, String message) {
@@ -276,40 +224,6 @@ public class Main extends ListenerAdapter {
     		}
     	}
     }
-	
-	@Override
-	public void onGuildMessageDelete(GuildMessageDeleteEvent event) {
-		/*
-		event.getChannel().retrieveMessageById(event.getMessageId()).queue(message -> {
-			WriteLogMessage(event.getGuild(), "**Message sent by <@" + message.getAuthor().getId() + "> deleted in <#" + message.getChannel().getId() + ">**\n" + message);
-		});
-		*/
-	}
-	
-	@Override
-	public void onGuildMessageUpdate(GuildMessageUpdateEvent event) {
-		//WriteLogMessage(event.getGuild(), "**Message sent by <@" + event.getAuthor().getId() + "> edited in <#" + event.getChannel().getId() + ">**\n" + event.getMessage());
-	}
-    
-    /*
-    @Override
-    public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-        super.onGuildMessageReactionRemove(event);
-        if (event.getMessageId().equals("446648726648520704") && event.getReactionEmote().getName().equals("\u2705")) {
-            event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("446708059247607809")).queue();
-            return;
-        }
-        if (event.getMessageId().equals("538451377353916426") && event.getReactionEmote().getName().equals("\u2705")) {
-            event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("538202432581271563")).queue();
-            return;
-        }
-        if (event.getMessageId().equals("548538000552886273") && event.getReactionEmote().getName().equals("\u2705")) {
-            //System.out.println("Adding Member role to " + event.getMember().getUser().getId());
-            event.getGuild().getController().removeSingleRoleFromMember(event.getMember(), event.getGuild().getRoleById("548534015108448256")).queue();
-            return;
-        }
-    }
-    */
 	
 	@Override
 	public void onGuildMemberJoin(GuildMemberJoinEvent event) {
@@ -343,38 +257,6 @@ public class Main extends ListenerAdapter {
 				channel.sendMessage("Bienvenue sur le serveur **VRChat Communauté Francophone** ! Nous te prions tout d'abord de lire le règlement dans le salon <#399022887631323148> afin de connaître le bon fonctionnement du serveur et pour ne pas t'y perdre. (N'oublie pas de choisir un rôle :wink:)\nSur ce, amuse toi bien et bon jeu !").queue();
 			});
 		}
-		/*
-		if(event.getGuild().getId().equals("365589812616364036")) {
-			event.getGuild().retrieveInvites().queue((list) -> {
-				for(Invite inv : list) {
-					//System.out.println("Invite code: " + inv.getCode() + ", inv.getUses(): " + inv.getUses() + ", lastAMLUsesCount: " + lastAMLUsesCount);
-					if(inv.getCode().equals("V35fm3u") && inv.getUses() > lastAMLUsesCount) {
-						lastAMLUsesCount = inv.getUses();
-						Role role = event.getGuild().getRoleById(646656920945557525L);
-						event.getGuild().addRoleToMember(event.getMember(), role).queue();
-						break;
-					}
-				}
-			});
-		}
-		*/
-	}
-	
-	@Override
-	public void onGuildAvailable(GuildAvailableEvent event) {
-		System.out.println("onGuildAvailable " + event.getGuild().getId());
-		/*
-		if(event.getGuild().getId().equals("365589812616364036")) {
-			event.getGuild().retrieveInvites().queue((list) -> {
-				for(Invite inv : list) {
-					if(inv.getCode().equals("V35fm3u")) {
-						lastAMLUsesCount = inv.getUses();
-						break;
-					}
-				}
-			});
-		}
-		*/
 	}
 
 }
