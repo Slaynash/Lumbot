@@ -20,6 +20,7 @@ import com.google.gson.reflect.TypeToken;
 
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.logscanner.AudicaModDetails;
 import slaynash.lum.bot.discord.logscanner.BTD6ModDetails;
 import slaynash.lum.bot.discord.logscanner.ModDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
@@ -72,6 +73,7 @@ public class MelonLoaderScanner {
 	private static Map<String, Boolean> checkUsingHashes = new HashMap<>() {{
 		put("VRChat", false);
 		put("BloonsTD6", false);
+		put("Audica", false);
 		
 		put("BONEWORKS", true);
 	}};
@@ -164,6 +166,31 @@ public class MelonLoaderScanner {
 					e.printStackTrace();
 				}
 				
+				// Audica
+				
+				request = HttpRequest.newBuilder()
+		                .GET()
+		                .uri(URI.create("https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"))
+		                .setHeader("User-Agent", "LUM Bot")
+		                .build();
+					
+				try {
+					HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+					
+					synchronized (mods) {
+						Map<String, AudicaModDetails> processingmods = gson.fromJson(response.body(), new TypeToken<HashMap<String, AudicaModDetails>>() {}.getType());
+						
+						List<ModDetails> modsprocessed = new ArrayList<>();
+						for (Entry<String, AudicaModDetails> mod : processingmods.entrySet()) {
+							modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version));
+						}
+						
+						mods.put("Audica", modsprocessed);
+					}
+				} catch (IOException | InterruptedException e) {
+					e.printStackTrace();
+				}
+				
 				// BONEWORKS
 				
 				// TODO
@@ -171,7 +198,7 @@ public class MelonLoaderScanner {
 				// Sleep
 				
 				try {
-					Thread.sleep(6 * 60 * 1000);
+					Thread.sleep(6 * 60 * 1000); // 10 times / hour (every 6 minutes)
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -309,11 +336,12 @@ public class MelonLoaderScanner {
 							System.out.println("Hash Code: " + mlHashCode);
 						}
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Game Compatibility: .*")) {
-							String modnameversionauthor = lastLine.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ", 2)[1].split("\\(http", 2)[0];
+							String modnameversionauthor = lastLine.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ", 2)[1].split("\\((http[s]{0,1}:\\/\\/){0,1}[a-zA-Z0-9\\-]+\\.[a-zA-Z]{2,4}", 2)[0];
 							String[] split2 = modnameversionauthor.split(" by ", 2);
 							String author = split2.length > 1 ? split2[1] : null;
 							String[] split3 = split2[0].split(" v", 2);
 							String name = split3[0].isBlank() ? "" : split3[0];
+							name = String.join("", name.split(".*[a-zA-Z0-9]\\.[a-zA-Z]{2,4}"));
 							String version = split3.length > 1 ? split3[1] : null;
 							
 							if (loadedMods.containsKey(name) && !duplicatedMods.contains(name))
@@ -420,7 +448,7 @@ public class MelonLoaderScanner {
 					String latestModVersion = null;
 					String latestModHash = null;
 					for (ModDetails modDetail : modDetails) {
-						if (modDetail.name.equals(modName)) {
+						if (modDetail.name.replace(" ", "").equals(modName.replace(" ", ""))) {
 							if (checkUsingHash) {
 								// TODO
 							}
