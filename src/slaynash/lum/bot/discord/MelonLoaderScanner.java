@@ -8,6 +8,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -214,7 +216,7 @@ public class MelonLoaderScanner {
 		
 		List<MelonLoaderError> errors = new ArrayList<MelonLoaderError>();
 		String mlVersion = null;
-		boolean hasErrors = false;
+		boolean hasErrors = false, hasNonModErrors = false;
 		String game = null;
 		String mlHashCode = null;
 
@@ -395,6 +397,7 @@ public class MelonLoaderScanner {
 								}
 								else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[(Error|ERROR)\\].*")) {
 									hasErrors = true;
+									hasNonModErrors = true;
 									System.out.println("Found non-mod error: " + line);
 								}
 							}
@@ -500,6 +503,19 @@ public class MelonLoaderScanner {
 		
 		String message = "";
 		
+		for (int i = 0; i < attachments.size(); ++i) {
+			Attachment attachment = attachments.get(i);
+			if (attachment.getFileName().matches("MelonLoader_[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}\\.[0-9]{3}.*\\.log")) {
+				String fileDateString = attachment.getFileName().split("_", 3)[1];
+				LocalDate fileDate = LocalDate.parse("20" + fileDateString);
+				LocalDate now = LocalDate.now();
+				long ageDays = ChronoUnit.DAYS.between(fileDate, now);
+				if (ageDays > 1) {
+					message += "*This log file is " + ageDays + " days old.*\n";
+				}
+			}
+		}
+		
 		if (consoleCopyPaste)
 			message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
 		
@@ -560,7 +576,29 @@ public class MelonLoaderScanner {
 				message += error;
 			}
 			
-			event.getChannel().sendMessage(message).queue();
+			if (hasNonModErrors)
+				message += "\n - There are some unidentified errors. This might need an human check of the logs.";
+			
+			if (message.length() >= 2000) {
+				String[] lines = message.split("\n");
+				String toSend = "";
+				int i = 0;
+				while (i < lines.length) {
+					if ((toSend + lines[i] + 1).length() > 2000) {
+						event.getChannel().sendMessage(toSend).queue();
+						toSend = lines[i];
+					}
+					else
+						toSend += "\n" + lines[i];
+					
+					++i;
+				}
+				if (toSend.length() > 0)
+					event.getChannel().sendMessage(toSend).queue();
+			}
+			else
+				event.getChannel().sendMessage(message).queue();
+			
 		}
 		else if (mlVersion != null) {
 			if (hasErrors) {
