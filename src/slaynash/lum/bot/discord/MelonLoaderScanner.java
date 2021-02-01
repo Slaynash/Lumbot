@@ -25,8 +25,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.logscanner.AudicaModDetails;
 import slaynash.lum.bot.discord.logscanner.BTD6ModDetails;
 import slaynash.lum.bot.discord.logscanner.ModDetails;
-import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModDetails;
+import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
 
 public class MelonLoaderScanner {
 	
@@ -72,7 +72,7 @@ public class MelonLoaderScanner {
 	
 	private static Gson gson = new Gson();
 	private static Map<String, List<ModDetails>> mods = new HashMap<>();
-	private static Map<String, Boolean> checkUsingHashes = new HashMap<>() {{
+	private static Map<String, Boolean> checkUsingHashes = new HashMap<String, Boolean>() {{
 		put("VRChat", false);
 		put("BloonsTD6", false);
 		put("Audica", false);
@@ -240,6 +240,8 @@ public class MelonLoaderScanner {
 		boolean pre3 = false;
 		int remainingModCount = 0;
 		
+		int ommitedLines = 0;
+		
 		String tmpModName = null, tmpModVersion = null, tmpModHash = null;
 		
 		for (int i = 0; i < attachments.size(); ++i) {
@@ -253,6 +255,18 @@ public class MelonLoaderScanner {
 					String line = "";
 					String lastLine = null;
 					while ((lastLine = line) != null && (line = br.readLine()) != null) {
+						
+						
+						//System.out.println("reading line");
+						int linelength = line.length();
+						//System.out.println("length: " + linelength);
+						
+						if (linelength > 500) {
+							++ommitedLines;
+							line = "";
+							System.out.println("Ommited one line of length " + linelength);
+							continue;
+						}
 						
 						// Mod listing
 						
@@ -338,6 +352,9 @@ public class MelonLoaderScanner {
 							System.out.println("Hash Code: " + mlHashCode);
 						}
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Game Compatibility: .*")) {
+							if (lastLine.isBlank())
+								continue;
+							
 							String modnameversionauthor = lastLine.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ", 2)[1].split("\\((http[s]{0,1}:\\/\\/){0,1}[a-zA-Z0-9\\-]+\\.[a-zA-Z]{2,4}", 2)[0];
 							String[] split2 = modnameversionauthor.split(" by ", 2);
 							String author = split2.length > 1 ? split2[1] : null;
@@ -408,6 +425,7 @@ public class MelonLoaderScanner {
 					e.printStackTrace();
 				}
 			}
+			System.out.println("Done reading file");
 		}
 		
 		boolean isMLOutdated = mlVersion != null && !(mlVersion.equals(latestMLVersionRelease) || mlVersion.equals(latestMLVersionBeta));
@@ -516,6 +534,9 @@ public class MelonLoaderScanner {
 			}
 		}
 		
+		if (ommitedLines > 0)
+			message += "**Ommited " + ommitedLines + " lines of length > 500.**\n";
+		
 		if (consoleCopyPaste)
 			message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
 		
@@ -538,22 +559,30 @@ public class MelonLoaderScanner {
 			
 			if (duplicatedMods.size() > 0) {
 				String error = "\n - The following mods are installed multiple times in your Mods and/or Plugins folder:";
-				for (String s : duplicatedMods)
-					error += "\n   \\> " + sanitizeInputString(s);
+				for (int i = 0; i < duplicatedMods.size() && i < 10; ++i)
+					error += "\n   \\> " + sanitizeInputString(duplicatedMods.get(i));
+				if (duplicatedMods.size() > 10)
+					error += "\n      and " + (duplicatedMods.size() - 10) + " more...";
 				message += error;
 			}
 			
 			if (incompatibleMods.size() > 0) {
 				String error = "\n - You are using the following incompatible mods:";
-				for (String s : incompatibleMods)
-					error += "\n   \\> " + sanitizeInputString(s);
+				for (int i = 0; i < incompatibleMods.size() && i < 10; ++i)
+					error += "\n   \\> " + sanitizeInputString(incompatibleMods.get(i));
+				if (incompatibleMods.size() > 10)
+					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
 				message += error;
 			}
 			
 			if (unverifiedMods.size() > 0) {
 				String error = "\n - You are using the following unverified/unknown mods:";
-				for (String s : unverifiedMods)
+				for (int i = 0; i < unverifiedMods.size() && i < 10; ++i) {
+					String s = unverifiedMods.get(i);
 					error += "\n   \\> " + sanitizeInputString(s) + (modAuthors.containsKey(s) ? (" **by** " + sanitizeInputString(modAuthors.get(s))) : "");
+				}
+				if (unverifiedMods.size() > 10)
+					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
 				message += error;
 			}
 			
@@ -571,13 +600,15 @@ public class MelonLoaderScanner {
 			
 			if (modsThrowingErrors.size() > 0) {
 				String error = "\n - The following mods are throwing errors:";
-				for (String s : modsThrowingErrors)
-					error += "\n   \\> " + sanitizeInputString(s);
+				for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
+					error += "\n   \\> " + sanitizeInputString(modsThrowingErrors.get(i));
+				if (modsThrowingErrors.size() > 10)
+					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
 				message += error;
 			}
 			
 			if (hasNonModErrors)
-				message += "\n - There are some unidentified errors. This might need an human check of the logs.";
+				message += "\n - There are some unidentified errors. Please wait for a moderator or an helper to manually check the file.";
 			
 			if (message.length() >= 2000) {
 				String[] lines = message.split("\n");
