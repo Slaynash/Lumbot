@@ -63,6 +63,10 @@ public class MelonLoaderScanner {
 				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
 				"The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
 		
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
+				"One or more mod is missing a library / required mod, or a file is corrupted."));
+		
 		/*
 		add(new MelonLoaderError(
 				".*Harmony\\.HarmonyInstance\\..*",
@@ -222,6 +226,7 @@ public class MelonLoaderScanner {
 
 		boolean preListingMods = false;
 		boolean listingMods = false;
+		boolean readingMissingDependencies = false;
 		Map<String, LogsModDetails> loadedMods = new HashMap<String, LogsModDetails>();
 
 		List<String> duplicatedMods = new ArrayList<String>();
@@ -230,6 +235,7 @@ public class MelonLoaderScanner {
 		List<String> incompatibleMods = new ArrayList<String>();
 		List<MelonInvalidMod> invalidMods = new ArrayList<MelonInvalidMod>();
 		Map<String, String> modAuthors = new HashMap<String, String>();
+		List<String> missingMods = new ArrayList<>();
 		
 		List<String> modsThrowingErrors = new ArrayList<String>();
 		
@@ -241,6 +247,8 @@ public class MelonLoaderScanner {
 		int remainingModCount = 0;
 		
 		int ommitedLines = 0;
+		
+		String currentMissingDependenciesMods = "";
 		
 		String tmpModName = null, tmpModVersion = null, tmpModHash = null;
 		
@@ -272,9 +280,8 @@ public class MelonLoaderScanner {
 						
 						if (preListingMods || listingMods) {
 							if (!pre3) {
-								if (line.isEmpty()) {
+								if (line.isBlank())
 									continue;
-								}
 								
 								else if (preListingMods && line.matches("\\[[0-9.:]+\\] ------------------------------"));
 								else if (preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Plugins Loaded!") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Mods Loaded!"))) {
@@ -329,6 +336,28 @@ public class MelonLoaderScanner {
 							}
 							
 						}
+						
+						// Missing dependencies listing
+						
+						if (readingMissingDependencies) {
+							if (line.matches("- '.*' is missing the following dependencies:")) {
+								currentMissingDependenciesMods = line.split("'", 3)[1];
+								
+								continue;
+							}
+							else if (line.matches("    - '.*'.*")) {
+								String missingModName = line.split("'", 3)[1];
+								if (!missingMods.contains(missingModName))
+									missingMods.add(missingModName);
+								
+								continue;
+							}
+							else {
+								System.out.println("Done listing missing dependencies on line: " + line);
+								readingMissingDependencies = false;
+							}
+						}
+						
 						if (line.isEmpty());
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Using v0\\..*")) {
 							if (line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] .*"))
@@ -390,6 +419,12 @@ public class MelonLoaderScanner {
 						else if (!pre3 && (line.matches("\\[[0-9.:]+\\] Loading Plugins...") || line.matches("\\[[0-9.:]+\\] Loading Mods..."))) {
 							preListingMods = true;
 							System.out.println("Starting to pre-list mods/plugins");
+						}
+						else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
+							System.out.println("Starting to list missing dependencies");
+							readingMissingDependencies = true;
+							br.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
+							line = br.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
 						}
 						//
 						else {
@@ -525,9 +560,16 @@ public class MelonLoaderScanner {
 			Attachment attachment = attachments.get(i);
 			if (attachment.getFileName().matches("MelonLoader_[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}\\.[0-9]{3}.*\\.log")) {
 				String fileDateString = attachment.getFileName().split("_", 3)[1];
-				LocalDate fileDate = LocalDate.parse("20" + fileDateString);
-				LocalDate now = LocalDate.now();
-				long ageDays = ChronoUnit.DAYS.between(fileDate, now);
+				long ageDays = 0;
+				try {
+					LocalDate fileDate = LocalDate.parse("20" + fileDateString);
+					LocalDate now = LocalDate.now();
+					ageDays = ChronoUnit.DAYS.between(fileDate, now);
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 				if (ageDays > 1) {
 					message += "*This log file is " + ageDays + " days old.*\n";
 				}
@@ -563,6 +605,15 @@ public class MelonLoaderScanner {
 					error += "\n   \\> " + sanitizeInputString(duplicatedMods.get(i));
 				if (duplicatedMods.size() > 10)
 					error += "\n      and " + (duplicatedMods.size() - 10) + " more...";
+				message += error;
+			}
+			
+			if (missingMods.size() > 0) {
+				String error = "\n - You are missing the following dependencies:";
+				for (int i = 0; i < missingMods.size() && i < 10; ++i)
+					error += "\n   \\> " + sanitizeInputString(missingMods.get(i));
+				if (missingMods.size() > 10)
+					error += "\n      and " + (missingMods.size() - 10) + " more...";
 				message += error;
 			}
 			
