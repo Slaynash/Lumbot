@@ -633,14 +633,18 @@ public class MelonLoaderScanner {
 					error += "\n   \\> " + sanitizeInputString(s) + (modAuthors.containsKey(s) ? (" **by** " + sanitizeInputString(modAuthors.get(s))) : "");
 				}
 				if (unverifiedMods.size() > 10)
-					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
+					error += "\n      and " + (unverifiedMods.size() - 10) + " more...";
 				message += error;
 			}
 			
 			if (invalidMods.size() > 0) {
 				String error = "\n - You are using the following outdated mods:";
-				for (MelonInvalidMod m : invalidMods)
+				for (int i = 0; i < invalidMods.size() && i < 10; ++i) {
+					MelonInvalidMod m = invalidMods.get(i);
 					error += "\n   \\> " + m.name + " - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
+				}
+				if (invalidMods.size() > 10)
+					error += "\n      and " + (invalidMods.size() - 10) + " more...";
 				message += error;
 			}
 			
@@ -654,7 +658,7 @@ public class MelonLoaderScanner {
 				for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
 					error += "\n   \\> " + sanitizeInputString(modsThrowingErrors.get(i));
 				if (modsThrowingErrors.size() > 10)
-					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
+					error += "\n      and " + (modsThrowingErrors.size() - 10) + " more...";
 				message += error;
 			}
 			
