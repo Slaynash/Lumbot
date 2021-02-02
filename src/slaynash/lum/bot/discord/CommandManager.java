@@ -16,6 +16,7 @@ import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.BlacklistNameCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
+import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
@@ -35,6 +36,7 @@ public class CommandManager {
 	
 	public static List<String> melonLoaderHashes = new ArrayList<>();
 	public static Map<Long, String> mlReportChannels = new HashMap<>();
+	public static List<String> brokenVrchatMods = new ArrayList<>();
 
     protected static void registerCommand(Command command) {
         List<Command> list = commands;
@@ -86,6 +88,8 @@ public class CommandManager {
 
         CommandManager.registerCommand(new MLHashRegisterCommand());
         CommandManager.registerCommand(new SetMLReportChannelCommand());
+        
+        CommandManager.registerCommand(new MLBrokenModsCommand());
     }
 
 
@@ -153,6 +157,15 @@ public class CommandManager {
 			for(String s : blacklistedNames) {
 				writer.write(s + "\n");
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void saveBrokenVRChatMods() {
+		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("brokenvrcmods.txt"))) {
+			for(String s : brokenVrchatMods)
+				writer.write(s + "\n");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

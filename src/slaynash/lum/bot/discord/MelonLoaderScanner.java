@@ -75,7 +75,7 @@ public class MelonLoaderScanner {
 	}};
 	
 	private static Gson gson = new Gson();
-	private static Map<String, List<ModDetails>> mods = new HashMap<>();
+	public static Map<String, List<ModDetails>> mods = new HashMap<>();
 	private static Map<String, Boolean> checkUsingHashes = new HashMap<String, Boolean>() {{
 		put("VRChat", false);
 		put("BloonsTD6", false);
@@ -236,6 +236,7 @@ public class MelonLoaderScanner {
 		List<MelonInvalidMod> invalidMods = new ArrayList<MelonInvalidMod>();
 		Map<String, String> modAuthors = new HashMap<String, String>();
 		List<String> missingMods = new ArrayList<>();
+		List<String> brokenMods = new ArrayList<>();
 		
 		List<String> modsThrowingErrors = new ArrayList<String>();
 		
@@ -523,6 +524,9 @@ public class MelonLoaderScanner {
 					if (latestModVersion == null && latestModHash == null) {
 						unverifiedMods.add(modName);
 					}
+					else if (CommandManager.brokenVrchatMods.contains(modName)) {
+						brokenMods.add(modName);
+					}
 					else if (!checkUsingHash ? !modVersion.equals(latestModVersion) : (modHash != null && !modHash.equals(latestModHash))) {
 						invalidMods.add(new MelonInvalidMod(modName, modVersion, latestModVersion));
 					}
@@ -576,13 +580,34 @@ public class MelonLoaderScanner {
 			}
 		}
 		
+		boolean isMLOutdatedVRC = false;
+		
+		if ("VRChat".equals(game)) {
+			System.out.println("game is vrc, checking hash");
+			isMLOutdatedVRC = true;
+			
+			boolean hasVRChat1043ReadyML = false;
+			for (String mlHash : CommandManager.melonLoaderHashes) {
+				System.out.println("hash: " + mlHash);
+				if (mlHash.equals("25845"))
+					hasVRChat1043ReadyML = true;
+				
+				if (mlHash.equals(mlHashCode)) {
+					System.out.println("matching has found: " + mlHashCode);
+					if (hasVRChat1043ReadyML)
+						isMLOutdatedVRC = false;
+					break;
+				}
+			}
+		}
+		
 		if (ommitedLines > 0)
 			message += "**Ommited " + ommitedLines + " lines of length > 500.**\n";
 		
 		if (consoleCopyPaste)
 			message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
 		
-		if (game != null && !latestMLVersionBeta.equals(latestMLVersionRelease) && mlVersion.equals(latestMLVersionBeta))
+		if (game != null && mlVersion != null && !latestMLVersionBeta.equals(latestMLVersionRelease) && mlVersion.equals(latestMLVersionBeta))
 			message += "*You are running an alpha version of MelonLoader.*\n";
 		
 		if (game != null && checkUsingHash && !hasMLHashes)
@@ -590,10 +615,12 @@ public class MelonLoaderScanner {
 		else if (game != null && modDetails == null)
 			message += "*" + game + " isn't officially supported by the autochecker. Mod versions will not be verified.*\n";
 		
-		if (errors.size() > 0 || isMLOutdated || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
+		if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
 			message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
 			
-			if (isMLOutdated)
+			if (isMLOutdatedVRC)
+				message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **02/02/2021 at 8.46pm CET.**";
+			else if (isMLOutdated)
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			
 			if ((mlVersion != null && loadedMods.size() == 0))
@@ -623,6 +650,15 @@ public class MelonLoaderScanner {
 					error += "\n   \\> " + sanitizeInputString(incompatibleMods.get(i));
 				if (incompatibleMods.size() > 10)
 					error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
+				message += error;
+			}
+			
+			if (brokenMods.size() > 0) {
+				String error = "\n - You have the following broken mods (no update available yet):";
+				for (int i = 0; i < brokenMods.size() && i < 20; ++i)
+					error += "\n   \\> " + sanitizeInputString(brokenMods.get(i));
+				if (brokenMods.size() > 20)
+					error += "\n      and " + (brokenMods.size() - 20) + " more...";
 				message += error;
 			}
 			

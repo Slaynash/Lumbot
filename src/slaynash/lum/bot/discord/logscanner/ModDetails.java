@@ -13,4 +13,8 @@ public class ModDetails {
 		this.name = name;
 		this.versions = new ModVersion[] {new ModVersion(version, null)};
 	}
+	
+	public String getName() {
+		return name;
+	}
 }

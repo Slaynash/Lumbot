@@ -56,6 +56,7 @@ public class Main extends ListenerAdapter {
         loadMelonLoaderVersions();
         loadMLHashes();
         loadMLReportChannels();
+        loadBrokenVRCMods();
         MelonLoaderScanner.Init();
         
         CommandManager.init();
@@ -90,6 +91,21 @@ public class Main extends ListenerAdapter {
 			while ((line = reader.readLine()) != null) {
 				if (!line.trim().equals(""))
 					CommandManager.melonLoaderHashes.add(line.trim());
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
+    private static void loadBrokenVRCMods() {
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader("brokenvrcmods.txt"));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (!line.trim().equals(""))
+					CommandManager.brokenVrchatMods.add(line.trim());
 			}
 			reader.close();
 		} catch (IOException e) {

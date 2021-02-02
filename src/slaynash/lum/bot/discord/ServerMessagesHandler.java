@@ -36,10 +36,10 @@ public class ServerMessagesHandler {
 	    			toSend += "\n" + lines[i];
 	    		}
 	    		
-    			event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend, Color.RED));
+    			event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend, Color.RED)).queue();
     		}
     		else
-    			event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(error, Color.RED));
+    			event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(error, Color.RED)).queue();
     	}
     }).start();
   }
