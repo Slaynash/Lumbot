@@ -292,7 +292,7 @@ public class MelonLoaderScanner {
 									
 									continue;
 								}
-								else if (preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Plugins Loaded") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Mods Loaded"))) {
+								else if (preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Plugins? Loaded") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Mods? Loaded"))) {
 									remainingModCount = Integer.parseInt(line.split(" ")[1]);
 									preListingMods = false;
 									listingMods = true;
@@ -588,12 +588,11 @@ public class MelonLoaderScanner {
 			
 			boolean hasVRChat1043ReadyML = false;
 			for (String mlHash : CommandManager.melonLoaderHashes) {
-				System.out.println("hash: " + mlHash);
 				if (mlHash.equals("25845"))
 					hasVRChat1043ReadyML = true;
 				
 				if (mlHash.equals(mlHashCode)) {
-					System.out.println("matching has found: " + mlHashCode);
+					System.out.println("matching hash found");
 					if (hasVRChat1043ReadyML)
 						isMLOutdatedVRC = false;
 					break;
