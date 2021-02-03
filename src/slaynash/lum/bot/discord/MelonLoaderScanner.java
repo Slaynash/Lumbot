@@ -319,7 +319,13 @@ public class MelonLoaderScanner {
 								else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ------------------------------")) {
 
 									System.out.println("Found mod " + tmpModName + ", version is " + tmpModVersion + ", and hash is " + tmpModHash);
-									loadedMods.put(tmpModName, new LogsModDetails(tmpModVersion, tmpModHash));
+									
+									if (loadedMods.containsKey(tmpModName) && !duplicatedMods.contains(tmpModName))
+										duplicatedMods.add(tmpModName.trim());
+									loadedMods.put(tmpModName.trim(), new LogsModDetails(tmpModVersion, tmpModHash));
+									//if (tmpModAuthor != null)
+									//	modAuthors.put(tmpModName.trim(), tmpModAuthor.trim());
+									
 									tmpModName = null;
 									tmpModVersion = null;
 									tmpModHash = null;

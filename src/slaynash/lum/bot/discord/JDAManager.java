@@ -27,7 +27,6 @@ public class JDAManager {
 				.enableIntents(GatewayIntent.GUILD_MEMBERS)
 				.build();
 		jda.awaitReady();
-		jda.awaitReady();
 	}
 	
 	public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
