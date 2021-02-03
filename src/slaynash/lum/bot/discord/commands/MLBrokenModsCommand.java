@@ -52,7 +52,7 @@ public class MLBrokenModsCommand extends Command {
 			if (knownMods != null) {
 				knownMods.sort( Comparator.comparing( ModDetails::getName ));
 					
-				message += "**Non-broken mods:**\n";
+				message += "\n**Non-broken mods:**\n";
 				
 				for (ModDetails md : knownMods) {
 					String modname = md.name;
@@ -170,7 +170,7 @@ public class MLBrokenModsCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String paramString) {
-		return paramString.startsWith("l!vrcbrokenmod");
+		return paramString.split(" ", 2)[0].equals("l!vrcbrokenmod");
 	}
 	
 	
@@ -201,6 +201,21 @@ public class MLBrokenModsCommand extends Command {
 		}
 		
 		return hasPermissions;
+	}
+	
+	@Override
+	public boolean includeInHelp(MessageReceivedEvent event) {
+		return checkPerms(event);
+	}
+	
+	@Override
+	public String getHelpDescription() {
+		return "Manage mods marked as broken for the Log Scanner";
+	}
+	
+	@Override
+	public String getHelpName() {
+		return "l!vrcbrokenmod";
 	}
 	
 	

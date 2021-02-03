@@ -39,12 +39,7 @@ public class BlacklistNameCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String pattern) {
-		return pattern.startsWith("l!blacklist ");
-	}
-	
-	@Override
-	public String getHelpPath() {
-		return "";
+		return pattern.split(" ", 2)[0].equals("l!blacklist");
 	}
 	
 	@Override

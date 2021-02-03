@@ -26,4 +26,9 @@ public class VerifyCommandCommand extends Command {
 		return paramString.equals("!verify");
 	}
 	
+	@Override
+	public boolean includeInHelp(MessageReceivedEvent event) {
+		return false;
+	}
+	
 }

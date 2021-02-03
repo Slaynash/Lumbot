@@ -28,7 +28,12 @@ public class SetMLReportChannelCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String paramString) {
-		return paramString.startsWith("l!setmlreportchannel");
+		return paramString.split(" ", 2)[0].equals("l!setmlreportchannel");
+	}
+	
+	@Override
+	public boolean includeInHelp(MessageReceivedEvent event) {
+		return false;
 	}
 	
 }

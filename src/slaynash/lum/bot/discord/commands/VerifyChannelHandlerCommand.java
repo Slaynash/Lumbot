@@ -42,12 +42,7 @@ public class VerifyChannelHandlerCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String paramString) {
-		return paramString.startsWith("l!setverifychannel");
-	}
-	
-	@Override
-	public String getHelpPath() {
-		return "";
+		return paramString.split(" ", 2)[0].equals("l!setverifychannel");
 	}
 	
 	@Override

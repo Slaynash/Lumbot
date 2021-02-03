@@ -92,12 +92,7 @@ public class AddReactionHandlerCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String pattern) {
-		return pattern.startsWith("l!reaction ");
-	}
-	
-	@Override
-	public String getHelpPath() {
-		return "";
+		return pattern.split(" ", 2)[0].equals("l!reaction");
 	}
 	
 	@Override

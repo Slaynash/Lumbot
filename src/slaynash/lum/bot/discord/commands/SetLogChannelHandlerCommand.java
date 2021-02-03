@@ -20,12 +20,7 @@ public class SetLogChannelHandlerCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String paramString) {
-		return paramString.startsWith("l!setlogchannel");
-	}
-	
-	@Override
-	public String getHelpPath() {
-		return "";
+		return paramString.split(" ", 2)[0].equals("l!setlogchannel");
 	}
 	
 	@Override

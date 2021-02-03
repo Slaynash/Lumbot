@@ -11,17 +11,19 @@ public class HelpCommand extends Command {
 	
 	@Override
 	protected boolean matchPattern(String pattern) {
-		return pattern.startsWith("l!help");
+		return pattern.split(" ", 2)[0].equals("l!help");
 	}
 	
 	@Override
 	protected void onServer(String command, MessageReceivedEvent event) {
 		String[] split = command.split(" ", 2);
 		String path = split.length > 1 ? command.split(" ", 2)[1].trim() : "";
+		
 		String helpMessage = "**__Help " + path + ":__**\n\n";
+		
 		boolean empty = true;
 		for (Command cmd : CommandManager.getCommands()) {
-			if ((cmd.getHelpPath() != null) && (cmd.getHelpPath().equals(path))) {
+			if (/*cmd.getHelpPath() != null && cmd.getHelpPath().equals(path) &&*/ cmd.includeInHelp(event)) {
 				empty = false;
 				helpMessage = helpMessage + "**" + cmd.getHelpName() + "**: " + cmd.getHelpDescription() + "\n";
 			}
@@ -34,11 +36,6 @@ public class HelpCommand extends Command {
 			helpMessage = helpMessage + "**Subhelp directory not found**";
 			event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(helpMessage, Color.RED)).queue();
 		}
-	}
-  
-	@Override
-	public String getHelpPath() {
-		return "";
 	}
 	
 	@Override

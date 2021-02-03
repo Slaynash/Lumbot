@@ -15,4 +15,9 @@ public class RubybotOverDynobotCommand extends Command {
 		return paramString.trim().toLowerCase().replace(" ", "").equals("rubybot>dynobot");
 	}
 	
+	@Override
+	public boolean includeInHelp(MessageReceivedEvent event) {
+		return false;
+	}
+	
 }

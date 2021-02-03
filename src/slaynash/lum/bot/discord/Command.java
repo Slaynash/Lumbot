@@ -23,4 +23,8 @@ public abstract class Command {
 		return null;
 	}
 	
+	public boolean includeInHelp(MessageReceivedEvent event) {
+		return true;
+	}
+	
 }

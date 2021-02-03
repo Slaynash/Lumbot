@@ -35,20 +35,10 @@ public class CommandLaunchCommand extends Command {
         }
         return false;
     }
-
+    
     @Override
-    public String getHelpPath() {
-        return null;
-    }
-
-    @Override
-    public String getHelpDescription() {
-        return null;
-    }
-
-    @Override
-    public String getHelpName() {
-        return null;
+    public boolean includeInHelp(MessageReceivedEvent event) {
+    	return false;
     }
 	
 }

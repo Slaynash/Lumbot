@@ -88,17 +88,12 @@ public class RankColorCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.startsWith("l!rankcolor");
-    }
-
-    @Override
-    public String getHelpPath() {
-        return "";
+        return pattern.split(" ", 2)[0].equals("l!rankcolor");
     }
 
     @Override
     public String getHelpDescription() {
-        return "Set rank color. exemple (pure green): " + this.getHelpName() + " #00ff00";
+        return "Set rank color. Example (pure green): " + this.getHelpName() + " #00ff00";
     }
 
     @Override
