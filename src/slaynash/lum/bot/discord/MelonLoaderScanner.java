@@ -67,6 +67,10 @@ public class MelonLoaderScanner {
 				"\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
 				"One or more mod is missing a library / required mod, or a file is corrupted."));
 		
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
+				"MelonLoader failed to read your Unity version and game name. Make sure your have Microsoft Visual C++ 2015-2019 Redistributable installed (<https://aka.ms/vs/16/release/vc_redist.x64.exe>), or try re-installing MelonLoader."));
+		
 		/*
 		add(new MelonLoaderError(
 				".*Harmony\\.HarmonyInstance\\..*",
@@ -94,7 +98,7 @@ public class MelonLoaderScanner {
 	    put("MControl", "MControl (Music Playback Controls)");
 	    put("Player Volume Control", "PlayerVolumeControl");
 	    put("UI Expansion Kit", "UIExpansionKit");
-	    put("NearClipPlaneAdj", "NearClippingPlaneAdjuster.dll");
+	    put("NearClippingPlaneAdjuster.dll", "NearClipPlaneAdj");
 	    put("Particle and DynBone limiter settings UI", "ParticleAndBoneLimiterSettings");
 	    put("MuteBlinkBeGone", "Mute Blink Be Gone");
 	    put("DiscordRichPresence-ML", "VRCDiscordRichPresence-ML");
@@ -108,7 +112,7 @@ public class MelonLoaderScanner {
 	    put("VRC Video Library", "VRCVideoLibrary");
 	    put("Input System", "InputSystem");
 	    put("TogglePostProcessing", "Toggle Post Processing");
-	    put("ToggleMicIcon", "Toggle Mic Icon");
+	    put("Toggle Mic Icon", "ToggleMicIcon");
 	    put("ThumbParams", "VRCThumbParams");
 	    
 	    // backward compatibility
@@ -256,7 +260,7 @@ public class MelonLoaderScanner {
 		for (int i = 0; i < attachments.size(); ++i) {
 			Attachment attachment = attachments.get(i);
 			
-			if (attachment.getFileExtension().toLowerCase().equals("log") || attachment.getFileExtension().toLowerCase().equals("txt")) {
+			if (attachment.getFileExtension() != null && attachment.getFileExtension().toLowerCase().equals("log") || attachment.getFileExtension().toLowerCase().equals("txt")) {
 				try (BufferedReader br = new BufferedReader(new InputStreamReader(attachment.retrieveInputStream().get()))) {
 					
 					System.out.println("Reading file " + attachment.getFileName());
@@ -270,7 +274,7 @@ public class MelonLoaderScanner {
 						int linelength = line.length();
 						//System.out.println("length: " + linelength);
 						
-						if (linelength > 500) {
+						if (linelength > 1000) {
 							++ommitedLines;
 							line = "";
 							System.out.println("Ommited one line of length " + linelength);
@@ -594,7 +598,8 @@ public class MelonLoaderScanner {
 			
 			boolean hasVRChat1043ReadyML = false;
 			for (String mlHash : CommandManager.melonLoaderHashes) {
-				if (mlHash.equals("25845"))
+				System.out.println(mlHash);
+				if (mlHash.equals("25881"))
 					hasVRChat1043ReadyML = true;
 				
 				if (mlHash.equals(mlHashCode)) {
@@ -607,7 +612,7 @@ public class MelonLoaderScanner {
 		}
 		
 		if (ommitedLines > 0)
-			message += "**Ommited " + ommitedLines + " lines of length > 500.**\n";
+			message += "**Ommited " + ommitedLines + " lines of length > 1000.**\n";
 		
 		if (consoleCopyPaste)
 			message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
@@ -624,7 +629,7 @@ public class MelonLoaderScanner {
 			message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
 			
 			if (isMLOutdatedVRC)
-				message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **02/02/2021 at 8.46pm CET.**";
+				message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **feb. 6, 2021 at 10.01pm CET.**";
 			else if (isMLOutdated)
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			
