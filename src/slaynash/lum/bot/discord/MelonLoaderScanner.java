@@ -310,7 +310,7 @@ public class MelonLoaderScanner {
 								else if (listingMods && tmpModName == null) {
 									String[] split = line.split(" ", 2)[1].split(" v", 2);
 									tmpModName = split[0];
-									tmpModVersion = split[1];
+									tmpModVersion = split.length > 0 ? split[1] : null;
 									continue;
 								}
 								else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
