@@ -71,6 +71,10 @@ public class MelonLoaderScanner {
 				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
 				"MelonLoader failed to read your Unity version and game name. Make sure your have Microsoft Visual C++ 2015-2019 Redistributable installed (<https://aka.ms/vs/16/release/vc_redist.x64.exe>), or try re-installing MelonLoader."));
 		
+		add(new MelonLoaderError(
+				"\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[emmVRCLoader\\] \\[ERROR\\] System\\.Reflection\\.TargetInvocationException: Exception has been thrown by the target of an invocation\\. ---> System\\.TypeLoadException: Could not load type of field 'emmVRC\\.Hacks\\.FBTSaving\\+<>c__DisplayClass5_0:steam'.*",
+				"emmVRC currently has some incompatibilities with the Oculus build as of the latest VRChat update. For now, the Steam build is recommended."));
+		
 		/*
 		add(new MelonLoaderError(
 				".*Harmony\\.HarmonyInstance\\..*",
