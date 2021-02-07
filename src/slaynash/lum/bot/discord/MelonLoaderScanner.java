@@ -603,7 +603,7 @@ public class MelonLoaderScanner {
 			boolean hasVRChat1043ReadyML = false;
 			for (String mlHash : CommandManager.melonLoaderHashes) {
 				System.out.println(mlHash);
-				if (mlHash.equals("25881"))
+				if (mlHash.equals(CommandManager.melonLoaderVRCHash))
 					hasVRChat1043ReadyML = true;
 				
 				if (mlHash.equals(mlHashCode)) {
@@ -632,8 +632,12 @@ public class MelonLoaderScanner {
 		if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
 			message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
 			
-			if (isMLOutdatedVRC)
-				message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **feb. 6, 2021 at 10.01pm CET.**";
+			if (isMLOutdatedVRC) {
+				if (pre3)
+					message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
+				else
+					message += "\n - MelonLoader needs to be reinstalled. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
+			}
 			else if (isMLOutdated)
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			

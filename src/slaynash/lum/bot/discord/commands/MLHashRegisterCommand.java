@@ -12,7 +12,7 @@ public class MLHashRegisterCommand extends Command {
 	@Override
 	protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
 		String hash = paramString.split(" ", 2)[1];
-		System.out.println("hash: " + paramString);
+		System.out.println("[MLHashRegisterCommand] hash: " + paramString);
 		if (paramMessageReceivedEvent.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
 			return;
 		

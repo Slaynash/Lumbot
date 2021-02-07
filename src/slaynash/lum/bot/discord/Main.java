@@ -55,6 +55,7 @@ public class Main extends ListenerAdapter {
         loadNameBlacklist();
         loadMelonLoaderVersions();
         loadMLHashes();
+		loadMLVRCHash();
         loadMLReportChannels();
         loadBrokenVRCMods();
         MelonLoaderScanner.Init();
@@ -92,6 +93,18 @@ public class Main extends ListenerAdapter {
 				if (!line.trim().equals(""))
 					CommandManager.melonLoaderHashes.add(line.trim());
 			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static void loadMLVRCHash() {
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader("mlvrchash.txt"));
+			CommandManager.melonLoaderVRCHash = reader.readLine();
+			CommandManager.melonLoaderVRCMinDate = reader.readLine();
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
