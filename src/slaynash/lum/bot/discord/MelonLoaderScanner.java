@@ -35,33 +35,12 @@ public class MelonLoaderScanner {
 	
 	private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
 		add(new MelonLoaderError(
-				".*System\\.IO\\.FileNotFoundException\\: .* ['|\"]System\\.IO\\.Compression.*", 
-				"You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>"));
-		add(new MelonLoaderError(
-				"System.UnauthorizedAccessException:.*",
-				"The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
-		
-		add(new MelonLoaderError(
-				"\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
-				"The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to save AssemblyGenerator/config.cfg)"));
-		add(new MelonLoaderError(
-				"\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.Main\\.SetupDirectory\\(String path\\)",
-				"The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to setup directories)"));
-		add(new MelonLoaderError(
-				"\\[[0-9.:]+\\] Il2CppDumper.exe does not exist!",
-				"MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader again (failed to download Il2CppDumper)"));
-		
-		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
 				"You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
 		
 		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
 				"You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
-		
-		add(new MelonLoaderError(
-				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
-				"The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
 		
 		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
@@ -80,6 +59,28 @@ public class MelonLoaderScanner {
 				".*Harmony\\.HarmonyInstance\\..*",
 				"You seems to have a 0Harmony.dll file in your `Mods` or `Plugins` folder. This breaks mods and plugins, since Harmony is embed into MelonLoader"));
 		*/
+	}};
+
+	private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
+		add(new MelonLoaderError(
+				".*System\\.IO\\.FileNotFoundException\\: .* ['|\"]System\\.IO\\.Compression.*", 
+				"You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>"));
+		add(new MelonLoaderError(
+				"System.UnauthorizedAccessException:.*",
+				"The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
+		
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
+				"The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to save AssemblyGenerator/config.cfg)"));
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.Main\\.SetupDirectory\\(String path\\)",
+				"The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to setup directories)"));
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] Il2CppDumper.exe does not exist!",
+				"MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader again (failed to download Il2CppDumper)"));
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
+				"The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
 	}};
 	
 	private static Gson gson = new Gson();
@@ -229,6 +230,7 @@ public class MelonLoaderScanner {
 		List<MelonLoaderError> errors = new ArrayList<MelonLoaderError>();
 		String mlVersion = null;
 		boolean hasErrors = false, hasNonModErrors = false;
+		boolean assemblyGenerationFailed = false;
 		String game = null;
 		String mlHashCode = null;
 
@@ -444,6 +446,17 @@ public class MelonLoaderScanner {
 						//
 						else {
 							boolean found = false;
+							for (MelonLoaderError knownError : knownUnhollowerErrors) {
+								if (line.matches(knownError.regex)) {
+									if (!errors.contains(knownError))
+										errors.add(knownError);
+									System.out.println("Found known unhollower error");
+									hasErrors = true;
+									assemblyGenerationFailed = true;
+									found = true;
+									break;
+								}
+							}
 							for (MelonLoaderError knownError : knownErrors) {
 								if (line.matches(knownError.regex)) {
 									if (!errors.contains(knownError))
@@ -455,6 +468,9 @@ public class MelonLoaderScanner {
 								}
 							}
 							if (!found) {
+								if (line.matches("\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!")) {
+									assemblyGenerationFailed = true;
+								}
 								if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[[^\\[]+\\] \\[(Error|ERROR)\\].*") && !line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] \\[(Error|ERROR)\\].*")) {
 									String mod = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[", 2)[1].split("\\]", 2)[0];
 									if (!modsThrowingErrors.contains(mod))
@@ -641,8 +657,6 @@ public class MelonLoaderScanner {
 			else if (isMLOutdated)
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			
-			if ((mlVersion != null && loadedMods.size() == 0))
-				message += "\n - You have no mods installed in your Mods and Plugins folder";
 			
 			if (duplicatedMods.size() > 0) {
 				String error = "\n - The following mods are installed multiple times in your Mods and/or Plugins folder:";
@@ -706,18 +720,22 @@ public class MelonLoaderScanner {
 			for (int i = 0; i < errors.size(); ++i)
 				message += "\n - " + sanitizeInputString(errors.get(i).error);
 			
-			
-			if (modsThrowingErrors.size() > 0) {
-				String error = "\n - The following mods are throwing errors:";
-				for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
-					error += "\n   \\> " + sanitizeInputString(modsThrowingErrors.get(i));
-				if (modsThrowingErrors.size() > 10)
-					error += "\n      and " + (modsThrowingErrors.size() - 10) + " more...";
-				message += error;
+			if (!assemblyGenerationFailed) {
+				if (loadedMods.size() == 0)
+					message += "\n - You have no mods installed in your Mods and Plugins folder";
+
+				if (modsThrowingErrors.size() > 0) {
+					String error = "\n - The following mods are throwing errors:";
+					for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
+						error += "\n   \\> " + sanitizeInputString(modsThrowingErrors.get(i));
+					if (modsThrowingErrors.size() > 10)
+						error += "\n      and " + (modsThrowingErrors.size() - 10) + " more...";
+					message += error;
+				}
+				
+				if (hasNonModErrors)
+					message += "\n - There are some unidentified errors. Please wait for a moderator or an helper to manually check the file.";
 			}
-			
-			if (hasNonModErrors)
-				message += "\n - There are some unidentified errors. Please wait for a moderator or an helper to manually check the file.";
 			
 			if (message.length() >= 2000) {
 				String[] lines = message.split("\n");
