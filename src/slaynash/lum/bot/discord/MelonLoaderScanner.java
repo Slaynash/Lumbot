@@ -252,6 +252,9 @@ public class MelonLoaderScanner {
 		
 		String emmVRCVersion = null;
 		String emmVRCVRChatBuild = null;
+
+		boolean isMLOutdatedVRC = false;
+		boolean isMLOutdatedVRCBrokenDeobfMap = false;
 		
 		boolean consoleCopyPaste = false;
 		boolean pre3 = false;
@@ -381,6 +384,8 @@ public class MelonLoaderScanner {
 								consoleCopyPaste = true;
 							mlVersion = line.split("v")[1].split(" ")[0].trim();
 							pre3 = true;
+							if ("VRChat".equals(game))
+								isMLOutdatedVRC = true;
 							System.out.println("ML " + mlVersion + " (< 0.3.0)");
 						}
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} MelonLoader v0\\..*")) {
@@ -392,6 +397,30 @@ public class MelonLoaderScanner {
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Name: .*")) {
 							game = line.split(":", 4)[3].trim();
 							System.out.println("Game: " + game);
+							
+							if (mlHashCode != null && "VRChat".equals(game)) {
+								System.out.println("game is vrc, checking hash");
+								isMLOutdatedVRC = true;
+								
+								boolean hasVRChat1043ReadyML = false;
+								boolean hasNotBrokenDeobfMap = false;
+								for (String mlHash : CommandManager.melonLoaderHashes) {
+									System.out.println(mlHash);
+									if (mlHash.equals("25881"))
+										hasNotBrokenDeobfMap = true;
+									if (mlHash.equals(CommandManager.melonLoaderVRCHash))
+										hasVRChat1043ReadyML = true;
+									
+									if (mlHash.equals(mlHashCode)) {
+										System.out.println("matching hash found");
+										if (hasVRChat1043ReadyML)
+											isMLOutdatedVRC = false;
+										if (!hasNotBrokenDeobfMap)
+											isMLOutdatedVRCBrokenDeobfMap = true;
+										break;
+									}
+								}
+							}
 						}
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Hash Code: .*")) {
 							mlHashCode = line.split(":", 4)[3].trim();
@@ -448,8 +477,14 @@ public class MelonLoaderScanner {
 							boolean found = false;
 							for (MelonLoaderError knownError : knownUnhollowerErrors) {
 								if (line.matches(knownError.regex)) {
-									if (!errors.contains(knownError))
-										errors.add(knownError);
+									if (isMLOutdatedVRCBrokenDeobfMap) {
+										if (!assemblyGenerationFailed)
+											errors.add(new MelonLoaderError("", "The assembly generation failed. You will need to reinstall MelonLoader for it to works"));
+									}
+									else {
+										if (!errors.contains(knownError))
+											errors.add(knownError);
+									}
 									System.out.println("Found known unhollower error");
 									hasErrors = true;
 									assemblyGenerationFailed = true;
@@ -457,20 +492,19 @@ public class MelonLoaderScanner {
 									break;
 								}
 							}
-							for (MelonLoaderError knownError : knownErrors) {
-								if (line.matches(knownError.regex)) {
-									if (!errors.contains(knownError))
-										errors.add(knownError);
-									System.out.println("Found known error");
-									hasErrors = true;
-									found = true;
-									break;
+							if (!found) {
+								for (MelonLoaderError knownError : knownErrors) {
+									if (line.matches(knownError.regex)) {
+										if (!errors.contains(knownError))
+											errors.add(knownError);
+										System.out.println("Found known error");
+										hasErrors = true;
+										found = true;
+										break;
+									}
 								}
 							}
 							if (!found) {
-								if (line.matches("\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!")) {
-									assemblyGenerationFailed = true;
-								}
 								if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[[^\\[]+\\] \\[(Error|ERROR)\\].*") && !line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] \\[(Error|ERROR)\\].*")) {
 									String mod = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[", 2)[1].split("\\]", 2)[0];
 									if (!modsThrowingErrors.contains(mod))
@@ -606,27 +640,6 @@ public class MelonLoaderScanner {
 				
 				if (ageDays > 1) {
 					message += "*This log file is " + ageDays + " days old.*\n";
-				}
-			}
-		}
-		
-		boolean isMLOutdatedVRC = false;
-		
-		if ("VRChat".equals(game)) {
-			System.out.println("game is vrc, checking hash");
-			isMLOutdatedVRC = true;
-			
-			boolean hasVRChat1043ReadyML = false;
-			for (String mlHash : CommandManager.melonLoaderHashes) {
-				System.out.println(mlHash);
-				if (mlHash.equals(CommandManager.melonLoaderVRCHash))
-					hasVRChat1043ReadyML = true;
-				
-				if (mlHash.equals(mlHashCode)) {
-					System.out.println("matching hash found");
-					if (hasVRChat1043ReadyML)
-						isMLOutdatedVRC = false;
-					break;
 				}
 			}
 		}
