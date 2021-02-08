@@ -38,9 +38,9 @@ public class MelonLoaderScanner {
 				"\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
 				"You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
 		
-		add(new MelonLoaderError(
-				"\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
-				"You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
+		// add(new MelonLoaderError(
+		// 		"\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
+		// 		"You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
 		
 		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
@@ -82,6 +82,11 @@ public class MelonLoaderScanner {
 				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
 				"The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
 	}};
+
+	private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
+			"\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
+			"You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
+	
 	
 	private static Gson gson = new Gson();
 	public static Map<String, List<ModDetails>> mods = new HashMap<>();
@@ -505,7 +510,11 @@ public class MelonLoaderScanner {
 								}
 							}
 							if (!found) {
-								if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[[^\\[]+\\] \\[(Error|ERROR)\\].*") && !line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] \\[(Error|ERROR)\\].*")) {
+								if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*")) {
+									if (!errors.contains(incompatibleAssemblyError))
+										errors.add(incompatibleAssemblyError);
+								}
+								else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[[^\\[]+\\] \\[(Error|ERROR)\\].*") && !line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] \\[(Error|ERROR)\\].*")) {
 									String mod = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[", 2)[1].split("\\]", 2)[0];
 									if (!modsThrowingErrors.contains(mod))
 										modsThrowingErrors.add(mod);
@@ -734,7 +743,7 @@ public class MelonLoaderScanner {
 				message += "\n - " + sanitizeInputString(errors.get(i).error);
 			
 			if (!assemblyGenerationFailed) {
-				if (loadedMods.size() == 0)
+				if (loadedMods.size() == 0 && !errors.contains(incompatibleAssemblyError))
 					message += "\n - You have no mods installed in your Mods and Plugins folder";
 
 				if (modsThrowingErrors.size() > 0) {
