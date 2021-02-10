@@ -139,7 +139,7 @@ public class MelonLoaderScanner {
 				
 				HttpRequest request = HttpRequest.newBuilder()
 	                .GET()
-	                .uri(URI.create("http://client.ruby-core.com/api/mods.json"))
+	                .uri(URI.create("https://ruby-core.com/api/mods.json"))
 	                .setHeader("User-Agent", "LUM Bot")
 	                .build();
 				
