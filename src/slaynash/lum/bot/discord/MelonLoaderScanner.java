@@ -364,13 +364,14 @@ public class MelonLoaderScanner {
 						
 						// Missing dependencies listing
 						
+						if (line.matches("- '.*' is missing the following dependencies:")) {
+							currentMissingDependenciesMods = line.split("'", 3)[1];
+							readingMissingDependencies = true;
+							continue;
+						}
+
 						if (readingMissingDependencies) {
-							if (line.matches("- '.*' is missing the following dependencies:")) {
-								currentMissingDependenciesMods = line.split("'", 3)[1];
-								
-								continue;
-							}
-							else if (line.matches("    - '.*'.*")) {
+							if (line.matches("    - '.*'.*")) {
 								String missingModName = line.split("'", 3)[1];
 								if (!missingMods.contains(missingModName))
 									missingMods.add(missingModName);
@@ -667,7 +668,7 @@ public class MelonLoaderScanner {
 		else if (game != null && modDetails == null)
 			message += "*" + game + " isn't officially supported by the autochecker. Mod versions will not be verified.*\n";
 		
-		if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
+		if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
 			message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
 			
 			if (isMLOutdatedVRC) {
@@ -743,7 +744,7 @@ public class MelonLoaderScanner {
 				message += "\n - " + sanitizeInputString(errors.get(i).error);
 			
 			if (!assemblyGenerationFailed) {
-				if (loadedMods.size() == 0 && !errors.contains(incompatibleAssemblyError))
+				if (loadedMods.size() == 0 && missingMods.size() == 0 && !errors.contains(incompatibleAssemblyError))
 					message += "\n - You have no mods installed in your Mods and Plugins folder";
 
 				if (modsThrowingErrors.size() > 0) {
