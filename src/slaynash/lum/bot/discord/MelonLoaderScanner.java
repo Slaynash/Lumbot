@@ -460,11 +460,11 @@ public class MelonLoaderScanner {
 							System.out.println("Found mod " + name.trim() + ", version is " + version + ", compatibility is " + compatibility);
 						}
 						// VRChat / EmmVRC Specifics
-						else if (mlVersion == null && line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] VRChat build is\\: .*")) {
+						else if (line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] VRChat build is.*")) {
 							emmVRCVRChatBuild = line.split(":", 4)[3].trim();
 							System.out.println("VRChat " + emmVRCVRChatBuild);
 						}
-						else if (mlVersion == null && line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] You are running version .*")) {
+						else if (line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] You are running version .*")) {
 							emmVRCVersion = line.split("version", 2)[1].trim();
 							System.out.println("EmmVRC " + emmVRCVersion);
 						}
@@ -681,8 +681,8 @@ public class MelonLoaderScanner {
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			
 		
-			if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals("1048"))
-				message += "*You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: 1054*\n";
+			if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals("1054"))
+				message += "\n - You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: 1054.";
 			
 			if (duplicatedMods.size() > 0) {
 				String error = "\n - The following mods are installed multiple times in your Mods and/or Plugins folder:";
