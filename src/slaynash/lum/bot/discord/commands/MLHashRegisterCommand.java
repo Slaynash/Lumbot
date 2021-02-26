@@ -6,13 +6,12 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.MLHashPair;
 
 public class MLHashRegisterCommand extends Command {
 	
 	@Override
 	protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-		String hash = paramString.split(" ", 2)[1];
-		System.out.println("[MLHashRegisterCommand] hash: " + paramString);
 		if (paramMessageReceivedEvent.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
 			return;
 		
@@ -28,18 +27,38 @@ public class MLHashRegisterCommand extends Command {
 		if (!isLavaGang)
 			return;
 		
-		
-		try {
-			Integer.parseInt(hash);
+		String[] split = paramString.split(" ", 3);
+		if (split.length != 3) {
+			paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
+			return;
 		}
-		catch (Exception e) {
-			paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <ml hash>").queue();
+
+		String branch = split[1];
+		String hash86 = split[2];
+		String hash64 = split[2];
+		System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString);
+
+		if (!branch.equals("alpha") && !branch.equals("release")) {
+			paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
 			return;
 		}
 		
-		CommandManager.melonLoaderHashes.add(hash);
+		try {
+			Integer.parseInt(hash86);
+			Integer.parseInt(hash64);
+		}
+		catch (Exception e) {
+			paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
+			return;
+		}
+		
+		if (branch.equals("alpha"))
+			CommandManager.melonLoaderAlphaHashes.add(new MLHashPair(hash86, hash64));
+		else
+			CommandManager.melonLoaderHashes.add(new MLHashPair(hash86, hash64));
+		
 		CommandManager.saveMLHashes();
-		paramMessageReceivedEvent.getChannel().sendMessage("Added hash " + hash).queue();
+		paramMessageReceivedEvent.getChannel().sendMessage("Added hashes " + hash86 + " (x86) and " + hash64 + " (x64) to branch " + branch).queue();
 	}
 	
 	@Override

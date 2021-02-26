@@ -35,7 +35,8 @@ public class CommandManager {
 	public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
 	public static List<String> blacklistedNames = new ArrayList<String>();
 	
-	public static List<String> melonLoaderHashes = new ArrayList<>();
+	public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
+	public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
 	public static Map<Long, String> mlReportChannels = new HashMap<>();
 	public static List<String> brokenVrchatMods = new ArrayList<>();
 
@@ -137,9 +138,12 @@ public class CommandManager {
 	public static void saveMLHashes() {
 		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt")))
 		{
-			for(String s : melonLoaderHashes) {
-				writer.write(s + "\n");
-			}
+			for(MLHashPair s : melonLoaderHashes)
+				writer.write("r " + s.x86 + " " + s.x64 + "\n");
+			
+			for(MLHashPair s : melonLoaderAlphaHashes)
+				writer.write("a " + s.x86 + " " + s.x64 + "\n");
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

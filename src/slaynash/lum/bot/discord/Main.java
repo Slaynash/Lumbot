@@ -90,8 +90,15 @@ public class Main extends ListenerAdapter {
 			reader = new BufferedReader(new FileReader("mlhashes.txt"));
 			String line;
 			while ((line = reader.readLine()) != null) {
-				if (!line.trim().equals(""))
-					CommandManager.melonLoaderHashes.add(line.trim());
+				line = line.trim();
+				if (!line.equals("")) {
+					String[] parts = line.split(" ", 3);
+					if (parts[0].equals("r"))
+						CommandManager.melonLoaderHashes.add(new MLHashPair(parts[1], parts[2]));
+					else
+						CommandManager.melonLoaderAlphaHashes.add(new MLHashPair(parts[1], parts[2]));
+
+				}
 			}
 			reader.close();
 		} catch (IOException e) {

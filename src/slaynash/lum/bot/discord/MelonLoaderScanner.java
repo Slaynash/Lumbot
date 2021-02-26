@@ -410,14 +410,14 @@ public class MelonLoaderScanner {
 								
 								boolean hasVRChat1043ReadyML = false;
 								boolean hasNotBrokenDeobfMap = false;
-								for (String mlHash : CommandManager.melonLoaderHashes) {
-									System.out.println(mlHash);
-									if (mlHash.equals("25881"))
+								for (MLHashPair mlHashes : CommandManager.melonLoaderHashes) {
+									System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
+									if (mlHashes.x64.equals("25881"))
 										hasNotBrokenDeobfMap = true;
-									if (mlHash.equals(CommandManager.melonLoaderVRCHash))
+									if (mlHashes.x64.equals(CommandManager.melonLoaderVRCHash))
 										hasVRChat1043ReadyML = true;
 									
-									if (mlHash.equals(mlHashCode)) {
+									if (mlHashes.x64.equals(mlHashCode)) {
 										System.out.println("matching hash found");
 										if (hasVRChat1043ReadyML)
 											isMLOutdatedVRC = false;
@@ -620,8 +620,8 @@ public class MelonLoaderScanner {
 		
 		if (mlHashCode != null) {
 			boolean found = false;
-			for (String code : CommandManager.melonLoaderHashes) {
-				if (mlHashCode.equals(code)) {
+			for (MLHashPair hashes : CommandManager.melonLoaderHashes) {
+				if (mlHashCode.equals(hashes.x64) ||mlHashCode.equals(hashes.x86)) {
 					found = true;
 					break;
 				}
