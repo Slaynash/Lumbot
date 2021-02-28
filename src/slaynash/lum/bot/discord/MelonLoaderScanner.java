@@ -623,7 +623,7 @@ public class MelonLoaderScanner {
 		System.out.println("mlHashCode: " + mlHashCode + ", alpha: " + alpha);
 		if (mlHashCode != null) {
 			boolean found = false;
-			for (MLHashPair hashes : (alpha ? CommandManager.melonLoaderHashes : CommandManager.melonLoaderAlphaHashes)) {
+			for (MLHashPair hashes : (alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
 				if (mlHashCode.equals(hashes.x64) || mlHashCode.equals(hashes.x86)) {
 					found = true;
 					break;
