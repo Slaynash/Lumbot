@@ -81,6 +81,9 @@ public class MelonLoaderScanner {
 		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
 				"The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
+				"Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader."));
 	}};
 
 	private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
@@ -487,7 +490,7 @@ public class MelonLoaderScanner {
 								if (line.matches(knownError.regex)) {
 									if (isMLOutdatedVRCBrokenDeobfMap) {
 										if (!assemblyGenerationFailed)
-											errors.add(new MelonLoaderError("", "The assembly generation failed. You will need to reinstall MelonLoader for it to works"));
+											errors.add(new MelonLoaderError("", "The assembly generation failed. You will need to reinstall MelonLoader for it to work"));
 									}
 									else {
 										if (!errors.contains(knownError))
@@ -764,7 +767,7 @@ public class MelonLoaderScanner {
 				}
 				
 				if (hasNonModErrors)
-					message += "\n - There are some unidentified errors. Please wait for a moderator or an helper to manually check the file.";
+					message += "\n - There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.";
 			}
 			
 			if (message.length() >= 2000) {
@@ -790,10 +793,10 @@ public class MelonLoaderScanner {
 		}
 		else if (mlVersion != null) {
 			if (hasErrors) {
-				event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or an helper to manually check the file").queue();
+				event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file").queue();
 			}
 			else
-				event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or an helper to manually check the file").queue();
+				event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file").queue();
 		}
 	}
 	
