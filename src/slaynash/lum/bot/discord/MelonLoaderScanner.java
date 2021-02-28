@@ -263,6 +263,7 @@ public class MelonLoaderScanner {
 		
 		boolean consoleCopyPaste = false;
 		boolean pre3 = false;
+		boolean alpha = false;
 		int remainingModCount = 0;
 		
 		int ommitedLines = 0;
@@ -398,7 +399,8 @@ public class MelonLoaderScanner {
 							if (line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] .*"))
 								consoleCopyPaste = true;
 							mlVersion = line.split("v")[1].split(" ")[0].trim();
-							System.out.println("ML " + mlVersion + " (>= 0.3.0)");
+							alpha = line.toLowerCase().contains("alpha");
+							System.out.println("ML " + mlVersion + " (>= 0.3.0). Alpha: " + alpha);
 						}
 						else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Name: .*")) {
 							game = line.split(":", 4)[3].trim();
@@ -410,7 +412,7 @@ public class MelonLoaderScanner {
 								
 								boolean hasVRChat1043ReadyML = false;
 								boolean hasNotBrokenDeobfMap = false;
-								for (MLHashPair mlHashes : CommandManager.melonLoaderHashes) {
+								for (MLHashPair mlHashes : (alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
 									System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
 									if (mlHashes.x64.equals("25881"))
 										hasNotBrokenDeobfMap = true;
@@ -618,14 +620,16 @@ public class MelonLoaderScanner {
 			}
 		}
 		
+		System.out.println("mlHashCode: " + mlHashCode + ", alpha: " + alpha);
 		if (mlHashCode != null) {
 			boolean found = false;
-			for (MLHashPair hashes : (pre3 ? CommandManager.melonLoaderHashes : CommandManager.melonLoaderAlphaHashes)) {
+			for (MLHashPair hashes : (alpha ? CommandManager.melonLoaderHashes : CommandManager.melonLoaderAlphaHashes)) {
 				if (mlHashCode.equals(hashes.x64) || mlHashCode.equals(hashes.x86)) {
 					found = true;
 					break;
 				}
 			}
+			System.out.println("hash found in known hashes: " + found);
 			
 			if (!found) {
 				reportUserModifiedML(event);
