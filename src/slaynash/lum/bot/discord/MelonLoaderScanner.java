@@ -620,8 +620,8 @@ public class MelonLoaderScanner {
 		
 		if (mlHashCode != null) {
 			boolean found = false;
-			for (MLHashPair hashes : CommandManager.melonLoaderHashes) {
-				if (mlHashCode.equals(hashes.x64) ||mlHashCode.equals(hashes.x86)) {
+			for (MLHashPair hashes : (pre3 ? CommandManager.melonLoaderHashes : CommandManager.melonLoaderAlphaHashes)) {
+				if (mlHashCode.equals(hashes.x64) || mlHashCode.equals(hashes.x86)) {
 					found = true;
 					break;
 				}
