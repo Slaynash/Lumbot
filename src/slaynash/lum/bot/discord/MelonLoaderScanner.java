@@ -84,6 +84,9 @@ public class MelonLoaderScanner {
 		add(new MelonLoaderError(
 				"\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
 				"Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader."));
+		add(new MelonLoaderError(
+				"\\[[0-9.:]+\\] [INTERNAL FAILURE] Failed to Find Mono Directory!",
+				"Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader."));
 	}};
 
 	private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
