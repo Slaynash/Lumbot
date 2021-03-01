@@ -656,7 +656,10 @@ public class MelonLoaderScanner {
 				}
 				
 				if (ageDays > 1) {
-					message += "*This log file is " + ageDays + " days old.*\n";
+					if (pre3)
+						message += "*This log file is " + ageDays + " days old.*\n";
+					else
+						message += "*This log file is " + ageDays + " days old. Consider reuploading your log from MelonLoader/latest.log*\n";
 				}
 			}
 		}
