@@ -694,8 +694,8 @@ public class MelonLoaderScanner {
 				message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
 			
 		
-			if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals("1054"))
-				message += "\n - You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: 1054.";
+			if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals("1056"))
+				message += "\n - You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: 1056.";
 			
 			if (duplicatedMods.size() > 0) {
 				String error = "\n - The following mods are installed multiple times in your Mods and/or Plugins folder:";
