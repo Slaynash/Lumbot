@@ -17,5 +17,7 @@ public class VRCModVersionDetails {
 	public String downloadlink;
 	public String sourcelink;
 	public String discord;
+	public String hash;
+	public String changelog;
 	public String updatedate;
 }

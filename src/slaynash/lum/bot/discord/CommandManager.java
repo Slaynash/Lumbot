@@ -16,7 +16,7 @@ import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.BlacklistNameCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
-import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
+//import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
@@ -95,7 +95,7 @@ public class CommandManager {
         CommandManager.registerCommand(new SetMLReportChannelCommand());
 		CommandManager.registerCommand(new MLSetMinForVRC());
         
-        CommandManager.registerCommand(new MLBrokenModsCommand());
+        //CommandManager.registerCommand(new MLBrokenModsCommand());
     }
 
 

@@ -152,6 +152,8 @@ public class MelonLoaderScanner {
 				try {
 					HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 					
+					CommandManager.brokenVrchatMods.clear();
+					
 					synchronized (mods) {
 						List<VRCModDetails> vrcmods = gson.fromJson(response.body(), new TypeToken<ArrayList<VRCModDetails>>() {}.getType());
 						
@@ -159,6 +161,9 @@ public class MelonLoaderScanner {
 						for (VRCModDetails processingmods : vrcmods) {
 							VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
 							modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion));
+							if (vrcmoddetails.ApprovalStatus == 2){
+								CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
+							}
 						}
 						
 						mods.put("VRChat", modsprocessed);
