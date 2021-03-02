@@ -16,7 +16,8 @@ import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.BlacklistNameCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
-import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
+//import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
+import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
@@ -30,18 +31,20 @@ public class CommandManager {
     private static List<Command> commands = new ArrayList<Command>();
     private static boolean init = false;
     
-	public static List<ReactionListener> reactionListeners = new ArrayList<>();
-	public static Map<Long, String> logChannels = new HashMap<>();
-	public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
-	public static List<String> blacklistedNames = new ArrayList<String>();
-	
-	public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
-	public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
-	public static Map<Long, String> mlReportChannels = new HashMap<>();
-	public static List<String> brokenVrchatMods = new ArrayList<>();
+    public static List<ReactionListener> reactionListeners = new ArrayList<>();
+    public static Map<Long, String> logChannels = new HashMap<>();
+    public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
+    public static List<String> blacklistedNames = new ArrayList<String>();
+    
+    public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
+    public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
+    public static Map<Long, String> mlReportChannels = new HashMap<>();
+    public static List<String> brokenVrchatMods = new ArrayList<>();
 
-	public static String melonLoaderVRCHash = "25881";
-	public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
+    public static String melonLoaderVRCHash = "25881";
+    public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
+    
+    public static String vrchatBuild = "1";
 
     protected static void registerCommand(Command command) {
         List<Command> list = commands;
@@ -93,101 +96,103 @@ public class CommandManager {
 
         CommandManager.registerCommand(new MLHashRegisterCommand());
         CommandManager.registerCommand(new SetMLReportChannelCommand());
-		CommandManager.registerCommand(new MLSetMinForVRC());
+        CommandManager.registerCommand(new MLSetMinForVRC());
         
-        CommandManager.registerCommand(new MLBrokenModsCommand());
+        //CommandManager.registerCommand(new MLBrokenModsCommand());
+        
+        CommandManager.registerCommand(new SetVRCBuild());
     }
 
 
     
     
 
-	public static void saveReactions() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolereactions.txt")))
-		{
-			for(ReactionListener rl : reactionListeners) {
-				writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void saveLogChannels() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("logchannels.txt")))
-		{
-			for(Entry<Long, String> logchannel : logChannels.entrySet()) {
-				writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void saveMLReportChannels() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt")))
-		{
-			for(Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
-				writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void saveMLHashes() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt")))
-		{
-			for(MLHashPair s : melonLoaderHashes)
-				writer.write("r " + s.x86 + " " + s.x64 + "\n");
-			
-			for(MLHashPair s : melonLoaderAlphaHashes)
-				writer.write("a " + s.x86 + " " + s.x64 + "\n");
+    public static void saveReactions() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolereactions.txt")))
+        {
+            for(ReactionListener rl : reactionListeners) {
+                writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveLogChannels() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("logchannels.txt")))
+        {
+            for(Entry<Long, String> logchannel : logChannels.entrySet()) {
+                writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveMLReportChannels() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt")))
+        {
+            for(Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
+                writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveMLHashes() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt")))
+        {
+            for(MLHashPair s : melonLoaderHashes)
+                writer.write("r " + s.x86 + " " + s.x64 + "\n");
+            
+            for(MLHashPair s : melonLoaderAlphaHashes)
+                writer.write("a " + s.x86 + " " + s.x64 + "\n");
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void saveMLVRCHash() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlvrchash.txt")))
-		{
-			writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void saveVerifyChannels() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("verifychannels.txt")))
-		{
-			for(Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
-				writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void saveNameBlacklist() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("nameblacklist.txt")))
-		{
-			for(String s : blacklistedNames) {
-				writer.write(s + "\n");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void saveMLVRCHash() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlvrchash.txt")))
+        {
+            writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveVerifyChannels() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("verifychannels.txt")))
+        {
+            for(Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
+                writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void saveNameBlacklist() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("nameblacklist.txt")))
+        {
+            for(String s : blacklistedNames) {
+                writer.write(s + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void saveBrokenVRChatMods() {
-		try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("brokenvrcmods.txt"))) {
-			for(String s : brokenVrchatMods)
-				writer.write(s + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    public static void saveBrokenVRChatMods() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("brokenvrcmods.txt"))) {
+            for(String s : brokenVrchatMods)
+                writer.write(s + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     
 

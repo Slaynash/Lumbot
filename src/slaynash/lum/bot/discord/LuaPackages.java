@@ -25,7 +25,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call(LuaValue arg)
+    public LuaValue call(LuaValue arg)
     {
       this.channel.sendMessage(arg.toString()).queue();
       return LuaValue.NIL;
@@ -42,7 +42,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call()
+    public LuaValue call()
     {
       return LuaValue.valueOf(this.channel.getId());
     }
@@ -59,7 +59,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call()
+    public LuaValue call()
     {
       return LuaValue.valueOf(this.channel.getName());
     }
@@ -75,7 +75,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call()
+    public LuaValue call()
     {
       return LuaValue.valueOf(this.user.getId());
     }
@@ -96,7 +96,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call()
+    public LuaValue call()
     {
       return this.args;
     }
@@ -113,7 +113,7 @@ public abstract class LuaPackages
     }
     
     @Override
-	public LuaValue call()
+    public LuaValue call()
     {
       return this.channel.isNSFW() ? LuaValue.TRUE : LuaValue.FALSE;
     }
