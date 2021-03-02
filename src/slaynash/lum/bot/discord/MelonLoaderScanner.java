@@ -161,7 +161,7 @@ public class MelonLoaderScanner {
                         for (VRCModDetails processingmods : vrcmods) {
                             VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
                             modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion));
-                            if (vrcmoddetails.ApprovalStatus == 2){
+                            if (vrcmoddetails.approvalstatus == 2){
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
                             }
                         }

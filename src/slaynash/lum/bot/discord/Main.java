@@ -140,9 +140,9 @@ public class Main extends ListenerAdapter {
             reader = new BufferedReader(new FileReader("vrchatbuild.txt"));
             String line = reader.readLine();
             if (line != null)
-                CommandManager.VRChatBuild = line.trim();
+                CommandManager.vrchatBuild = line.trim();
             else
-                CommandManager.VRChatBuild = "1";
+                CommandManager.vrchatBuild = "1";
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();

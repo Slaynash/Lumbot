@@ -1,10 +1,12 @@
 package slaynash.lum.bot.discord.commands;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -12,8 +14,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.MelonLoaderScanner;
-import slaynash.lum.bot.discord.logscanner.ModDetails;
 
 public class SetVRCBuild extends Command {
     
@@ -22,7 +22,7 @@ public class SetVRCBuild extends Command {
         if (!checkPerms(event))
             return;
         
-        private Pattern pattern = Pattern.compile("/(^([0-9]{4}))/");
+        Pattern pattern = Pattern.compile("/(^([0-9]{4}))/");
 
         String[] parts = paramString.split(" ", 2);
         
