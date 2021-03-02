@@ -17,6 +17,7 @@ import slaynash.lum.bot.discord.commands.BlacklistNameCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
 //import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
+import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
@@ -42,6 +43,8 @@ public class CommandManager {
 
 	public static String melonLoaderVRCHash = "25881";
 	public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
+	
+	public static String VRChatBuild = "1";
 
     protected static void registerCommand(Command command) {
         List<Command> list = commands;
@@ -96,6 +99,8 @@ public class CommandManager {
 		CommandManager.registerCommand(new MLSetMinForVRC());
         
         //CommandManager.registerCommand(new MLBrokenModsCommand());
+		
+		CommandManager.registerCommand(new SetVRCBuild());
     }
 
 

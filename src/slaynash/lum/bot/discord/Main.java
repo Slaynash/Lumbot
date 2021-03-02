@@ -117,7 +117,7 @@ public class Main extends ListenerAdapter {
 			e.printStackTrace();
 		}
 	}
-    
+    /*
     private static void loadBrokenVRCMods() {
     	BufferedReader reader;
 		try {
@@ -127,6 +127,21 @@ public class Main extends ListenerAdapter {
 				if (!line.trim().equals(""))
 					CommandManager.brokenVrchatMods.add(line.trim());
 			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	*/
+	private static void loadVRCBuild() {
+    	BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader("VRChatBuild.txt"));
+			String line = reader.readLine();
+			if (line != null)
+				CommandManager.VRChatBuild = line.trim();
+			else
+				CommandManager.VRChatBuild = "1";
 			reader.close();
 		} catch (IOException e) {
 			e.printStackTrace();
