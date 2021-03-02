@@ -161,9 +161,10 @@ public class MelonLoaderScanner {
                         for (VRCModDetails processingmods : vrcmods) {
                             VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
                             modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion));
-                            if (vrcmoddetails.approvalstatus == 2){
+
+                            // Add to broken mod list if broken
+                            if (vrcmoddetails.approvalstatus == 2)
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
-                            }
                         }
                         
                         mods.put("VRChat", modsprocessed);
@@ -631,7 +632,6 @@ public class MelonLoaderScanner {
             }
         }
         
-        System.out.println("mlHashCode: " + mlHashCode + ", alpha: " + alpha);
         if (mlHashCode != null) {
             boolean found = false;
             for (MLHashPair hashes : (alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {

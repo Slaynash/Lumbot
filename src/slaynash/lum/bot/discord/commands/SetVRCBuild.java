@@ -21,13 +21,12 @@ public class SetVRCBuild extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!checkPerms(event))
             return;
-        
-        Pattern pattern = Pattern.compile("/(^([0-9]{4}))/");
 
         String[] parts = paramString.split(" ", 2);
         
-        if (pattern.matcher(parts[1]).matches()) {
-            
+        try {
+            Integer.parseInt(parts[1]);
+
             CommandManager.vrchatBuild = parts[1];
             
             try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("vrchatbuild.txt"))) {
@@ -39,8 +38,8 @@ public class SetVRCBuild extends Command {
             event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();
             
         }
-        else {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbuild [build]", Color.RED)).queue();
+        catch (Exception e) {
+            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbuild <build>", Color.RED)).queue();
         }
     }
     
