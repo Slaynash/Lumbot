@@ -57,7 +57,8 @@ public class Main extends ListenerAdapter {
         loadMLHashes();
 		loadMLVRCHash();
         loadMLReportChannels();
-        loadBrokenVRCMods();
+        //loadBrokenVRCMods();
+		loadVRCBuild();
         MelonLoaderScanner.Init();
         
         CommandManager.init();
