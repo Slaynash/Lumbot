@@ -13,10 +13,10 @@ public class PrivateMessagesHandler
     List<Attachment> attachments = event.getMessage().getAttachments();
     System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
     for (Attachment a : attachments)
-    	System.out.println("[" + TimeManager.getTimeForLog() + "] - " + a.getUrl());
+        System.out.println("[" + TimeManager.getTimeForLog() + "] - " + a.getUrl());
     
     if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong())
-    	event.getChannel().sendMessage("I'm sorry, but I don't handle direct messages. Please use me in a server I'm in!").queue();
+        event.getChannel().sendMessage("I'm sorry, but I don't handle direct messages. Please use me in a server I'm in!").queue();
     
     //CommandManager.runAsClient(event);
   }

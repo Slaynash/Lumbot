@@ -15,29 +15,29 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class JDAManager {
 
-	private static JDA jda;
-	private static boolean init = false;
+    private static JDA jda;
+    private static boolean init = false;
 
-	protected static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-		if(!init) init = true; else return;
-		jda = JDABuilder.createDefault(token)
-				.addEventListeners(new Main())
-				.setChunkingFilter(ChunkingFilter.ALL)
-				.setMemberCachePolicy(MemberCachePolicy.ALL)
-				.enableIntents(GatewayIntent.GUILD_MEMBERS)
-				.build();
-		jda.awaitReady();
-	}
-	
-	public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
-		EmbedBuilder eb = new EmbedBuilder();
-		eb.setColor(color);
-		eb.setDescription(message);
-		return eb.build();
-	}
-	
-	protected static JDA getJDA() {
-		return jda;
-	}
+    protected static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
+        if(!init) init = true; else return;
+        jda = JDABuilder.createDefault(token)
+                .addEventListeners(new Main())
+                .setChunkingFilter(ChunkingFilter.ALL)
+                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                .build();
+        jda.awaitReady();
+    }
+    
+    public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
+        EmbedBuilder eb = new EmbedBuilder();
+        eb.setColor(color);
+        eb.setDescription(message);
+        return eb.build();
+    }
+    
+    protected static JDA getJDA() {
+        return jda;
+    }
 
 }
