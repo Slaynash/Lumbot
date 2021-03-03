@@ -36,12 +36,11 @@ public class VRCApiVersionScanner {
 
                     VRCAPIConfig config = gson.fromJson(response.body(), VRCAPIConfig.class);
 
-                    /*
                     if (lastBVT == null) {
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;
                     }
-                    else */if (lastBVT == null || !lastBVT.equals(config.buildVersionTag)) {
+                    else if (!lastBVT.equals(config.buildVersionTag)) {
 
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle("VRCAPI Updated");
