@@ -30,7 +30,6 @@ public class Main extends ListenerAdapter {
     public static JDA jda;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-        System.setProperty("jsse.enableSNIExtension", "false");
         TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager(){
             @Override public X509Certificate[] getAcceptedIssuers() { return null; }
             @Override public void checkClientTrusted(X509Certificate[] certs, String authType) { }
@@ -63,7 +62,8 @@ public class Main extends ListenerAdapter {
         
         CommandManager.init();
         JDAManager.init(args[0]);
-        
+
+        VRCApiVersionScanner.init();
         
         System.out.println("LUM Started!");
     }
