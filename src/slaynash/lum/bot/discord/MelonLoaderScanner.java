@@ -760,6 +760,8 @@ public class MelonLoaderScanner {
                 }
                 if (invalidMods.size() > 10)
                     error += "\n      and " + (invalidMods.size() - 10) + " more...";
+                if (invalidMods.size() > 2)
+                    error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
                 message += error;
             }
             
