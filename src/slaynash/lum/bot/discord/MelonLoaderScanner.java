@@ -48,15 +48,20 @@ public class MelonLoaderScanner {
         
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
-                "MelonLoader failed to read your Unity version and game name. Make sure your have Microsoft Visual C++ 2015-2019 Redistributable installed (<https://aka.ms/vs/16/release/vc_redist.x64.exe>), or try re-installing MelonLoader."));
+                "MelonLoader failed to read your Unity version and game name. Try re-installing MelonLoader or delete UnityCrashHandler64.exe."));
         
-        add(new MelonLoaderError(
+        /*add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[emmVRCLoader\\] \\[ERROR\\] System\\.Reflection\\.TargetInvocationException: Exception has been thrown by the target of an invocation\\. ---> System\\.TypeLoadException: Could not load type of field 'emmVRC\\.Hacks\\.FBTSaving\\+<>c__DisplayClass5_0:steam'.*",
                 "emmVRC currently has some incompatibilities with the Oculus build as of the latest VRChat update. For now, the Steam build is recommended."));
+        */
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found\\, this mod only work in Oculus for now\\!",
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
-        
+                
+        add(new MelonLoaderError(
+                //(1,2) : error : Unexpected token [\u0;] found
+                "\\(1,2\\) : error : Unexpected token ",
+                "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
         /*
         add(new MelonLoaderError(
                 ".*Harmony\\.HarmonyInstance\\..*",
@@ -761,7 +766,7 @@ public class MelonLoaderScanner {
                 if (invalidMods.size() > 10)
                     error += "\n      and " + (invalidMods.size() - 10) + " more...";
                 if (invalidMods.size() > 2)
-                    error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                    error += "\n      Consider getting VRCModUpdater and moving it to the **Plugins** folder\n      https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll";
                 message += error;
             }
             
@@ -770,7 +775,7 @@ public class MelonLoaderScanner {
                 message += "\n - " + sanitizeInputString(errors.get(i).error);
             
             if (!assemblyGenerationFailed) {
-                if (loadedMods.size() == 0 && missingMods.size() == 0 && !errors.contains(incompatibleAssemblyError))
+                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     message += "\n - You have no mods installed in your Mods and Plugins folder";
 
                 if (modsThrowingErrors.size() > 0) {
