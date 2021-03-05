@@ -775,6 +775,9 @@ public class MelonLoaderScanner {
                 message += "\n - " + sanitizeInputString(errors.get(i).error);
             
             if (!assemblyGenerationFailed) {
+                if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
+                    message += "\n - You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.";
+                    
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     message += "\n - You have no mods installed in your Mods and Plugins folder";
 
