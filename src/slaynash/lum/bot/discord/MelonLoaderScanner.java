@@ -55,18 +55,24 @@ public class MelonLoaderScanner {
                 "emmVRC currently has some incompatibilities with the Oculus build as of the latest VRChat update. For now, the Steam build is recommended."));
         */
         add(new MelonLoaderError(
-                "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found\\, this mod only work in Oculus for now\\!",
+                "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
                 
         add(new MelonLoaderError(
                 //(1,2) : error : Unexpected token [\u0;] found
-                "\\(1,2\\) : error : Unexpected token ",
+                "\\(1,2\\) : error : Unexpected token.*",
                 "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
         /*
         add(new MelonLoaderError(
                 ".*Harmony\\.HarmonyInstance\\..*",
                 "You seems to have a 0Harmony.dll file in your `Mods` or `Plugins` folder. This breaks mods and plugins, since Harmony is embed into MelonLoader"));
         */
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\r\\n\\r\\n  at System.Net.AutoWebProxyScriptEngine.*",
+                "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException.*",
+                "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
     }};
 
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
