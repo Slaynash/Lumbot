@@ -37,29 +37,26 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
                 "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
-        
         // add(new MelonLoaderError(
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
-        
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
                 "One or more mod is missing a library / required mod, or a file is corrupted."));
-        
+        //This should hopefully be fixed in 0.3.0.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
                 "MelonLoader failed to read your Unity version and game name. Try re-installing MelonLoader or delete UnityCrashHandler64.exe."));
-        
-        /*add(new MelonLoaderError(
+        /*
+        add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[emmVRCLoader\\] \\[ERROR\\] System\\.Reflection\\.TargetInvocationException: Exception has been thrown by the target of an invocation\\. ---> System\\.TypeLoadException: Could not load type of field 'emmVRC\\.Hacks\\.FBTSaving\\+<>c__DisplayClass5_0:steam'.*",
                 "emmVRC currently has some incompatibilities with the Oculus build as of the latest VRChat update. For now, the Steam build is recommended."));
         */
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
-                
+        //This should hopefully be fixed in 0.3.0.1
         add(new MelonLoaderError(
-                //(1,2) : error : Unexpected token [\u0;] found
                 "\\(1,2\\) : error : Unexpected token.*",
                 "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
         /*
@@ -67,6 +64,7 @@ public class MelonLoaderScanner {
                 ".*Harmony\\.HarmonyInstance\\..*",
                 "You seems to have a 0Harmony.dll file in your `Mods` or `Plugins` folder. This breaks mods and plugins, since Harmony is embed into MelonLoader"));
         */
+        //emmVRC error
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\r\\n\\r\\n  at System.Net.AutoWebProxyScriptEngine.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
@@ -82,7 +80,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "System.UnauthorizedAccessException:.*",
                 "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
-        
+        add(new MelonLoaderError(
+                "SHA512 Hash from Temp File does not match Repo Hash!",
+                "Installer failed to download MelonLoader successfully. Try again later or redownload the official MelonLoader installer."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
                 "The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to save AssemblyGenerator/config.cfg)"));
@@ -101,6 +101,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Find Mono Directory!",
                 "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader."));
+        add(new MelonLoaderError(
+                "Phasmophobia",
+                "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader. Please remove the MelonLoader folder and version.dll"));
     }};
 
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
