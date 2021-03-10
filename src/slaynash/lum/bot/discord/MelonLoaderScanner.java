@@ -43,7 +43,7 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
                 "One or more mod is missing a library / required mod, or a file is corrupted."));
-        //This should hopefully be fixed in 0.3.0.1
+        //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
                 "MelonLoader failed to read your Unity version and game name. Try re-installing MelonLoader or delete UnityCrashHandler64.exe."));
@@ -55,7 +55,7 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
-        //This should hopefully be fixed in 0.3.0.1
+        //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\(1,2\\) : error : Unexpected token.*",
                 "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
@@ -289,10 +289,12 @@ public class MelonLoaderScanner {
 
         boolean isMLOutdatedVRC = false;
         boolean isMLOutdatedVRCBrokenDeobfMap = false;
+        boolean ovhPatch = false;
         
         boolean consoleCopyPaste = false;
         boolean pre3 = false;
         boolean alpha = false;
+        
         int remainingModCount = 0;
         
         int ommitedLines = 0;
@@ -495,6 +497,7 @@ public class MelonLoaderScanner {
                             emmVRCVRChatBuild = line.split(":", 4)[3].trim();
                             System.out.println("VRChat " + emmVRCVRChatBuild);
                         }
+                        // VRChat / EmmVRC Specifics
                         else if (line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] You are running version .*")) {
                             emmVRCVersion = line.split("version", 2)[1].trim();
                             System.out.println("EmmVRC " + emmVRCVersion);
@@ -508,6 +511,9 @@ public class MelonLoaderScanner {
                             readingMissingDependencies = true;
                             br.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
                             line = br.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
+                        }
+                        else if (line.matches("\\[[0-9.:]+\\] Contacting RubyAPI...")) {
+                            ovhPatch = true;
                         }
                         //
                         else {
@@ -692,6 +698,9 @@ public class MelonLoaderScanner {
         if (ommitedLines > 0)
             message += "**Ommited " + ommitedLines + " lines of length > 1000.**\n";
         
+        if (!ovhPatch)
+            message += "*You must reinstall MelonLoader 0.3.0 to get the quick fix from March 9th/.*\n";
+        
         if (consoleCopyPaste)
             message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
         
@@ -703,7 +712,7 @@ public class MelonLoaderScanner {
         else if (game != null && modDetails == null)
             message += "*" + game + " isn't officially supported by the autochecker. Mod versions will not be verified.*\n";
         
-        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
+        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0 && ovhPatch)) {
             message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
             
             if (isMLOutdatedVRC) {
