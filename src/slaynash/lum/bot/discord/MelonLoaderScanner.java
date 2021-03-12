@@ -131,26 +131,27 @@ public class MelonLoaderScanner {
     
     private static Map<String, String> modNameMatcher = new HashMap<String, String>() {{
         // MelonInfo name -> Submitted name
-        put("Advanced Safety", "AdvancedSafety");
-        put("MControl", "MControl (Music Playback Controls)");
-        put("Player Volume Control", "PlayerVolumeControl");
-        put("UI Expansion Kit", "UIExpansionKit");
-        put("NearClippingPlaneAdjuster.dll", "NearClipPlaneAdj");
-        put("Particle and DynBone limiter settings UI", "ParticleAndBoneLimiterSettings");
-        put("MuteBlinkBeGone", "Mute Blink Be Gone");
-        put("DiscordRichPresence-ML", "VRCDiscordRichPresence-ML");
-        put("Core Limiter", "CoreLimiter");
-        put("MultiplayerDynamicBones", "Multiplayer Dynamic Bones");
-        put("Game Priority Changer", "GamePriority");
-        put("Runtime Graphics Settings", "RuntimeGraphicsSettings");
         put("Advanced Invites", "AdvancedInvites");
-        put("No Steam. At all.", "NoSteamAtAll");
-        put("Rank Volume Control", "RankVolumeControl");
-        put("VRC Video Library", "VRCVideoLibrary");
+        put("Advanced Safety", "AdvancedSafety");
+        put("Core Limiter", "CoreLimiter");
+        put("DiscordRichPresence-ML", "VRCDiscordRichPresence-ML");
+        put("Game Priority Changer", "GamePriority");
         put("Input System", "InputSystem");
-        put("TogglePostProcessing", "Toggle Post Processing");
-        put("Toggle Mic Icon", "ToggleMicIcon");
+        put("MControl", "MControl (Music Playback Controls)");
+        put("MultiplayerDynamicBones", "Multiplayer Dynamic Bones");
+        put("MuteBlinkBeGone", "Mute Blink Be Gone");
+        put("NearClippingPlaneAdjuster.dll", "NearClipPlaneAdj");
+        put("No Steam. At all.", "NoSteamAtAll");
+        put("Particle and DynBone limiter settings UI", "ParticleAndBoneLimiterSettings");
+        put("Player Rotater (Desktop Only)", "Player Rotater");
+        put("Player Volume Control", "PlayerVolumeControl");
+        put("Rank Volume Control", "RankVolumeControl");
+        put("Runtime Graphics Settings", "RuntimeGraphicsSettings");
         put("ThumbParams", "VRCThumbParams");
+        put("Toggle Mic Icon", "ToggleMicIcon");
+        put("TogglePostProcessing", "Toggle Post Processing");
+        put("UI Expansion Kit", "UIExpansionKit");
+        put("VRC Video Library", "VRCVideoLibrary");
         
         // backward compatibility
         put("BTKSANameplateFix", "BTKSANameplateMod");
@@ -725,6 +726,8 @@ public class MelonLoaderScanner {
                 message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
             
             
+            if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
+                message += "\n - You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: " + CommandManager.vrchatBuild + ".";
                 messageColor = Color.YELLOW;
             }
             
