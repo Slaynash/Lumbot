@@ -30,6 +30,7 @@ import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
 
 public class MelonLoaderScanner {
     
+    //default values, to be replaced by command *to be added*
     public static String latestMLVersionRelease = "0.2.7.4";
     public static String latestMLVersionBeta = "0.3.0";
     
@@ -101,6 +102,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Find Mono Directory!",
                 "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] MelonLoader.dll Does Not Exist!",
+                "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
                 "Phasmophobia",
                 "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader. Please remove the MelonLoader folder and version.dll"));
@@ -289,11 +293,12 @@ public class MelonLoaderScanner {
 
         boolean isMLOutdatedVRC = false;
         boolean isMLOutdatedVRCBrokenDeobfMap = false;
-        boolean ovhPatch = false;
         
         boolean consoleCopyPaste = false;
         boolean pre3 = false;
         boolean alpha = false;
+        Color messageColor = Color.BLUE;
+        Color melonPink = new Color(255,59,106); 
         
         int remainingModCount = 0;
         
@@ -512,10 +517,7 @@ public class MelonLoaderScanner {
                             br.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
                             line = br.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
                         }
-                        else if (line.matches("\\[[0-9.:]+\\] Contacting RubyAPI...")) {
-                            ovhPatch = true;
-                        }
-                        //
+                        
                         else {
                             boolean found = false;
                             for (MelonLoaderError knownError : knownUnhollowerErrors) {
@@ -698,9 +700,6 @@ public class MelonLoaderScanner {
         if (ommitedLines > 0)
             message += "**Ommited " + ommitedLines + " lines of length > 1000.**\n";
         
-        if (!ovhPatch)
-            message += "*You must reinstall MelonLoader 0.3.0 to get the quick fix from March 9th/.*\n";
-        
         if (consoleCopyPaste)
             message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
         
@@ -712,7 +711,7 @@ public class MelonLoaderScanner {
         else if (game != null && modDetails == null)
             message += "*" + game + " isn't officially supported by the autochecker. Mod versions will not be verified.*\n";
         
-        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0 && ovhPatch)) {
+        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
             message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
             
             if (isMLOutdatedVRC) {
@@ -735,6 +734,7 @@ public class MelonLoaderScanner {
                 if (duplicatedMods.size() > 10)
                     error += "\n      and " + (duplicatedMods.size() - 10) + " more...";
                 message += error;
+                messageColor = Color.RED;
             }
             
             if (missingMods.size() > 0) {
@@ -744,6 +744,7 @@ public class MelonLoaderScanner {
                 if (missingMods.size() > 10)
                     error += "\n      and " + (missingMods.size() - 10) + " more...";
                 message += error;
+                messageColor = Color.YELLOW;
             }
             
             if (incompatibleMods.size() > 0) {
@@ -753,6 +754,7 @@ public class MelonLoaderScanner {
                 if (incompatibleMods.size() > 10)
                     error += "\n      and " + (incompatibleMods.size() - 10) + " more...";
                 message += error;
+                messageColor = Color.RED;
             }
             
             if (brokenMods.size() > 0) {
@@ -762,6 +764,7 @@ public class MelonLoaderScanner {
                 if (brokenMods.size() > 20)
                     error += "\n      and " + (brokenMods.size() - 20) + " more...";
                 message += error;
+                messageColor = Color.RED;
             }
             
             if (unverifiedMods.size() > 0) {
@@ -773,6 +776,7 @@ public class MelonLoaderScanner {
                 if (unverifiedMods.size() > 10)
                     error += "\n      and " + (unverifiedMods.size() - 10) + " more...";
                 message += error;
+                messageColor = Color.RED;
             }
             
             if (invalidMods.size() > 0) {
@@ -786,11 +790,14 @@ public class MelonLoaderScanner {
                 if (invalidMods.size() > 2)
                     error += "\n      Consider getting VRCModUpdater and moving it to the **Plugins** folder\n      https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll";
                 message += error;
+                messageColor = Color.YELLOW;
             }
             
             
-            for (int i = 0; i < errors.size(); ++i)
+            for (int i = 0; i < errors.size(); ++i) {
                 message += "\n - " + sanitizeInputString(errors.get(i).error);
+                messageColor = Color.RED;
+            }
             
             if (!assemblyGenerationFailed) {
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
@@ -798,7 +805,7 @@ public class MelonLoaderScanner {
                     
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     message += "\n - You have no mods installed in your Mods and Plugins folder";
-
+                
                 if (modsThrowingErrors.size() > 0) {
                     String error = "\n - The following mods are throwing errors:";
                     for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
@@ -810,14 +817,20 @@ public class MelonLoaderScanner {
                 
                 if (hasNonModErrors)
                     message += "\n - There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.";
+                
+                messageColor = Color.RED;
             }
             
-            if (message.length() >= 2000) {
+            if (isMLOutdatedVRC || isMLOutdated)
+                messageColor = melonPink;
+            
+            //Split message if it exceeds discord's limit
+            if (message.length() >= 2048) {
                 String[] lines = message.split("\n");
                 String toSend = "";
                 int i = 0;
                 while (i < lines.length) {
-                    if ((toSend + lines[i] + 1).length() > 2000) {
+                    if ((toSend + lines[i] + 1).length() > 2048) {
                         event.getChannel().sendMessage(toSend).queue();
                         toSend = lines[i];
                     }
@@ -827,18 +840,17 @@ public class MelonLoaderScanner {
                     ++i;
                 }
                 if (toSend.length() > 0)
-                    event.getChannel().sendMessage(toSend).queue();
+                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend,messageColor).queue();
             }
             else
-                event.getChannel().sendMessage(message).queue();
-            
+                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message,messageColor).queue();
         }
         else if (mlVersion != null) {
             if (hasErrors) {
-                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file").queue();
+                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file",Color.RED)).queue();
             }
             else
-                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file").queue();
+                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file",Color.GREEN)).queue();
         }
     }
     
