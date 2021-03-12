@@ -181,7 +181,7 @@ public class MelonLoaderScanner {
                         List<ModDetails> modsprocessed = new ArrayList<>();
                         for (VRCModDetails processingmods : vrcmods) {
                             VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
-                            modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion));
+                            modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion, vrcmoddetails.downloadlink));
 
                             // Add to broken mod list if broken
                             if (vrcmoddetails.approvalstatus == 2)
@@ -599,6 +599,7 @@ public class MelonLoaderScanner {
                     LogsModDetails logsModDetails = entry.getValue();
                     String modVersion = logsModDetails.version;
                     String modHash = logsModDetails.hash;
+                    String modURL = logsModDetails.downloadlink;
                     
                     if (modVersion == null) {
                         unverifiedMods.add(modName);
@@ -641,7 +642,7 @@ public class MelonLoaderScanner {
                         brokenMods.add(modName);
                     }
                     else if (!checkUsingHash ? !modVersion.equals(latestModVersion) : (modHash != null && !modHash.equals(latestModHash))) {
-                        invalidMods.add(new MelonInvalidMod(modName, modVersion, latestModVersion));
+                        invalidMods.add(new MelonInvalidMod(modName, modVersion, latestModVersion, modURL));
                     }
                     /* TODO
                     else if (modName.equals("emmVRC")) {
@@ -723,9 +724,9 @@ public class MelonLoaderScanner {
             else if (isMLOutdated)
                 message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
             
-        
-            if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild))
-                message += "\n - You are running an outdated version of VRChat. Current: " + sanitizeInputString(emmVRCVRChatBuild) + ". Latest: " + CommandManager.vrchatBuild + ".";
+            
+                messageColor = Color.YELLOW;
+            }
             
             if (duplicatedMods.size() > 0) {
                 String error = "\n - The following mods are installed multiple times in your Mods and/or Plugins folder:";
@@ -783,12 +784,12 @@ public class MelonLoaderScanner {
                 String error = "\n - You are using the following outdated mods:";
                 for (int i = 0; i < invalidMods.size() && i < 10; ++i) {
                     MelonInvalidMod m = invalidMods.get(i);
-                    error += "\n   \\> " + m.name + " - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
+                    error += "\n   \\> [" + m.name + "](" + m.url + ") - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
                 }
                 if (invalidMods.size() > 10)
                     error += "\n      and " + (invalidMods.size() - 10) + " more...";
                 if (invalidMods.size() > 2)
-                    error += "\n      Consider getting VRCModUpdater and moving it to the **Plugins** folder\n      https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll";
+                    error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
                 message += error;
                 messageColor = Color.YELLOW;
             }
@@ -887,11 +888,13 @@ public class MelonLoaderScanner {
         String name;
         String currentVersion;
         String latestVersion;
+        String url;
         
-        public MelonInvalidMod(String name, String currentVersion, String latestVersion) {
+        public MelonInvalidMod(String name, String currentVersion, String latestVersion, String url) {
             this.name = name;
             this.currentVersion = currentVersion;
             this.latestVersion = latestVersion;
+            this.url = url;
         }
     }
 }
