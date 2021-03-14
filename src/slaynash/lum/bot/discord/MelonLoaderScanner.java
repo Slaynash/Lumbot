@@ -718,9 +718,9 @@ public class MelonLoaderScanner {
             
             if (isMLOutdatedVRC) {
                 if (pre3)
-                    message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
+                    message += "\n - The installed MelonLoader is outdated. VRChat requires **MelonLoader v" + latestMLVersionBeta + " ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
                 else
-                    message += "\n - MelonLoader needs to be reinstalled. VRChat requires **MelonLoader v0.3.0 ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
+                    message += "\n - MelonLoader needs to be reinstalled. VRChat requires **MelonLoader v" + latestMLVersionBeta + " ALPHA Pre-Release**, released after the **" + CommandManager.melonLoaderVRCMinDate + ".**";
             }
             else if (isMLOutdated)
                 message += "\n - The installed MelonLoader is outdated. Installed: **v" + sanitizeInputString(mlVersion) + "**. Latest: **v" + latestMLVersionRelease + "**";
