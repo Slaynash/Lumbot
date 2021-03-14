@@ -91,6 +91,7 @@ public class MLBrokenModsCommand extends Command {
             else
                 event.getChannel().sendMessage(message).queue();
         }
+        /*
         else if (parts.length == 2 && parts[1].equals("addall")) {
             List<ModDetails> knownMods = null;
             
@@ -166,6 +167,9 @@ public class MLBrokenModsCommand extends Command {
         else {
             event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [add|remove|list|addall] <mod>", Color.RED)).queue();
         }
+        */
+        else
+            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [list]", Color.RED)).queue();
     }
     
     @Override
