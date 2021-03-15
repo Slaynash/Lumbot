@@ -19,7 +19,7 @@ jobs:
         run: echo buildname=$(ls target | grep bot_*.jar) >> $GITHUB_ENV
       
       - name: Upload to artifacts
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}.jar
