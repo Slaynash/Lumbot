@@ -17,15 +17,14 @@ jobs:
       - run: mkdir staging && cp target/*.jar staging
       - uses: actions/upload-artifact@v2
         with:
-          name: Package
-          path: staging
+          name: bot.jar
+          path: staging/bot_*.jar
       - name: Upload to server
         uses: SamKirkland/FTP-Deploy-Action@3.1.1
         with:
           ftp-server: sftp://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}/home/${{ secrets.SSH_USERNAME }}/lumbot/upload
           ftp-username: ${{ secrets.SSH_USERNAME }}
           ftp-password: ${{ secrets.SSH_PASSWORD }}
-          local-dir: staging/
           git-ftp-args: --insecure
       - name: Restart Lum
         uses: garygrossgarten/github-action-ssh@release
