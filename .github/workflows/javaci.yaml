@@ -16,7 +16,7 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
       - name: Adding file name to path
-        run: echo buildname=$(ls ${{ env.working-directory }}/target | grep bot_*.jar) >> $GITHUB_ENV
+        run: echo buildname=$(ls /home/runner/work/Lumbot/Lumbot/target | grep bot_*.jar) >> $GITHUB_ENV
       
       - name: Upload to artifacts
         uses: actions/upload-artifact@v2
@@ -31,7 +31,7 @@ jobs:
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: python3 ~/lumbot/downloadAndRestart.py ${{env.buildname}}
+          command: python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
