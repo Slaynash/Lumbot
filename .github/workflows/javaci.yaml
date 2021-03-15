@@ -17,7 +17,6 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
       - name: Adding file name to path
         run: echo buildname=$(ls ${{ env.working-directory }}/target | grep bot_*.jar) >> $GITHUB_ENV
-          working-directory: ./
       
       - name: Upload to artifacts
         uses: actions/upload-artifact@v2
