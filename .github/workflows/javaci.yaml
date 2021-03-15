@@ -24,7 +24,7 @@ jobs:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}.jar
       - name: Upload to server
-        uses: wei/curl@release
+        uses: wei/curl@v1.1.1
         with:
           args: -F 'buildfile=@target/${{ env.buildname }}' https://srv1.slaynash.fr/uploadlum.php
       
