@@ -788,13 +788,15 @@ public class MelonLoaderScanner {
                 String error = "\n - You are using the following outdated mods:";
                 for (int i = 0; i < outdatedMods.size() && i < 10; ++i) {
                     MelonOutdatedMod m = outdatedMods.get(i);
-                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + m.downloadUrl + ")");
+                    //String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + m.downloadUrl + ")");
+                    String namePart = m.name;
                     error += "\n   \\> " + namePart + " - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
                 }
                 if (outdatedMods.size() > 10)
                     error += "\n      and " + (outdatedMods.size() - 10) + " more...";
                 if (outdatedMods.size() > 2 && "VRChat".equals(game))
-                    error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                    //error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                    error += "\n      Consider getting VRCModUpdater and moving it to the **Plugins** folder";
                 message += error;
                 messageColor = Color.YELLOW;
             }
@@ -831,7 +833,7 @@ public class MelonLoaderScanner {
                 messageColor = melonPink;
             
             //Split message if it exceeds discord's limit
-            if (message.length() >= 2048) {
+            if (message.length() >= 1000) {
                 String[] lines = message.split("\n");
                 String toSend = "";
                 int i = 0;
@@ -846,17 +848,17 @@ public class MelonLoaderScanner {
                     ++i;
                 }
                 if (toSend.length() > 0)
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend,messageColor)).queue();
+                    event.getChannel().sendMessage(toSend).queue();
             }
             else
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message,messageColor)).queue();
+                event.getChannel().sendMessage(message).queue();
         }
         else if (mlVersion != null) {
             if (hasErrors) {
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file",Color.RED)).queue();
+                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file").queue();
             }
             else
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file",Color.GREEN)).queue();
+                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file").queue();
         }
     }
     
