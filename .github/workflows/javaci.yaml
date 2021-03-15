@@ -16,7 +16,7 @@ jobs:
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
       - name: Adding file name to path
-        run: ls /home/runner/work/Lumbot/Lumbot/target | grep bot_*.jar
+        run: ls /home/runner/work/Lumbot/Lumbot/target | grep bot
       
       - name: Upload to artifacts
         uses: actions/upload-artifact@v2
