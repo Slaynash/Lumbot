@@ -7,29 +7,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up JDK 11
         uses: actions/setup-java@v1
         with:
           java-version: 11
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
-      - run: mkdir staging && cp target/*.jar staging
+      - name: Adding file name to path
+        run: echo buildname=$(ls target | grep bot_*.jar) >> $GITHUB_ENV
+      
+      - name: Upload to artifacts
       - uses: actions/upload-artifact@v2
         with:
-          name: bot.jar
-          path: staging/bot_*.jar
+          name: ${{ env.buildname }}
+          path: target/${{ env.buildname }}.jar
       - name: Upload to server
-        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        uses: wei/curl@release
         with:
-          ftp-server: sftp://${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}/home/${{ secrets.SSH_USERNAME }}/lumbot/upload
-          ftp-username: ${{ secrets.SSH_USERNAME }}
-          ftp-password: ${{ secrets.SSH_PASSWORD }}
-          git-ftp-args: --insecure
-      - name: Restart Lum
+          args: -F 'buildfile=@target/${{ env.buildname }}' https://srv1.slaynash.fr/uploadlum.php
+      
+      - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: python3 ~/lumbot/downloadAndRestart.py ${{secrets.GITHUB_TOKEN}}
+          command: python3 ~/lumbot/downloadAndRestart.py ${{env.buildname}}
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
