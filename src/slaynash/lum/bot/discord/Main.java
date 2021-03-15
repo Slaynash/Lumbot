@@ -66,6 +66,13 @@ public class Main extends ListenerAdapter {
         
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
 
+        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            JDAManager.getJDA()
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessage(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .queue(); // [ML] Rolebacked embed for now
+
         VRCApiVersionScanner.init();
         
         System.out.println("LUM Started!");
