@@ -14,3 +14,16 @@ jobs:
           java-version: 11
       - name: Build with Maven
         run: mvn --batch-mode --update-snapshots verify
+        run: mkdir staging && cp target/*.jar staging
+        uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: staging
+      - name: Upload and restart Lum
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: python3 ~/lumbot/downloadAndRestart.py ${{secrets.GITHUB_TOKEN}}
+          host: ${{ secrets.SSH_HOST }}
+          port: ${{ secrets.SSH_PORT }}
+          username: ${{ secrets.SSH_USERNAME }}
+          password: ${{ secrets.SSH_PASSWORD }}

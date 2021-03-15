@@ -16,6 +16,7 @@
 
   <build>
     <finalName>bot_${maven.build.timestamp}</finalName>
+    <sourceDirectory>src/</sourceDirectory>
   </build>  
 
   <repositories>
