@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{ env.buildname }}
-          path: target/${{ env.buildname }}.jar
+          path: target/${{ env.buildname }}
       - name: Upload to server
         uses: wei/curl@v1.1.1
         with:
