@@ -26,6 +26,7 @@ jobs:
           ftp-username: ${{ secrets.SSH_USERNAME }}
           ftp-password: ${{ secrets.SSH_PASSWORD }}
           local-dir: staging/
+          git-ftp-args: --insecure
       - name: Restart Lum
         uses: garygrossgarten/github-action-ssh@release
         with:
