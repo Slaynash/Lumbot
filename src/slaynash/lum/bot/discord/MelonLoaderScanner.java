@@ -659,6 +659,7 @@ public class MelonLoaderScanner {
                     }
                     */
                 }
+                modsThrowingErrors.removeAll(outdatedMods);
             }
         }
         
@@ -858,8 +859,10 @@ public class MelonLoaderScanner {
                 if (hasNonModErrors)
                     error += " - There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
                 
-                eb.addField("Other Errors:", error , false);
-                messageColor = Color.RED;
+                if(error.length()>0) {
+                    eb.addField("Other Errors:", error , false);
+                    messageColor = Color.RED;
+                }
             }
             
             if (isMLOutdatedVRC || isMLOutdated)
@@ -875,7 +878,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             else {
-                eb.addField("Completed without finding any problem", "- please wait while someone checks them" , false);
+                eb.addField("No issues found", "- If you had issues please say so and wait for someone to check the log" , false);
                 messageColor = Color.LIGHT_GRAY;
             }
             
