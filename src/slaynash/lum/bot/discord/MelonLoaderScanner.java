@@ -875,7 +875,7 @@ public class MelonLoaderScanner {
         MessageBuilder mb = new MessageBuilder();
         mb.append("<@" + event.getAuthor().getId() + ">");
         mb.setEmbed(eb.build());
-        event.getChannel().sendMessage(mb.build());
+        event.getChannel().sendMessage(mb.build()).queue();
     }
     
     private static void reportUserModifiedML(MessageReceivedEvent event) {
