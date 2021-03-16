@@ -15,6 +15,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.LoginException;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
@@ -62,6 +63,15 @@ public class Main extends ListenerAdapter {
         
         CommandManager.init();
         JDAManager.init(args[0]);
+        
+        JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
+
+        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            JDAManager.getJDA()
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessage(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .queue(); // [ML] Rolebacked embed for now
 
         VRCApiVersionScanner.init();
         

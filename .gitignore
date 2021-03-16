@@ -1,6 +1,8 @@
 /*.txt
 /*.jar
 
+/target
+
 .metadata
 bin/
 tmp/

@@ -1,0 +1,2 @@
+# Lumbot
+Lum Discord Bot

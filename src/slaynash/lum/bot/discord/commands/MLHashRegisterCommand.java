@@ -27,15 +27,15 @@ public class MLHashRegisterCommand extends Command {
         if (!isLavaGang)
             return;
         
-        String[] split = paramString.split(" ", 3);
-        if (split.length != 3) {
+        String[] split = paramString.split(" ", 4);
+        if (split.length != 4) {
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
             return;
         }
 
         String branch = split[1];
         String hash86 = split[2];
-        String hash64 = split[2];
+        String hash64 = split[3];
         System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString);
 
         if (!branch.equals("alpha") && !branch.equals("release")) {

@@ -211,7 +211,7 @@ public class MelonLoaderScanner {
                         
                         List<ModDetails> modsprocessed = new ArrayList<>();
                         for (Entry<String, BTD6ModDetails> mod : processingmods.entrySet()) {
-                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version));
+                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version, null));
                         }
                         
                         mods.put("BloonsTD6", modsprocessed);
@@ -236,7 +236,7 @@ public class MelonLoaderScanner {
                         
                         List<ModDetails> modsprocessed = new ArrayList<>();
                         for (Entry<String, AudicaModDetails> mod : processingmods.entrySet()) {
-                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version));
+                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version, mod.getValue().download[0].browser_download_url));
                         }
                         
                         mods.put("Audica", modsprocessed);
@@ -279,10 +279,10 @@ public class MelonLoaderScanner {
         Map<String, LogsModDetails> loadedMods = new HashMap<String, LogsModDetails>();
 
         List<String> duplicatedMods = new ArrayList<String>();
-        List<String> unverifiedMods = new ArrayList<String>();
+        List<String> unknownMods = new ArrayList<String>();
         List<String> universalMods = new ArrayList<String>();
         List<String> incompatibleMods = new ArrayList<String>();
-        List<MelonInvalidMod> invalidMods = new ArrayList<MelonInvalidMod>();
+        List<MelonOutdatedMod> outdatedMods = new ArrayList<MelonOutdatedMod>();
         Map<String, String> modAuthors = new HashMap<String, String>();
         List<String> missingMods = new ArrayList<>();
         List<String> brokenMods = new ArrayList<>();
@@ -600,10 +600,9 @@ public class MelonLoaderScanner {
                     LogsModDetails logsModDetails = entry.getValue();
                     String modVersion = logsModDetails.version;
                     String modHash = logsModDetails.hash;
-                    String modURL = logsModDetails.downloadlink;
                     
                     if (modVersion == null) {
-                        unverifiedMods.add(modName);
+                        unknownMods.add(modName);
                         continue;
                     }
                     
@@ -619,6 +618,7 @@ public class MelonLoaderScanner {
                     
                     String latestModVersion = null;
                     String latestModHash = null;
+                    String latestModDownloadUrl = null;
                     for (ModDetails modDetail : modDetails) {
                         if (modDetail.name.replace(" ", "").equals(modName.replace(" ", ""))) {
                             if (checkUsingHash) {
@@ -627,6 +627,7 @@ public class MelonLoaderScanner {
                             else {
                                 System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version);
                                 latestModVersion = modDetail.versions[0].version;
+                                latestModDownloadUrl = modDetail.downloadLink;
                                 if (latestModVersion.startsWith("v"))
                                     latestModVersion = latestModVersion.substring(1);
                                 if (latestModVersion.split("\\.").length == 2)
@@ -637,13 +638,13 @@ public class MelonLoaderScanner {
                     }
                     
                     if (latestModVersion == null && latestModHash == null) {
-                        unverifiedMods.add(modName);
+                        unknownMods.add(modName);
                     }
                     else if (CommandManager.brokenVrchatMods.contains(modName)) {
                         brokenMods.add(modName);
                     }
                     else if (!checkUsingHash ? !modVersion.equals(latestModVersion) : (modHash != null && !modHash.equals(latestModHash))) {
-                        invalidMods.add(new MelonInvalidMod(modName, modVersion, latestModVersion, modURL));
+                        outdatedMods.add(new MelonOutdatedMod(modName, modVersion, latestModVersion, latestModDownloadUrl));
                     }
                     /* TODO
                     else if (modName.equals("emmVRC")) {
@@ -713,7 +714,7 @@ public class MelonLoaderScanner {
         else if (game != null && modDetails == null)
             message += "*" + game + " isn't officially supported by the autochecker. Mod versions will not be verified.*\n";
         
-        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unverifiedMods.size() != 0 || invalidMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
+        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
             message += "**MelonLoader log autocheck:** The autocheck reported the following problems <@" + event.getAuthor().getId() + ">:";
             
             if (isMLOutdatedVRC) {
@@ -771,28 +772,31 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (unverifiedMods.size() > 0) {
+            if (unknownMods.size() > 0) {
                 String error = "\n - You are using the following unverified/unknown mods:";
-                for (int i = 0; i < unverifiedMods.size() && i < 10; ++i) {
-                    String s = unverifiedMods.get(i);
+                for (int i = 0; i < unknownMods.size() && i < 10; ++i) {
+                    String s = unknownMods.get(i);
                     error += "\n   \\> " + sanitizeInputString(s) + (modAuthors.containsKey(s) ? (" **by** " + sanitizeInputString(modAuthors.get(s))) : "");
                 }
-                if (unverifiedMods.size() > 10)
-                    error += "\n      and " + (unverifiedMods.size() - 10) + " more...";
+                if (unknownMods.size() > 10)
+                    error += "\n      and " + (unknownMods.size() - 10) + " more...";
                 message += error;
                 messageColor = Color.RED;
             }
             
-            if (invalidMods.size() > 0) {
+            if (outdatedMods.size() > 0) {
                 String error = "\n - You are using the following outdated mods:";
-                for (int i = 0; i < invalidMods.size() && i < 10; ++i) {
-                    MelonInvalidMod m = invalidMods.get(i);
-                    error += "\n   \\> [" + m.name + "](" + m.url + ") - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
+                for (int i = 0; i < outdatedMods.size() && i < 10; ++i) {
+                    MelonOutdatedMod m = outdatedMods.get(i);
+                    //String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + m.downloadUrl + ")");
+                    String namePart = m.name;
+                    error += "\n   \\> " + namePart + " - installed: `" + sanitizeInputString(m.currentVersion) + "`, latest: `" + m.latestVersion + "`";
                 }
-                if (invalidMods.size() > 10)
-                    error += "\n      and " + (invalidMods.size() - 10) + " more...";
-                if (invalidMods.size() > 2)
-                    error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                if (outdatedMods.size() > 10)
+                    error += "\n      and " + (outdatedMods.size() - 10) + " more...";
+                if (outdatedMods.size() > 2 && "VRChat".equals(game))
+                    //error += "\n      Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                    error += "\n      Consider getting VRCModUpdater and moving it to the **Plugins** folder";
                 message += error;
                 messageColor = Color.YELLOW;
             }
@@ -829,7 +833,7 @@ public class MelonLoaderScanner {
                 messageColor = melonPink;
             
             //Split message if it exceeds discord's limit
-            if (message.length() >= 2048) {
+            if (message.length() >= 1000) {
                 String[] lines = message.split("\n");
                 String toSend = "";
                 int i = 0;
@@ -844,17 +848,17 @@ public class MelonLoaderScanner {
                     ++i;
                 }
                 if (toSend.length() > 0)
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend,messageColor).queue();
+                    event.getChannel().sendMessage(toSend).queue();
             }
             else
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message,messageColor).queue();
+                event.getChannel().sendMessage(message).queue();
         }
         else if (mlVersion != null) {
             if (hasErrors) {
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file",Color.RED)).queue();
+                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck found some unknown problems in your logs. Please wait for a moderator or a helper to manually check the file").queue();
             }
             else
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file",Color.GREEN)).queue();
+                event.getChannel().sendMessage(message + "**MelonLoader log autocheck:** The autocheck completed without finding any problem. Please wait for a moderator or a helper to manually check the file").queue();
         }
     }
     
@@ -887,17 +891,17 @@ public class MelonLoaderScanner {
         }
     }
     
-    public static class MelonInvalidMod {
+    public static class MelonOutdatedMod {
         String name;
         String currentVersion;
         String latestVersion;
-        String url;
+        String downloadUrl;
         
-        public MelonInvalidMod(String name, String currentVersion, String latestVersion, String url) {
+        public MelonOutdatedMod(String name, String currentVersion, String latestVersion, String downloadUrl) {
             this.name = name;
             this.currentVersion = currentVersion;
             this.latestVersion = latestVersion;
-            this.url = url;
+            this.downloadUrl = downloadUrl;
         }
     }
 }
