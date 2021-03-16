@@ -795,7 +795,7 @@ public class MelonLoaderScanner {
                 if (unknownMods.size() > 10)
                     error += "- and " + (unknownMods.size() - 10) + " more...";
                 
-                eb.addField("unverified/unknown mods:", error , false);
+                eb.addField("Unverified/Unknown mods:", error , false);
                 messageColor = Color.RED;
             }
             
