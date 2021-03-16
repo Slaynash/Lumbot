@@ -589,6 +589,7 @@ public class MelonLoaderScanner {
         
         boolean checkUsingHash = false;
         boolean hasMLHashes = false;
+        String uixURL = "";
         
         if (modDetails != null) {
             
@@ -634,6 +635,8 @@ public class MelonLoaderScanner {
                                     latestModVersion = latestModVersion.substring(1);
                                 if (latestModVersion.split("\\.").length == 2)
                                     latestModVersion += ".0";
+                                if (modDetail.name=="UI Expansion Kit")
+                                    uixURL = modDetail.downloadLink;
                                 break;
                             }
                         }
@@ -756,7 +759,10 @@ public class MelonLoaderScanner {
             if (missingMods.size() > 0) {
                 String error = "";
                 for (int i = 0; i < missingMods.size() && i < 10; ++i)
-                    error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
+                    if(sanitizeInputString(missingMods.get(i))=="UIExpansionKit")
+                        error += "- [UIExpansionKit]("+ uixURL +")\n";
+                    else
+                        error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
                 if (missingMods.size() > 10)
                     error += "- and " + (missingMods.size() - 10) + " more...";
                 
