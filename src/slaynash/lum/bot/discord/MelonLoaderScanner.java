@@ -677,8 +677,13 @@ public class MelonLoaderScanner {
             }
         }
         
-        EmbedBuilder eb = new EmbedBuilder();
         String message = "";
+        EmbedBuilder eb = new EmbedBuilder();
+        MessageBuilder mb = new MessageBuilder();
+        eb.setTitle("Log Autocheck Result:");
+        eb.setTimestamp(Instant.now());
+        eb.setFooter("Lum Log Scanner");
+        mb.append("<@" + event.getAuthor().getId() + ">");
         
         for (int i = 0; i < attachments.size(); ++i) {
             Attachment attachment = attachments.get(i);
@@ -859,23 +864,26 @@ public class MelonLoaderScanner {
             
             if (isMLOutdatedVRC || isMLOutdated)
                 messageColor = melonPink;
-
+            
+            eb.setColor(messageColor);
+            mb.setEmbed(eb.build());
+            event.getChannel().sendMessage(mb.build()).queue();
         }
         else if (mlVersion != null) {
-            if (hasErrors) 
+            if (hasErrors) {
                 eb.addField("There are unidentified errors", "- please wait while someone checks them" , false);
-            else
+                messageColor = Color.RED;
+            }
+            else {
                 eb.addField("Completed without finding any problem", "- please wait while someone checks them" , false);
+                messageColor = Color.LIGHT_GRAY;
+            }
+            
+            eb.setColor(messageColor);
+            mb.setEmbed(eb.build());
+            event.getChannel().sendMessage(mb.build()).queue();
         }
-        
-        eb.setTitle("Log Autocheck Result:");
-        eb.setColor(messageColor);
-        eb.setTimestamp(Instant.now());
-        eb.setFooter("Lum Log Scanner");
-        MessageBuilder mb = new MessageBuilder();
-        mb.append("<@" + event.getAuthor().getId() + ">");
-        mb.setEmbed(eb.build());
-        event.getChannel().sendMessage(mb.build()).queue();
+        //else non-log messages
     }
     
     private static void reportUserModifiedML(MessageReceivedEvent event) {
