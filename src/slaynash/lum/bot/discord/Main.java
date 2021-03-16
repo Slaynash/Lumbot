@@ -48,6 +48,16 @@ public class Main extends ListenerAdapter {
             System.err.println("Please specify token in passed arguments");
             return;
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            JDA jda = JDAManager.getJDA();
+            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            jda
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessage(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                .queue();
+        }));
         
         loadLogchannelList();
         loadVerifychannelList();
@@ -71,7 +81,7 @@ public class Main extends ListenerAdapter {
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
                 .sendMessage(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
-                .queue(); // [ML] Rolebacked embed for now
+                .queue();
 
         VRCApiVersionScanner.init();
         
