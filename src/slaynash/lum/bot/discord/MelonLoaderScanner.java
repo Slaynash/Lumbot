@@ -109,7 +109,7 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] MelonLoader.dll Does Not Exist!",
                 "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
-                "Phasmophobia",
+                ".*Phasmophobia.*",
                 "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader. Please remove the MelonLoader folder and version.dll"));
     }};
 
