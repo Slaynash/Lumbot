@@ -76,7 +76,7 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
     }};
-
+    
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
         add(new MelonLoaderError(
                 ".*System\\.IO\\.FileNotFoundException\\: .* ['|\"]System\\.IO\\.Compression.*", 
@@ -112,7 +112,7 @@ public class MelonLoaderScanner {
                 ".*Phasmophobia.*",
                 "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
     }};
-
+    
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
@@ -186,7 +186,7 @@ public class MelonLoaderScanner {
                         for (VRCModDetails processingmods : vrcmods) {
                             VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
                             modsprocessed.add(new ModDetails(vrcmoddetails.name, vrcmoddetails.modversion, vrcmoddetails.downloadlink));
-
+                            
                             // Add to broken mod list if broken
                             if (vrcmoddetails.approvalstatus == 2)
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
@@ -275,12 +275,12 @@ public class MelonLoaderScanner {
         boolean assemblyGenerationFailed = false;
         String game = null;
         String mlHashCode = null;
-
+        
         boolean preListingMods = false;
         boolean listingMods = false;
         boolean readingMissingDependencies = false;
         Map<String, LogsModDetails> loadedMods = new HashMap<String, LogsModDetails>();
-
+        
         List<String> duplicatedMods = new ArrayList<String>();
         List<String> unknownMods = new ArrayList<String>();
         List<String> universalMods = new ArrayList<String>();
@@ -294,7 +294,7 @@ public class MelonLoaderScanner {
         
         String emmVRCVersion = null;
         String emmVRCVRChatBuild = null;
-
+        
         boolean isMLOutdatedVRC = false;
         boolean isMLOutdatedVRCBrokenDeobfMap = false;
         
@@ -314,7 +314,7 @@ public class MelonLoaderScanner {
         
         for (int i = 0; i < attachments.size(); ++i) {
             Attachment attachment = attachments.get(i);
-
+            
             if (attachment.getFileExtension() != null && (attachment.getFileExtension().toLowerCase().equals("log") || attachment.getFileExtension().toLowerCase().equals("txt"))) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(attachment.retrieveInputStream().get()))) {
                     
@@ -361,10 +361,9 @@ public class MelonLoaderScanner {
                                     
                                     continue;
                                 }
-                                
                                 else if (listingMods && tmpModName == null) {
                                     String[] split = line.split(" ", 2)[1].split(" v", 2);
-                                    tmpModName = split[0];
+                                    tmpModName = (split[0]=="") ? "Broken Mod" : split[0];
                                     tmpModVersion = split.length > 0 ? split[1] : null;
                                     continue;
                                 }
@@ -376,7 +375,7 @@ public class MelonLoaderScanner {
                                     continue;
                                 }
                                 else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ------------------------------")) {
-
+                                    
                                     System.out.println("Found mod " + tmpModName + ", version is " + tmpModVersion + ", and hash is " + tmpModHash);
                                     
                                     if (loadedMods.containsKey(tmpModName) && !duplicatedMods.contains(tmpModName))
@@ -409,7 +408,7 @@ public class MelonLoaderScanner {
                             readingMissingDependencies = true;
                             continue;
                         }
-
+                        
                         if (readingMissingDependencies) {
                             if (line.matches("    - '.*'.*")) {
                                 String missingModName = line.split("'", 3)[1];
@@ -497,7 +496,7 @@ public class MelonLoaderScanner {
                             else if (compatibility.equals("Compatible")) {}
                             else
                                 incompatibleMods.add(name);
-
+                            
                             System.out.println("Found mod " + name.trim() + ", version is " + version + ", compatibility is " + compatibility);
                         }
                         // VRChat / EmmVRC Specifics
@@ -904,7 +903,7 @@ public class MelonLoaderScanner {
                             Color.RED)).queue();
         }
     }
-
+    
     private static String sanitizeInputString(String input) {
         return input
                 .replace("@", "@ ")
