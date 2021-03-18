@@ -111,6 +111,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 ".*Phasmophobia.*",
                 "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
+        add(new MelonLoaderError(
+                ".*Unexpected escape character.*",
+                "Please use forward slashes (`/`) in MelonPreferences.cfg"));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
