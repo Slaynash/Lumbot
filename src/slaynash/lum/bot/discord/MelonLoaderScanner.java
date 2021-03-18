@@ -110,7 +110,7 @@ public class MelonLoaderScanner {
                 "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
                 ".*Phasmophobia.*",
-                "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader. Please remove the MelonLoader folder and version.dll"));
+                "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
     }};
 
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
