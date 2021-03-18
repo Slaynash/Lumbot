@@ -366,7 +366,7 @@ public class MelonLoaderScanner {
                                 }
                                 else if (listingMods && tmpModName == null) {
                                     String[] split = line.split(" ", 2)[1].split(" v", 2);
-                                    tmpModName = (split[0]=="") ? "Broken Mod" : split[0];
+                                    tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
                                     tmpModVersion = split.length > 0 ? split[1] : null;
                                     continue;
                                 }
