@@ -77,7 +77,7 @@ public class MelonLoaderScanner {
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
-                "emmVRC instance history became corrputed and has been reset."));
+                "emmVRC instance history became corrupted and has been reset."));
     }};
     
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
@@ -640,7 +640,7 @@ public class MelonLoaderScanner {
                                     latestModVersion = latestModVersion.substring(1);
                                 if (latestModVersion.split("\\.").length == 2)
                                     latestModVersion += ".0";
-                                if (modDetail.name=="UI Expansion Kit")
+                                if ("UI Expansion Kit".equals(modDetail.name))
                                     uixURL = modDetail.downloadLink;
                                 break;
                             }
@@ -764,7 +764,7 @@ public class MelonLoaderScanner {
             if (missingMods.size() > 0) {
                 String error = "";
                 for (int i = 0; i < missingMods.size() && i < 10; ++i)
-                    if(sanitizeInputString(missingMods.get(i))=="UIExpansionKit")
+                    if ("UIExpansionKit".equals(sanitizeInputString(missingMods.get(i))))
                         error += "- [UIExpansionKit]("+ uixURL +")\n";
                     else
                         error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
