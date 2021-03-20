@@ -752,7 +752,7 @@ public class MelonLoaderScanner {
             
             
             if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
-                eb.addField("VRChat:", "You are running an outdated version of VRChat: " + sanitizeInputString(emmVRCVRChatBuild) + " -> " + CommandManager.vrchatBuild , false);
+                eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
                 messageColor = Color.YELLOW;
             }
             
