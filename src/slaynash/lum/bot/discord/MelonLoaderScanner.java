@@ -117,6 +117,12 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 ".*Unexpected escape character.*",
                 "Please use forward slashes (`/`) in MelonPreferences.cfg"));
+        add(new MelonLoaderError(
+                ".*No MelonInfoAttribute Found.*",
+                "An old invalid mod attempted to load."));
+        add(new MelonLoaderError(
+                ".*Invalid Version given to MelonInfoAttribute.*",
+                "An invalid/broken mod attempted to load."));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
