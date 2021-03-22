@@ -158,7 +158,7 @@ public class MelonLoaderScanner {
         put("NearClippingPlaneAdjuster.dll", "NearClipPlaneAdj");
         put("No Steam. At all.", "NoSteamAtAll");
         put("Particle and DynBone limiter settings UI", "ParticleAndBoneLimiterSettings");
-        put("Player Rotater (Desktop Only)", "Player Rotater");
+        put("Player Rotater", "Player Rotater (Desktop Only)");
         put("Player Volume Control", "PlayerVolumeControl");
         put("Rank Volume Control", "RankVolumeControl");
         put("Runtime Graphics Settings", "RuntimeGraphicsSettings");
