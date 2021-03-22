@@ -101,7 +101,10 @@ public class MelonLoaderScanner {
                 "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader again (failed to download Il2CppDumper)"));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
-                "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception, or disable it, then try again."));
+                "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
+                "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
                 "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader."));
