@@ -61,8 +61,8 @@ public class MelonLoaderScanner {
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
-                "\\(1,2\\) : error : Unexpected token.*",
-                "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
+                "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
+                "Mod config has been corrupted. Please delete UserData/MelonPreferences.cfg"));
         /*
         add(new MelonLoaderError(
                 ".*Harmony\\.HarmonyInstance\\..*",
@@ -116,7 +116,7 @@ public class MelonLoaderScanner {
                 "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
                 ".*Phasmophobia.*",
-                "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
+                "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
         add(new MelonLoaderError(
                 ".*Unexpected escape character.*",
                 "Please use forward slashes (`/`) in MelonPreferences.cfg"));
