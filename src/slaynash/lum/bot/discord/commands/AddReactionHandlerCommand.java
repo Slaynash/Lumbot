@@ -23,7 +23,7 @@ public class AddReactionHandlerCommand extends Command {
             return;
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
-        if(params.length != 4 || !params[1].matches("^[0-9]+$") || (!params[2].matches("^<:.*:[0-9]+>$") && !EmojiUtils.isOneEmoji(params[2]))) {
+        if(params.length != 4 || !params[1].matches("^[0-9]+$") || (!params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") && !EmojiUtils.isOneEmoji(params[2]))) {
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!reaction <messageid> <reaction> [roleid]").queue();
             return;
         }
