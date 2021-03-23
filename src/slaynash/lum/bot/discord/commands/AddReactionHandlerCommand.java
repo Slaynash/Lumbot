@@ -67,10 +67,10 @@ public class AddReactionHandlerCommand extends Command {
                     paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
                     return;
                 }
-                react = new ReactionListener(success.getId(), params[2].matches("^<:.*:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
+                react = new ReactionListener(success.getId(), params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
                 
                 
-                if(params[2].matches("^<:.*:[0-9]+>$")) {
+                if(params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$")) {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
                     Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
                     if(emote == null) {
