@@ -751,7 +751,7 @@ public class MelonLoaderScanner {
                     eb.addField("Warning:", "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
             }
             else if (isMLOutdated)
-                eb.addField("Warning:", "The installed MelonLoader is outdated: " + sanitizeInputString(mlVersion) + " -> " + latestMLVersionRelease + ".\nPlease update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)", false);
+                eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: " + sanitizeInputString(mlVersion) + " -> " + latestMLVersionRelease + ".", false);
             
             
             if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
@@ -857,7 +857,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (modsThrowingErrors.size() > 0) {
+            if (modsThrowingErrors.size() > 0 && !isMLOutdated && !isMLOutdatedVRC) {
                 String error = "";
                 for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
                     error += "- " + sanitizeInputString(modsThrowingErrors.get(i)) + "\n";
@@ -868,7 +868,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (!assemblyGenerationFailed) {
+            if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC) {
                 String error = "";
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
