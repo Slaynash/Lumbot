@@ -36,6 +36,7 @@ public class MelonLoaderScanner {
     //default values, to be replaced by command *to be added*
     public static String latestMLVersionRelease = "0.2.7.4";
     public static String latestMLVersionBeta = "0.3.0";
+    public static String uixURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
         add(new MelonLoaderError(
@@ -205,6 +206,8 @@ public class MelonLoaderScanner {
                             // Add to broken mod list if broken
                             if (vrcmoddetails.approvalstatus == 2)
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
+                            if ("UI Expansion Kit".equals(vrcmoddetails.name))
+                                uixURL = vrcmoddetails.downloadlink;
                         }
                         
                         mods.put("VRChat", modsprocessed);
@@ -603,7 +606,6 @@ public class MelonLoaderScanner {
         
         boolean checkUsingHash = false;
         boolean hasMLHashes = false;
-        String uixURL = "";
         
         if (modDetails != null) {
             
@@ -649,8 +651,6 @@ public class MelonLoaderScanner {
                                     latestModVersion = latestModVersion.substring(1);
                                 if (latestModVersion.split("\\.").length == 2)
                                     latestModVersion += ".0";
-                                if ("UI Expansion Kit".equals(modDetail.name))
-                                    uixURL = modDetail.downloadLink;
                                 break;
                             }
                         }
