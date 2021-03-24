@@ -89,6 +89,9 @@ public class MelonLoaderScanner {
                 "System.UnauthorizedAccessException:.*",
                 "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
         add(new MelonLoaderError(
+                "System.IO.IOException: The process cannot access the file.*",
+                "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
+        add(new MelonLoaderError(
                 "SHA512 Hash from Temp File does not match Repo Hash!",
                 "Installer failed to download MelonLoader successfully. Try again later or redownload the official MelonLoader installer."));
         add(new MelonLoaderError(
@@ -774,7 +777,7 @@ public class MelonLoaderScanner {
                 String error = "";
                 for (int i = 0; i < missingMods.size() && i < 10; ++i)
                     if ("UIExpansionKit".equals(sanitizeInputString(missingMods.get(i))))
-                        error += "- [UIExpansionKit]("+ uixURL +")\n";
+                        error += "- [UI Expansion Kit]("+ uixURL +")\n";
                     else
                         error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
                 if (missingMods.size() > 10)
