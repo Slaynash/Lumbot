@@ -534,6 +534,10 @@ public class MelonLoaderScanner {
                             preListingMods = true;
                             System.out.println("Starting to pre-list mods/plugins");
                         }
+                        else if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
+                            System.out.println("Duplicate in Mods and Plugins");
+                            duplicatedMods.add(line.substring(line.lastIndexOf(" ")+1));
+                        }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
                             readingMissingDependencies = true;
