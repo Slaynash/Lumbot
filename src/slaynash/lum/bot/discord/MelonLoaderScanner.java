@@ -383,9 +383,11 @@ public class MelonLoaderScanner {
                                     continue;
                                 }
                                 else if (listingMods && tmpModName == null) {
-                                    String[] split = line.split(" ", 2)[1].split(" v", 2);
-                                    tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
-                                    tmpModVersion = split.length > 0 ? split[1] : null;
+                                    String split = line.split(" ", 2)[1]; //remove the time stamp
+                                    tmpModName = (' '==split.charAt(0)) ? "Broken Mod" : split.split(" ", 2)[0]; //add name is mod name is blank
+                                    split = split.split(" ", 2)[1]; //keep the version part
+                                    if('v'==split.charAt(0)) split = split.substring(1); //remove the v
+                                    tmpModVersion = split.length() > 0 ? split : null;
                                     continue;
                                 }
                                 else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
@@ -536,7 +538,7 @@ public class MelonLoaderScanner {
                         }
                         else if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
                             System.out.println("Duplicate in Mods and Plugins");
-                            duplicatedMods.add(line.substring(line.lastIndexOf(" ")+1));
+                            duplicatedMods.add(line.substring(line.lastIndexOf(":")+2));
                         }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
