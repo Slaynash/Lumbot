@@ -755,7 +755,7 @@ public class MelonLoaderScanner {
             
             if (isMLOutdatedVRC) {
                 if (pre3)
-                    eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
+                    eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
                 else
                     eb.addField("Warning:", "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
             }
