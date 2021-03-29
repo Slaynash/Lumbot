@@ -36,6 +36,7 @@ public class MelonLoaderScanner {
     //default values, to be replaced by command *to be added*
     public static String latestMLVersionRelease = "0.2.7.4";
     public static String latestMLVersionBeta = "0.3.0";
+    public static String uixURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
         add(new MelonLoaderError(
@@ -61,8 +62,8 @@ public class MelonLoaderScanner {
                 "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
-                "\\(1,2\\) : error : Unexpected token.*",
-                "Mod config has been corupted. Please delete UserData/MelonPreferences.cfg"));
+                "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
+                "Mod config has been corrupted. Please delete UserData/MelonPreferences.cfg"));
         /*
         add(new MelonLoaderError(
                 ".*Harmony\\.HarmonyInstance\\..*",
@@ -86,6 +87,9 @@ public class MelonLoaderScanner {
                 "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>"));
         add(new MelonLoaderError(
                 "System.UnauthorizedAccessException:.*",
+                "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
+        add(new MelonLoaderError(
+                "System.IO.IOException: The process cannot access the file.*",
                 "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't works, try running the MelonLoader Installer with administrator privileges"));
         add(new MelonLoaderError(
                 "SHA512 Hash from Temp File does not match Repo Hash!",
@@ -116,7 +120,7 @@ public class MelonLoaderScanner {
                 "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
                 ".*Phasmophobia.*",
-                "We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
+                "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
         add(new MelonLoaderError(
                 ".*Unexpected escape character.*",
                 "Please use forward slashes (`/`) in MelonPreferences.cfg"));
@@ -205,6 +209,8 @@ public class MelonLoaderScanner {
                             // Add to broken mod list if broken
                             if (vrcmoddetails.approvalstatus == 2)
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
+                            if ("UI Expansion Kit".equals(vrcmoddetails.name))
+                                uixURL = vrcmoddetails.downloadlink;
                         }
                         
                         mods.put("VRChat", modsprocessed);
@@ -377,9 +383,11 @@ public class MelonLoaderScanner {
                                     continue;
                                 }
                                 else if (listingMods && tmpModName == null) {
-                                    String[] split = line.split(" ", 2)[1].split(" v", 2);
-                                    tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
-                                    tmpModVersion = split.length > 0 ? split[1] : null;
+                                    String split = line.split(" ", 2)[1]; //remove the time stamp
+                                    tmpModName = (' '==split.charAt(0)) ? "Broken Mod" : split.split(" ", 2)[0]; //add name is mod name is blank
+                                    split = split.split(" ", 2)[1]; //keep the version part
+                                    if('v'==split.charAt(0)) split = split.substring(1); //remove the v
+                                    tmpModVersion = split.length() > 0 ? split : null;
                                     continue;
                                 }
                                 else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
@@ -528,6 +536,10 @@ public class MelonLoaderScanner {
                             preListingMods = true;
                             System.out.println("Starting to pre-list mods/plugins");
                         }
+                        else if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
+                            System.out.println("Duplicate in Mods and Plugins");
+                            duplicatedMods.add(line.substring(line.lastIndexOf(":")+2));
+                        }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
                             readingMissingDependencies = true;
@@ -603,7 +615,6 @@ public class MelonLoaderScanner {
         
         boolean checkUsingHash = false;
         boolean hasMLHashes = false;
-        String uixURL = "";
         
         if (modDetails != null) {
             
@@ -649,8 +660,6 @@ public class MelonLoaderScanner {
                                     latestModVersion = latestModVersion.substring(1);
                                 if (latestModVersion.split("\\.").length == 2)
                                     latestModVersion += ".0";
-                                if ("UI Expansion Kit".equals(modDetail.name))
-                                    uixURL = modDetail.downloadLink;
                                 break;
                             }
                         }
@@ -746,12 +755,12 @@ public class MelonLoaderScanner {
             
             if (isMLOutdatedVRC) {
                 if (pre3)
-                    eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
+                    eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
                 else
                     eb.addField("Warning:", "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
             }
             else if (isMLOutdated)
-                eb.addField("Warning:", "The installed MelonLoader is outdated: " + sanitizeInputString(mlVersion) + " -> " + latestMLVersionRelease + ".\nPlease update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)", false);
+                eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: " + sanitizeInputString(mlVersion) + " -> " + latestMLVersionRelease + ".", false);
             
             
             if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
@@ -774,7 +783,7 @@ public class MelonLoaderScanner {
                 String error = "";
                 for (int i = 0; i < missingMods.size() && i < 10; ++i)
                     if ("UIExpansionKit".equals(sanitizeInputString(missingMods.get(i))))
-                        error += "- [UIExpansionKit]("+ uixURL +")\n";
+                        error += "- [UI Expansion Kit]("+ uixURL +")\n";
                     else
                         error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
                 if (missingMods.size() > 10)
@@ -857,7 +866,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (modsThrowingErrors.size() > 0) {
+            if (modsThrowingErrors.size() > 0 && !isMLOutdated && !isMLOutdatedVRC) {
                 String error = "";
                 for (int i = 0; i < modsThrowingErrors.size() && i < 10; ++i)
                     error += "- " + sanitizeInputString(modsThrowingErrors.get(i)) + "\n";
@@ -868,7 +877,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (!assemblyGenerationFailed) {
+            if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC) {
                 String error = "";
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
