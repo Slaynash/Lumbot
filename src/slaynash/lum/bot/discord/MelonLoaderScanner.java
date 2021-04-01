@@ -383,11 +383,9 @@ public class MelonLoaderScanner {
                                     continue;
                                 }
                                 else if (listingMods && tmpModName == null) {
-                                    String split = line.split(" ", 2)[1]; //remove the time stamp
-                                    tmpModName = (' '==split.charAt(0)) ? "Broken Mod" : split.split(" ", 2)[0]; //add name is mod name is blank
-                                    split = split.split(" ", 2)[1]; //keep the version part
-                                    if('v'==split.charAt(0)) split = split.substring(1); //remove the v
-                                    tmpModVersion = split.length() > 0 ? split : null;
+                                    String[] split = line.split(" ", 2)[1].split(" v", 2);
+                                    tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
+                                    tmpModVersion = split.length > 1 ? split[1] : null;
                                     continue;
                                 }
                                 else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
