@@ -876,8 +876,9 @@ public class MelonLoaderScanner {
                 }
                 if (outdatedMods.size() > 10)
                     error += "- and " + (outdatedMods.size() - 10) + " more...\n";
-                
-                    error += "- Get [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and move it to the **Plugins** folder";
+                    
+                    if ("VRChat".equals(game))
+                        error += "- Get [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and move it to the **Plugins** folder";
                 
                 eb.addField("Outdated mods Pt. 2:", error , false);
             }
