@@ -144,6 +144,7 @@ public class MelonLoaderScanner {
         put("VRChat", false);
         put("BloonsTD6", false);
         put("Audica", false);
+        put("TheLongDark", false);
         
         put("BONEWORKS", true);
     }};
@@ -286,7 +287,7 @@ public class MelonLoaderScanner {
                         
                         List<ModDetails> modsprocessed = new ArrayList<>();
                         for (Entry<String, TheLongDarkModDetails> mod : processingmods.entrySet()) {
-                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version, mod.getValue().download[0].browser_download_url));
+                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version, mod.getValue().download.browser_download_url));
                         }
                         
                         mods.put("TheLongDark", modsprocessed);

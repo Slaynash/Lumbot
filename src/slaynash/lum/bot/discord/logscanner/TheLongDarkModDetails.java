@@ -22,5 +22,5 @@ public class TheLongDarkModDetails {
     public boolean error;
     
     @SerializedName("Download")
-    public TheLongDarkDownload[] download;
+    public TheLongDarkDownload download;
 }
