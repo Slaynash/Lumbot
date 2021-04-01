@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.logscanner.AudicaModDetails;
 import slaynash.lum.bot.discord.logscanner.BTD6ModDetails;
 import slaynash.lum.bot.discord.logscanner.ModDetails;
+import slaynash.lum.bot.discord.logscanner.TheLongDarkModDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
 
@@ -264,6 +265,31 @@ public class MelonLoaderScanner {
                         }
                         
                         mods.put("Audica", modsprocessed);
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // The Long Dark
+
+                request = HttpRequest.newBuilder()
+                        .GET()
+                        .uri(URI.create("https://tld.xpazeapps.com/api.json"))
+                        .setHeader("User-Agent", "LUM Bot")
+                        .build();
+                    
+                try {
+                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    
+                    synchronized (mods) {
+                        Map<String, TheLongDarkModDetails> processingmods = gson.fromJson(response.body(), new TypeToken<HashMap<String, TheLongDarkModDetails>>() {}.getType());
+                        
+                        List<ModDetails> modsprocessed = new ArrayList<>();
+                        for (Entry<String, TheLongDarkModDetails> mod : processingmods.entrySet()) {
+                            modsprocessed.add(new ModDetails(mod.getKey(), mod.getValue().version, mod.getValue().download[0].browser_download_url));
+                        }
+                        
+                        mods.put("TheLongDark", modsprocessed);
                     }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
