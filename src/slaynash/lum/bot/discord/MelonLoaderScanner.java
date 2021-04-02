@@ -47,6 +47,9 @@ public class MelonLoaderScanner {
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
         add(new MelonLoaderError(
+                 "\\[[0-9.:]+\\] ClickFix.*",
+                 "ClickFix was added into VRChat and no longer needed. Please delete it from your Mods folder."));
+        add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
                 "One or more mod is missing a library / required mod, or a file is corrupted."));
         //This should hopefully be fixed in 0.3.1
@@ -107,6 +110,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
                 "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
+                "The storage is full. Please make some space and try your game again."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
                 "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
