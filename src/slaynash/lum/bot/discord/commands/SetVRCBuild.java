@@ -69,7 +69,7 @@ public class SetVRCBuild extends Command {
         boolean hasPermissions = false;
         for (Role role : roles) {
             long roleId = role.getIdLong();
-            if (roleId == 631581319670923274L /* Staff */ || roleId == 662720231591903243L /* Helper */ || roleId == 806278813335814165L /* Lum mods permission */) {
+            if (roleId == 631581319670923274L /* Staff */ || roleId == 662720231591903243L /* Helper */ || roleId == 806278813335814165L /* Lum mods permission */ || roleId == 825266051277258754L /* Hidden VRCMG Staff */) {
                 hasPermissions = true;
                 break;
             }
