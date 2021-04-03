@@ -681,7 +681,7 @@ public class MelonLoaderScanner {
                                 // TODO
                             }
                             else {
-                                System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version);
+                                System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
                                 latestModVersion = modDetail.versions[0].version;
                                 latestModDownloadUrl = modDetail.downloadLink;
                                 break;
@@ -689,8 +689,8 @@ public class MelonLoaderScanner {
                         }
                     }
 
-                    System.out.println("modVersion: " + modVersion);
-                    System.out.println("latestModVersion: " + latestModVersion);
+                    //System.out.println("modVersion: " + modVersion);
+                    //System.out.println("latestModVersion: " + latestModVersion);
                     
                     if (latestModVersion == null && latestModHash == null) {
                         unknownMods.add(modName);
@@ -700,6 +700,7 @@ public class MelonLoaderScanner {
                     }
                     else if (!checkUsingHash ? VersionUtils.CompareVersion(latestModVersion, modVersion) > 0 : (modHash != null && !modHash.equals(latestModHash))) {
                         outdatedMods.add(new MelonOutdatedMod(modName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                        modsThrowingErrors.remove(modName);
                     }
                     /* TODO
                     else if (modName.equals("emmVRC")) {
@@ -712,7 +713,6 @@ public class MelonLoaderScanner {
                     }
                     */
                 }
-                modsThrowingErrors.removeAll(outdatedMods);
             }
         }
         
@@ -857,32 +857,26 @@ public class MelonLoaderScanner {
             
             //
             if (outdatedMods.size() > 0) {
+                String vrcmuMessage = "VRChat".equals(game) ? "- Consider getting [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and moving it to the **Plugins** folder" : "";
                 String error = "";
-                for (int i = 0; i < outdatedMods.size() && i < 5; ++i) {
+                boolean vrcmuAdded = false;
+                for (int i = 0; i < outdatedMods.size() && i < 20; ++i) {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
+                    if (i != outdatedMods.size() - 1 && vrcmuMessage.length() + 100 > 1024)
+                    {
+                        error += "- and " + (outdatedMods.size() - i) + " more...\n";
+                        error += vrcmuMessage;
+                        vrcmuAdded = true;
+                        break;
+                    }
                 }
-                if (outdatedMods.size() > 1 && outdatedMods.size() <= 5 && "VRChat".equals(game))
-                    error += "- Consider getting [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and moving it to the **Plugins** folder";
+                if (!vrcmuAdded && "VRChat".equals(game) && outdatedMods.size() > 5)
+                    error += vrcmuMessage;
                 
-                eb.addField("Outdated mods:", error , false);
+                eb.addField("Outdated mods:", error, false);
                 messageColor = Color.YELLOW;
-            }
-            if (outdatedMods.size() > 5) {
-                String error = "";
-                for (int i = 5; i < outdatedMods.size() && i < 10; ++i) {
-                    MelonOutdatedMod m = outdatedMods.get(i);
-                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
-                    error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                }
-                if (outdatedMods.size() > 10)
-                    error += "- and " + (outdatedMods.size() - 10) + " more...\n";
-                    
-                    if ("VRChat".equals(game))
-                        error += "- Get [VRCModUpdater](https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll) and move it to the **Plugins** folder";
-                
-                eb.addField("Outdated mods Pt. 2:", error , false);
             }
             
             if (errors.size() > 0) {
