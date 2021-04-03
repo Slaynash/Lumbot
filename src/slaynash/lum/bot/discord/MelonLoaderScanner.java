@@ -31,6 +31,7 @@ import slaynash.lum.bot.discord.logscanner.ModDetails;
 import slaynash.lum.bot.discord.logscanner.TheLongDarkModDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModDetails;
 import slaynash.lum.bot.discord.logscanner.VRCModVersionDetails;
+import slaynash.lum.bot.discord.logscanner.VersionUtils;
 
 public class MelonLoaderScanner {
     
@@ -657,7 +658,7 @@ public class MelonLoaderScanner {
                 for (Entry<String, LogsModDetails> entry : loadedMods.entrySet()) {
                     String modName = entry.getKey();
                     LogsModDetails logsModDetails = entry.getValue();
-                    String modVersion = logsModDetails.version;
+                    VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.GetVersion(logsModDetails.version) : null;
                     String modHash = logsModDetails.hash;
                     
                     if (modVersion == null) {
@@ -665,17 +666,12 @@ public class MelonLoaderScanner {
                         continue;
                     }
                     
-                    if (modVersion.startsWith("v"))
-                        modVersion = modVersion.substring(1);
-                    if (modVersion.split("\\.").length == 2)
-                        modVersion += ".0";
-                    
                     String matchedModName = modNameMatcher.get(entry.getKey().trim());
                     if (matchedModName != null) {
                         modAuthors.put(matchedModName, modAuthors.get(modName));
                     }
                     
-                    String latestModVersion = null;
+                    VersionUtils.VersionData latestModVersion = null;
                     String latestModHash = null;
                     String latestModDownloadUrl = null;
                     for (ModDetails modDetail : modDetails) {
@@ -687,14 +683,13 @@ public class MelonLoaderScanner {
                                 System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version);
                                 latestModVersion = modDetail.versions[0].version;
                                 latestModDownloadUrl = modDetail.downloadLink;
-                                if (latestModVersion.startsWith("v"))
-                                    latestModVersion = latestModVersion.substring(1);
-                                if (latestModVersion.split("\\.").length == 2)
-                                    latestModVersion += ".0";
                                 break;
                             }
                         }
                     }
+
+                    System.out.println("modVersion: " + modVersion);
+                    System.out.println("latestModVersion: " + latestModVersion);
                     
                     if (latestModVersion == null && latestModHash == null) {
                         unknownMods.add(modName);
@@ -702,8 +697,8 @@ public class MelonLoaderScanner {
                     else if (CommandManager.brokenVrchatMods.contains(modName)) {
                         brokenMods.add(modName);
                     }
-                    else if (!checkUsingHash ? !modVersion.equals(latestModVersion) : (modHash != null && !modHash.equals(latestModHash))) {
-                        outdatedMods.add(new MelonOutdatedMod(modName, modVersion, latestModVersion, latestModDownloadUrl));
+                    else if (!checkUsingHash ? VersionUtils.CompareVersion(latestModVersion, modVersion) > 0 : (modHash != null && !modHash.equals(latestModHash))) {
+                        outdatedMods.add(new MelonOutdatedMod(modName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                     }
                     /* TODO
                     else if (modName.equals("emmVRC")) {
