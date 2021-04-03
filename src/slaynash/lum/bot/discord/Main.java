@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.DBConnectionManagerShortUrls;
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
@@ -44,10 +46,6 @@ public class Main extends ListenerAdapter {
         catch (GeneralSecurityException e) {
             throw new ExceptionInInitializerError(e);
         }
-        if (args.length < 1) {
-            System.err.println("Please specify token in passed arguments");
-            return;
-        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             JDA jda = JDAManager.getJDA();
@@ -56,8 +54,12 @@ public class Main extends ListenerAdapter {
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
                 .sendMessage(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
-                .queue();
+                .complete();
         }));
+
+        ConfigManager.init();
+
+        DBConnectionManagerShortUrls.init();
         
         loadLogchannelList();
         loadVerifychannelList();
@@ -72,7 +74,7 @@ public class Main extends ListenerAdapter {
         MelonLoaderScanner.Init();
         
         CommandManager.init();
-        JDAManager.init(args[0]);
+        JDAManager.init(ConfigManager.discordToken);
         
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
 

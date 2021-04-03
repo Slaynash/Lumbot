@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.logscanner.AudicaModDetails;
 import slaynash.lum.bot.discord.logscanner.BTD6ModDetails;
 import slaynash.lum.bot.discord.logscanner.ModDetails;
@@ -859,7 +860,7 @@ public class MelonLoaderScanner {
                 String error = "";
                 for (int i = 0; i < outdatedMods.size() && i < 5; ++i) {
                     MelonOutdatedMod m = outdatedMods.get(i);
-                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + m.downloadUrl + ")");
+                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
                 }
                 if (outdatedMods.size() > 1 && outdatedMods.size() <= 5 && "VRChat".equals(game))
@@ -872,7 +873,7 @@ public class MelonLoaderScanner {
                 String error = "";
                 for (int i = 5; i < outdatedMods.size() && i < 10; ++i) {
                     MelonOutdatedMod m = outdatedMods.get(i);
-                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + m.downloadUrl + ")");
+                    String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
                 }
                 if (outdatedMods.size() > 10)
