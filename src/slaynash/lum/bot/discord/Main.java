@@ -28,9 +28,11 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
+import slaynash.lum.bot.steam.Steam;
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
+    public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
         TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager(){
@@ -48,6 +50,8 @@ public class Main extends ListenerAdapter {
         }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            isShuttingDown = true;
+            
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
             jda
@@ -60,6 +64,8 @@ public class Main extends ListenerAdapter {
         ConfigManager.init();
 
         DBConnectionManagerShortUrls.init();
+
+        new Steam().start();
         
         loadLogchannelList();
         loadVerifychannelList();

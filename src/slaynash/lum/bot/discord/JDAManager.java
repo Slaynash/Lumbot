@@ -37,7 +37,7 @@ public class JDAManager {
         return eb.build();
     }
     
-    protected static JDA getJDA() {
+    public static JDA getJDA() {
         return jda;
     }
 
