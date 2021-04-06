@@ -15,16 +15,20 @@ public class SteamAppDetails {
     private SteamAppDetails() {}
 
     public SteamAppDetails(KeyValue keyValues) {
-        KeyValue appinfo = keyValues.get("appinfo");
-        appId = appinfo.get("appid").asString();
+        appId = keyValues.get("appid").asString();
+        System.out.println("appid: " + appId);
         
-        KeyValue common = appinfo.get("common");
+        KeyValue common = keyValues.get("common");
         if (common != KeyValue.INVALID)
             this.common = new SteamAppDetailsCommon(common);
+        else
+            System.out.println("key \"common\" not found in " + keyValues.getName());
         
-        KeyValue depots = appinfo.get("depots");
+        KeyValue depots = keyValues.get("depots");
         if (depots != KeyValue.INVALID)
             this.depots = new SteamAppDepots(depots);
+        else
+            System.out.println("key \"depots\" not found in " + keyValues.getName());
     }
 
     public static SteamAppDetails compare(SteamAppDetails oldDetails, SteamAppDetails newDetails) {
@@ -56,7 +60,7 @@ public class SteamAppDetails {
         private SteamAppDepots() {}
 
         public SteamAppDepots(KeyValue keyValues) {
-            KeyValue branches = keyValues.get("depots");
+            KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())
                 this.branches.put(branch.getName(), new SteamAppBranch(branch));
         }
