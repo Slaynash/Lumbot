@@ -106,7 +106,7 @@ public class Steam {
                 if (changeDataPair.getKey() == gameId) {
                     
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("New Steam changelist available ([#" + callback.getCurrentChangeNumber() + "](https://steamdb.info/app/" + gameId + "/history/?changeid=" + callback.getCurrentChangeNumber() + "))");
+                    eb.setTitle("New Steam changelist available (#" + callback.getCurrentChangeNumber() + ")", "https://steamdb.info/app/" + gameId + "/history/?changeid=" + callback.getCurrentChangeNumber());
                     MessageEmbed embed = eb.build();
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(826762913549123604L /* Slaynash channel */).sendMessage(embed).queue();
