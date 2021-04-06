@@ -56,7 +56,7 @@ public class SteamAppDetails {
         private SteamAppDepots() {}
 
         public SteamAppDepots(KeyValue keyValues) {
-            KeyValue branches = keyValues.get("common");
+            KeyValue branches = keyValues.get("depots");
             for (KeyValue branch : branches.getChildren())
                 this.branches.put(branch.getName(), new SteamAppBranch(branch));
         }
