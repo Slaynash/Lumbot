@@ -1,11 +1,11 @@
 package slaynash.lum.bot.discord.logscanner;
 
 public class ModVersion {
-    public String version;
+    public VersionUtils.VersionData version;
     public String hash;
     
     public ModVersion(String version, String hash) {
-        this.version = version;
+        this.version = VersionUtils.GetVersion(version);
         this.hash = hash;
     }
 }

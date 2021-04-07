@@ -26,9 +26,13 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.DBConnectionManagerShortUrls;
+import slaynash.lum.bot.steam.Steam;
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
+    public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
         TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager(){
@@ -44,20 +48,24 @@ public class Main extends ListenerAdapter {
         catch (GeneralSecurityException e) {
             throw new ExceptionInInitializerError(e);
         }
-        if (args.length < 1) {
-            System.err.println("Please specify token in passed arguments");
-            return;
-        }
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            isShuttingDown = true;
+            
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
             jda
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
                 .sendMessage(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
-                .queue();
+                .complete();
         }));
+
+        ConfigManager.init();
+
+        DBConnectionManagerShortUrls.init();
+
+        new Steam().start();
         
         loadLogchannelList();
         loadVerifychannelList();
@@ -72,7 +80,7 @@ public class Main extends ListenerAdapter {
         MelonLoaderScanner.Init();
         
         CommandManager.init();
-        JDAManager.init(args[0]);
+        JDAManager.init(ConfigManager.discordToken);
         
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
 

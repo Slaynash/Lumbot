@@ -48,7 +48,7 @@ public class VRCApiVersionScanner {
                         eb.addField("New Build Version Tag", "[" + config.deploymentGroup + "] " + config.buildVersionTag, false);
                         MessageEmbed embed = eb.build();
 
-                        JDAManager.getJDA().getGuildById(439093693769711616L /* VRCMG */).getTextChannelById(741433349704384662L /* Slaynash channel */).sendMessage(embed).queue();
+                        JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(826762913549123604L /* Slaynash channel */).sendMessage(embed).queue();
 
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;

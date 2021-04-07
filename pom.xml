@@ -52,6 +52,10 @@
       <name>bintray</name>
       <url>https://jcenter.bintray.com</url>
     </repository>
+    <repository>
+      <id>snapshots-repo</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -69,6 +73,21 @@
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
       <version>4.2.0_241</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.23</version>
+    </dependency>
+    <dependency>
+      <groupId>in.dragonbra</groupId>
+      <artifactId>javasteam</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency> <!-- NON-ANDROID ONLY -->
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.68</version>
     </dependency>
   </dependencies>
 
