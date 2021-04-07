@@ -867,7 +867,7 @@ public class MelonLoaderScanner {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if (i != outdatedMods.size() - 1 && vrcmuMessage.length() + 100 > 1024)
+                    if (i != outdatedMods.size() - 1 && error.length() + vrcmuMessage.length() + 20 > 1024)
                     {
                         error += "- and " + (outdatedMods.size() - i) + " more...\n";
                         error += vrcmuMessage;
@@ -875,7 +875,7 @@ public class MelonLoaderScanner {
                         break;
                     }
                 }
-                if (!vrcmuAdded && "VRChat".equals(game) && outdatedMods.size() > 5)
+                if (!vrcmuAdded && outdatedMods.size() > 3)
                     error += vrcmuMessage;
                 
                 eb.addField("Outdated mods:", error, false);
