@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Main;
+import slaynash.lum.bot.steam.SteamAppDetails.SteamAppBranch;
 
 public class Steam {
 
@@ -83,7 +84,8 @@ public class Steam {
 
             startChangesRequesterThread();
 
-            apps.picsGetProductInfo(gameId, null, false, false);
+            if (vrchatAppDetails == null)
+                apps.picsGetProductInfo(gameId, null, false, false);
         });
         callbackManager.subscribe(LoggedOffCallback.class, callback -> {
             if (isLoggedOn) {
@@ -132,6 +134,16 @@ public class Steam {
 
                 if (vrchatAppDetails == null) {
                     vrchatAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
+                    /*
+                    System.out.println("Branches:");
+                    for (Entry<String, SteamAppBranch> branch : vrchatAppDetails.depots.branches.entrySet()) {
+                        System.out.println("[" + branch.getKey() + "]");
+                        System.out.println("    buildid: " + branch.getValue().buildid);
+                        System.out.println("    desc: " + branch.getValue().description);
+                        System.out.println("    time: " + branch.getValue().timeupdated);
+                        System.out.println("    pwd: " + branch.getValue().pwdrequired);
+                    }
+                    */
                     return;
                 }
                 

@@ -99,7 +99,7 @@ public class SteamAppDetails {
         private SteamAppBranch() {}
 
         public SteamAppBranch(KeyValue keyValues) {
-            buildid = keyValues.get("name").asLong();
+            buildid = keyValues.get("buildid").asLong();
             KeyValue description = keyValues.get("description");
             this.description = description != KeyValue.INVALID ? description.asString() : null;
             timeupdated = keyValues.get("timeupdated").asLong();
@@ -112,11 +112,15 @@ public class SteamAppDetails {
             boolean changed = false;
 
             changed |= (ret.buildid = (oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1)) != -1;
-            changed |= (ret.description = (oldBranch.description != newBranch.description ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null)) != null;
+            changed |= (ret.description = (!isStringEquals(oldBranch.description, newBranch.description) ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null)) != null;
             changed |= (ret.timeupdated = (oldBranch.timeupdated != newBranch.timeupdated ? newBranch.timeupdated : -1)) != -1;
             changed |= (ret.pwdrequired = (oldBranch.pwdrequired != newBranch.pwdrequired ? (newBranch.pwdrequired != null ? newBranch.pwdrequired : oldBranch.pwdrequired) : null)) != null;
 
             return changed ? ret : null;
+        }
+
+        private static boolean isStringEquals(String left, String right) {
+            return left == null ? (right == null) : (left.equals(right));
         }
     }
 }
