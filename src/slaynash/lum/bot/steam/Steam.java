@@ -110,7 +110,7 @@ public class Steam {
                     eb.setTitle("New Steam changelist available (#" + callback.getCurrentChangeNumber() + ")", "https://steamdb.info/app/" + gameId + "/history/?changeid=" + callback.getCurrentChangeNumber());
                     MessageEmbed embed = eb.build();
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(826762913549123604L /* Slaynash channel */).sendMessage(embed).queue();
+                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(embed).queue();
                     
                     apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
                 }
