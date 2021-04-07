@@ -354,6 +354,7 @@ public class MelonLoaderScanner {
         boolean isMLOutdatedVRC = false;
         boolean isMLOutdatedVRCBrokenDeobfMap = false;
         
+        boolean noMods = true;
         boolean consoleCopyPaste = false;
         boolean pre3 = false;
         boolean alpha = false;
@@ -401,8 +402,10 @@ public class MelonLoaderScanner {
                                 
                                 else if (preListingMods && line.matches("\\[[0-9.:]+\\] ------------------------------"));
                                 else if (preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Plugins Loaded!") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Mods Loaded!"))) {
+                                    remainingModCount = 0;
                                     preListingMods = false;
                                     listingMods = false;
+                                    noMods = true;
                                     System.out.println("No mod/plugins loaded for this pass");
                                     
                                     continue;
@@ -411,7 +414,7 @@ public class MelonLoaderScanner {
                                     remainingModCount = Integer.parseInt(line.split(" ")[1]);
                                     preListingMods = false;
                                     listingMods = true;
-                                    
+                                    noMods = false;
                                     System.out.println(remainingModCount + " mods or plugins loaded on this pass");
                                     br.readLine(); // Skip line separator
                                     
@@ -778,7 +781,7 @@ public class MelonLoaderScanner {
         
         eb.setDescription(message);
         
-        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0)) {
+        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0) || noMods) {
             
             if (isMLOutdatedVRC) {
                 if (pre3)
@@ -864,7 +867,7 @@ public class MelonLoaderScanner {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if (i != outdatedMods.size() - 1 && vrcmuMessage.length() + 100 > 1024)
+                    if (i != outdatedMods.size() - 1 && error.length() + vrcmuMessage.length() + 20 > 1024)
                     {
                         error += "- and " + (outdatedMods.size() - i) + " more...\n";
                         error += vrcmuMessage;
@@ -872,7 +875,7 @@ public class MelonLoaderScanner {
                         break;
                     }
                 }
-                if (!vrcmuAdded && "VRChat".equals(game) && outdatedMods.size() > 5)
+                if (!vrcmuAdded && outdatedMods.size() > 3)
                     error += vrcmuMessage;
                 
                 eb.addField("Outdated mods:", error, false);
@@ -904,7 +907,7 @@ public class MelonLoaderScanner {
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
                     
-                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
+                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError) || noMods)
                     error += " - You have no mods installed in your Mods and Plugins folder\n";
                 
                 if (hasNonModErrors)
