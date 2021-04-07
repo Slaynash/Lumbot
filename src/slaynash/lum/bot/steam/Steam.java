@@ -27,7 +27,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Main;
-import slaynash.lum.bot.steam.SteamAppDetails.SteamAppBranch;
 
 public class Steam {
 
@@ -180,7 +179,7 @@ public class Steam {
                     eb.setDescription(description);
                     MessageEmbed embed = eb.build();
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(826762913549123604L /* Slaynash channel */).sendMessage(embed).queue();
+                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(embed).queue();
                 }
             }
         });
