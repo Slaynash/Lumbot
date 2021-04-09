@@ -76,6 +76,8 @@ public class Steam {
         callbackManager.subscribe(LoggedOnCallback.class, callback -> {
             if (callback.getResult() != EResult.OK) {
                 System.err.println("[Steam] Failed to login: " + callback.getResult());
+                client.disconnect();
+                return;
             }
 
             isLoggedOn = true;
@@ -181,6 +183,8 @@ public class Steam {
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(embed).queue();
                 }
+
+                vrchatAppDetails = newAppDetails;
             }
         });
     }
