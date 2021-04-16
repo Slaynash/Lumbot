@@ -80,7 +80,13 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\r\\n\\r\\n  at System.Net.AutoWebProxyScriptEngine.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
         add(new MelonLoaderError(
-                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException.*",
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
+                "emmVRC Network is currently down. Staff are aware of this and working to bring it back online."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
+                "Please open Window's `Date & time` settings and enable `Set time automatically`."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
