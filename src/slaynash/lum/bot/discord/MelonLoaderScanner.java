@@ -42,9 +42,6 @@ public class MelonLoaderScanner {
     public static String uixURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
-        add(new MelonLoaderError(
-                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
-                "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
         // add(new MelonLoaderError(
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
@@ -76,6 +73,9 @@ public class MelonLoaderScanner {
                 "You seems to have a 0Harmony.dll file in your `Mods` or `Plugins` folder. This breaks mods and plugins, since Harmony is embed into MelonLoader"));
         */
         //emmVRC error
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
+                "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\r\\n\\r\\n  at System.Net.AutoWebProxyScriptEngine.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
@@ -147,7 +147,7 @@ public class MelonLoaderScanner {
                 "An invalid/broken mod attempted to load."));
         add(new MelonLoaderError(
                 ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-                "Il2CppDumper encountered an error. On MelonLoader 0.3.0 ALPHA, go to the `MelonLoader` folder of your game, open `LaunchOptions.ini`, and set the following values:\n```ini\n[AssemblyGenerator]\nForceUnityDependencies=false\nForceUnityDependencies_Version=0.0.0.0\nForceIl2CppDumper=true\nForceIl2CppDumper_Version=6.5.3\nForceIl2CppAssemblyUnhollower=false\nForceIl2CppAssemblyUnhollower_Version=0.0.0.0\nForceCpp2IL_Version=6.5.3\n```"));
+                "Il2CppDumper encountered an error. You will need to reinstall MelonLoader 0.3.0 for your game to work"));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
