@@ -891,9 +891,9 @@ public class MelonLoaderScanner {
             if (errors.size() > 0) {
                 String error = "";
                 for (int i = 0; i < errors.size(); ++i) {
-                    error += "- " + sanitizeInputString(errors.get(i).error) + "\n";
+                    error += "- " + errors.get(i).error + "\n";
                 }
-                eb.addField("Known errors:", error , false);
+                eb.addField("Known errors:", error, false);
                 messageColor = Color.RED;
             }
             
