@@ -598,7 +598,7 @@ public class MelonLoaderScanner {
                                             errors.add(new MelonLoaderError("", "The assembly generation failed. You will need to reinstall MelonLoader for it to work"));
                                     }
                                     else {
-                                        if (!errors.contains(knownError))
+                                        if (!assemblyGenerationFailed && !errors.contains(knownError))
                                             errors.add(knownError);
                                     }
                                     System.out.println("Found known unhollower error");
