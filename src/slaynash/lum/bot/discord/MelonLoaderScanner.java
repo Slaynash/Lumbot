@@ -81,7 +81,7 @@ public class MelonLoaderScanner {
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
-                "emmVRC Network is currently down. Staff are aware of this and working to bring it back online."));
+                "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
                 "Please open Window's `Date & time` settings and enable `Set time automatically`."));
@@ -147,7 +147,7 @@ public class MelonLoaderScanner {
                 "An invalid/broken mod attempted to load."));
         add(new MelonLoaderError(
                 ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-                "Il2CppDumper encountered an error. You will need to reinstall MelonLoader 0.3.0 for your game to work"));
+                "Please reinstall/update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
