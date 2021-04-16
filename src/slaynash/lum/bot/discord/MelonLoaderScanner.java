@@ -139,6 +139,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 ".*Invalid Version given to MelonInfoAttribute.*",
                 "An invalid/broken mod attempted to load."));
+        add(new MelonLoaderError(
+                ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
+                "Il2CppDumper encountered an error. On MelonLoader 0.3.0 ALPHA, go to the `MelonLoader` folder of your game, open `LaunchOptions.ini`, and set the following values:\n```ini\n[AssemblyGenerator]\nForceUnityDependencies=false\nForceUnityDependencies_Version=0.0.0.0\nForceIl2CppDumper=true\nForceIl2CppDumper_Version=6.5.3\nForceIl2CppAssemblyUnhollower=false\nForceIl2CppAssemblyUnhollower_Version=0.0.0.0\nForceCpp2IL_Version=6.5.3\n```"));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
