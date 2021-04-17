@@ -318,41 +318,5 @@ public class Main extends ListenerAdapter {
                 event.getGuild().addRoleToMember(event.getMember(), role);
         }
     }
-    
-    @Override
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        
-        /*
-        if(event.getGuild().getIdLong() == 439093693769711616L || event.getGuild().getIdLong() == 663449315876012052L || event.getGuild().getIdLong() == 600298024425619456L) {
-            String name = event.getUser().getName();
-            for (String s : CommandManager.blacklistedNames) {
-                if (name.matches(".*\\Q" + s + "\\E.*")) {
-                    event.getGuild().ban(event.getMember(), 0, "Blacklisted username").queue();
-                    event.getGuild().getDefaultChannel().sendMessage("Automatically banned blacklisted username " + event.getMember().getNickname());
-                    return;
-                }
-            }
-        }
-        */
-        
-        if(event.getUser().isBot())
-            return;
-        
-        if(event.getGuild().getId().equals("446646432339066912")) {
-            event.getUser().openPrivateChannel().queue((channel) -> {
-                channel.sendMessage("Welcome to the MetrixVR discord !\nPlease make sure to read the <#446646432339066916> channel and react with :white_check_mark: to see every channels.\nIf you need some help, you can ask in the #help-requests channel.\n\nTo play the game, you will need a game account. You can create one at <https://metrixvr.net/register>.\nYou can ask for a key in the #🔑key-requests🔑 channel. Every keys will be sent at the same time as the next update.\nPlease read the latest #announcements for more infos!\n\nHave a good day\n - Slaynash").queue();
-            });
-        }
-        if(event.getGuild().getId().equals("439093693769711616")) {
-            event.getUser().openPrivateChannel().queue((channel) -> {
-                channel.sendMessage("Welcome to the VRChat Modding Group discord !\nPlease make sure to read the <#721966647228891227> channel and react with :white_check_mark: to see every channels.\nIf you need some help, you can ask in the #help-requests channel.\n\nHave a good day\n - Slaynash").queue();
-            });
-        }
-        if(event.getGuild().getId().equals("398382180608507904")) {
-            event.getUser().openPrivateChannel().queue((channel) -> {
-                channel.sendMessage("Bienvenue sur le serveur **VRChat Communauté Francophone** ! Nous te prions tout d'abord de lire le règlement dans le salon <#399022887631323148> afin de connaître le bon fonctionnement du serveur et pour ne pas t'y perdre. (N'oublie pas de choisir un rôle :wink:)\nSur ce, amuse toi bien et bon jeu !").queue();
-            });
-        }
-    }
 
 }
