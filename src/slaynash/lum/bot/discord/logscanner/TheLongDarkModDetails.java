@@ -13,7 +13,7 @@ public class TheLongDarkModDetails {
     public String repoName;
     
     @SerializedName("DisplayAuthor")
-    public String displayAuthor;
+    public String[] displayAuthor;
     
     @SerializedName("Version")
     public String version;
