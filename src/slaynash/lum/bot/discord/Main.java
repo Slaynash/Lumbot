@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.Map.Entry;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -21,6 +22,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -70,7 +72,7 @@ public class Main extends ListenerAdapter {
         loadLogchannelList();
         loadVerifychannelList();
         loadReactionsList();
-        loadNameBlacklist();
+        loadScreeningRolesList();
         loadMelonLoaderVersions();
         loadMLHashes();
         loadMLVRCHash();
@@ -105,6 +107,23 @@ public class Main extends ListenerAdapter {
                 String[] parts = line.split(" ", 4);
                 if(parts.length == 3 && parts[0].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
                     CommandManager.reactionListeners.add(new ReactionListener(parts[0], parts[1], parts[2]));
+                }
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadScreeningRolesList() {
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("rolescreening.txt"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(" ", 4);
+                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
+                    CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
                 }
             }
             reader.close();
@@ -187,21 +206,6 @@ public class Main extends ListenerAdapter {
                 if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.mlReportChannels.put(Long.parseLong(parts[0]), parts[1]);
                 }
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private static void loadNameBlacklist() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("nameblacklist.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().equals(""))
-                    CommandManager.blacklistedNames.add(line.trim());
             }
             reader.close();
         } catch (IOException e) {
@@ -304,10 +308,21 @@ public class Main extends ListenerAdapter {
             }
         }
     }
+
+    @Override
+    public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event) {
+        long targetRoleId = CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong());
+        if (targetRoleId > 0) {
+            Role role = event.getGuild().getRoleById(targetRoleId);
+            if (role != null)
+                event.getGuild().addRoleToMember(event.getMember(), role);
+        }
+    }
     
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         
+        /*
         if(event.getGuild().getIdLong() == 439093693769711616L || event.getGuild().getIdLong() == 663449315876012052L || event.getGuild().getIdLong() == 600298024425619456L) {
             String name = event.getUser().getName();
             for (String s : CommandManager.blacklistedNames) {
@@ -318,6 +333,7 @@ public class Main extends ListenerAdapter {
                 }
             }
         }
+        */
         
         if(event.getUser().isBot())
             return;

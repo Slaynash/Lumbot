@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
-import slaynash.lum.bot.discord.commands.BlacklistNameCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
 import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
@@ -24,6 +23,7 @@ import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
+import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 
@@ -34,7 +34,7 @@ public class CommandManager {
     public static List<ReactionListener> reactionListeners = new ArrayList<>();
     public static Map<Long, String> logChannels = new HashMap<>();
     public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
-    public static List<String> blacklistedNames = new ArrayList<String>();
+    public static Map<Long, Long> autoScreeningRoles;
     
     public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
@@ -84,9 +84,9 @@ public class CommandManager {
         CommandManager.registerCommand(new RankColorCommand());
 
         CommandManager.registerCommand(new AddReactionHandlerCommand());
-        CommandManager.registerCommand(new BlacklistNameCommand());
         CommandManager.registerCommand(new SetLogChannelHandlerCommand());
         CommandManager.registerCommand(new VerifyChannelHandlerCommand());
+        CommandManager.registerCommand(new SetScreeningRoleHandlerCommand());
 
         CommandManager.registerCommand(new CommandLaunchCommand());
 
@@ -112,6 +112,17 @@ public class CommandManager {
         {
             for(ReactionListener rl : reactionListeners) {
                 writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void saveScreenings() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolescreening.txt")))
+        {
+            for(Entry<Long, Long> pair : autoScreeningRoles.entrySet()) {
+                writer.write(pair.getKey() + " " + pair.getValue() + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -168,17 +179,6 @@ public class CommandManager {
         {
             for(Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
                 writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public static void saveNameBlacklist() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("nameblacklist.txt")))
-        {
-            for(String s : blacklistedNames) {
-                writer.write(s + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
