@@ -34,7 +34,7 @@ public class CommandManager {
     public static List<ReactionListener> reactionListeners = new ArrayList<>();
     public static Map<Long, String> logChannels = new HashMap<>();
     public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
-    public static Map<Long, Long> autoScreeningRoles;
+    public static Map<Long, Long> autoScreeningRoles = new HashMap<>();
     
     public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
