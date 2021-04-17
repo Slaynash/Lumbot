@@ -315,7 +315,7 @@ public class Main extends ListenerAdapter {
         if (targetRoleId > 0) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null)
-                event.getGuild().addRoleToMember(event.getMember(), role);
+                event.getGuild().addRoleToMember(event.getMember(), role).queue();
         }
     }
 
