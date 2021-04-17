@@ -40,7 +40,7 @@ public final class VersionUtils {
     }
 
     public static VersionData GetVersion(String versionString) {
-        versionString = versionString.trim();
+        versionString = versionString != null ? versionString.trim() : null;
 
         if (versionString == null || versionString.equals(""))
             return new VersionData();

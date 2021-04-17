@@ -347,7 +347,7 @@ public class MelonLoaderScanner {
         Map<String, LogsModDetails> loadedMods = new HashMap<String, LogsModDetails>();
         
         List<String> duplicatedMods = new ArrayList<String>();
-        List<String> unknownMods = new ArrayList<String>();
+        List<ModDetails> unknownMods = new ArrayList<ModDetails>();
         List<String> universalMods = new ArrayList<String>();
         List<String> incompatibleMods = new ArrayList<String>();
         List<MelonOutdatedMod> outdatedMods = new ArrayList<MelonOutdatedMod>();
@@ -678,7 +678,7 @@ public class MelonLoaderScanner {
                     String modHash = logsModDetails.hash;
                     
                     if (modVersion == null) {
-                        unknownMods.add(modName);
+                        unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
                         continue;
                     }
                     
@@ -708,7 +708,7 @@ public class MelonLoaderScanner {
                     //System.out.println("latestModVersion: " + latestModVersion);
                     
                     if (latestModVersion == null && latestModHash == null) {
-                        unknownMods.add(modName);
+                        unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
                     }
                     else if (CommandManager.brokenVrchatMods.contains(modName)) {
                         brokenMods.add(modName);
@@ -860,8 +860,8 @@ public class MelonLoaderScanner {
             if (unknownMods.size() > 0) {
                 String error = "";
                 for (int i = 0; i < unknownMods.size() && i < 10; ++i) {
-                    String s = unknownMods.get(i);
-                    error += "- " + sanitizeInputString(s) + (modAuthors.containsKey(s) ? (" **by** " + sanitizeInputString(modAuthors.get(s)) + "\n") : "\n");
+                    ModDetails md = unknownMods.get(i);
+                    error += "- " + sanitizeInputString(md.name) + (md.versions[0].version.getRaw().equals("") ? "" : (" " + sanitizeInputString(md.versions[0].version.getRaw()))) + (modAuthors.containsKey(md.name) ? (" **by** " + sanitizeInputString(modAuthors.get(md.name)) + "\n") : "\n");
                 }
                 if (unknownMods.size() > 10)
                     error += "- and " + (unknownMods.size() - 10) + " more...";
