@@ -22,11 +22,8 @@ public class CrasherVideoChecker {
             Attachment attachment = attachments.get(i);
             if (attachment.getFileExtension().toLowerCase().equals("mp4")) {
                 try (InputStream is = attachment.retrieveInputStream().get()) {
-                    if (checkForCrasher(is)) {
-                        event.getMessage().delete().queue();
-                        event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
+                    if (checkForCrasher(is, event))
                         return;
-                    }
                 }
                 catch (InterruptedException | ExecutionException | IOException e) {
                     e.printStackTrace();
@@ -43,11 +40,9 @@ public class CrasherVideoChecker {
                 System.out.println("weblink: " + url);
                 try (InputStream is = new URL(url).openStream()) {
                     byte[] bytes = is.readNBytes(8);
-                    if (bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70 && checkForCrasher(is)) {
-                        event.getMessage().delete().queue();
-                        event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
+                    if (bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70 && checkForCrasher(is, event))
                         return;
-                    }
+                    
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                         String line;
                         while ((line = br.readLine()) != null) {
@@ -67,11 +62,8 @@ public class CrasherVideoChecker {
                                     videourl += tag.split("https?:\\/\\/", 3)[1].split("\"")[0];
                                     System.out.println("videourl: " + videourl);
                                     try (InputStream vis = new URL(videourl).openStream()) {
-                                        if (checkForCrasher(vis)) {
-                                            event.getMessage().delete().queue();
-                                            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
+                                        if (checkForCrasher(vis, event))
                                             return;
-                                        }
                                     }
                                     catch (IOException e) {
                                         e.printStackTrace();
@@ -89,7 +81,7 @@ public class CrasherVideoChecker {
 
     }
 
-    private static boolean checkForCrasher(InputStream is) throws IOException {
+    private static boolean checkForCrasher(InputStream is, MessageReceivedEvent event) throws IOException {
         int totalRead = 0;
         boolean donereading = false;
         while (!donereading && totalRead < 10_000) {
@@ -106,8 +98,15 @@ public class CrasherVideoChecker {
                 totalRead += read;
             }
             
-            if (indexOf(buffer, bufferIndex, new byte[] {0x41, 0x56, 0x43}) > 128)
+            if (indexOf(buffer, bufferIndex, new byte[] {0x41, 0x56, 0x43}) > 128) {
+                event.getMessage().delete().queue();
+                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
+                if (event.getGuild().getIdLong() == 439093693769711616L /* VRCMG */ ||
+                    event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ ||
+                    event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */)
+                    event.getGuild().ban(event.getMember(), 0, "Posting a crasher video").queue();
                 return true;
+            }
         }
 
         return false;
