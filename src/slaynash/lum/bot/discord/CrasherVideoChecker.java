@@ -84,7 +84,7 @@ public class CrasherVideoChecker {
     private static boolean checkForCrasher(InputStream is, MessageReceivedEvent event) throws IOException {
         int totalRead = 0;
         boolean donereading = false;
-        while (!donereading && totalRead < 10_000) {
+        while (!donereading && totalRead < 10_000_000) {
             int bufferIndex = 0;
             byte[] buffer = new byte[10000];
             while (bufferIndex < buffer.length) {
