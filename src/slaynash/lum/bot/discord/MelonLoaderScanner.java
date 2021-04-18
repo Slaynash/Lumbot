@@ -817,6 +817,7 @@ public class MelonLoaderScanner {
                 if (duplicatedMods.size() > 10)
                     error += "- and " + (duplicatedMods.size() - 10) + " more...";
                
+                error += "- Duplicate Mods are known to crash MelonLoader. Make sure there is only one copy in both Mods and Plugins folder.";
                 eb.addField("Duplicate mods:", error , false);
                 messageColor = Color.RED;
             }
@@ -914,7 +915,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
-            if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC) {
+            if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC && duplicatedMods.size() == 0) {
                 String error = "";
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
