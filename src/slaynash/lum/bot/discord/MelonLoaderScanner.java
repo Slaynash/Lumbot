@@ -83,6 +83,9 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
                 "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
         add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task (PopulateList|SearchAvatars)} failed with exception.*",
+                "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
+        add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
                 "Please open Window's `Date & time` settings and enable `Set time automatically`."));
         add(new MelonLoaderError(
