@@ -90,21 +90,23 @@ public class CrasherVideoChecker {
     }
 
     private static boolean checkForCrasher(InputStream is) throws IOException {
+        int totalRead = 0;
         boolean donereading = false;
-        while (!donereading) {
-            int total = 0;
+        while (!donereading && totalRead < 10_000) {
+            int bufferIndex = 0;
             byte[] buffer = new byte[10000];
-            while (total < buffer.length) {
-                int read = is.read(buffer, total, buffer.length - total);
+            while (bufferIndex < buffer.length) {
+                int read = is.read(buffer, bufferIndex, buffer.length - bufferIndex);
                 if (read == -1) {
                     donereading = true;
                     break;
                 }
 
-                total += read;
+                bufferIndex += read;
+                totalRead += read;
             }
             
-            if (indexOf(buffer, total, new byte[] {0x41, 0x56, 0x43}) > 128)
+            if (indexOf(buffer, bufferIndex, new byte[] {0x41, 0x56, 0x43}) > 128)
                 return true;
         }
 
