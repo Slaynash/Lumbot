@@ -46,6 +46,15 @@ public class ServerMessagesHandler {
                     event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(error, Color.RED)).queue();
             }
         }).start();
+
+        new Thread(() -> {
+            try {
+                CrasherVideoChecker.check(event);
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
       }
 
     private static String getStackTrace(Exception e) {
