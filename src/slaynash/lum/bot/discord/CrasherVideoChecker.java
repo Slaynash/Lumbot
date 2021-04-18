@@ -103,8 +103,18 @@ public class CrasherVideoChecker {
                 event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
                 if (event.getGuild().getIdLong() == 439093693769711616L /* VRCMG */ ||
                     event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ ||
-                    event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */)
+                    event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
+                    try {
+                        event.getAuthor()
+                            .openPrivateChannel().complete()
+                            .sendMessage("You have been banned from **" + event.getGuild().getName() + "**: Posting a crasher video.").queue();
+                    }
+                    catch (Exception e) {
+                        System.out.println("Failed to send ban message to " + event.getMember().getIdLong());
+                        e.printStackTrace();
+                    }
                     event.getGuild().ban(event.getMember(), 0, "Posting a crasher video").queue();
+                }
                 return true;
             }
         }
