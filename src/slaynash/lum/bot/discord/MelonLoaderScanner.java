@@ -801,7 +801,7 @@ public class MelonLoaderScanner {
         
         eb.setDescription(message);
         
-        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0) || (noPlugins && noMods)) {
+        if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0) || noMods) {
             
             if (isMLOutdatedVRC) {
                 if (pre3)
@@ -928,7 +928,7 @@ public class MelonLoaderScanner {
                 if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
                     
-                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError) && noPlugins && noMods)
+                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError) && noMods)
                     error += " - You have no mods installed in your Mods and Plugins folder\n";
                 
                 if (hasNonModErrors)
