@@ -46,9 +46,6 @@ public class MelonLoaderScanner {
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
         add(new MelonLoaderError(
-                 "\\[[0-9.:]+\\] ClickFix.*",
-                 "ClickFix was added into VRChat and no longer needed. Please delete it from your Mods folder."));
-        add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
                 "One or more mod is missing a library / required mod, or a file is corrupted."));
         //This should hopefully be fixed in 0.3.1
@@ -679,6 +676,10 @@ public class MelonLoaderScanner {
                     LogsModDetails logsModDetails = entry.getValue();
                     VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.GetVersion(logsModDetails.version) : null;
                     String modHash = logsModDetails.hash;
+                    
+                    if ("ClickFix".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder."));
+                    }
                     
                     if (modVersion == null) {
                         unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
