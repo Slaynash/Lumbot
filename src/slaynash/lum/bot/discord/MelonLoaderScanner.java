@@ -762,6 +762,23 @@ public class MelonLoaderScanner {
         eb.setFooter("Lum Log Scanner");
         mb.append("<@" + event.getAuthor().getId() + ">");
         
+        switch(game) {
+            case "VRChat":
+                eb.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
+                
+            case "BloonsTD6":
+                eb.setThumbnail("https://puu.sh/HAj1L/45bf0bb4a2.png");
+                
+            case "Audica":
+                eb.setThumbnail("https://puu.sh/HAj1J/87a425d2e5.png");
+                
+            case "TheLongDark":
+                eb.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
+                
+            case "BONEWORKS":
+                eb.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
+        }
+        
         for (int i = 0; i < attachments.size(); ++i) {
             Attachment attachment = attachments.get(i);
             if (attachment.getFileName().matches("MelonLoader_[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}\\.[0-9]{3}.*\\.log")) {
