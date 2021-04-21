@@ -905,7 +905,7 @@ public class MelonLoaderScanner {
                         break;
                     }
                 }
-                if (!vrcmuAdded && outdatedMods.size() > 3)
+                if (!vrcmuAdded && outdatedMods.size() >= 3)
                     error += vrcmuMessage;
                 
                 eb.addField("Outdated mods:", error, false);
@@ -925,10 +925,10 @@ public class MelonLoaderScanner {
             
             if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC && duplicatedMods.size() == 0) {
                 String error = "";
-                if (loadedMods.size() == 0 && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
+                if (noMods && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
                     
-                if (loadedMods.size() == 0 && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError) && noMods)
+                if (noMods && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += " - You have no mods installed in your Mods and Plugins folder\n";
                 
                 if (hasNonModErrors)
