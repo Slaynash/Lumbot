@@ -814,6 +814,15 @@ public class MelonLoaderScanner {
                 messageColor = Color.YELLOW;
             }
             
+            if (errors.size() > 0) {
+                String error = "";
+                for (int i = 0; i < errors.size(); ++i) {
+                    error += "- " + errors.get(i).error + "\n";
+                }
+                eb.addField("Known errors:", error, false);
+                messageColor = Color.RED;
+            }
+            
             if (duplicatedMods.size() > 0) {
                 String error = "";
                 for (int i = 0; i < duplicatedMods.size() && i < 10; ++i)
@@ -897,15 +906,6 @@ public class MelonLoaderScanner {
                 
                 eb.addField("Outdated mods:", error, false);
                 messageColor = Color.YELLOW;
-            }
-            
-            if (errors.size() > 0) {
-                String error = "";
-                for (int i = 0; i < errors.size(); ++i) {
-                    error += "- " + errors.get(i).error + "\n";
-                }
-                eb.addField("Known errors:", error, false);
-                messageColor = Color.RED;
             }
             
             if (modsThrowingErrors.size() > 0 && !isMLOutdated && !isMLOutdatedVRC) {
