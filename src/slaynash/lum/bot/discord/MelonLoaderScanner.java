@@ -766,18 +766,19 @@ public class MelonLoaderScanner {
             switch (game) {
                 case "VRChat":
                     eb.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
-                    
+                    break;
                 case "BloonsTD6":
                     eb.setThumbnail("https://puu.sh/HAj1L/45bf0bb4a2.png");
-                    
+                    break;
                 case "Audica":
                     eb.setThumbnail("https://puu.sh/HAj1J/87a425d2e5.png");
-                    
+                    break;
                 case "TheLongDark":
                     eb.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
-                    
+                    break;
                 case "BONEWORKS":
                     eb.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
+                    break;
             }
         }
         
