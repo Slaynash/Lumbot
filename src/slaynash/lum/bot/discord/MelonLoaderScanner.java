@@ -681,7 +681,11 @@ public class MelonLoaderScanner {
                         errors.add(new MelonLoaderError("", "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder."));
                     }
                     
-                    if ("Multiplayer Dynamic Bones".equals(modName)) {
+                    if ("Player Volume Control".equals(modName) || "PlayerVolumeControl".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder."));
+                    }
+                    
+                    if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please manually download and replace `DBMod.dll` with it."));
                     }
                     
