@@ -909,7 +909,7 @@ public class MelonLoaderScanner {
                     error += "- and " + (unknownMods.size() - 10) + " more...";
                 
                 eb.addField("Unverified/Unknown mods:", error , false);
-                messageColor = Color.RED;
+                messageColor = messageColor.equals(Color.BLUE) ? Color.RED : messageColor;
             }
             
             //
@@ -953,15 +953,20 @@ public class MelonLoaderScanner {
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
                     
                 if (noMods && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
-                    error += " - You have no mods installed in your Mods and Plugins folder\n";
+                    error += "- You have no mods installed in your Mods and Plugins folder\n";
                 
                 if (hasNonModErrors)
-                    error += " - There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
+                    error += "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
                 
                 if(error.length()>0) {
                     eb.addField("Other Errors:", error , false);
                     messageColor = Color.RED;
                 }
+            }
+            
+            else if(mlVersion != null && loadedMods.size() == 0) {
+                eb.addField("Partial log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to contiune, reinstall MelonLoader, or verify integrity of your game." , false);
+                messageColor = Color.ORANGE;
             }
             
             if (isMLOutdatedVRC || isMLOutdated)
