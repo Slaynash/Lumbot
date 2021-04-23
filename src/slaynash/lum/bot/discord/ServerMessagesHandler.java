@@ -42,7 +42,7 @@ public class ServerMessagesHandler {
 
         if (!checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a dll file.\nPlease download mods via offial links.", Color.YELLOW)).queue();
+            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a dll file.\nPlease only download mods via official links and other trusted sources.", Color.YELLOW)).queue();
             return;
         }
     
