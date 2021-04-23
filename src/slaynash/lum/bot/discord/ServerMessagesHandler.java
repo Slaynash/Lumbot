@@ -42,7 +42,7 @@ public class ServerMessagesHandler {
 
         if (!checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a dll file.\nPlease only download mods via official links and other trusted sources.", Color.YELLOW)).queue();
+            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a dll/exe file.\nPlease only download mods from trusted sources.", Color.YELLOW)).queue();
             return;
         }
     
@@ -107,7 +107,11 @@ public class ServerMessagesHandler {
             return true; // Not a whitelisted server
         
         for (Attachment attachment : event.getMessage().getAttachments()) {
-            if (attachment.getFileExtension().toLowerCase().equals("dll")) {
+            String fileExt = attachment.getFileExtension();
+            if (fileExt == null) fileExt = "";
+            fileExt = fileExt.toLowerCase();
+            
+            if (fileExt.equals("dll") || fileExt.equals("exe")) {
 
                 for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
                     Guild targetGuild;
