@@ -84,7 +84,7 @@ public class MelonLoaderScanner {
                 "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
-                "Please open Window's `Date & time` settings and enable `Set time automatically`."));
+                "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings"));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
