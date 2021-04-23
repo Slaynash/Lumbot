@@ -74,6 +74,9 @@ public class MelonLoaderScanner {
         */
         //emmVRC error
         add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: NameResolutionFailure",
+                "Please set your DNS to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google servers](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."));
+        add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
                 "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder"));
         add(new MelonLoaderError(
