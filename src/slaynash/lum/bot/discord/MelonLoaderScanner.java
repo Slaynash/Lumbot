@@ -80,7 +80,7 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
                 "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
         add(new MelonLoaderError(
-                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\r\\n\\r\\n  at System.Net.AutoWebProxyScriptEngine.*",
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.NullReferenceException: Object reference not set to an instance of an object\\n\\n  at System.Net.AutoWebProxyScriptEngine.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
