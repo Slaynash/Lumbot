@@ -930,7 +930,7 @@ public class MelonLoaderScanner {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if (i != outdatedMods.size() - 1 && error.length() + vrcmuMessage.length() + 20 > 1024)
+                    if (error.length() + vrcmuMessage.length() + 20 > 1024)
                     {
                         error += "- and " + (outdatedMods.size() - i) + " more...\n";
                         error += vrcmuMessage;
