@@ -925,20 +925,17 @@ public class MelonLoaderScanner {
             if (outdatedMods.size() > 0) {
                 String vrcmuMessage = "VRChat".equals(game) ? "- Consider getting [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and moving it to the **Plugins** folder" : "";
                 String error = "";
-                boolean vrcmuAdded = false;
                 for (int i = 0; i < outdatedMods.size() && i < 20; ++i) {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if (error.length() + vrcmuMessage.length() + 20 > 1024)
+                    if (error.length() + vrcmuMessage.length() + 22 >= 1024)
                     {
                         error += "- and " + (outdatedMods.size() - i) + " more...\n";
-                        error += vrcmuMessage;
-                        vrcmuAdded = true;
                         break;
                     }
                 }
-                if (!vrcmuAdded && outdatedMods.size() >= 3)
+                if (outdatedMods.size() >= 3)
                     error += vrcmuMessage;
                 
                 eb.addField("Outdated mods:", error, false);
