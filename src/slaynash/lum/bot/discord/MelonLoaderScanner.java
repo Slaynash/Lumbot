@@ -100,6 +100,12 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
                 "emmVRC instance history became corrupted and has been reset."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: ConnectFailure \\(A connection attempt failed because the connected party did not properly respond after a period of time.*",
+                "emmVRC servers timed out. There is either heavy load or emmVRC servers is having some issues. Please wait while staff looks into the issue."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] emmVRC could not be accessed. Loading from disk, if possible...",
+                "emmVRC failed to access emmVRC servers and attempted to load cached copy."));
     }};
     
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
