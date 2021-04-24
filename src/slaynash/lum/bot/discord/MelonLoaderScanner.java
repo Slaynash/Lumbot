@@ -848,7 +848,7 @@ public class MelonLoaderScanner {
             
             if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
                 eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
-                messageColor = Color.YELLOW;
+                messageColor = Color.ORANGE;
             }
             
             if (errors.size() > 0) {
@@ -883,7 +883,7 @@ public class MelonLoaderScanner {
                     error += "- and " + (missingMods.size() - 10) + " more...";
                 
                 eb.addField("Missing dependencies:", error , false);
-                messageColor = Color.YELLOW;
+                messageColor = Color.ORANGE;
             }
             
             if (incompatibleMods.size() > 0) {
@@ -942,7 +942,7 @@ public class MelonLoaderScanner {
                     error += vrcmuMessage;
                 
                 eb.addField("Outdated mods:", error, false);
-                messageColor = Color.YELLOW;
+                messageColor = Color.ORANGE;
             }
             
             if (modsThrowingErrors.size() > 0 && !isMLOutdated && !isMLOutdatedVRC) {
