@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -32,6 +33,18 @@ public class ServerMessagesHandler {
                 663450655775522843L /* Modder */ });
     }};
 
+    private static String[] alreadyHelpedSentences = new String[] {
+        "I already answered you <:konataCry:553690186022649858>",
+        "Why won't you read my answer <:angry:835647632843866122>",
+        "There's already the answer up here!! <:cirHappy:829458722634858496>"
+    };
+
+    private static String[] alreadyHelpedSentencesRare = new String[] {
+        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>"
+    };
+
+    private static Random random = new Random();
+
     public static void handle(MessageReceivedEvent event) {
         System.out.printf("[%s] [%s][%s] %s: %s\n",
                 TimeManager.getTimeForLog(),
@@ -47,6 +60,17 @@ public class ServerMessagesHandler {
         }
     
         CommandManager.runAsServer(event);
+
+        if (event.getMessage().getContentRaw().toLowerCase().contains("help")) {
+            System.out.println("Help detected");
+            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+                boolean rare = random.nextInt(10) == 9;
+                String sentence = rare
+                    ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
+                    : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                event.getChannel().sendMessage(sentence).queue();
+            }
+        }
         
         new Thread(() -> {
             try {

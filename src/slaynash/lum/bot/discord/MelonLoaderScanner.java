@@ -215,6 +215,8 @@ public class MelonLoaderScanner {
         // backward compatibility
         put("BTKSANameplateFix", "BTKSANameplateMod");
     }};
+
+    private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
     
     public static void Init() {
         
@@ -995,6 +997,8 @@ public class MelonLoaderScanner {
             eb.setColor(messageColor);
             mb.setEmbed(eb.build());
             event.getChannel().sendMessage(mb.build()).queue();
+
+            addNewHelpedRecently(event);
         }
         else if (mlVersion != null) {
             if (hasErrors) {
@@ -1013,6 +1017,25 @@ public class MelonLoaderScanner {
         //else non-log messages
     }
     
+    private static void addNewHelpedRecently(MessageReceivedEvent event) {
+        for (int i = helpedRecently.size() - 1; i >= 0; --i)
+            if (helpedRecently.get(i).time + 60 < Instant.now().getEpochSecond())
+                helpedRecently.remove(i);
+        
+        helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
+        System.out.println("Helped recently added");
+    }
+
+    public static boolean wasHelpedRecently(MessageReceivedEvent event) {
+        for (int i = 0; i < helpedRecently.size(); ++i) {
+            HelpedRecentlyData hrd = helpedRecently.get(i);
+            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + 60 > Instant.now().getEpochSecond())
+                return true;
+        }
+
+        return false;
+    }
+
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
