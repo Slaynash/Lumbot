@@ -156,7 +156,7 @@ public class MelonLoaderScanner {
                 "An invalid/broken mod attempted to load."));
         add(new MelonLoaderError(
                 ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-                "Please reinstall/update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
+                "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
@@ -929,8 +929,13 @@ public class MelonLoaderScanner {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if (error.length() + vrcmuMessage.length() + 22 >= 1024)
-                    {
+                    if(i + 1 < outdatedMods.size()) { //Sorry Slay for this mess. It's the first way I thought of to get future message length. 
+                        m = outdatedMods.get(i+1);
+                        namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
+                    } 
+                    else 
+                        break; // no next outdated Mod
+                    if (error.length() + namePart.length() + vrcmuMessage.length() + 20 > 1024){
                         error += "- and " + (outdatedMods.size() - i) + " more...\n";
                         break;
                     }
