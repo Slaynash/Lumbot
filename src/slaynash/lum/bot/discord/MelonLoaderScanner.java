@@ -845,6 +845,11 @@ public class MelonLoaderScanner {
         
         eb.setDescription(message);
         
+        if (remainingModCount != 0) {
+            eb.addField("Log format:", "Error reading Log. Please do not edit the log and reupload the original log. I don't bite.", false);
+            messageColor = Color.RED;
+        }
+        
         if (errors.size() > 0 || isMLOutdated || isMLOutdatedVRC || duplicatedMods.size() != 0 || unknownMods.size() != 0 || outdatedMods.size() != 0 || brokenMods.size() != 0 || incompatibleMods.size() != 0 || modsThrowingErrors.size() != 0 || missingMods.size() != 0 || (mlVersion != null && loadedMods.size() == 0) || noMods) {
             
             if (isMLOutdatedVRC) {
