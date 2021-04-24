@@ -86,6 +86,9 @@ public class MelonLoaderScanner {
                 "  at System.Net.AutoWebProxyScriptEngine.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles."));
         add(new MelonLoaderError(
+                "  at emmVRC.Menus.VRHUD+.*",
+                "emmVRC VRHud error is caused by `Show quick menu hud in desktop` or `HUD` being enabled when VRChat is started. The only issue it causes is the right emmVRC panel getting stuck in the initial conditions."));
+        add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
                 "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
         add(new MelonLoaderError(
