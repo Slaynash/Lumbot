@@ -42,6 +42,15 @@ public class ServerMessagesHandler {
     private static String[] alreadyHelpedSentencesRare = new String[] {
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>"
     };
+    
+    private static String[] thankedSentences = new String[] {
+        "You're Welcome <:EmmyLove:603759032284741664>",
+        "<:cirHappy:829458722634858496>"
+    };
+
+    private static String[] thankedSentencesRare = new String[] {
+        "Notices you senpai <:02Dead:835648208272883712>"
+    };
 
     private static Random random = new Random();
 
@@ -61,13 +70,24 @@ public class ServerMessagesHandler {
     
         CommandManager.runAsServer(event);
 
-        if (event.getMessage().getContentRaw().toLowerCase().contains("help")) {
+        if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
             System.out.println("Help detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
                 String sentence = rare
                     ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
                     : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                event.getChannel().sendMessage(sentence).queue();
+            }
+        }
+        
+        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")) {
+            System.out.println("Thank detected");
+            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+                boolean rare = random.nextInt(10) == 9;
+                String sentence = rare
+                    ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
+                    : thankedSentences    [random.nextInt(thankedSentences.length)];
                 event.getChannel().sendMessage(sentence).queue();
             }
         }

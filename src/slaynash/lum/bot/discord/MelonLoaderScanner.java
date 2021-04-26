@@ -991,7 +991,7 @@ public class MelonLoaderScanner {
                 }
                 
                 else if(mlVersion != null && loadedMods.size() == 0) {
-                    eb.addField("Partial log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to contiune, reinstall MelonLoader, or verify integrity of your game." , false);
+                    eb.addField("Partial log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game." , false);
                     messageColor = Color.ORANGE;
                 }
             }
