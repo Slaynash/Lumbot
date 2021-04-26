@@ -71,7 +71,7 @@ public class ServerMessagesHandler {
         CommandManager.runAsServer(event);
 
         if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
-            System.out.println("Help detected");
+            System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
                 String sentence = rare
@@ -82,13 +82,20 @@ public class ServerMessagesHandler {
         }
         
         if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")) {
-            System.out.println("Thank detected");
+            System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
                 String sentence = rare
                     ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
                     : thankedSentences    [random.nextInt(thankedSentences.length)];
                 event.getChannel().sendMessage(sentence).queue();
+            }
+        }
+        
+        if (event.getMessage().getContentRaw().toLowerCase().contains("late")) {
+            System.out.println("Late was detected");
+            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+                event.getChannel().sendMessage("https://media.discordapp.net/attachments/807109298982354955/810352859539439646/geuCSLseKf.gif").queue();
             }
         }
         
