@@ -709,6 +709,10 @@ public class MelonLoaderScanner {
                         errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please manually download and replace `DBMod.dll` with it."));
                     }
                     
+                    if ("PortableMirror".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please manually download and replace `PortableMirror.dll` with it."));
+                    }
+                    
                     if (modVersion == null) {
                         unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
                         continue;
