@@ -46,7 +46,12 @@ public class ServerMessagesHandler {
     
     private static String[] thankedSentences = new String[] {
         "You're Welcome <:EmmyLove:603759032284741664>",
-        "<:cirHappy:829458722634858496>"
+        "<:cirHappy:829458722634858496>",
+        "Anytime <:EmmyLove:603759032284741664>",
+        "Always happy to help!",
+        "Mhm of course!",
+        "No problem!",
+        "Glad I could help!"
     };
 
     private static String[] thankedSentencesRare = new String[] {
@@ -81,14 +86,16 @@ public class ServerMessagesHandler {
         if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
-                boolean rare = random.nextInt(10) == 9;
                 String sentence;
-                    if (rare) {
-                        sentence = random.nextInt(1000) == 420 
-                        ? "Shut the fuck up, I literally answered your dumb ass!"
-                        : alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)];
-                    }
-                    else sentence = alreadyHelpedSentences [random.nextInt(alreadyHelpedSentences.length)];
+                boolean rare = random.nextInt(1000) == 420;
+                if (rare) 
+                    sentence = "Shut the fuck up, I literally answered your dumb ass!";
+                else {
+                    rare = random.nextInt(10) == 9;
+                    sentence = rare
+                    ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
+                    : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                }
                 event.getChannel().sendMessage(sentence).queue();
             }
         }
