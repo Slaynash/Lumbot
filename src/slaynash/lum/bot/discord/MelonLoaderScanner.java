@@ -613,7 +613,7 @@ public class MelonLoaderScanner {
                         }
                         else if (line.matches("\\[[0-9.:]+\\] \\[WARNING\\] Duplicate File.*")) {
                             System.out.println("Duplicate in Mods");
-                            duplicatedMods.add(line.substring(line.lastIndexOf("\\")+1).split(".", 2)[0]);
+                            duplicatedMods.add(line.substring(line.lastIndexOf("\\")+1).split("[.]", 2)[0]);
                         }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
