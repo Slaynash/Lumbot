@@ -70,6 +70,12 @@ public class ServerMessagesHandler {
     
         CommandManager.runAsServer(event);
 
+        
+        if (event.getMessage().getContentRaw().toLowerCase().contains("[error]") || event.getMessage().getContentRaw().toLowerCase().contains("developer:")) {
+            System.out.println("Log was typed");
+            event.getChannel().sendMessage("Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
+        }
+        
         if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
