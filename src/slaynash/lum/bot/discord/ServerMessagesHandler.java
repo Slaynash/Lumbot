@@ -40,7 +40,8 @@ public class ServerMessagesHandler {
     };
 
     private static String[] alreadyHelpedSentencesRare = new String[] {
-        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>"
+        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
+        "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png"
     };
     
     private static String[] thankedSentences = new String[] {
@@ -49,7 +50,8 @@ public class ServerMessagesHandler {
     };
 
     private static String[] thankedSentencesRare = new String[] {
-        "Notices you senpai <:02Dead:835648208272883712>"
+        "Notices you senpai <:cirHappy:829458722634858496>",
+        "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858"
     };
 
     private static Random random = new Random();
@@ -80,14 +82,18 @@ public class ServerMessagesHandler {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
-                String sentence = rare
-                    ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
-                    : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                String sentence;
+                    if (rare) {
+                        sentence = random.nextInt(1000) == 420 
+                        ? "Shut the fuck up, I literally answered your dumb ass!"
+                        : alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)];
+                    }
+                    else sentence = alreadyHelpedSentences [random.nextInt(alreadyHelpedSentences.length)];
                 event.getChannel().sendMessage(sentence).queue();
             }
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")) {
+        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
