@@ -100,7 +100,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice")) {
+        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("thx") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
