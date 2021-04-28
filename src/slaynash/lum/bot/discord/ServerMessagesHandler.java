@@ -77,16 +77,17 @@ public class ServerMessagesHandler {
     
         CommandManager.runAsServer(event);
 
+        String message = event.getMessage().getContentRaw().toLowerCase();
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("[error]") || event.getMessage().getContentRaw().toLowerCase().contains("developer:")) {
+        if (message.contains("[error]") || message.contains("developer:")) {
             System.out.println("Log was typed");
             event.getChannel().sendMessage("Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
             event.getMessage().delete().queue();
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
+        if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix")) {
             System.out.println("Help was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event) && !event.getMessage().getContentRaw().toLowerCase().contains("helpful")) {
+            if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
                 if (rare) 
@@ -101,7 +102,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("thx") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice") || event.getMessage().getContentRaw().toLowerCase().contains("helpful")) {
+        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool")  || message.contains("nice") || message.contains("helpful")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
@@ -112,7 +113,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("late")) {
+        else if (message.contains("late")) {
             System.out.println("Late was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 event.getChannel().sendMessage("https://media.discordapp.net/attachments/807109298982354955/810352859539439646/geuCSLseKf.gif").queue();
