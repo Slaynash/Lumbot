@@ -82,7 +82,36 @@ public class ServerMessagesHandler {
         if (message.contains("[error]") || message.contains("developer:")) {
             System.out.println("Log was typed");
             event.getChannel().sendMessage("Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
-            event.getMessage().delete().queue();
+            
+            boolean postedInWhitelistedServer = false;
+            boolean isStaff = false;
+            long guildId = event.getGuild().getIdLong();
+            for (long whitelistedGuildId : whitelistedRolesServers.keySet()) {
+                if (whitelistedGuildId == guildId) {
+                    postedInWhitelistedServer = true;
+                    break;
+                }
+            }
+            for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
+                Guild targetGuild;
+                Member serverMember;
+                if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
+                    (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
+                    
+                    List<Role> roles = serverMember.getRoles();
+                    for (Role role : roles) {
+                        long roleId = role.getIdLong();
+                        for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
+                            if (whitelistedRoleId == roleId) {
+                                isStaff = true; // The sender is whitelisted
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            if (postedInWhitelistedServer && !isStaff)
+                event.getMessage().delete().queue();
         }
         
         if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix")) {
