@@ -22,6 +22,10 @@ jobs:
       - name: Adding file name to path
         run: echo buildname=$(ls /home/runner/work/Lumbot/Lumbot/target | grep bot) >> $GITHUB_ENV
       
+      - uses: kolpav/purge-artifacts-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          expire-in: 10days # Set this to 0 to delete all artifacts
       - name: Upload to artifacts
         uses: actions/upload-artifact@v2
         with:
