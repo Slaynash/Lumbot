@@ -81,11 +81,12 @@ public class ServerMessagesHandler {
         if (event.getMessage().getContentRaw().toLowerCase().contains("[error]") || event.getMessage().getContentRaw().toLowerCase().contains("developer:")) {
             System.out.println("Log was typed");
             event.getChannel().sendMessage("Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
+            event.getMessage().delete().queue();
         }
         
         if (event.getMessage().getContentRaw().toLowerCase().contains("help") || event.getMessage().getContentRaw().toLowerCase().contains("fix")) {
             System.out.println("Help was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+            if (MelonLoaderScanner.wasHelpedRecently(event) && !event.getMessage().getContentRaw().toLowerCase().contains("helpful")) {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
                 if (rare) 
@@ -100,7 +101,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("thx") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice")) {
+        if (event.getMessage().getContentRaw().toLowerCase().contains("thank") || event.getMessage().getContentRaw().toLowerCase().contains("thx") || event.getMessage().getContentRaw().toLowerCase().contains("neat") || event.getMessage().getContentRaw().toLowerCase().contains("cool")  || event.getMessage().getContentRaw().toLowerCase().contains("nice") || event.getMessage().getContentRaw().toLowerCase().contains("helpful")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
