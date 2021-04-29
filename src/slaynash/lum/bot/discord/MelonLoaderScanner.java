@@ -72,6 +72,9 @@ public class MelonLoaderScanner {
                 ".*Harmony\\.HarmonyInstance\\..*",
                 "You seems to have a 0Harmony.dll file in your `Mods` or `Plugins` folder. This breaks mods and plugins, since Harmony is embed into MelonLoader"));
         */
+        add(new MelonLoaderError(
+                ".*System.IO.IOException: Win32 IO returned 112.*",
+                "The storage space is full. Please free some space and try your game again."));
         //emmVRC error
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: NameResolutionFailure",
@@ -155,7 +158,7 @@ public class MelonLoaderScanner {
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] MelonLoader.dll Does Not Exist!",
                 "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."));
         add(new MelonLoaderError(
-                ".*Phasmophobia.*",
+                ".*\\Phasmophobia.*",
                 "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."));
         add(new MelonLoaderError(
                 ".*Unexpected escape character.*",
