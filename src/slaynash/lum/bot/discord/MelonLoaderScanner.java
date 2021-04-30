@@ -46,8 +46,8 @@ public class MelonLoaderScanner {
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
         add(new MelonLoaderError(
-                "\\[[0-9.:]+\\] \\[.*\\] \\[Error\\] System\\.IO\\.FileNotFoundException\\: Could not load file or assembly.*",
-                "One or more mod is missing a library / required mod, or a file is corrupted."));
+                ".*System.IO.FileNotFoundException: Could not load file or assembly.*",
+                "A mod is missing a dependent mod or a MelonLoader file is missing. Add to your Virus scanner exeption list and reinstall MelonLoader."));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
@@ -999,7 +999,7 @@ public class MelonLoaderScanner {
                 if (noMods && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have no mods installed in your Mods and Plugins folder\n";
                 
-                if (hasNonModErrors)
+                if (hasNonModErrors && errors.size() == 0)
                     error += "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
                 
                 if(error.length()>0) {
