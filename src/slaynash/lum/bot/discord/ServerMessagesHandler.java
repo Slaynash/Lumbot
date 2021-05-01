@@ -79,7 +79,7 @@ public class ServerMessagesHandler {
 
         String message = event.getMessage().getContentRaw().toLowerCase();
         
-        if (message.contains("[error]") || message.contains("developer:")) {
+        if (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]")) {
             System.out.println("Log was typed");
             
             boolean postedInWhitelistedServer = false;
@@ -104,6 +104,7 @@ public class ServerMessagesHandler {
                             for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
                                 if (whitelistedRoleId == roleId) {
                                     isStaff = true; // The sender is whitelisted
+                                    System.out.println("Was Staff, allowing post");
                                     break;
                                 }
                             }

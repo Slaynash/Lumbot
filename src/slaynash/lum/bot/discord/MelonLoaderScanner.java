@@ -962,14 +962,15 @@ public class MelonLoaderScanner {
                     MelonOutdatedMod m = outdatedMods.get(i);
                     String namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
                     error += "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
-                    if(i + 1 < outdatedMods.size()) { //Sorry Slay for this mess. It's the first way I thought of to get future message length. 
+                    if(i + 1 < outdatedMods.size()) { //Sorry Slay for this mess. It's the first way I thought of getting the future message length. -rako
                         m = outdatedMods.get(i+1);
                         namePart = m.downloadUrl == null ? m.name : ("[" + m.name + "](" + UrlShortener.GetShortenedUrl(m.downloadUrl) + ")");
+                        namePart = "- " + namePart + ": `" + sanitizeInputString(m.currentVersion) + "` -> `" + m.latestVersion + "`\n";
                     } 
                     else 
                         break; // no next outdated Mod
-                    if (error.length() + namePart.length() + vrcmuMessage.length() + 20 > 1024){
-                        error += "- and " + (outdatedMods.size() - i) + " more...\n";
+                    if (error.length() + namePart.length() + vrcmuMessage.length() + 18 > 1024){
+                        error += "- and " + (outdatedMods.size() - i) + " more...\n"; //length is about 17 char
                         break;
                     }
                 }
