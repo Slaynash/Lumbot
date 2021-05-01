@@ -147,7 +147,7 @@ public class MelonLoaderScanner {
                 "The storage space is full. Please free some space and try your game again. You need about 300MB free."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
-                "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
+                "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader 0.3.0."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
                 "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader."));
