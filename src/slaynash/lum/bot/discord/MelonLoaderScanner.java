@@ -510,7 +510,10 @@ public class MelonLoaderScanner {
                             if (line.matches("    - '.*'.*")) {
                                 String missingModName = line.split("'", 3)[1];
                                 if (!missingMods.contains(missingModName))
-                                    missingMods.add(missingModName);
+                                    if ("NKHook6".contains(missingModName))
+                                        errors.add(new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it."));
+                                    else 
+                                        missingMods.add(missingModName);
                                 
                                 continue;
                             }
