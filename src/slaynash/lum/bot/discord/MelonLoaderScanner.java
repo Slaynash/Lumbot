@@ -714,19 +714,23 @@ public class MelonLoaderScanner {
                         errors.add(new MelonLoaderError("", "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder."));
                     }
                     
-                    if ("Player Volume Control".equals(modName) || "PlayerVolumeControl".equals(modName)) {
+                    else if ("Player Volume Control".equals(modName) || "PlayerVolumeControl".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder."));
                     }
                     
-                    if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
+                    else if ("Final IK Sanity".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder."));
+                    }
+                    
+                    else if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it."));
                     }
                     
-                    if ("PortableMirror".equals(modName)) {
+                    else if ("PortableMirror".equals(modName)) {
                         errors.add(new MelonLoaderError("", "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it."));
                     }
                     
-                    if ("Portal Confirmation".equals(modName)) {
+                    else if ("Portal Confirmation".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it."));
                     }
                     
