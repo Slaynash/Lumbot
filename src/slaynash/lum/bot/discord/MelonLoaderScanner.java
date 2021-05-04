@@ -722,6 +722,10 @@ public class MelonLoaderScanner {
                         errors.add(new MelonLoaderError("", "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder."));
                     }
                     
+                    else if ("NoSteamP2P".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "NoSteamP2P has been added into VRChat and should be removed from your Mods folder."));
+                    }
+                    
                     else if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it."));
                     }
