@@ -116,8 +116,8 @@ public class ServerMessagesHandler {
                 }
             }
             if (postedInWhitelistedServer && !isStaff) {
+                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
                 event.getMessage().delete().queue();
-                event.getChannel().sendMessage("Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
             }
         }
         
