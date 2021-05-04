@@ -31,6 +31,9 @@ public class ServerMessagesHandler {
                 663450567015792670L /* Administrator */,
                 663450611253248002L /* Moderator */,
                 663450655775522843L /* Modder */ });
+        put(673663870136746046L /* Modders & Chill */, new long[] {
+                673725166626406428L /* Modders */,
+                673726384450961410L /* Moderators */ });
     }};
 
     private static String[] alreadyHelpedSentences = new String[] {
