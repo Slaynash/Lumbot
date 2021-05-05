@@ -172,6 +172,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
                 "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
+                "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try Cloudflare's or Google's DNS servers."));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
