@@ -214,7 +214,8 @@ public class MelonLoaderScanner {
         put("Runtime Graphics Settings", "RuntimeGraphicsSettings");
         put("ThumbParams", "VRCThumbParams");
         put("Toggle Mic Icon", "ToggleMicIcon");
-        put("TogglePostProcessing", "Toggle Post Processing");
+        put("PostProcessing", "Toggle Post Processing");
+        put("PostProcessing", "TogglePostProcessing");
         put("UI Expansion Kit", "UIExpansionKit");
         put("VRC Video Library", "VRCVideoLibrary");
         
@@ -710,33 +711,32 @@ public class MelonLoaderScanner {
                     VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.GetVersion(logsModDetails.version) : null;
                     String modHash = logsModDetails.hash;
                     
-                    if ("ClickFix".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder."));
-                    }
+                    if ("CleanConsole".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "CleanConsole has been added into MelonLoader and no longer needed. Please remove CleanConsole from your Mods folder."));}
                     
-                    else if ("Player Volume Control".equals(modName) || "PlayerVolumeControl".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder."));
-                    }
+                    else if ("ClickFix".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder."));}
+                    
+                    else if ("CloseFix".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder."));}
                     
                     else if ("Final IK Sanity".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder."));
-                    }
-                    
-                    else if ("NoSteamP2P".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "NoSteamP2P has been added into VRChat and should be removed from your Mods folder."));
-                    }
+                        errors.add(new MelonLoaderError("", "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder."));}
                     
                     else if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it."));
-                    }
+                        errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it."));}
+                    
+                    else if ("NoSteamP2P".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "NoSteamP2P has been added into VRChat and should be removed from your Mods folder."));}
+                    
+                    else if ("Player Volume Control".equals(modName) || "PlayerVolumeControl".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder."));}
                     
                     else if ("PortableMirror".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it."));
-                    }
+                        errors.add(new MelonLoaderError("", "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it."));}
                     
                     else if ("Portal Confirmation".equals(modName)) {
-                        errors.add(new MelonLoaderError("", "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it."));
-                    }
+                        errors.add(new MelonLoaderError("", "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it."));}
                     
                     if (modVersion == null) {
                         unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
@@ -817,24 +817,33 @@ public class MelonLoaderScanner {
         
         if (game != null) {
             switch (game) {
-                case "VRChat":
-                    eb.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
-                    break;
-                case "BloonsTD6":
-                    eb.setThumbnail("https://i.imgur.com/BSXtkvW.png"); // Old - https://puu.sh/HAj1L/45bf0bb4a2.png
-                    break;
-                case "Audica":
-                    eb.setThumbnail("https://i.imgur.com/CHa4yW0.png"); // Old - https://puu.sh/HAj1J/87a425d2e5.png
-                    break;
-                case "TheLongDark":
-                    eb.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
-                    break;
-                case "BONEWORKS":
-                    eb.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
-                    break;
-                case "guigubahuang":
-                    eb.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
-                    break;
+            case "Among Us":
+                eb.setThumbnail("https://i.imgur.com/cGdWOch.png");
+                break;
+            case "Audica":
+                eb.setThumbnail("https://i.imgur.com/CHa4yW0.png");
+                break;
+            case "BloonsTD6":
+                eb.setThumbnail("https://i.imgur.com/BSXtkvW.png");
+                break;
+            case "BONEWORKS":
+                eb.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
+                break;
+            case "guigubahuang":
+                eb.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
+                break;
+            case "Job Simulator":
+                eb.setThumbnail("https://i.imgur.com/0kmohjK.png");
+                break;
+            case "Pistol Whip":
+                eb.setThumbnail("https://i.imgur.com/MeMcntj.png");
+                break;
+            case "TheLongDark":
+                eb.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
+                break;
+            case "VRChat":
+                eb.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
+                break;
             }
         }
         
