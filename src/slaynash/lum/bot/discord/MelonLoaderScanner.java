@@ -911,7 +911,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.ORANGE;
             }
             
-            if (errors.size() > 0) {
+            if (errors.size() > 0 && !(isMLOutdatedVRC && pre3)) {
                 String error = "";
                 for (int i = 0; i < errors.size(); ++i) {
                     error += "- " + errors.get(i).error + "\n";
