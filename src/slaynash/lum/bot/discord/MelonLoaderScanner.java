@@ -960,7 +960,7 @@ public class MelonLoaderScanner {
                 String error = "";
                 for (int i = 0; i < unknownMods.size() && i < 10; ++i) {
                     ModDetails md = unknownMods.get(i);
-                    error += "- " + sanitizeInputString(md.name) + ((md.versions[0].version.getRaw().equals("") && md.versions[0].version.getRaw().length() > 10) ? "" : (" " + sanitizeInputString(md.versions[0].version.getRaw()))) + (modAuthors.containsKey(md.name) ? (" **by** " + sanitizeInputString(modAuthors.get(md.name)) + "\n") : "\n");
+                    error += "- " + sanitizeInputString(md.name) + ((md.versions[0].version.getRaw().equals("") || md.versions[0].version.getRaw().length() > 20) ? "" : (" " + sanitizeInputString(md.versions[0].version.getRaw()))) + (modAuthors.containsKey(md.name) ? (" **by** " + sanitizeInputString(modAuthors.get(md.name)) + "\n") : "\n");
                 }
                 if (unknownMods.size() > 10)
                     error += "- and " + (unknownMods.size() - 10) + " more...";
