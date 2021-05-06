@@ -516,6 +516,8 @@ public class MelonLoaderScanner {
                                 if (!missingMods.contains(missingModName))
                                     if ("NKHook6".contains(missingModName))
                                         errors.add(new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it."));
+                                if ("NKHook6".contains(missingModName))
+                                    errors.add(new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it."));
                                     else 
                                         missingMods.add(missingModName);
                                 
@@ -725,6 +727,9 @@ public class MelonLoaderScanner {
                     
                     else if ("Final IK Sanity".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder."));}
+                    
+                    else if ("Gurren Core".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "Gurren Core is no longer needed and should be removed from the mods folder."));}
                     
                     else if ("Multiplayer Dynamic Bones".equals(modName) || "MultiplayerDynamicBones".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it."));}

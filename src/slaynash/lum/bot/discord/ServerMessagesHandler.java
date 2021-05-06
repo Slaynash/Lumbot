@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || message.contains("helpful") || message.contains("epic") || message.contains("worked")) {
+        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.equals("ty")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
