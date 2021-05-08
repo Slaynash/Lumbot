@@ -175,7 +175,10 @@ public class MelonLoaderScanner {
                 "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
-                "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try Cloudflare's or Google's DNS servers."));
+                "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
+                "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."));
     }};
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
