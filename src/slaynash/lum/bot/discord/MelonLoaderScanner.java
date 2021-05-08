@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -240,6 +241,7 @@ public class MelonLoaderScanner {
                     .GET()
                     .uri(URI.create("https://api.vrcmg.com/v0/mods.json"))
                     .setHeader("User-Agent", "LUM Bot")
+                    .timeout(Duration.ofSeconds(20))
                     .build();
                 
                 try {
@@ -274,6 +276,7 @@ public class MelonLoaderScanner {
                         .GET()
                         .uri(URI.create("https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json"))
                         .setHeader("User-Agent", "LUM Bot")
+                        .timeout(Duration.ofSeconds(20))
                         .build();
                     
                 try {
@@ -299,6 +302,7 @@ public class MelonLoaderScanner {
                         .GET()
                         .uri(URI.create("https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"))
                         .setHeader("User-Agent", "LUM Bot")
+                        .timeout(Duration.ofSeconds(20))
                         .build();
                     
                 try {
@@ -324,6 +328,7 @@ public class MelonLoaderScanner {
                         .GET()
                         .uri(URI.create("https://tld.xpazeapps.com/api.json"))
                         .setHeader("User-Agent", "LUM Bot")
+                        .timeout(Duration.ofSeconds(20))
                         .build();
                     
                 try {
