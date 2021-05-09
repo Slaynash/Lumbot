@@ -121,7 +121,18 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix")) {
+        if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.equals("ty")) {
+            System.out.println("Thanks was detected");
+            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+                boolean rare = random.nextInt(10) == 9;
+                String sentence = rare
+                    ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
+                    : thankedSentences    [random.nextInt(thankedSentences.length)];
+                event.getChannel().sendMessage(sentence).queue();
+            }
+        }
+        
+        else if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix")) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
@@ -137,18 +148,6 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage(sentence).queue();
             }
         }
-        
-        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.equals("ty")) {
-            System.out.println("Thanks was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event)) {
-                boolean rare = random.nextInt(10) == 9;
-                String sentence = rare
-                    ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
-                    : thankedSentences    [random.nextInt(thankedSentences.length)];
-                event.getChannel().sendMessage(sentence).queue();
-            }
-        }
-        
         else if (message.contains("late")) {
             System.out.println("Late was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
