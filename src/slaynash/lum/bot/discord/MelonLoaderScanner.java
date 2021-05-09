@@ -1112,8 +1112,8 @@ public class MelonLoaderScanner {
                 .replace("@", "@ ")
                 .replace("*", "\\*")
                 .replace("`", "\\`")
-                .replace("nigger", "[CENSORED]")
-                .replace("nigga", "[CENSORED]");
+                .replaceAll("(?i)nigger", "[CENSORED]")
+                .replaceAll("(?i)nigga" , "[CENSORED]");
     }
     
     private static class MelonLoaderError {

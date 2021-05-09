@@ -154,6 +154,7 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage(sentence).queue();
             }
         }
+        
         else if (message.contains("late")) {
             System.out.println("Late was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
