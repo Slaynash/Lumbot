@@ -77,6 +77,12 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a file format that is not allowed.\nPlease only download mods from trusted sources.", Color.YELLOW)).queue();
             return;
         }
+
+        if (event.getGuild().getIdLong() == 663449315876012052L) {
+            String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
+            if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client"))
+                event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
+        }
     
         CommandManager.runAsServer(event);
 
