@@ -80,7 +80,7 @@ public class ServerMessagesHandler {
 
         if (event.getGuild().getIdLong() == 663449315876012052L) {
             String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
-            if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client"))
+            if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
                 event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
         }
     
@@ -152,13 +152,6 @@ public class ServerMessagesHandler {
                     : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
                 }
                 event.getChannel().sendMessage(sentence).queue();
-            }
-        }
-        
-        else if (message.contains("late")) {
-            System.out.println("Late was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event)) {
-                event.getChannel().sendMessage("https://media.discordapp.net/attachments/807109298982354955/810352859539439646/geuCSLseKf.gif").queue();
             }
         }
         
