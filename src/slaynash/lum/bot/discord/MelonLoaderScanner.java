@@ -1078,9 +1078,11 @@ public class MelonLoaderScanner {
         //else non-log messages
     }
     
+    private static int helpDuration = 6 * 60; //in seconds
+    
     private static void addNewHelpedRecently(MessageReceivedEvent event) {
         for (int i = helpedRecently.size() - 1; i >= 0; --i)
-            if (helpedRecently.get(i).time + 60 < Instant.now().getEpochSecond())
+            if (helpedRecently.get(i).time + helpDuration < Instant.now().getEpochSecond())
                 helpedRecently.remove(i);
         
         helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
@@ -1090,7 +1092,7 @@ public class MelonLoaderScanner {
     public static boolean wasHelpedRecently(MessageReceivedEvent event) {
         for (int i = 0; i < helpedRecently.size(); ++i) {
             HelpedRecentlyData hrd = helpedRecently.get(i);
-            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + 60 > Instant.now().getEpochSecond())
+            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + helpDuration > Instant.now().getEpochSecond())
                 return true;
         }
 
@@ -1112,8 +1114,8 @@ public class MelonLoaderScanner {
                 .replace("@", "@ ")
                 .replace("*", "\\*")
                 .replace("`", "\\`")
-                .replaceAll("(?i)nigger", "[CENSORED]")
-                .replaceAll("(?i)nigga" , "[CENSORED]");
+                .replaceAll("(?i)nigger", "[REDACTED]")
+                .replaceAll("(?i)nigga" , "[REDACTED]");
     }
     
     private static class MelonLoaderError {

@@ -122,7 +122,7 @@ public class ServerMessagesHandler {
                 }
             }
             if (postedInWhitelistedServer && !isStaff) {
-                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.").queue();
+                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
                 event.getMessage().delete().queue();
             }
         }
@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix")) {
+        else if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix") || message.contains("what do"/*i do*/)) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;

@@ -6,5 +6,6 @@ public class VRCModDetails {
     public long messageid;
     public int versionofmsg;
     public String uploaddate;
+    public String[] aliases;
     public VRCModVersionDetails[] versions;
 }
