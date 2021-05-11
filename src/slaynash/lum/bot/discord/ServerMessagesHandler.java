@@ -127,7 +127,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.equals("ty")) {
+        if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("help") && !message.contains("helpful") || message.contains("not help") || message.contains("fix") || message.contains("what do"/*i do*/)) {
+        else if (message.contains("help") || message.contains("fix") || message.contains("what do"/*i do*/)) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
