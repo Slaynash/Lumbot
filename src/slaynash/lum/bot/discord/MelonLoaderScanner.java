@@ -1031,6 +1031,7 @@ public class MelonLoaderScanner {
                 messageColor = Color.RED;
             }
             
+            boolean unidentifiedErrors = false;
             if (!assemblyGenerationFailed && !isMLOutdated && !isMLOutdatedVRC && duplicatedMods.size() == 0) {
                 String error = "";
                 if (noMods && missingMods.size() == 0 && preListingMods && !errors.contains(incompatibleAssemblyError))
@@ -1039,8 +1040,10 @@ public class MelonLoaderScanner {
                 if (noMods && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
                     error += "- You have no mods installed in your Mods and Plugins folder\n";
                 
-                if (hasNonModErrors && errors.size() == 0)
+                if (hasNonModErrors && errors.size() == 0) {
                     error += "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
+                    unidentifiedErrors = true;
+                }
                 
                 if(error.length()>0) {
                     eb.addField("Other Errors:", error , false);
@@ -1060,7 +1063,8 @@ public class MelonLoaderScanner {
             mb.setEmbed(eb.build());
             event.getChannel().sendMessage(mb.build()).queue();
             
-            addNewHelpedRecently(event);
+            if(!unidentifiedErrors)
+                addNewHelpedRecently(event);
         }
         else if (mlVersion != null) {
             if (hasErrors) {
