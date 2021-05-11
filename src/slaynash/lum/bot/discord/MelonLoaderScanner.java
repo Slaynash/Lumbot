@@ -185,7 +185,6 @@ public class MelonLoaderScanner {
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
     
-    
     private static Gson gson = new Gson();
     public static Map<String, List<ModDetails>> mods = new HashMap<>();
     private static Map<String, Boolean> checkUsingHashes = new HashMap<String, Boolean>() {{
@@ -522,8 +521,9 @@ public class MelonLoaderScanner {
                             if (line.matches("    - '.*'.*")) {
                                 String missingModName = line.split("'", 3)[1];
                                 if (!missingMods.contains(missingModName)) {
-                                    if ("NKHook6".contains(missingModName))
-                                        errors.add(new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it."));
+                                    MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
+                                    if ("NKHook6".contains(missingModName) && !errors.contains(nkh6))
+                                        errors.add(nkh6);
                                     else 
                                         missingMods.add(missingModName);
                                 }
@@ -1058,7 +1058,7 @@ public class MelonLoaderScanner {
             eb.setColor(messageColor);
             mb.setEmbed(eb.build());
             event.getChannel().sendMessage(mb.build()).queue();
-
+            
             addNewHelpedRecently(event);
         }
         else if (mlVersion != null) {
@@ -1088,17 +1088,19 @@ public class MelonLoaderScanner {
         helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
         System.out.println("Helped recently added");
     }
-
+    
     public static boolean wasHelpedRecently(MessageReceivedEvent event) {
         for (int i = 0; i < helpedRecently.size(); ++i) {
             HelpedRecentlyData hrd = helpedRecently.get(i);
-            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + helpDuration > Instant.now().getEpochSecond())
+            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + helpDuration > Instant.now().getEpochSecond()) {
+                helpedRecently.remove(i); // trigger only one message per log
                 return true;
+            }
         }
-
+        
         return false;
     }
-
+    
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
@@ -1115,7 +1117,8 @@ public class MelonLoaderScanner {
                 .replace("*", "\\*")
                 .replace("`", "\\`")
                 .replaceAll("(?i)nigger", "[REDACTED]")
-                .replaceAll("(?i)nigga" , "[REDACTED]");
+                .replaceAll("(?i)nigga" , "[REDACTED]")
+                .replaceAll("(?i)porn" , "[REDACTED]");
     }
     
     private static class MelonLoaderError {

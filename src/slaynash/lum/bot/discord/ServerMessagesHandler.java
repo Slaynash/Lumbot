@@ -143,7 +143,7 @@ public class ServerMessagesHandler {
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
-                if (rare) 
+                if (rare)
                     sentence = "Shut the fuck up, I literally answered your dumb ass!";
                 else {
                     rare = random.nextInt(10) == 9;
