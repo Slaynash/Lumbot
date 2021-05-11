@@ -181,6 +181,8 @@ public class MelonLoaderScanner {
                 "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."));
     }};
     
+    private static MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
+    
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
@@ -228,7 +230,7 @@ public class MelonLoaderScanner {
         // backward compatibility
         put("BTKSANameplateFix", "BTKSANameplateMod");
     }};
-
+    
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
     
     public static void Init() {
@@ -521,7 +523,6 @@ public class MelonLoaderScanner {
                             if (line.matches("    - '.*'.*")) {
                                 String missingModName = line.split("'", 3)[1];
                                 if (!missingMods.contains(missingModName)) {
-                                    MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
                                     if ("NKHook6".contains(missingModName) && !errors.contains(nkh6))
                                         errors.add(nkh6);
                                     else 
