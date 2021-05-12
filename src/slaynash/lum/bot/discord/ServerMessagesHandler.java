@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("help") || message.contains("fix") || message.contains("what do"/*i do*/)) {
+        else if (message.contains("help") || message.contains("fix") || message.contains("what do"/*i do*/) || message.contains("what should"/*i do*/)) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
@@ -218,7 +218,7 @@ public class ServerMessagesHandler {
             if (fileExt == null) fileExt = "";
             fileExt = fileExt.toLowerCase();
             
-            if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") || fileExt.equals("rar")) {
+            if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") || fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
 
                 for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
                     Guild targetGuild;

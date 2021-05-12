@@ -1038,7 +1038,7 @@ public class MelonLoaderScanner {
                     error += "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.\n";
                     
                 if (noMods && missingMods.size() == 0 && !preListingMods && !errors.contains(incompatibleAssemblyError))
-                    error += "- You have no mods installed in your Mods and Plugins folder\n";
+                    error += "- You have no mods installed in your Mods folder\n";
                 
                 if (hasNonModErrors && errors.size() == 0) {
                     error += "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.\n";
