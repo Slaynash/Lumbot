@@ -113,6 +113,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] emmVRC could not be accessed. Loading from disk, if possible...",
                 "emmVRC failed to access emmVRC servers and attempted to load cached copy."));
+        add(new MelonLoaderError(
+                "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
+                "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader 0.3.0"));
     }};
     
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
@@ -1074,6 +1077,7 @@ public class MelonLoaderScanner {
             else {
                 eb.addField("No issues found", "- If you had issues please say so and wait for someone to check the log" , false);
                 messageColor = Color.LIGHT_GRAY;
+                addNewHelpedRecently(event);
             }
             
             eb.setColor(messageColor);
