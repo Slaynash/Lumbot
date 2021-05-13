@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
-                boolean rare = random.nextInt(1000) == 420;
+                boolean rare = random.nextInt(100) == 69;
                 if (rare)
                     sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
                 else {
