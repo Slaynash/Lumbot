@@ -134,7 +134,7 @@ public class ServerMessagesHandler {
         
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") ||
-                message.contains("tysm") || message.equals("ty") || message.contains("fixed")) {
+                message.contains("tysm") || message.equals("ty") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 String sentence;
