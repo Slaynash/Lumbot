@@ -140,7 +140,7 @@ public class ServerMessagesHandler {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
                 if (rare)
-                    sentence = "You're Welcome, but thank <145556654241349632> and <240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
+                    sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
                 else {
                     rare = random.nextInt(10) == 9;
                     sentence = rare
