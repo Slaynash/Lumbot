@@ -132,11 +132,16 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
         
+        else if (message.contains("bad lum")) {
+            System.out.println("Bad Lum was detected");
+            event.getChannel().sendMessage("<:Felix_pout:828069529044385833>").queue();
+        }
+        
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") ||
+                message.contains("helpful") || message.contains("epic") || message.contains("worked") ||
                 message.contains("tysm") || message.equals("ty") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot")) {
             System.out.println("Thanks was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+            if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;
                 if (rare)
@@ -151,9 +156,9 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("help") || message.contains("fix") || message.contains("what do"/*i do*/) || message.contains("what should"/*i do*/)) {
+        else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do"/*i do*/) || message.contains("what should"/*i do*/)) {
             System.out.println("Help was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event)) {
+            if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
                 if (rare)
