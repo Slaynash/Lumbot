@@ -132,13 +132,21 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
         
-        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty")) {
+        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
+                (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") ||
+                message.contains("tysm") || message.equals("ty") || message.contains("fixed")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
-                boolean rare = random.nextInt(10) == 9;
-                String sentence = rare
+                String sentence;
+                boolean rare = random.nextInt(1000) == 420;
+                if (rare)
+                    sentence = "You're Welcome, but thank <145556654241349632> and <240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
+                else {
+                    rare = random.nextInt(10) == 9;
+                    sentence = rare
                     ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
                     : thankedSentences    [random.nextInt(thankedSentences.length)];
+                }
                 event.getChannel().sendMessage(sentence).queue();
             }
         }
