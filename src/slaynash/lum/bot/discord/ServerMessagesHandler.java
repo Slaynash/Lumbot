@@ -127,7 +127,12 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty")) {
+        if (message.contains("nice lum") || message.contains("good lum")) {
+            System.out.println("Nice Lum was detected");
+            event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
+        }
+        
+        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") || (message.contains("helpful") && !message.contains("not help")) || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event)) {
                 boolean rare = random.nextInt(10) == 9;
