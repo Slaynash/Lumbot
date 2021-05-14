@@ -444,6 +444,12 @@ public class MelonLoaderScanner {
                             continue;
                         }
                         
+                        if (line.matches(".*NetQueue: Setting up.") || line.matches("---- Minecraft Crash Report ----") || line.matches(".*melon_slice.*") || line.matches(".*Injecting coremod.*")) {
+                            System.out.println("Minecraft Log detected");
+                            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.RED)).queue();
+                            return;
+                        }
+                        
                         // Mod listing
                         
                         if (preListingMods || listingMods) {
