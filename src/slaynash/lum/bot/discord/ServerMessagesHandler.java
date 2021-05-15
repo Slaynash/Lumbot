@@ -140,8 +140,8 @@ public class ServerMessagesHandler {
         }
         
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                message.contains("helpful") || message.contains("epic") || message.contains("worked") ||
-                message.contains("tysm") || message.equals("ty") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot")) {
+                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
+                message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
             System.out.println("Thanks was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
