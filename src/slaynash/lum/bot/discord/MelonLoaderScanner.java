@@ -423,6 +423,11 @@ public class MelonLoaderScanner {
         for (int i = 0; i < attachments.size(); ++i) {
             Attachment attachment = attachments.get(i);
             
+            if(attachment.getFileName().startsWith("emmVRC")) {
+                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("This is an old log from emmVRC and should be deleted. Please upload your MelonLoader/Latest.log or update MelonLoader to 0.3.0 is missing.", Color.ORANGE)).queue();
+                break;
+            }
+            
             if (attachment.getFileExtension() != null && (attachment.getFileExtension().toLowerCase().equals("log") || attachment.getFileExtension().toLowerCase().equals("txt"))) {
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(attachment.retrieveInputStream().get()))) {
                     
