@@ -63,6 +63,8 @@ public class ServerMessagesHandler {
     };
 
     private static Random random = new Random();
+    
+    private static String fileExt;
 
     public static void handle(MessageReceivedEvent event) {
         System.out.printf("[%s] [%s][%s] %s: %s\n",
@@ -74,7 +76,7 @@ public class ServerMessagesHandler {
 
         if (!checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a file format that is not allowed.\nPlease only download mods from trusted sources.", Color.YELLOW)).queue();
+            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " format which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
             return;
         }
 
@@ -232,7 +234,7 @@ public class ServerMessagesHandler {
             return true; // Not a whitelisted server
         
         for (Attachment attachment : event.getMessage().getAttachments()) {
-            String fileExt = attachment.getFileExtension();
+            fileExt = attachment.getFileExtension();
             if (fileExt == null) fileExt = "";
             fileExt = fileExt.toLowerCase();
             
