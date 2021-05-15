@@ -414,7 +414,7 @@ public class MelonLoaderScanner {
         
         int remainingModCount = 0;
         
-        int ommitedLines = 0;
+        int omittedLines = 0;
         
         String currentMissingDependenciesMods = "";
         
@@ -443,9 +443,9 @@ public class MelonLoaderScanner {
                         //System.out.println("length: " + linelength);
                         
                         if (linelength > 1000) {
-                            ++ommitedLines;
+                            ++omittedLines;
                             line = "";
-                            System.out.println("Ommited one line of length " + linelength);
+                            System.out.println("Omitted one line of length " + linelength);
                             continue;
                         }
                         
@@ -899,8 +899,8 @@ public class MelonLoaderScanner {
             }
         }
         
-        if (ommitedLines > 0)
-            message += "*Ommited " + ommitedLines + " lines of length > 1000.*\n";
+//        if (omittedLines > 0)
+//            message += "*Omitted " + omittedLines + " lines of length > 1000.*\n";
         
         if (consoleCopyPaste)
             message += "*You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.*\n";
