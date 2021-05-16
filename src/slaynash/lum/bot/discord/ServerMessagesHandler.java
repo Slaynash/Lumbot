@@ -134,13 +134,13 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
         
-        else if (message.contains("bad lum")) {
+        else if (message.contains("bad lum") || message.contains("lum shush")) {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage("<:Felix_pout:828069529044385833>").queue();
         }
         
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
+                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
                 message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") ||
                 message.contains("awesome") || message.contains(" wow ")) {
             System.out.println("Thanks was detected");
