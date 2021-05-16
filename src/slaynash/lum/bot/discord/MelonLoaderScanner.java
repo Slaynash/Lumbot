@@ -63,7 +63,7 @@ public class MelonLoaderScanner {
         */
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
-                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use OVR Advanced Settings for a playspace mover <https://youtu.be/E4ZByfPWTuM>"));
+                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings]<https://store.steampowered.com/app/1009850/> for playspace mover <https://youtu.be/E4ZByfPWTuM>"));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
@@ -182,6 +182,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
                 "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."));
+        add(new MelonLoaderError(
+                ".*The system cannot find the file specified.",
+                "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader."));
     }};
     
     private static MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
