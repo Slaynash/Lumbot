@@ -137,7 +137,7 @@ public class Steam {
                     vrchatAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
                     /*
                     System.out.println("Branches:");
-                    for (Entry<String, SteamAppBranch> branch : vrchatAppDetails.depots.branches.entrySet()) {
+                    for (Entry<String, SteamAppDetails.SteamAppBranch> branch : vrchatAppDetails.depots.branches.entrySet()) {
                         System.out.println("[" + branch.getKey() + "]");
                         System.out.println("    buildid: " + branch.getValue().buildid);
                         System.out.println("    desc: " + branch.getValue().description);
@@ -168,7 +168,7 @@ public class Steam {
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey()))
                         {
-                            SteamAppDetails.SteamAppBranch branchDetails = oldBranches.get(changedBranch.getKey());
+                            //SteamAppDetails.SteamAppBranch branchDetails = oldBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch deleted\n";
                         }
                         else
@@ -177,6 +177,8 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
                         }
+                        
+                        description += " - Description: " + changedBranch.getValue().description + "\n";
                     }
                     eb.setDescription(description);
                     MessageEmbed embed = eb.build();
