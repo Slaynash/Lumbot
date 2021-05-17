@@ -43,6 +43,9 @@ public class MelonLoaderScanner {
     public static String uixURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
+        add(new MelonLoaderError(
+                ".*MonoBehaviourPublicGaInStVoInStVoInVoStUnique.*", //very temporary remove after emmVRC is fixed
+                "VRChat update changed the emojigenerator used by emmVRC. We are working on fixing it."));
         // add(new MelonLoaderError(
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));

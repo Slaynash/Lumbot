@@ -178,7 +178,8 @@ public class Steam {
                             description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
                         }
                         
-                        description += " - Description: " + changedBranch.getValue().description + "\n";
+                        if(changedBranch.getValue().description != null)
+                            description += " - Description: " + changedBranch.getValue().description + "\n";
                     }
                     eb.setDescription(description);
                     MessageEmbed embed = eb.build();
