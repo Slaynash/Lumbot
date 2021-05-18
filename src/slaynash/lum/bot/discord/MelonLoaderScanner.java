@@ -251,7 +251,7 @@ public class MelonLoaderScanner {
                                 uixURL = vrcmoddetails.downloadlink;
                             
                             for (int i = 0; i < processingmods.aliases.length-1; ++i) {
-                                modNameMatcher.put(processingmods.aliases[processingmods.aliases.length-1], processingmods.aliases[i]);
+                                modNameMatcher.put(processingmods.versions[0].name, processingmods.aliases[i]);
                             }
                         }
                         
