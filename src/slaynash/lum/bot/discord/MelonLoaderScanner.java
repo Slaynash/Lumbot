@@ -211,34 +211,7 @@ public class MelonLoaderScanner {
             .version(HttpClient.Version.HTTP_2)
             .build();
     
-    private static Map<String, String> modNameMatcher = new HashMap<String, String>() {{
-        // MelonInfo name -> Submitted name
-        put("Advanced Invites", "AdvancedInvites");
-        put("Advanced Safety", "AdvancedSafety");
-        put("Core Limiter", "CoreLimiter");
-        put("DiscordRichPresence-ML", "VRCDiscordRichPresence-ML");
-        put("Game Priority Changer", "GamePriority");
-        put("Input System", "InputSystem");
-        put("MControl", "MControl (Music Playback Controls)");
-        put("MultiplayerDynamicBones", "Multiplayer Dynamic Bones");
-        put("MuteBlinkBeGone", "Mute Blink Be Gone");
-        put("NearClippingPlaneAdjuster.dll", "NearClipPlaneAdj");
-        put("No Steam. At all.", "NoSteamAtAll");
-        put("Particle and DynBone limiter settings UI", "ParticleAndBoneLimiterSettings");
-        put("Player Rotater", "Player Rotater (Desktop Only)");
-        put("Player Volume Control", "PlayerVolumeControl");
-        put("Rank Volume Control", "RankVolumeControl");
-        put("Runtime Graphics Settings", "RuntimeGraphicsSettings");
-        put("ThumbParams", "VRCThumbParams");
-        put("Toggle Mic Icon", "ToggleMicIcon");
-        put("PostProcessing", "Toggle Post Processing");
-        put("PostProcessing", "TogglePostProcessing");
-        put("UI Expansion Kit", "UIExpansionKit");
-        put("VRC Video Library", "VRCVideoLibrary");
-        
-        // backward compatibility
-        put("BTKSANameplateFix", "BTKSANameplateMod");
-    }};
+    private static Map<String, String> modNameMatcher;
     
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
     
@@ -261,6 +234,7 @@ public class MelonLoaderScanner {
                     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                     
                     CommandManager.brokenVrchatMods.clear();
+                    modNameMatcher = new HashMap<String, String>();
                     
                     synchronized (mods) {
                         List<VRCModDetails> vrcmods = gson.fromJson(response.body(), new TypeToken<ArrayList<VRCModDetails>>() {}.getType());
@@ -275,6 +249,10 @@ public class MelonLoaderScanner {
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
                             if ("UI Expansion Kit".equals(vrcmoddetails.name))
                                 uixURL = vrcmoddetails.downloadlink;
+                            
+                            for (int i = 0; i < processingmods.aliases.length-1; ++i) {
+                                modNameMatcher.put(processingmods.aliases[processingmods.aliases.length-1], processingmods.aliases[i]);
+                            }
                         }
                         
                         mods.put("VRChat", modsprocessed);
