@@ -922,7 +922,7 @@ public class MelonLoaderScanner {
         eb.setDescription(message);
         
         if (remainingModCount != 0) {
-            eb.addField("Log format:", "Error reading Log. Please do not edit the log and reupload the original log.", false);
+            eb.addField("Log Format:", "Error reading Log. Please do not edit the log and reupload the original log.", false);
             messageColor = Color.RED;
         }
         
@@ -948,7 +948,7 @@ public class MelonLoaderScanner {
                 for (int i = 0; i < errors.size(); ++i) {
                     error += "- " + errors.get(i).error + "\n";
                 }
-                eb.addField("Known errors:", error, false);
+                eb.addField("Known Errors:", error, false);
                 messageColor = Color.RED;
             }
             
@@ -960,7 +960,7 @@ public class MelonLoaderScanner {
                     error += "- and " + (duplicatedMods.size() - 10) + " more...";
                
                 error += "- Duplicate Mods are known to crash MelonLoader. Make sure there is only one copy in both Mods and Plugins folder.";
-                eb.addField("Duplicate mods:", error , false);
+                eb.addField("Duplicate Mods:", error , false);
                 messageColor = Color.RED;
             }
             
@@ -974,7 +974,7 @@ public class MelonLoaderScanner {
                 if (missingMods.size() > 10)
                     error += "- and " + (missingMods.size() - 10) + " more...";
                 
-                eb.addField("Missing dependencies:", error , false);
+                eb.addField("Missing Dependencies:", error , false);
                 messageColor = Color.ORANGE;
             }
             
@@ -985,7 +985,7 @@ public class MelonLoaderScanner {
                 if (incompatibleMods.size() > 10)
                     error += "- and " + (incompatibleMods.size() - 10) + " more...";
                 
-                eb.addField("Incompatible mods:", error , false);
+                eb.addField("Incompatible Mods:", error , false);
                 messageColor = Color.RED;
             }
             
@@ -996,7 +996,7 @@ public class MelonLoaderScanner {
                 if (brokenMods.size() > 20)
                     error += "- and " + (brokenMods.size() - 20) + " more...";
                 
-                eb.addField("Broken mods:", error , false);
+                eb.addField("Currently Broken Mods:", error , false);
                 messageColor = Color.RED;
             }
             
@@ -1009,7 +1009,7 @@ public class MelonLoaderScanner {
                 if (unknownMods.size() > 10)
                     error += "- and " + (unknownMods.size() - 10) + " more...";
                 
-                eb.addField("Unverified/Unknown mods:", error , false);
+                eb.addField("Unverified/Unknown Mods:", error , false);
                 messageColor = messageColor.equals(Color.BLUE) ? Color.RED : messageColor;
             }
             
@@ -1036,7 +1036,7 @@ public class MelonLoaderScanner {
                 if (outdatedMods.size() >= 3)
                     error += vrcmuMessage;
                 
-                eb.addField("Outdated mods:", error, false);
+                eb.addField("Outdated Mods:", error, false);
                 messageColor = Color.ORANGE;
             }
             
@@ -1071,7 +1071,7 @@ public class MelonLoaderScanner {
                 }
                 
                 else if(mlVersion != null && loadedMods.size() == 0) {
-                    eb.addField("Partial log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game." , false);
+                    eb.addField("Partial Log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game." , false);
                     messageColor = Color.ORANGE;
                 }
             }
