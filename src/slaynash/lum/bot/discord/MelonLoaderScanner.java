@@ -66,7 +66,7 @@ public class MelonLoaderScanner {
         */
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
-                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings]<https://store.steampowered.com/app/1009850/> for playspace mover <https://youtu.be/E4ZByfPWTuM>"));
+                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>"));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
