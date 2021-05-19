@@ -49,9 +49,7 @@ public class MelonLoaderScanner {
         // add(new MelonLoaderError(
         //         "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
         //         "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder."));
-        add(new MelonLoaderError(
-                ".*System.IO.FileNotFoundException: Could not load file or assembly.*",
-                "A mod is missing a dependent mod or a MelonLoader file is missing. Add to your Virus scanner exeption list and reinstall MelonLoader."));
+        
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
@@ -595,6 +593,9 @@ public class MelonLoaderScanner {
                             name = String.join("", name.split(".*[a-zA-Z0-9]\\.[a-zA-Z]{2,4}"));
                             String version = split3.length > 1 ? split3[1] : null;
                             
+                            String matchedName = modNameMatcher.get(name.trim());
+                            name = matchedName != null ? matchedName : name;
+                            
                             if (loadedMods.containsKey(name) && !duplicatedMods.contains(name))
                                 duplicatedMods.add(name.trim());
                             loadedMods.put(name.trim(), new LogsModDetails(version, null));
@@ -631,6 +632,10 @@ public class MelonLoaderScanner {
                         else if (line.matches("\\[[0-9.:]+\\] \\[WARNING\\] Duplicate File.*")) {
                             System.out.println("Duplicate in Mods");
                             duplicatedMods.add(line.substring(line.lastIndexOf("\\")+1).split("[.]", 2)[0]);
+                        }
+                        else if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
+                            if(missingMods.size() != 0)
+                                errors.add(new MelonLoaderError("", "A mod is missing a dependent mod or a MelonLoader file is missing. Add to your Virus scanner exeption list and reinstall MelonLoader."));
                         }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
@@ -756,7 +761,7 @@ public class MelonLoaderScanner {
                         continue;
                     }
                     
-                    String matchedModName = modNameMatcher.get(entry.getKey().trim());
+                    String matchedModName = modNameMatcher.get(modName.trim());
                     if (matchedModName != null) {
                         modAuthors.put(matchedModName, modAuthors.get(modName));
                     }

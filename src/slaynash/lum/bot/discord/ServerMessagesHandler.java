@@ -129,7 +129,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (message.contains("meap.gg")) {
+        if (message.contains("meap.gg") || message.contains("PQzmExys")) {
             System.out.println("Notorious link detected");
             event.getMessage().delete().queue();
         }
