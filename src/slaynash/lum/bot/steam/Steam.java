@@ -165,6 +165,8 @@ public class Steam {
                         {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch created (`#" + branchDetails.buildid + "`)\n";
+                            if(branchDetails.description != null)
+                                description += " - Description: " + branchDetails.description + "\n";
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey()))
                         {
@@ -176,10 +178,9 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
+                            if(newBranchDetails.description != null)
+                                description += " - Description: " + newBranchDetails.description + "\n";
                         }
-                        
-                        if(changedBranch.getValue().description != null)
-                            description += " - Description: " + changedBranch.getValue().description + "\n";
                     }
                     eb.setDescription(description);
                     MessageEmbed embed = eb.build();

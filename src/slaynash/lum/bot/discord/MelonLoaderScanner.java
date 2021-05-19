@@ -232,7 +232,7 @@ public class MelonLoaderScanner {
                     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                     
                     CommandManager.brokenVrchatMods.clear();
-                    modNameMatcher = new HashMap<String, String>();
+                    Map<String, String> modNameMatcher = new HashMap<String, String>();
                     
                     synchronized (mods) {
                         List<VRCModDetails> vrcmods = gson.fromJson(response.body(), new TypeToken<ArrayList<VRCModDetails>>() {}.getType());
@@ -254,6 +254,7 @@ public class MelonLoaderScanner {
                         }
                         
                         mods.put("VRChat", modsprocessed);
+                        MelonLoaderScanner.modNameMatcher = modNameMatcher;
                     }
                 } catch (IOException | InterruptedException e) {
                     e.printStackTrace();
