@@ -634,15 +634,15 @@ public class MelonLoaderScanner {
                             System.out.println("Duplicate in Mods");
                             duplicatedMods.add(line.substring(line.lastIndexOf("\\")+1).split("[.]", 2)[0]);
                         }
-                        else if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
-                            if(missingMods.size() != 0)
-                                errors.add(new MelonLoaderError("", "A mod is missing a dependent mod or a MelonLoader file is missing. Add to your Virus scanner exeption list and reinstall MelonLoader."));
-                        }
                         else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
                             System.out.println("Starting to list missing dependencies");
                             readingMissingDependencies = true;
                             br.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
                             line = br.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
+                        }
+                        else if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
+                            if(missingMods.size() == 0 && !readingMissingDependencies)
+                                errors.add(new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exeption list and reinstall MelonLoader."));
                         }
                         
                         else {
