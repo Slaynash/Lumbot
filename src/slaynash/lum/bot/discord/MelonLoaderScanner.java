@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -1122,13 +1124,14 @@ public class MelonLoaderScanner {
     }
     
     private static String sanitizeInputString(String input) {
-        return input
-                .replace("@", "@ ")
-                .replace("*", "\\*")
-                .replace("`", "\\`")
-                .replaceAll("(?i)nigger", "[REDACTED]")
-                .replaceAll("(?i)nigga" , "[REDACTED]")
-                .replaceAll("(?i)porn" , "[REDACTED]");
+        input = input
+        .replace("@", "@ ")
+        .replace("*", "\\*")
+        .replace("`", "\\`");
+
+        input = Pattern.compile("(nigg(er|a)|porn)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("[REDACTED]"));
+        
+        return input;
     }
     
     private static class MelonLoaderError {

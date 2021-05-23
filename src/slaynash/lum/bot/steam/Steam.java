@@ -135,6 +135,7 @@ public class Steam {
 
                 if (vrchatAppDetails == null) {
                     vrchatAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
+                    System.out.println("Public manifest: " + vrchatAppDetails.depots.depots.get(gameId).manifests.get("public"));
                     /*
                     System.out.println("Branches:");
                     for (Entry<String, SteamAppDetails.SteamAppBranch> branch : vrchatAppDetails.depots.branches.entrySet()) {
