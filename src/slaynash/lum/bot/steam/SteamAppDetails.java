@@ -55,6 +55,7 @@ public class SteamAppDetails {
 
     public static class SteamAppDepots {
         // baselanguages
+        public Map<Integer, SteamAppDepot> depots = new HashMap<>();
         public Map<String, SteamAppBranch> branches = new HashMap<>();
 
         private SteamAppDepots() {}
@@ -65,26 +66,79 @@ public class SteamAppDetails {
                 this.branches.put(branch.getName(), new SteamAppBranch(branch));
         }
 
-        public static SteamAppDepots compare(SteamAppDepots oldDepot, SteamAppDepots newDepot) {
+        public static SteamAppDepots compare(SteamAppDepots oldDepots, SteamAppDepots newDepots) {
             SteamAppDepots ret = new SteamAppDepots();
             boolean changed = false;
 
             Map<String, SteamAppBranch> changeBranches = new HashMap<>();
-            for (Entry<String, SteamAppBranch> newBranch : newDepot.branches.entrySet()) {
-                SteamAppBranch oldBranch = oldDepot.branches.get(newBranch.getKey());
+            for (Entry<String, SteamAppBranch> newBranchEntries : newDepots.branches.entrySet()) {
+                String branchKey = newBranchEntries.getKey();
+                SteamAppBranch newBranch = newBranchEntries.getValue();
+                SteamAppBranch oldBranch = oldDepots.branches.get(newBranchEntries.getKey());
+
                 if (oldBranch == null)
-                    changeBranches.put(newBranch.getKey(), newBranch.getValue());
+                    changeBranches.put(branchKey, newBranch);
                 else {
-                    SteamAppBranch compareResult = SteamAppBranch.compare(oldBranch, newBranch.getValue());
+                    SteamAppBranch compareResult = SteamAppBranch.compare(oldBranch, newBranch);
                     if (compareResult != null)
-                        changeBranches.put(newBranch.getKey(), compareResult);
+                        changeBranches.put(branchKey, compareResult);
                 }
             }
-            for (Entry<String, SteamAppBranch> oldBranch : oldDepot.branches.entrySet()) {
-                if (!newDepot.branches.containsKey(oldBranch.getKey()))
+            for (Entry<String, SteamAppBranch> oldBranch : oldDepots.branches.entrySet()) {
+                if (!newDepots.branches.containsKey(oldBranch.getKey()))
                     changeBranches.put(oldBranch.getKey(), oldBranch.getValue());
             }
             changed |= (ret.branches = changeBranches.size() > 0 ? changeBranches : null) != null;
+
+            return changed ? ret : null;
+        }
+    }
+
+    public static class SteamAppDepot {
+        public String name;
+        public Map<String, Integer> manifests = new HashMap<>();
+
+        private SteamAppDepot() {}
+
+        public SteamAppDepot(KeyValue keyValues) {
+            name = keyValues.get("name").asString();
+            KeyValue manifestsKV = keyValues.get("manifests");
+            if (manifestsKV != KeyValue.INVALID) {
+                manifests = new HashMap<>();
+                for (KeyValue kv : manifestsKV.getChildren())
+                    manifests.put(kv.getName(), kv.asInteger());
+            }
+        }
+
+        public static SteamAppDepot compare(SteamAppDepot oldDepot, SteamAppDepot newDepot) {
+            SteamAppDepot ret = new SteamAppDepot();
+            boolean changed = false;
+
+            changed |= (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
+
+            Map<String, Integer> changeManifests = new HashMap<>();
+            for (Entry<String, Integer> newManifestEntries : newDepot.manifests.entrySet()) {
+                String manifestKey = newManifestEntries.getKey();
+                Integer newManifest = newManifestEntries.getValue();
+                Integer oldManifest = oldDepot.manifests.get(manifestKey);
+
+                if (oldManifest == null)
+                    changeManifests.put(manifestKey, newManifest);
+                else {
+                    int compareResult = oldManifest == newManifest ? -1 : newManifest;
+                    if (compareResult != -1)
+                        changeManifests.put(manifestKey, compareResult);
+                }
+            }
+            for (Entry<String, Integer> oldManifestEntry : oldDepot.manifests.entrySet()) {
+                String manifestKey = oldManifestEntry.getKey();
+                Integer newManifest = newDepot.manifests.get(manifestKey);
+                Integer oldManifest = oldManifestEntry.getValue();
+
+                if (newManifest == null)
+                    changeManifests.put(manifestKey, oldManifest);
+            }
+            changed |= (ret.manifests = changeManifests.size() > 0 ? changeManifests : null) != null;
 
             return changed ? ret : null;
         }
@@ -118,9 +172,9 @@ public class SteamAppDetails {
 
             return changed ? ret : null;
         }
+    }
 
-        private static boolean isStringEquals(String left, String right) {
-            return left == null ? (right == null) : (left.equals(right));
-        }
+    private static boolean isStringEquals(String left, String right) {
+        return left == null ? (right == null) : (left.equals(right));
     }
 }

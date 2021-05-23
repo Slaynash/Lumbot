@@ -2,9 +2,11 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +17,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CrasherVideoChecker {
 
     public static void check(MessageReceivedEvent event) {
-        if (true) return;
+        //if (true) return;
 
         List<Attachment> attachments = event.getMessage().getAttachments();
 
@@ -23,7 +25,7 @@ public class CrasherVideoChecker {
             Attachment attachment = attachments.get(i);
             if (attachment.getFileExtension().toLowerCase().equals("mp4")) {
                 try (InputStream is = attachment.retrieveInputStream().get()) {
-                    if (checkForCrasher(is, event))
+                    if (checkForCrasher(is, event, attachment.getId()))
                         return;
                 }
                 catch (InterruptedException | ExecutionException | IOException e) {
@@ -41,7 +43,7 @@ public class CrasherVideoChecker {
                 System.out.println("weblink: " + url);
                 try (InputStream is = new URL(url).openStream()) {
                     byte[] bytes = is.readNBytes(8);
-                    if (bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70 && checkForCrasher(is, event))
+                    if (bytes[4] == 0x66 && bytes[5] == 0x74 && bytes[6] == 0x79 && bytes[7] == 0x70 && checkForCrasher(is, event, "videourl"))
                         return;
                     
                     try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -63,7 +65,7 @@ public class CrasherVideoChecker {
                                     videourl += tag.split("https?:\\/\\/", 3)[1].split("\"")[0];
                                     System.out.println("videourl: " + videourl);
                                     try (InputStream vis = new URL(videourl).openStream()) {
-                                        if (checkForCrasher(vis, event))
+                                        if (checkForCrasher(vis, event, "videourl_og"))
                                             return;
                                     }
                                     catch (IOException e) {
@@ -82,47 +84,72 @@ public class CrasherVideoChecker {
 
     }
 
-    private static boolean checkForCrasher(InputStream is, MessageReceivedEvent event) throws IOException {
+    private static boolean checkForCrasher(InputStream is, MessageReceivedEvent event, String attachmentId) throws IOException {
         int totalRead = 0;
         boolean donereading = false;
-        while (!donereading && totalRead < 10_000_000) {
-            int bufferIndex = 0;
-            byte[] buffer = new byte[10000];
-            while (bufferIndex < buffer.length) {
-                int read = is.read(buffer, bufferIndex, buffer.length - bufferIndex);
-                if (read == -1) {
-                    donereading = true;
-                    break;
+
+        String targetFileName = "videos/" + event.getGuild().getId() + "_" + event.getMessageId() + "_" + attachmentId + ".mp4";
+
+        try (FileOutputStream fos = new FileOutputStream(targetFileName)) {
+
+            while (!donereading && totalRead < 10_000_000) {
+                int bufferIndex = 0;
+                byte[] buffer = new byte[10000];
+                while (bufferIndex < buffer.length) {
+                    int read = is.read(buffer, bufferIndex, buffer.length - bufferIndex);
+                    if (read == -1) {
+                        donereading = true;
+                        break;
+                    }
+
+                    bufferIndex += read;
+                    totalRead += read;
                 }
 
-                bufferIndex += read;
-                totalRead += read;
-            }
-            
-            if (indexOf(buffer, bufferIndex, new byte[] {0x41, 0x56, 0x43}) > 128) {
-                event.getMessage().delete().queue();
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
-                if (event.getGuild().getIdLong() == 439093693769711616L /* VRCMG */ ||
-                    event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ ||
-                    event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
-                    try {
-                        event.getAuthor()
-                            .openPrivateChannel().complete()
-                            .sendMessage("You have been banned from **" + event.getGuild().getName() + "**: Posting a crasher video.").queue();
+                fos.write(buffer, 0, bufferIndex);
+                
+                /*
+                if (indexOf(buffer, bufferIndex, new byte[] {0x41, 0x56, 0x43}) > 128) {
+                    event.getMessage().delete().queue();
+                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a crasher video", Color.RED)).queue();
+                    
+                    if (event.getGuild().getIdLong() == 439093693769711616L /* VRCMG * / ||
+                        event.getGuild().getIdLong() == 600298024425619456L /* emmVRC * / ||
+                        event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader * /) {
+                        try {
+                            event.getAuthor()
+                                .openPrivateChannel().complete()
+                                .sendMessage("You have been banned from **" + event.getGuild().getName() + "**: Posting a crasher video.").queue();
+                        }
+                        catch (Exception e) {
+                            System.out.println("Failed to send ban message to " + event.getMember().getIdLong());
+                            e.printStackTrace();
+                        }
+                        event.getGuild().ban(event.getMember(), 0, "Posting a crasher video").queue();
                     }
-                    catch (Exception e) {
-                        System.out.println("Failed to send ban message to " + event.getMember().getIdLong());
-                        e.printStackTrace();
-                    }
-                    event.getGuild().ban(event.getMember(), 0, "Posting a crasher video").queue();
+                    return true;
                 }
-                return true;
+                */
             }
         }
+
+        Process p = Runtime.getRuntime().exec("ffmpeg -v error -i " + targetFileName.replace(" ", "\\ ") + " -f null - 2>&1");
+        
+        try (BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line;
+
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+
+        System.out.println("Done checking video");
+        
 
         return false;
     }
 
+    /*
     private static int indexOf(byte[] outerArray, int outerArraySize, byte[] smallerArray) {
         for (int i = 0; i < outerArraySize - smallerArray.length + 1; ++i) {
             boolean found = true;
@@ -136,6 +163,7 @@ public class CrasherVideoChecker {
                 return i;
         }
         return -1;  
-    }  
+    }
+    */
 
 }
