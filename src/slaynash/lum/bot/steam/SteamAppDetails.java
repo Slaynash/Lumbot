@@ -55,12 +55,19 @@ public class SteamAppDetails {
 
     public static class SteamAppDepots {
         // baselanguages
-        public Map<Integer, SteamAppDepot> depots = new HashMap<>();
+        public Map<Integer, SteamAppDepot> elements = new HashMap<>();
         public Map<String, SteamAppBranch> branches = new HashMap<>();
 
         private SteamAppDepots() {}
 
         public SteamAppDepots(KeyValue keyValues) {
+            for (KeyValue element : keyValues.getChildren()) {
+                try {
+                    Integer key = Integer.parseInt(element.getName());
+                    elements.put(key, new SteamAppDepot(element));
+                }
+                catch(Exception e) {}
+            }
             KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())
                 this.branches.put(branch.getName(), new SteamAppBranch(branch));
@@ -90,13 +97,33 @@ public class SteamAppDetails {
             }
             changed |= (ret.branches = changeBranches.size() > 0 ? changeBranches : null) != null;
 
+            Map<Integer, SteamAppDepot> changeElements = new HashMap<>();
+            for (Entry<Integer, SteamAppDepot> newElementEntries : newDepots.elements.entrySet()) {
+                Integer elementKey = newElementEntries.getKey();
+                SteamAppDepot newElement = newElementEntries.getValue();
+                SteamAppDepot oldElement = oldDepots.elements.get(newElementEntries.getKey());
+
+                if (oldElement == null)
+                    changeElements.put(elementKey, newElement);
+                else {
+                    SteamAppDepot compareResult = SteamAppDepot.compare(oldElement, newElement);
+                    if (compareResult != null)
+                        changeElements.put(elementKey, compareResult);
+                }
+            }
+            for (Entry<Integer, SteamAppDepot> oldElements : oldDepots.elements.entrySet()) {
+                if (!newDepots.elements.containsKey(oldElements.getKey()))
+                    changeElements.put(oldElements.getKey(), oldElements.getValue());
+            }
+            changed |= (ret.elements = changeElements.size() > 0 ? changeElements : null) != null;
+
             return changed ? ret : null;
         }
     }
 
     public static class SteamAppDepot {
         public String name;
-        public Map<String, Integer> manifests = new HashMap<>();
+        public Map<String, Long> manifests = new HashMap<>();
 
         private SteamAppDepot() {}
 
@@ -106,7 +133,7 @@ public class SteamAppDetails {
             if (manifestsKV != KeyValue.INVALID) {
                 manifests = new HashMap<>();
                 for (KeyValue kv : manifestsKV.getChildren())
-                    manifests.put(kv.getName(), kv.asInteger());
+                    manifests.put(kv.getName(), kv.asLong());
             }
         }
 
@@ -116,24 +143,24 @@ public class SteamAppDetails {
 
             changed |= (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
 
-            Map<String, Integer> changeManifests = new HashMap<>();
-            for (Entry<String, Integer> newManifestEntries : newDepot.manifests.entrySet()) {
+            Map<String, Long> changeManifests = new HashMap<>();
+            for (Entry<String, Long> newManifestEntries : newDepot.manifests.entrySet()) {
                 String manifestKey = newManifestEntries.getKey();
-                Integer newManifest = newManifestEntries.getValue();
-                Integer oldManifest = oldDepot.manifests.get(manifestKey);
+                Long newManifest = newManifestEntries.getValue();
+                Long oldManifest = oldDepot.manifests.get(manifestKey);
 
                 if (oldManifest == null)
                     changeManifests.put(manifestKey, newManifest);
                 else {
-                    int compareResult = oldManifest == newManifest ? -1 : newManifest;
+                    Long compareResult = oldManifest == newManifest ? -1 : newManifest;
                     if (compareResult != -1)
                         changeManifests.put(manifestKey, compareResult);
                 }
             }
-            for (Entry<String, Integer> oldManifestEntry : oldDepot.manifests.entrySet()) {
+            for (Entry<String, Long> oldManifestEntry : oldDepot.manifests.entrySet()) {
                 String manifestKey = oldManifestEntry.getKey();
-                Integer newManifest = newDepot.manifests.get(manifestKey);
-                Integer oldManifest = oldManifestEntry.getValue();
+                Long newManifest = newDepot.manifests.get(manifestKey);
+                Long oldManifest = oldManifestEntry.getValue();
 
                 if (newManifest == null)
                     changeManifests.put(manifestKey, oldManifest);
