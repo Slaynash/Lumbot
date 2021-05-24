@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CrasherVideoChecker {
 
     public static void check(MessageReceivedEvent event) {
-        //if (true) return;
+        if (true) return;
 
         List<Attachment> attachments = event.getMessage().getAttachments();
 
