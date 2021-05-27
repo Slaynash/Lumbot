@@ -42,7 +42,7 @@ public class MelonLoaderScanner {
     //default values, to be replaced by command *to be added*
     public static String latestMLVersionRelease = "0.2.7.4";
     public static String latestMLVersionBeta = "0.3.0";
-    public static String uixURL = "";
+    public static String uixURL = "", amaURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
         add(new MelonLoaderError(
@@ -249,6 +249,8 @@ public class MelonLoaderScanner {
                                 CommandManager.brokenVrchatMods.add(vrcmoddetails.name);
                             if ("UI Expansion Kit".equals(vrcmoddetails.name))
                                 uixURL = vrcmoddetails.downloadlink;
+                            else if ("ActionMenuApi".equals(vrcmoddetails.name))
+                                amaURL = vrcmoddetails.downloadlink;
                             
                             for (int i = 0; i < processingmods.aliases.length-1; ++i) {
                                 modNameMatcher.put(processingmods.aliases[i], processingmods.versions[0].name);
@@ -955,6 +957,8 @@ public class MelonLoaderScanner {
                 for (int i = 0; i < missingMods.size() && i < 10; ++i)
                     if ("UIExpansionKit".equals(sanitizeInputString(missingMods.get(i))))
                         error += "- [UI Expansion Kit]("+ uixURL +")\n";
+                    else if ("ActionMenuApi".equals(sanitizeInputString(missingMods.get(i))))
+                        error += "- [Action Menu Api]("+ amaURL +")\n";
                     else
                         error += "- " + sanitizeInputString(missingMods.get(i) + "\n");
                 if (missingMods.size() > 10)
