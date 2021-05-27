@@ -191,6 +191,7 @@ public class MelonLoaderScanner {
     }};
     
     private static MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
+    private static MelonLoaderError mlMissing = new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exeption list and reinstall MelonLoader.");
     
     private static MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
@@ -646,7 +647,8 @@ public class MelonLoaderScanner {
                         }
                         else if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
                             if(missingMods.size() == 0 && !readingMissingDependencies)
-                                errors.add(new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exeption list and reinstall MelonLoader."));
+                                if (!errors.contains(mlMissing))
+                                    errors.add(mlMissing); //Mod missing ML files
                         }
                         
                         else {
