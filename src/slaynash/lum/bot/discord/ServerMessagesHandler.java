@@ -129,12 +129,12 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (message.contains("meap.gg") || message.contains("PQzmExys")) {
+        if (message.contains("meap.gg") || message.contains("pqzmexys")) {
             System.out.println("Notorious link detected");
             event.getMessage().delete().queue();
         }
         
-        if (message.contains("nice lum") || message.contains("good lum")) {
+        else if (message.contains("nice lum") || message.contains("good lum")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
