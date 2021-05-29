@@ -139,12 +139,12 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
         
-        else if ( message.contains(/*f*/"off lum")) {
+        else if ( message.contains(/*f*/" off lum")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage("<:Felix_staybacc:828070109859020810>").queue();
         }
         
-        else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/"up lum") || message.contains(/*shush*/"it lum")) {
+        else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage("<:Felix_pout:828069529044385833>").queue();
         }

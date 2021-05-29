@@ -1136,7 +1136,7 @@ public class MelonLoaderScanner {
         .replace("*", "\\*")
         .replace("`", "\\`");
         
-        input = Pattern.compile("(nigg(er|a)|porn)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("[REDACTED]"));
+        input = Pattern.compile("(nigg(er|a)|porn)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
         
         input = input.substring(0, input.length()>50?50:input.length()); // limit inputs to 50 chars
         
