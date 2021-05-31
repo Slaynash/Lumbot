@@ -39,12 +39,15 @@ public class ServerMessagesHandler {
     private static String[] alreadyHelpedSentences = new String[] {
         "I already answered you <:konataCry:553690186022649858>",
         "Why won't you read my answer <:angry:835647632843866122>",
-        "There's already the answer up here!! <:cirHappy:829458722634858496>"
+        "There's already the answer up here!! <:cirHappy:829458722634858496>",
+        "I've already given you a response! <:MeguminEyes:828069330901532692>"
     };
 
     private static String[] alreadyHelpedSentencesRare = new String[] {
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
-        "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png"
+        "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
+        "Your literacy skills test appears to have failed you. <:angry_felix_sounds:828071013710299206>",
+        "https://lmgtfy.app/?q=How+do+I+read%3F"
     };
     
     private static String[] thankedSentences = new String[] {
