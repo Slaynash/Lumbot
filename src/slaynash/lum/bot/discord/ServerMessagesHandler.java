@@ -155,10 +155,6 @@ public class ServerMessagesHandler {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage("<:Felix_pout:828069529044385833>").queue();
         }
-        else if (message.contains("i love you lum") && event.getAuthor()==User.fromId(735515891277627392L)) {
-            System.out.println("Kosmic confessed his love");
-            event.getChannel().sendMessage("I love you too <:Felix_heart:828069178224541696>").queue();
-        }
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
                 message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") ||
