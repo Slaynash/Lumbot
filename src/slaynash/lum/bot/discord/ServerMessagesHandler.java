@@ -134,7 +134,7 @@ public class ServerMessagesHandler {
             event.getMessage().delete().queue();
         }
         
-        else if (message.contains("nice lum") || message.contains("good lum")) {
+        else if (message.matches("(.*\\bnice\\b.*)(.*\\blum\\b.*)|(.*\\blum\\b.*)(.*\\bnice\\b.*)") || message.matches("(.*\\bgood\\b.*)(.*\\blum\\b.*)|(.*\\blum\\b.*)(.*\\bgood\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }

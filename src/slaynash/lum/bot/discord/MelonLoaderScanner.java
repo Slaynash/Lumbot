@@ -646,7 +646,7 @@ public class MelonLoaderScanner {
                             line = br.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
                         }
                         else if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
-                            if(missingMods.size() == 0 && !readingMissingDependencies)
+                            if(missingMods.size() == 0 && !readingMissingDependencies && !pre3)
                                 if (!errors.contains(mlMissing))
                                     errors.add(mlMissing); //Mod missing ML files
                         }
