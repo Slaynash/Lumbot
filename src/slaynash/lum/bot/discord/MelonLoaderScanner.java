@@ -56,9 +56,6 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
                 "MelonLoader failed to read your Unity version and game name. Try re-installing MelonLoader or delete UnityCrashHandler64.exe."));
-        add(new MelonLoaderError(
-                "\\[[0-9.:]+\\] \\[ERROR\\] System.ArgumentException: No target method specified for class NKHook6.*",
-                "NKHook6 is not working due to recent BTD6 update. Please remove NKHook6 from your Mods folder."));
         /*
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[emmVRCLoader\\] \\[ERROR\\] System\\.Reflection\\.TargetInvocationException: Exception has been thrown by the target of an invocation\\. ---> System\\.TypeLoadException: Could not load type of field 'emmVRC\\.Hacks\\.FBTSaving\\+<>c__DisplayClass5_0:steam'.*",
@@ -119,6 +116,14 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
                 "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader 0.3.0"));
+        
+        //BTD6
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] \\[ERROR\\] System.ArgumentException: No target method specified for class NKHook6.*",
+                "NKHook6 is not working due to recent BTD6 update. Please remove NKHook6 from your Mods folder."));
+        add(new MelonLoaderError(
+                "  at alldartling.Main+Awake_Patch.Postfix.*",
+                "all dartling is throwing a error and should be removed."));
     }};
     
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{

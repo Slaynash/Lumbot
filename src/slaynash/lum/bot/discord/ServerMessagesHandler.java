@@ -132,9 +132,16 @@ public class ServerMessagesHandler {
         if (message.contains("meap.gg") || message.contains("pqzmexys")) {
             System.out.println("Notorious link detected");
             event.getMessage().delete().queue();
+            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
+            if (reportChannel != null) {
+                event.getGuild().getTextChannelById(reportChannel).sendMessage(
+                        JDAManager.wrapMessageInEmbed(
+                                "User <@" + event.getMember().getId() + "> Posted a link to Notorious and message has been deleted.",
+                                Color.RED)).queue();
+            }
         }
         
-        else if (message.matches("(.*\\bnice\\b.*)(.*\\blum\\b.*)|(.*\\blum\\b.*)(.*\\bnice\\b.*)") || message.matches("(.*\\bgood\\b.*)(.*\\blum\\b.*)|(.*\\blum\\b.*)(.*\\bgood\\b.*)")) {
+        else if (message.matches("(.*\\b(good|nice|love|cool)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool)\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
