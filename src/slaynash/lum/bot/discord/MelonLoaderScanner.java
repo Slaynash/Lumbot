@@ -845,7 +845,7 @@ public class MelonLoaderScanner {
         MessageBuilder mb = new MessageBuilder();
         eb.setTitle("Log Autocheck Result:");
         eb.setTimestamp(Instant.now());
-        eb.setFooter("Lum Log Scanner");
+        eb.setFooter("Lum Log Scanner " + MelonLoaderScanner.modNameMatcher.size() + " " + modAuthors.size());
         mb.append("<@" + event.getAuthor().getId() + ">");
         
         if (game != null) {
