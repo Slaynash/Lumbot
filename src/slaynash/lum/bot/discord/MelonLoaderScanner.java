@@ -483,6 +483,9 @@ public class MelonLoaderScanner {
                                     String[] split = line.split(" ", 2)[1].split(" v", 2);
                                     tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
                                     tmpModVersion = split.length > 1 ? split[1] : null;
+                                    
+                                    String matchedName = MelonLoaderScanner.modNameMatcher.get(tmpModName.trim());
+                                    tmpModName = (matchedName != null) ? matchedName : tmpModName;
                                     continue;
                                 }
                                 else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
@@ -593,6 +596,7 @@ public class MelonLoaderScanner {
                             mlHashCode = line.split(":", 4)[3].trim();
                             System.out.println("Hash Code: " + mlHashCode);
                         }
+                        //Line is for ML 0.2.7.x
                         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Game Compatibility: .*")) {
                             if (lastLine.isBlank())
                                 continue;
@@ -606,7 +610,7 @@ public class MelonLoaderScanner {
                             String version = split3.length > 1 ? split3[1] : null;
                             
                             String matchedName = MelonLoaderScanner.modNameMatcher.get(name.trim());
-                            name = matchedName != null ? matchedName : name;
+                            name = (matchedName != null) ? matchedName : name;
                             
                             if (loadedMods.containsKey(name) && !duplicatedMods.contains(name))
                                 duplicatedMods.add(name.trim());
