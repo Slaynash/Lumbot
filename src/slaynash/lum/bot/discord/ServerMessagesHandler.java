@@ -47,7 +47,7 @@ public class ServerMessagesHandler {
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
         "Your literacy skills test appears to have failed you. <:angry_felix_sounds:828071013710299206>",
-        "https://lmgtfy.app/?q=How+do+I+read%3F"
+        "<https://lmgtfy.app/?q=How+do+I+read>"
     };
     
     private static String[] thankedSentences = new String[] {
@@ -144,7 +144,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.matches("(.*\\b(good|nice|love|cool)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool)\\b.*)")) {
+        else if (message.matches("(.*\\b(good|nice|love|cool|cutie)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie)\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
