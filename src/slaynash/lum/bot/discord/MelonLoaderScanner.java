@@ -768,6 +768,9 @@ public class MelonLoaderScanner {
                     else if ("Portal Confirmation".equals(modName)) {
                         errors.add(new MelonLoaderError("", "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it."));}
                     
+                    else if ("YoutubeDLUpdater".equals(modName)) {
+                        errors.add(new MelonLoaderError("", "YoutubeDLUpdater is no longer needed and should be removed."));}
+                    
                     if (modVersion == null) {
                         unknownMods.add(new ModDetails(modName, logsModDetails.version, null));
                         continue;
