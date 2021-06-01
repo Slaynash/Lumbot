@@ -394,6 +394,7 @@ public class MelonLoaderScanner {
         
         String emmVRCVersion = null;
         String emmVRCVRChatBuild = null;
+        String gameBuild = null;
         
         boolean isMLOutdatedVRC = false;
         boolean isMLOutdatedVRCBrokenDeobfMap = false;
@@ -622,6 +623,10 @@ public class MelonLoaderScanner {
                             
                             System.out.println("Found mod " + name.trim() + ", version is " + version + ", compatibility is " + compatibility);
                         }
+                        else if (line.matches("\\[[0-9.:]+\\] Game Version:.*")) {
+                            gameBuild = line.split(":")[3].trim();
+                            System.out.println("Game version " + gameBuild);
+                        }
                         // VRChat / EmmVRC Specifics
                         else if (line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] VRChat build is.*")) {
                             emmVRCVRChatBuild = line.split(":", 4)[3].trim();
@@ -845,7 +850,7 @@ public class MelonLoaderScanner {
         MessageBuilder mb = new MessageBuilder();
         eb.setTitle("Log Autocheck Result:");
         eb.setTimestamp(Instant.now());
-        eb.setFooter("Lum Log Scanner " + MelonLoaderScanner.modNameMatcher.size() + " " + modAuthors.size());
+        eb.setFooter("Lum Log Scanner " + MelonLoaderScanner.modNameMatcher.get("EyeTrack".trim()));
         mb.append("<@" + event.getAuthor().getId() + ">");
         
         if (game != null) {
@@ -935,8 +940,18 @@ public class MelonLoaderScanner {
             else if (isMLOutdated)
                 eb.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: " + sanitizeInputString(mlVersion) + " -> " + latestMLVersionRelease + ".", false);
             
+            if (gameBuild != null) {
+                if("VRChat".equals(game)) {
+                    gameBuild = gameBuild.split("-", 2)[1].substring(0, 4); //VRChat build number
+                    if(!gameBuild.equals(CommandManager.vrchatBuild)) {
+                        eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                        messageColor = Color.ORANGE;
+                    }
+                }
+            }
             
-            if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
+            //for pre0.3.1 VRChat version checking
+            else if (emmVRCVRChatBuild != null && !emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
                 eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
                 messageColor = Color.ORANGE;
             }
