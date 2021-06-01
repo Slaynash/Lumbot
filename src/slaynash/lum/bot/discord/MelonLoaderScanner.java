@@ -605,7 +605,7 @@ public class MelonLoaderScanner {
                             name = String.join("", name.split(".*[a-zA-Z0-9]\\.[a-zA-Z]{2,4}"));
                             String version = split3.length > 1 ? split3[1] : null;
                             
-                            String matchedName = modNameMatcher.get(name.trim());
+                            String matchedName = MelonLoaderScanner.modNameMatcher.get(name.trim());
                             name = matchedName != null ? matchedName : name;
                             
                             if (loadedMods.containsKey(name) && !duplicatedMods.contains(name))
@@ -781,7 +781,7 @@ public class MelonLoaderScanner {
                         continue;
                     }
                     
-                    String matchedModName = modNameMatcher.get(modName.trim());
+                    String matchedModName = MelonLoaderScanner.modNameMatcher.get(modName.trim());
                     if (matchedModName != null) {
                         modAuthors.put(matchedModName, modAuthors.get(modName));
                     }
@@ -850,7 +850,7 @@ public class MelonLoaderScanner {
         MessageBuilder mb = new MessageBuilder();
         eb.setTitle("Log Autocheck Result:");
         eb.setTimestamp(Instant.now());
-        eb.setFooter("Lum Log Scanner " + MelonLoaderScanner.modNameMatcher.get("EyeTrack".trim()));
+        eb.setFooter("Lum Log Scanner");
         mb.append("<@" + event.getAuthor().getId() + ">");
         
         if (game != null) {
@@ -944,7 +944,7 @@ public class MelonLoaderScanner {
                 if("VRChat".equals(game)) {
                     gameBuild = gameBuild.split("-", 2)[1].substring(0, 4); //VRChat build number
                     if(!gameBuild.equals(CommandManager.vrchatBuild)) {
-                        eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                        eb.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(gameBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
                         messageColor = Color.ORANGE;
                     }
                 }
