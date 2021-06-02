@@ -39,7 +39,7 @@ import slaynash.lum.bot.discord.logscanner.VersionUtils;
 
 public class MelonLoaderScanner {
     
-    //default values, to be replaced by command *to be added*
+    //default values, to be replaced by command
     public static String latestMLVersionRelease = "0.2.7.4";
     public static String latestMLVersionBeta = "0.3.0";
     public static String uixURL = "", amaURL = "";
@@ -403,6 +403,7 @@ public class MelonLoaderScanner {
         boolean consoleCopyPaste = false;
         boolean pre3 = false;
         boolean alpha = false;
+        boolean piratedBTD = false;
         Color messageColor = Color.BLUE;
         Color melonPink = new Color(255,59,106); 
         
@@ -446,6 +447,13 @@ public class MelonLoaderScanner {
                         if (line.matches(".*NetQueue: Setting up.") || line.matches("---- Minecraft Crash Report ----") || line.matches(".*melon_slice.*") || line.matches(".*Injecting coremod.*")) {
                             System.out.println("Minecraft Log detected");
                             event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.RED)).queue();
+                            return;
+                        }
+                        
+                        else if (line.matches(".*Bloons.TD.6.*")) {
+                            System.out.println("Pirated BTD6 detected");
+                            piratedBTD = true;
+                            //reportUserPiratedBTD(event);
                             return;
                         }
                         
@@ -866,7 +874,10 @@ public class MelonLoaderScanner {
                 eb.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                 break;
             case "BloonsTD6":
-                eb.setThumbnail("https://i.imgur.com/BSXtkvW.png");
+                if(piratedBTD)
+                    eb.setThumbnail("https://i.redd.it/76et0pfu87e31.png"); //sad monkey
+                else
+                    eb.setThumbnail("https://i.imgur.com/BSXtkvW.png");
                 break;
             case "BONEWORKS":
                 eb.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
@@ -1152,6 +1163,16 @@ public class MelonLoaderScanner {
             event.getGuild().getTextChannelById(reportChannel).sendMessage(
                     JDAManager.wrapMessageInEmbed(
                             "User <@" + event.getMember().getId() + "> is using a modified MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                            Color.RED)).queue();
+        }
+    }
+    
+    private static void reportUserPiratedBTD(MessageReceivedEvent event) {
+        Long postedGuild = event.getGuild().getIdLong();
+        if (postedGuild == 663449315876012052L) { //ML discord
+            event.getGuild().getTextChannelById(668293680058204165L).sendMessage(
+                    JDAManager.wrapMessageInEmbed(
+                            "User <@" + event.getMember().getId() + "> is using a pirated version of BTD6.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.RED)).queue();
         }
     }
