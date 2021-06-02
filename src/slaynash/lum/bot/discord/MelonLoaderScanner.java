@@ -454,7 +454,6 @@ public class MelonLoaderScanner {
                             System.out.println("Pirated BTD6 detected");
                             piratedBTD = true;
                             //reportUserPiratedBTD(event);
-                            return;
                         }
                         
                         // Mod listing
