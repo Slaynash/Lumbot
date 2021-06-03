@@ -453,6 +453,7 @@ public class MelonLoaderScanner {
                         else if (line.matches(".*Bloons.TD.6.*")) {
                             System.out.println("Pirated BTD6 detected");
                             piratedBTD = true;
+                            game = "BloonsTD6";
                             //reportUserPiratedBTD(event);
                         }
                         
