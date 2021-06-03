@@ -63,7 +63,7 @@ public class MelonLoaderScanner {
         */
         add(new MelonLoaderError(
                 "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
-                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>"));
+                "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."));
         //This should hopefully be fixed in 0.3.1
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
@@ -82,7 +82,7 @@ public class MelonLoaderScanner {
                 "DNS failed to resolve emmVRC servers. Please set your Window's settings to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
-                "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder"));
+                "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
                 "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."));
@@ -100,7 +100,7 @@ public class MelonLoaderScanner {
                 "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
-                "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings"));
+                "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
                 "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."));
@@ -129,15 +129,18 @@ public class MelonLoaderScanner {
     private static List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<MelonLoaderError>() {{
         add(new MelonLoaderError(
                 ".*System\\.IO\\.FileNotFoundException\\: .* ['|\"]System\\.IO\\.Compression.*", 
-                "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>"));
-        add(new MelonLoaderError(
+                "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>."));
+        add(new MelonLoaderError( //MLinstaller
                 "System.UnauthorizedAccessException:.*",
-                "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges"));
-        add(new MelonLoaderError(
+                "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges."));
+        add(new MelonLoaderError( //MLinstaller
                 "System.IO.IOException: The process cannot access the file.*",
-                "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges"));
+                "The access to a file has been blocked. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges or your Virus scanner isn't scanning."));
+        add(new MelonLoaderError( //ML log
+                "\\[[0-9.:]+\\] System.IO.IOException: The process cannot access the file.*",
+                "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstalling MelonLoader."));
         add(new MelonLoaderError(
-                "SHA512 Hash from Temp File does not match Repo Hash!",
+                ".*SHA512 Hash from Temp File does not match Repo Hash!",
                 "Installer failed to download MelonLoader successfully. Try again later or redownload the official MelonLoader installer."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
@@ -183,7 +186,7 @@ public class MelonLoaderScanner {
                 "An invalid/broken mod attempted to load."));
         add(new MelonLoaderError(
                 ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-                "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings"));
+                "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
                 "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."));
