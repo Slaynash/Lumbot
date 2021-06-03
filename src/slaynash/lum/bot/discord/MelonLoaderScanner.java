@@ -193,6 +193,9 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 ".*The system cannot find the file specified.",
                 "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader."));
+        add(new MelonLoaderError(
+                "\\[[0-9.:]+\\] Can't download Unity Dependencies, Unstripping will NOT be done!",
+                "MelonLoader failed to download Unity Dependencies. There may be an issue with your firewall or your ISP is blocking the download."));
     }};
     
     private static MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
