@@ -154,12 +154,12 @@ public class MelonLoaderScanner {
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
                 "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."));
-        add(new MelonLoaderError(
+        add(new MelonLoaderError( //installer
                 "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
-                "The storage space is full. Please free some space and try your game again. You need about 300MB free."));
-        add(new MelonLoaderError(
+                "The storage space is full. Please free some space and try your game again. You need atleast 500MB free."));
+        add(new MelonLoaderError( // log
                 "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: There is not enough space on the disk.",
-                "The storage space is full. Please free some space and try your game again. You need about 300MB free."));
+                "The storage space is full. Please free some space and try your game again. You need atleast 450MB free."));
         add(new MelonLoaderError(
                 "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
                 "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader 0.3.0."));
