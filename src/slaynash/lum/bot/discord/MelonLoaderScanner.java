@@ -45,6 +45,9 @@ public class MelonLoaderScanner {
     public static String uixURL = "", amaURL = "";
     
     private static List<MelonLoaderError> knownErrors = new ArrayList<MelonLoaderError>() {{
+        add(new MelonLoaderError( //temporary due to 1102
+                "  at JoinNotifier.NetworkManagerHooks.*",
+                "JoinNotifier is throwing errors but it apears to be functioning just fine. Please wait for an update."));
         add(new MelonLoaderError(
                 ".*MonoBehaviourPublicGaInStVoInStVoInVoStUnique.*", //very temporary remove after emmVRC is fixed
                 "VRChat update changed the emojigenerator used by emmVRC. We are working on fixing it."));
