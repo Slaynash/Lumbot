@@ -178,7 +178,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do"/*i do*/) || message.contains("what should"/*i do*/)) {
+        else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
             System.out.println("Help was detected");
             if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
