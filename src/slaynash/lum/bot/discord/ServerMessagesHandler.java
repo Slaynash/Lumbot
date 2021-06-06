@@ -144,7 +144,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.matches("(.*\\b(good|nice|love|cool|cutie)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie)\\b.*)")) {
+        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped)\\b.*) (.*\\b(lum|bot)\\b.*)|(.*\\b(lum|bot)\\b.*) (.*\\b(good|nice|love|cool|cutie|helped)\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage("<:Kanna_Heart:828069976543723540>").queue();
         }
