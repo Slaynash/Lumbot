@@ -46,7 +46,7 @@ public class ServerMessagesHandler {
     private static String[] alreadyHelpedSentencesRare = new String[] {
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
-        "Your literacy skills test appears to have failed you. <:angry_felix_sounds:828071013710299206>",
+        "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>",
         "<https://lmgtfy.app/?q=How+do+I+read>"
     };
     
@@ -146,17 +146,17 @@ public class ServerMessagesHandler {
         
         else if (message.matches("(.*\\b(good|nice|love|cool|cutie)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie)\\b.*)")) {
             System.out.println("Nice Lum was detected");
-            event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
+            event.getChannel().sendMessage("<:Kanna_Heart:828069976543723540>").queue();
         }
         
         else if (message.contains(/*f*/" off lum")) {
             System.out.println("F off Lum was detected");
-            event.getChannel().sendMessage("<:Felix_staybacc:828070109859020810>").queue();
+            event.getChannel().sendMessage("<:KannaFu:828070156709789756>").queue();
         }
         
         else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
             System.out.println("Bad Lum was detected");
-            event.getChannel().sendMessage("<:Felix_pout:828069529044385833>").queue();
+            event.getChannel().sendMessage("<:kanna_cry:851143700297941042>").queue();
         }
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
@@ -195,7 +195,7 @@ public class ServerMessagesHandler {
             }
         }
         
-        else if (message.contains("credit") && message.contains("lum")) {
+        else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
             System.out.println("Lum stole Credit");
             event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
         }
