@@ -156,7 +156,7 @@ public class ServerMessagesHandler {
         
         else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
             System.out.println("Bad Lum was detected");
-            event.getChannel().sendMessage("<:kanna_cry:851143700297941042>").queue();
+            event.getChannel().sendMessage("<a:kanna_cry:851143700297941042>").queue();
         }
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
