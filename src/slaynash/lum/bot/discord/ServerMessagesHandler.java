@@ -149,7 +149,7 @@ public class ServerMessagesHandler {
             event.getChannel().sendMessage("<:Felix_heart:828069178224541696>").queue();
         }
         
-        else if ( message.contains(/*f*/" off lum")) {
+        else if (message.contains(/*f*/" off lum")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage("<:Felix_staybacc:828070109859020810>").queue();
         }
@@ -193,6 +193,11 @@ public class ServerMessagesHandler {
                 }
                 event.getChannel().sendMessage(sentence).queue();
             }
+        }
+        
+        else if (message.contains("credit") && message.contains("lum")) {
+            System.out.println("Lum stole Credit");
+            event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
         }
         
         new Thread(() -> {
