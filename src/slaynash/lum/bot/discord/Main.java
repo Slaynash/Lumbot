@@ -28,6 +28,9 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
+import slaynash.lum.bot.discord.melonscanner.MelonLoaderError;
+import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.steam.Steam;
 
 public class Main extends ListenerAdapter {
@@ -77,8 +80,10 @@ public class Main extends ListenerAdapter {
         loadMLReportChannels();
         //loadBrokenVRCMods();
         loadVRCBuild();
-        MelonLoaderScanner.Init();
-        
+
+        MelonLoaderError.init();
+        MelonScannerApisManager.startFetchingThread();
+
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);
         
@@ -249,8 +254,8 @@ public class Main extends ListenerAdapter {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("melonloaderversions.txt"));
-            MelonLoaderScanner.latestMLVersionRelease = reader.readLine().trim();
-            MelonLoaderScanner.latestMLVersionBeta = reader.readLine().trim();
+            MelonScanner.latestMLVersionRelease = reader.readLine().trim();
+            MelonScanner.latestMLVersionBeta = reader.readLine().trim();
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();

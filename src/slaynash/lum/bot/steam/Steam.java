@@ -1,9 +1,5 @@
 package slaynash.lum.bot.steam;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Random;
@@ -42,9 +38,11 @@ public class Steam {
 
     private int gameId = 438100;
 
+    /*
     private final static HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .build();
+    */
 
     public Steam() {
 
@@ -142,6 +140,8 @@ public class Steam {
                     System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1).manifests);
                     System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1).manifests.get("public"));
                     */
+
+                    
 
                     /*
                     System.out.println("Branches:");

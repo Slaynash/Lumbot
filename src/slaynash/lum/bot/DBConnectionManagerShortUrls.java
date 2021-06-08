@@ -20,15 +20,12 @@ public final class DBConnectionManagerShortUrls {
     public static void init() {
         try {
 			System.out.println("[DB] Connecting to Database...");
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("com.mysql.jdbc.Driver").getDeclaredConstructor().newInstance();
 			DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
 			connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabase, ConfigManager.dbLogin, ConfigManager.dbPassword);
 			System.out.println("[DB] Connection to Database initialised");
 		}
-		catch (SQLException e1) {e1.printStackTrace(System.err);}
-		catch (InstantiationException e) {e.printStackTrace(System.err);}
-		catch (IllegalAccessException e) {e.printStackTrace(System.err);}
-		catch (ClassNotFoundException e) {e.printStackTrace(System.err);}
+		catch (Exception e1) { e1.printStackTrace(System.err); }
     }
 
     private static Connection getConnection() {

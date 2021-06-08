@@ -1,8 +1,8 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,10 +14,11 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 
 public class ServerMessagesHandler {
 
-    private static Map<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
+    private static final Map<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
         put(439093693769711616L /* VRCMG */, new long[] {
                 631581319670923274L /* Staff */,
                 662720231591903243L /* Helper */,
@@ -36,21 +37,21 @@ public class ServerMessagesHandler {
                 673726384450961410L /* Moderators */ });
     }};
 
-    private static String[] alreadyHelpedSentences = new String[] {
+    private static final String[] alreadyHelpedSentences = new String[] {
         "I already answered you <:konataCry:553690186022649858>",
         "Why won't you read my answer <:angry:835647632843866122>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
         "I've already given you a response! <:MeguminEyes:828069330901532692>"
     };
 
-    private static String[] alreadyHelpedSentencesRare = new String[] {
+    private static final String[] alreadyHelpedSentencesRare = new String[] {
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
         "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>",
         "<https://lmgtfy.app/?q=How+do+I+read>"
     };
     
-    private static String[] thankedSentences = new String[] {
+    private static final String[] thankedSentences = new String[] {
         "You're Welcome <:EmmyLove:603759032284741664>",
         "<:cirHappy:829458722634858496>",
         "Anytime <:EmmyLove:603759032284741664>",
@@ -60,14 +61,17 @@ public class ServerMessagesHandler {
         "Glad I could help!"
     };
 
-    private static String[] thankedSentencesRare = new String[] {
+    private static final String[] thankedSentencesRare = new String[] {
         "Notices you senpai <:cirHappy:829458722634858496>",
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858"
     };
 
+    private static final int helpDuration = 6 * 60; //in seconds
+
     private static Random random = new Random();
-    
     private static String fileExt;
+    
+    private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
     public static void handle(MessageReceivedEvent event) {
         System.out.printf("[%s] [%s][%s] %s: %s\n",
@@ -163,7 +167,7 @@ public class ServerMessagesHandler {
                 message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") ||
                 message.contains("awesome") || message.contains(" wow ")) {
             System.out.println("Thanks was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+            if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;
                 if (rare)
@@ -180,7 +184,7 @@ public class ServerMessagesHandler {
         
         else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
             System.out.println("Help was detected");
-            if (MelonLoaderScanner.wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+            if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;
                 if (rare)
@@ -202,12 +206,12 @@ public class ServerMessagesHandler {
         
         new Thread(() -> {
             try {
-                MelonLoaderScanner.scanLogs(event);
+                MelonScanner.scanMessage(event);
             }
             catch(Exception e) {
                 e.printStackTrace();
                 
-                String error = "**An error has occured while reading logs:**\n" + getStackTrace(e);
+                String error = "**An error has occured while reading logs:**\n" + ExceptionUtils.getStackTrace(e);
                 
                 if (error.length() > 1000) {
                     String[] lines = error.split("\n");
@@ -227,15 +231,6 @@ public class ServerMessagesHandler {
                 }
                 else
                     event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(error, Color.RED)).queue();
-            }
-        }).start();
-
-        new Thread(() -> {
-            try {
-                CrasherVideoChecker.check(event);
-            }
-            catch(Exception e) {
-                e.printStackTrace();
             }
         }).start();
     }
@@ -288,13 +283,25 @@ public class ServerMessagesHandler {
 
         return true; // No attachement, or no DLL
     }
-
-    private static String getStackTrace(Exception e) {
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-
-        e.printStackTrace(pw);
-
-        return sw.toString();
+    
+    public static void addNewHelpedRecently(MessageReceivedEvent event) {
+        for (int i = helpedRecently.size() - 1; i >= 0; --i)
+            if (helpedRecently.get(i).time + helpDuration < Instant.now().getEpochSecond())
+                helpedRecently.remove(i);
+        
+        helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
+        System.out.println("Helped recently added");
+    }
+    
+    public static boolean wasHelpedRecently(MessageReceivedEvent event) {
+        for (int i = 0; i < helpedRecently.size(); ++i) {
+            HelpedRecentlyData hrd = helpedRecently.get(i);
+            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + helpDuration > Instant.now().getEpochSecond()) {
+                helpedRecently.remove(i); // trigger only one message per log
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

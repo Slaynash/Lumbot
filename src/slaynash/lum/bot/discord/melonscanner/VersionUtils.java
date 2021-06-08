@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord.logscanner;
+package slaynash.lum.bot.discord.melonscanner;
 
 import java.util.ArrayList;
 import java.util.List;

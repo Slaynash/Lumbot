@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord.logscanner;
+package slaynash.lum.bot.discord.melonscanner;
 
 public class ModVersion {
     public VersionUtils.VersionData version;

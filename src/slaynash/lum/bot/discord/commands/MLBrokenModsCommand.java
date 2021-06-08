@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -12,8 +11,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.MelonLoaderScanner;
-import slaynash.lum.bot.discord.logscanner.ModDetails;
+import slaynash.lum.bot.discord.melonscanner.MelonApiMod;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 
 public class MLBrokenModsCommand extends Command {
     
@@ -41,20 +40,14 @@ public class MLBrokenModsCommand extends Command {
             
             
             
-            List<ModDetails> knownMods = null;
-            
-            synchronized (MelonLoaderScanner.mods) {
-                knownMods = MelonLoaderScanner.mods.get("VRChat");
-                if (knownMods != null)
-                    knownMods = new ArrayList<>(knownMods);
-            }
+            List<MelonApiMod> knownMods = MelonScannerApisManager.getMods("VRChat");
             
             if (knownMods != null) {
-                knownMods.sort( Comparator.comparing( ModDetails::getName ));
+                knownMods.sort( Comparator.comparing( MelonApiMod::getName ));
                     
                 message += "\n**Non-broken mods:**\n";
                 
-                for (ModDetails md : knownMods) {
+                for (MelonApiMod md : knownMods) {
                     String modname = md.name;
                     
                     boolean found = false;

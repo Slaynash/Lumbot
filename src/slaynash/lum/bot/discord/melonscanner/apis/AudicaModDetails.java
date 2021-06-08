@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord.logscanner;
+package slaynash.lum.bot.discord.melonscanner.apis;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -23,4 +23,9 @@ public class AudicaModDetails {
     
     @SerializedName("Download")
     public AudicaDownload[] download;
+
+    public static class AudicaDownload {
+        public String name;
+        public String browser_download_url;
+    }
 }
