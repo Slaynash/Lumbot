@@ -260,6 +260,8 @@ public class MelonScannerApisManager {
     }
 
     public static List<MelonApiMod> getMods(String game) {
+        if (game == null)
+            return null;
         List<MelonApiMod> list = games.get(game);
         return list == null ? null : new ArrayList<MelonApiMod>(games.get(game));
     }
