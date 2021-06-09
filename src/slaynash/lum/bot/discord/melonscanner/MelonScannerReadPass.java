@@ -93,7 +93,7 @@ public final class MelonScannerReadPass {
     }
 
     private static void pirateCheck(String line, MelonScanContext context) {
-        if (line.matches(".*Bloons.TD.6.*")) {
+        if (line.matches(".*Bloons.TD.6.*") || line.matches(".*Bloons.TD6.*")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
             //reportUserPiratedBTD(event);
