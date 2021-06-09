@@ -98,9 +98,10 @@ public final class MelonScanner {
                 }
             }
             
-            context.embedBuilder.setColor(context.embedColor);
-            messageReceivedEvent.getChannel().sendMessage(context.embedBuilder.build()).queue();
-
+            if (issueFound || context.mlVersion != null) {
+                context.embedBuilder.setColor(context.embedColor);
+                messageReceivedEvent.getChannel().sendMessage(context.embedBuilder.build()).queue();
+            }
         }
         catch (Exception exception) {
             String channelLink = "https://canary.discord.com/channels/" + messageReceivedEvent.getGuild().getId() + "/" + messageReceivedEvent.getChannel().getId() + "/" + messageReceivedEvent.getMessageId();
