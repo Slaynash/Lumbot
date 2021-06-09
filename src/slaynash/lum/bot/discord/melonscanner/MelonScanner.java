@@ -113,8 +113,8 @@ public final class MelonScanner {
                 embedBuilder.setTitle("MelonScanner Read Exception");
                 String channelName = messageReceivedEvent.getGuild().getName() + " #" + messageReceivedEvent.getChannel().getName() + " > " + messageReceivedEvent.getMessageId();
                 String exceptionString = "In [" + channelName + "](" + channelLink + "):\n" + exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
-                if (exceptionString.length() > 1024)
-                    exceptionString = exceptionString.substring(0, 1024) + "...";
+                if (exceptionString.length() > 2048)
+                    exceptionString = exceptionString.substring(0, 2044) + " ...";
                 embedBuilder.setDescription(exceptionString);
                 MessageEmbed embed = embedBuilder.build();
 

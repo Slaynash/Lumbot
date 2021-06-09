@@ -41,7 +41,7 @@ public class ServerMessagesHandler {
         "I already answered you <:konataCry:553690186022649858>",
         "Why won't you read my answer <:angry:835647632843866122>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
-        "I've already given you a response! <:MeguminEyes:828069330901532692>"
+        "I've already given you a response! <:MeguminEyes:852057834686119946>"
     };
 
     private static final String[] alreadyHelpedSentencesRare = new String[] {
@@ -52,9 +52,9 @@ public class ServerMessagesHandler {
     };
     
     private static final String[] thankedSentences = new String[] {
-        "You're Welcome <:EmmyLove:603759032284741664>",
+        "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>",
         "<:cirHappy:829458722634858496>",
-        "Anytime <:EmmyLove:603759032284741664>",
+        "Anytime <:Neko_cat_kiss_heart:851934821080367134>",
         "Always happy to help!",
         "Mhm of course!",
         "No problem!",
@@ -64,6 +64,34 @@ public class ServerMessagesHandler {
     private static final String[] thankedSentencesRare = new String[] {
         "Notices you senpai <:cirHappy:829458722634858496>",
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858"
+    };
+
+    private static final String[] helloLum = new String[] {
+        "<:Neko_cat_owo:851938214105186304>",
+        "<:Neko_cat_shrug:851938033724817428>",
+        "<:Neko_cat_uwu:851938142810275852>",
+        "<:Neko_cat_uwu:851938142810275852>",
+        "<:Neko_cat_wave:851938087353188372>"
+    };
+
+    private static final String[] niceLum = new String[] {
+        "<:Neko_cat_donut:851936309718024203>",
+        "<:Neko_cat_okay:851938634327916566>",
+        "<:Neko_cat_pizza:851935753826205736>",
+        "<:Neko_cat_royal:851935888178544660>",
+        "<:Neko_cat_woah:851935805874110504>",
+        "<a:Neko_cat_HeadPat:851934772959510578>",
+        "<a:HeartCat:828087151232286749>"
+    };
+
+    private static final String[] badLum = new String[] {
+        "<:Neko_cat_drool_stupid:851936505516785715>",
+        "<:Neko_cat_fear:851936400819486720>",
+        "<:Neko_cat_prison:851936449548255264>"
+    };
+
+    private static final String[] gunLum = new String[] {
+        "<:Neko_cat_Gun:851934721914175498>"
     };
 
     private static final int helpDuration = 6 * 60; //in seconds
@@ -150,18 +178,24 @@ public class ServerMessagesHandler {
         
         else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped)\\b.*) (.*\\b(lum|bot)\\b.*)|(.*\\b(lum|bot)\\b.*) (.*\\b(good|nice|love|cool|cutie|helped)\\b.*)")) {
             System.out.println("Nice Lum was detected");
-            event.getChannel().sendMessage("<:Kanna_Heart:828069976543723540>").queue();
+            event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
         }
         
-        else if (message.contains(/*f*/" off lum")) {
+        else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum")) {
             System.out.println("F off Lum was detected");
-            event.getChannel().sendMessage("<:KannaFu:828070156709789756>").queue();
+            event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
         }
         
         else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
             System.out.println("Bad Lum was detected");
-            event.getChannel().sendMessage("<a:kanna_cry:851143700297941042>").queue();
+            event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
         }
+
+        else if (message.contains("hello lum") || message.contains("hi lum")) {
+            System.out.println("Hello Lum was detected");
+            event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+        }
+
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
                 message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") ||

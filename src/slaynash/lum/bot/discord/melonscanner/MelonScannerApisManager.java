@@ -204,8 +204,8 @@ public class MelonScannerApisManager {
                             embedBuilder.setColor(Color.red);
                             embedBuilder.setTitle("MelonScanner API Exception for " + api.endpoint);
                             String exceptionString = exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
-                            if (exceptionString.length() > 1024)
-                                exceptionString = exceptionString.substring(0, 1021) + "...";
+                            if (exceptionString.length() > 2048)
+                                exceptionString = exceptionString.substring(0, 2044) + " ...";
                             embedBuilder.setDescription(exceptionString);
                             MessageEmbed embed = embedBuilder.build();
 
