@@ -163,7 +163,7 @@ public class ServerMessagesHandler {
                 event.getMessage().delete().queue();
             }
         }
-        
+
         if (message.contains("meap.gg") || message.contains("pqzmexys")) {
             System.out.println("Notorious link detected");
             event.getMessage().delete().queue();
@@ -175,17 +175,17 @@ public class ServerMessagesHandler {
                                 Color.RED)).queue();
             }
         }
-        
-        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped)\\b.*) (.*\\b(lum|bot)\\b.*)|(.*\\b(lum|bot)\\b.*) (.*\\b(good|nice|love|cool|cutie|helped)\\b.*)")) {
+
+        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped)\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
         }
-        
+
         else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
         }
-        
+
         else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
@@ -197,9 +197,9 @@ public class ServerMessagesHandler {
         }
 
         else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") || message.contains(" ty ") ||
-                message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") || message.contains("this bot") ||
-                message.contains("awesome") || message.contains(" wow ")) {
+                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
+                message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
+                message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
             System.out.println("Thanks was detected");
             if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
                 String sentence;
