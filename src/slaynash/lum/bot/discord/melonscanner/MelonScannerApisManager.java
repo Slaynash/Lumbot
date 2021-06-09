@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -182,6 +183,18 @@ public class MelonScannerApisManager {
                         }
                         */
                     }
+                    catch (HttpTimeoutException exception) {
+                        System.err.println("Fetching " + api.endpoint + " timedout:");
+
+                        try {
+                            EmbedBuilder embedBuilder = new EmbedBuilder();
+                            embedBuilder.setColor(Color.orange);
+                            embedBuilder.setTitle("MelonScanner API Timed Out for " + api.endpoint);
+                            MessageEmbed embed = embedBuilder.build();
+                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+                        }
+                        catch (Exception e2) { e2.printStackTrace(); }
+                    }
                     catch (Exception exception) {
                         System.err.println("Exception while fetching " + api.endpoint + ":");
                         exception.printStackTrace();
@@ -189,10 +202,10 @@ public class MelonScannerApisManager {
                         try {
                             EmbedBuilder embedBuilder = new EmbedBuilder();
                             embedBuilder.setColor(Color.red);
-                            embedBuilder.setTitle("MelonScanner API Exception");
+                            embedBuilder.setTitle("MelonScanner API Exception for " + api.endpoint);
                             String exceptionString = exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
                             if (exceptionString.length() > 1024)
-                                exceptionString = exceptionString.substring(0, 1024) + "...";
+                                exceptionString = exceptionString.substring(0, 1021) + "...";
                             embedBuilder.setDescription(exceptionString);
                             MessageEmbed embed = embedBuilder.build();
 
