@@ -592,6 +592,9 @@ public final class MelonScanner {
                 context.embedBuilder.addField("Partial Log:", "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game." , false);
                 context.embedColor = Color.ORANGE;
             }
+            else
+                return false;
+            
             return true;
         }
         return false;
