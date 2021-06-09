@@ -17,7 +17,7 @@ public class MelonScanContext {
     public Attachment attachment;
     public MessageReceivedEvent messageReceivedEvent;
     
-    //// Read pass
+    // Read pass
 
     public BufferedReader bufferedReader;
 
@@ -69,9 +69,10 @@ public class MelonScanContext {
     public boolean assemblyGenerationFailed = false;
     public List<MelonLoaderError> errors = new ArrayList<MelonLoaderError>();
     public List<String> modsThrowingErrors = new ArrayList<String>();
+    public List<String> misplacedMods = new ArrayList<String>();
+    public List<String> misplacedPlugins = new ArrayList<String>();
 
-
-    //// Thinkering pass
+    // Thinkering pass
 
     public boolean isMLOutdatedVRC = false;
 

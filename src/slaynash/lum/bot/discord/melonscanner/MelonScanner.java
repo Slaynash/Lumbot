@@ -76,6 +76,8 @@ public final class MelonScanner {
             issueFound |= brokenModsCheck(context);
             issueFound |= unknownModsCheck(context);
             issueFound |= outdatedModsCheck(context);
+            issueFound |= misplacedModsCheck(context);
+            issueFound |= misplacedPluginsCheck(context);
             issueFound |= modsThrowingErrorsCheck(context);
             issueFound |= minorErrorsHandling(context);
 
@@ -386,7 +388,7 @@ public final class MelonScanner {
 
         if (context.isMLOutdatedVRC) {
             if (context.pre3)
-                context.embedBuilder.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
+                context.embedBuilder.addField("Warning:", "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
             else
                 context.embedBuilder.addField("Warning:", "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader " + latestMLVersionBeta + " released after **" + CommandManager.melonLoaderVRCMinDate + ".**", false);
             return true;
@@ -518,6 +520,42 @@ public final class MelonScanner {
         return false;
     }
 
+    private static boolean misplacedModsCheck(MelonScanContext context) {
+        if (context.misplacedMods.size() > 0) {
+            String error = "Please move the following mods out of your Plugins and into the Mods folder.\n";
+            for (int i = 0; i < context.misplacedMods.size() && i < 10; ++i) {
+                String mm = context.misplacedMods.get(i);
+                error += "- " + sanitizeInputString(mm) + "\n";
+            }
+            if (context.misplacedMods.size() > 10)
+                error += "- and " + (context.misplacedMods.size() - 10) + " more...";
+            
+            context.embedBuilder.addField("Misplaced Mods:", error , false);
+            if (context.embedColor.equals(Color.BLUE))
+                context.embedColor = Color.RED;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean misplacedPluginsCheck(MelonScanContext context) {
+        if (context.misplacedPlugins.size() > 0) {
+            String error = "Please move the following plugins out of your Mods and into the Plugins folder.\n";
+            for (int i = 0; i < context.misplacedPlugins.size() && i < 10; ++i) {
+                String mp = context.misplacedPlugins.get(i);
+                error += "- " + sanitizeInputString(mp) + "\n";
+            }
+            if (context.misplacedPlugins.size() > 10)
+                error += "- and " + (context.misplacedPlugins.size() - 10) + " more...";
+            
+            context.embedBuilder.addField("Misplaced Plugins:", error , false);
+            if (context.embedColor.equals(Color.BLUE))
+                context.embedColor = Color.RED;
+            return true;
+        }
+        return false;
+    }
+
     private static boolean outdatedModsCheck(MelonScanContext context) {
         if (context.outdatedMods.size() > 0) {
             String vrcmuMessage = "VRChat".equals(context.game) ? "- Consider getting [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and moving it to the **Plugins** folder" : "";
@@ -546,6 +584,7 @@ public final class MelonScanner {
         }
         return false;
     }
+
     private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod, MelonScanContext context) {
         String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.GetShortenedUrl(outdatedMod.downloadUrl) + ")");
         String line = "- " + namePart + ": `" + sanitizeInputString(outdatedMod.currentVersion) + "` -> `" + outdatedMod.latestVersion + "`";

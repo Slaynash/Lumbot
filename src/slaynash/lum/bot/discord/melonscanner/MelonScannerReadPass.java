@@ -48,6 +48,7 @@ public final class MelonScannerReadPass {
                     gameVersionCheck(line, context) ||
                     emmVRCVersionCheck(line, context) ||
                     modPreListingCheck(line, context) ||
+                    misplacedCheck(line, context) ||
                     duplicateCheck(line, context) ||
                     missingMLFileCheck(line, context)
                 )) continue;
@@ -297,6 +298,24 @@ public final class MelonScannerReadPass {
         if (!context.pre3 && (line.matches("\\[[0-9.:]+\\] Loading Plugins...") || line.matches("\\[[0-9.:]+\\] Loading Mods..."))) {
             context.preListingMods = true;
             System.out.println("Starting to pre-list mods/plugins");
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean misplacedCheck(String line, MelonScanContext context) {
+        if (line.matches(".*is in the Plugins Folder:.*")) {
+            System.out.println("Misplaced Mod in Plugins");
+            String modname = line.split("Mod ")[1].split(" is")[0].trim();
+            if (!context.misplacedMods.contains(modname))
+                context.misplacedMods.add(modname);
+            return true;
+        }
+        else if (line.matches(".*is in the Mods Folder:.*")) {
+            System.out.println("Misplaced Plugin in Mods");
+            String pluginname = line.split("Plugin ")[1].split(" is")[0].trim();
+            if (!context.misplacedPlugins.contains(pluginname))
+                context.misplacedPlugins.add(pluginname);
             return true;
         }
         return false;
