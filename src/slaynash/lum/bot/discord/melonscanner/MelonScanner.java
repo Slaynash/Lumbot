@@ -102,7 +102,9 @@ public final class MelonScanner {
             
             if (issueFound || context.mlVersion != null) {
                 context.embedBuilder.setColor(context.embedColor);
-                messageReceivedEvent.getChannel().sendMessage(context.embedBuilder.build()).queue();
+                MessageBuilder messageBuilder = new MessageBuilder();
+                messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
+                messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbed(context.embedBuilder.build()).build()).queue();
             }
         }
         catch (Exception exception) {
@@ -296,11 +298,9 @@ public final class MelonScanner {
     private static void prepareEmbed(MelonScanContext context) {
         context.embedBuilder = new EmbedBuilder();
         context.reportMessage = new StringBuilder();
-        MessageBuilder mb = new MessageBuilder();
         context.embedBuilder.setTitle("Log Autocheck Result:");
         context.embedBuilder.setTimestamp(Instant.now());
         context.embedBuilder.setFooter("Lum Log Scanner");
-        mb.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
         
         if (context.game != null) {
             switch (context.game) {
@@ -411,7 +411,7 @@ public final class MelonScanner {
                 }
             }
         }
-        //for pre0.3.1 VRChat version checking
+        //for pre0.4.0 VRChat version checking
         else if (context.emmVRCVRChatBuild != null && !context.emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
             context.embedBuilder.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(context.emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
             context.embedColor = Color.ORANGE;

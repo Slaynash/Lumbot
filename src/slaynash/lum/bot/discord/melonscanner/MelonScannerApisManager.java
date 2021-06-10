@@ -182,6 +182,7 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
+                        Thread.sleep(1000); // sleep for a sec so all requests don't come at the same time.
                     }
                     catch (HttpTimeoutException exception) {
                         System.err.println("Fetching " + api.endpoint + " timedout:");
