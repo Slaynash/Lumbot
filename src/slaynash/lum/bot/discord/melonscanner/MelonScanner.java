@@ -105,6 +105,7 @@ public final class MelonScanner {
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbed(context.embedBuilder.build()).build()).queue();
+                LogCounter.AddtoCounter(attachment);
             }
         }
         catch (Exception exception) {

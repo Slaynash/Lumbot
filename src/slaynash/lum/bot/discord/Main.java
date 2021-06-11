@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -28,6 +30,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
+import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.melonscanner.MelonLoaderError;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
@@ -98,6 +101,10 @@ public class Main extends ListenerAdapter {
 
         VRCApiVersionScanner.init();
         
+        new Timer().schedule(new TimerTask(){
+            public void run(){LogCounter.UpdateLogCounter();
+            }},/*startup delay*/30_000,/*repeat delay*/60_000);
+
         System.out.println("LUM Started!");
     }
 
