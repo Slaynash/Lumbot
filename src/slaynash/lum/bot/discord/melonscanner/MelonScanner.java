@@ -101,11 +101,11 @@ public final class MelonScanner {
             }
             
             if (issueFound || context.mlVersion != null) {
+                LogCounter.AddtoCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbed(context.embedBuilder.build()).build()).queue();
-                LogCounter.AddtoCounter(attachment);
             }
         }
         catch (Exception exception) {

@@ -50,19 +50,19 @@ public final class LogCounter {
 
     public static void UpdateLogCounter() {
         try{
-            int logCount = 0;
-
             Date date = new Date();
             String directoryName = workingPath.concat("\\logs\\");
             File directory = new File(directoryName);
 
-            // remove files that is older then 24 hours
-            for (File fileEntry : directory.listFiles()) {
-                if ((date.getTime() - fileEntry.lastModified()) > 24 * 60 * 60 * 1000) {
-                    fileEntry.delete();
+            int logCount = directory.listFiles().length;
+            if(logCount > 0){
+                // remove files that is older then 24 hours
+                for (File fileEntry : directory.listFiles()) {
+                    if ((date.getTime() - fileEntry.lastModified()) > 24 * 60 * 60 * 1000) {
+                        fileEntry.delete();
+                    }
                 }
             }
-
             logCount = directory.listFiles().length;
 
             JDAManager.getJDA().getPresence().setActivity(Activity.watching("for logs, " + logCount + " read in the past 24 hours"));
@@ -75,7 +75,7 @@ public final class LogCounter {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setColor(Color.red);
                 embedBuilder.setTitle("Exception while Updating Counter");
-                String exceptionString = exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
+                String exceptionString = exception.getMessage() + "\n" + workingPath.concat("\\logs\\") + ExceptionUtils.getStackTrace(exception);
                 if (exceptionString.length() > 2048)
                     exceptionString = exceptionString.substring(0, 2044) + " ...";
                 embedBuilder.setDescription(exceptionString);
