@@ -106,7 +106,7 @@ public class Main extends ListenerAdapter {
         
         threadPool.scheduleWithFixedDelay(() -> {
             LogCounter.UpdateLogCounter();
-        }, 30, 60, TimeUnit.SECONDS);
+        }, 30, 30, TimeUnit.SECONDS);
 
         System.out.println("LUM Started!");
     }

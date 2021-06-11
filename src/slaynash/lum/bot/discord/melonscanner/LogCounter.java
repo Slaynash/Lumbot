@@ -15,6 +15,7 @@ import slaynash.lum.bot.discord.JDAManager;
 public final class LogCounter {
 
     private static final String workingPath = System.getProperty("user.dir");
+    private static int previousLogCount = 0;
 
     public static void AddtoCounter(Attachment attachment) {
         try{
@@ -65,7 +66,9 @@ public final class LogCounter {
             }
             logCount = directory.listFiles().length;
 
-            JDAManager.getJDA().getPresence().setActivity(Activity.watching("for logs, " + logCount + " read in the past 24 hours"));
+            if(logCount != previousLogCount)
+                JDAManager.getJDA().getPresence().setActivity(Activity.watching("for logs, " + logCount + " read in the past 24 hours"));
+            previousLogCount = logCount;
         }
         catch (Exception exception) {
             System.err.println("Exception while Updating Counter");
