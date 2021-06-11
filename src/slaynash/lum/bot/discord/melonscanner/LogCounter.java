@@ -18,7 +18,7 @@ public final class LogCounter {
 
     public static void AddtoCounter(Attachment attachment) {
         try{
-            String directoryName = workingPath.concat("\\logs\\" + Instant.now().toString().replaceAll(":", ";"));
+            String directoryName = workingPath.concat("/logs/" + Instant.now().toString().replaceAll(":", ";"));
 
             File directory = new File(directoryName);
             if (!directory.exists())
@@ -75,7 +75,7 @@ public final class LogCounter {
                 EmbedBuilder embedBuilder = new EmbedBuilder();
                 embedBuilder.setColor(Color.red);
                 embedBuilder.setTitle("Exception while Updating Counter");
-                String exceptionString = exception.getMessage() + "\n" + workingPath.concat("\\logs\\") + ExceptionUtils.getStackTrace(exception);
+                String exceptionString = exception.getMessage() + "\n" + workingPath.concat("/logs/") + "\n" + ExceptionUtils.getStackTrace(exception);
                 if (exceptionString.length() > 2048)
                     exceptionString = exceptionString.substring(0, 2044) + " ...";
                 embedBuilder.setDescription(exceptionString);
