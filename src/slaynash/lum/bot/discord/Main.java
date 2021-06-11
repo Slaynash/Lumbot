@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
@@ -39,6 +40,7 @@ import slaynash.lum.bot.steam.Steam;
 public class Main extends ListenerAdapter {
     public static JDA jda;
     public static boolean isShuttingDown = false;
+    private static ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
         TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager(){
@@ -57,6 +59,7 @@ public class Main extends ListenerAdapter {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
+            threadPool.shutdown();
             
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
@@ -101,9 +104,9 @@ public class Main extends ListenerAdapter {
 
         VRCApiVersionScanner.init();
         
-        new Timer().schedule(new TimerTask(){
-            public void run(){LogCounter.UpdateLogCounter();
-            }},/*startup delay*/30_000,/*repeat delay*/60_000);
+        threadPool.scheduleWithFixedDelay(() -> {
+            LogCounter.UpdateLogCounter();
+        }, 30, 60, TimeUnit.SECONDS);
 
         System.out.println("LUM Started!");
     }
