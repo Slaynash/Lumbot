@@ -67,7 +67,7 @@ public final class LogCounter {
             logCount = directory.listFiles().length;
 
             if(logCount != previousLogCount)
-                JDAManager.getJDA().getPresence().setActivity(Activity.watching("for logs, " + logCount + " read in the past 24 hours"));
+                JDAManager.getJDA().getPresence().setActivity(Activity.watching(logCount + " melons squashed in 24 hours"));
             previousLogCount = logCount;
         }
         catch (Exception exception) {
