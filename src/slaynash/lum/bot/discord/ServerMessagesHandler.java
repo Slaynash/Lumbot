@@ -102,6 +102,8 @@ public class ServerMessagesHandler {
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
     public static void handle(MessageReceivedEvent event) {
+        if(event.getAuthor().isBot()) return;
+
         System.out.printf("[%s] [%s][%s] %s: %s\n",
                 TimeManager.getTimeForLog(),
                 event.getGuild().getName(),
