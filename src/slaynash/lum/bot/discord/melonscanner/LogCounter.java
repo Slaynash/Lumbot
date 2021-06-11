@@ -51,7 +51,7 @@ public final class LogCounter {
     public static void UpdateLogCounter() {
         try{
             Date date = new Date();
-            String directoryName = workingPath.concat("\\logs\\");
+            String directoryName = workingPath.concat("/logs/");
             File directory = new File(directoryName);
 
             int logCount = directory.listFiles().length;
