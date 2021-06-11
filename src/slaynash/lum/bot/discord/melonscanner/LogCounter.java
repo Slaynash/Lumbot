@@ -53,7 +53,7 @@ public final class LogCounter {
             int logCount = 0;
 
             Date date = new Date();
-            String directoryName = workingPath.concat("\\logs");
+            String directoryName = workingPath.concat("\\logs\\");
             File directory = new File(directoryName);
 
             // remove files that is older then 24 hours
