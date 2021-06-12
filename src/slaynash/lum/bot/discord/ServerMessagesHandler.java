@@ -2,14 +2,21 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -101,6 +108,8 @@ public class ServerMessagesHandler {
     
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
+    private static final Queue<HandledServerMessageContext> handledMessages = new PriorityQueue<>();
+
     public static void handle(MessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
 
@@ -110,6 +119,9 @@ public class ServerMessagesHandler {
                 event.getTextChannel().getName(),
                 event.getAuthor().getName(),
                 event.getMessage().getContentRaw() );
+
+        if (checkForFishing(event))
+            return;
 
         if (!checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
@@ -309,6 +321,47 @@ public class ServerMessagesHandler {
                 }
             }
         }
+        return false;
+    }
+
+    private static boolean checkForFishing(MessageReceivedEvent event) {
+
+        if (!whitelistedRolesServers.containsKey(event.getGuild().getIdLong()))
+            return false;
+
+        if (ArrayUtils.contains(whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
+            return false;
+
+        String message = event.getMessage().getContentRaw();
+        boolean isSuspicious = message.contains("https") && message.contains("@everyone");
+
+        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
+        while (handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
+            handledMessages.remove();
+
+        handledMessages.add(new HandledServerMessageContext(event, isSuspicious));
+
+        List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
+            .collect(Collectors.toList());
+
+        int suspiciousCount = (int)sameauthormessages.stream().filter(m -> m.isSuspicious).count();
+
+        if (suspiciousCount > 3) {
+            String usernameWithTag = event.getAuthor().getAsTag();
+            String userId = event.getAuthor().getId();
+
+            //event.getMember().ban(0, "Banned by Lum's Scam Shield").complete();
+
+            EmbedBuilder embedBuilder = new EmbedBuilder();
+            embedBuilder.setTitle("Ban Report");
+            embedBuilder.setImage("https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+            embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
+            embedBuilder.setTimestamp(Instant.now());
+
+            return true;
+        }
+
         return false;
     }
 }
