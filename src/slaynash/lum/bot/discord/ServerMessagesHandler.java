@@ -30,7 +30,7 @@ public class ServerMessagesHandler {
                 631581319670923274L /* Staff */,
                 662720231591903243L /* Helper */,
                 825266051277258754L /* cutie */,
-                673725166626406428L /* Modder */ });
+                585594394153844865L /* Modder */ });
         put(600298024425619456L /* emmVRC */, new long[] {
                 748392927365169233L /* Admin */,
                 653722281864069133L /* Helper */ });
@@ -42,6 +42,8 @@ public class ServerMessagesHandler {
         put(673663870136746046L /* Modders & Chill */, new long[] {
                 673725166626406428L /* Modders */,
                 673726384450961410L /* Moderators */ });
+        put(633588473433030666 /* Slaynash's Workbench */, new long[] {
+                633590573412122634L /* Friends */});
     }};
 
     private static final String[] alreadyHelpedSentences = new String[] {
@@ -329,6 +331,9 @@ public class ServerMessagesHandler {
         if (!whitelistedRolesServers.containsKey(event.getGuild().getIdLong()))
             return false;
 
+        if(checkIfStaff(event))
+            return false;
+
         if (ArrayUtils.contains(whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
             return false;
 
@@ -359,7 +364,11 @@ public class ServerMessagesHandler {
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
             embedBuilder.setTimestamp(Instant.now());
             
-            event.getChannel().sendMessage(embedBuilder.build()).queue();
+            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+            if (reportChannel != null) {
+                event.getGuild().getTextChannelById(reportChannel).sendMessage(embedBuilder.build()).queue();
+            else
+                event.getChannel().sendMessage(embedBuilder.build()).queue();
 
             return true;
         }
