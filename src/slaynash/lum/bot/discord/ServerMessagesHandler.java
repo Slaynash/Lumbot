@@ -341,7 +341,7 @@ public class ServerMessagesHandler {
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         String message = event.getMessage().getContentRaw().toLowerCase();
         int suspiciousValue = 0;
-        suspiciousValue += message.contains("https") ? 1 : 0;
+        suspiciousValue += message.contains("http") ? 1 : 0;
         suspiciousValue += message.contains("@everyone") ? 1 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 1 : 0;
