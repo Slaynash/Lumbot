@@ -131,7 +131,6 @@ public class ServerMessagesHandler {
             System.out.println("Log was typed");
             
             boolean postedInWhitelistedServer = false;
-            boolean isStaff = false;
             long guildId = event.getGuild().getIdLong();
             for (long whitelistedGuildId : whitelistedRolesServers.keySet()) {
                 if (whitelistedGuildId == guildId) {
@@ -139,42 +138,9 @@ public class ServerMessagesHandler {
                     break;
                 }
             }
-            if(postedInWhitelistedServer) {
-                for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
-                    Guild targetGuild;
-                    Member serverMember;
-                    if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
-                        (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
-                    
-                        List<Role> roles = serverMember.getRoles();
-                        for (Role role : roles) {
-                            long roleId = role.getIdLong();
-                            for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
-                                if (whitelistedRoleId == roleId) {
-                                    isStaff = true; // The sender is whitelisted
-                                    System.out.println("Was Staff, allowing post");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (postedInWhitelistedServer && !isStaff) {
+            if (postedInWhitelistedServer && !checkIfStaff(event)) {
                 event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
                 event.getMessage().delete().queue();
-            }
-        }
-
-        if (message.contains("meap.gg") || message.contains("pqzmexys")) {
-            System.out.println("Notorious link detected");
-            event.getMessage().delete().queue();
-            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
-            if (reportChannel != null) {
-                event.getGuild().getTextChannelById(reportChannel).sendMessage(
-                        JDAManager.wrapMessageInEmbed(
-                                "User <@" + event.getMember().getId() + "> Posted a link to Notorious and message has been deleted.",
-                                Color.RED)).queue();
             }
         }
 
@@ -294,29 +260,15 @@ public class ServerMessagesHandler {
             if (fileExt == null) fileExt = "";
             fileExt = fileExt.toLowerCase();
             
-            if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") || fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
+            if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") ||
+             fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
 
-                for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
-                    Guild targetGuild;
-                    Member serverMember;
-                    if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
-                        (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
-                        
-                        List<Role> roles = serverMember.getRoles();
-                        for (Role role : roles) {
-                            long roleId = role.getIdLong();
-                            for (long whitelistedRoleId : whitelistedRolesServer.getValue())
-                                if (whitelistedRoleId == roleId)
-                                    return true; // The sender is whitelisted
-                        }
-                    }
-                    
-                }
+                if(checkIfStaff(event))
+                    return true;
 
                 return false; // The sender isn't allowed to send a DLL file
             }
         }
-
         return true; // No attachement, or no DLL
     }
     
@@ -337,7 +289,26 @@ public class ServerMessagesHandler {
                 return true;
             }
         }
-        
+        return false;
+    }
+
+    public static boolean checkIfStaff(MessageReceivedEvent event){
+        for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
+            Guild targetGuild;
+            Member serverMember;
+            if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
+                (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
+                List<Role> roles = serverMember.getRoles();
+                for (Role role : roles) {
+                    long roleId = role.getIdLong();
+                    for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
+                        if (whitelistedRoleId == roleId) {
+                            return true; // The sender is whitelisted
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 }
