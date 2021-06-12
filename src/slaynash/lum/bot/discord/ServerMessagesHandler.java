@@ -42,7 +42,7 @@ public class ServerMessagesHandler {
         put(673663870136746046L /* Modders & Chill */, new long[] {
                 673725166626406428L /* Modders */,
                 673726384450961410L /* Moderators */ });
-        put(633588473433030666 /* Slaynash's Workbench */, new long[] {
+        put(633588473433030666L /* Slaynash's Workbench */, new long[] {
                 633590573412122634L /* Friends */});
     }};
 
@@ -365,7 +365,7 @@ public class ServerMessagesHandler {
             embedBuilder.setTimestamp(Instant.now());
             
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-            if (reportChannel != null) {
+            if (reportChannel != null)
                 event.getGuild().getTextChannelById(reportChannel).sendMessage(embedBuilder.build()).queue();
             else
                 event.getChannel().sendMessage(embedBuilder.build()).queue();
