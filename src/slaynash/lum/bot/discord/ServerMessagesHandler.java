@@ -7,9 +7,9 @@ import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -108,7 +108,7 @@ public class ServerMessagesHandler {
     
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
-    private static final Queue<HandledServerMessageContext> handledMessages = new PriorityQueue<>();
+    private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     public static void handle(MessageReceivedEvent event) {
         if(event.getAuthor().isBot()) return;
@@ -336,7 +336,7 @@ public class ServerMessagesHandler {
         boolean isSuspicious = message.contains("https") && message.contains("@everyone");
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        while (handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
+        while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove();
 
         handledMessages.add(new HandledServerMessageContext(event, isSuspicious));
@@ -351,13 +351,15 @@ public class ServerMessagesHandler {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
 
-            //event.getMember().ban(0, "Banned by Lum's Scam Shield").complete();
+            event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
 
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setTitle("Ban Report");
-            embedBuilder.setImage("https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+            embedBuilder.setThumbnail("https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
             embedBuilder.setTimestamp(Instant.now());
+            
+            event.getChannel().sendMessage(embedBuilder.build()).queue();
 
             return true;
         }
