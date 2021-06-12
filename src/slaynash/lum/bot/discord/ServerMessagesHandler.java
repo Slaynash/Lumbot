@@ -44,6 +44,9 @@ public class ServerMessagesHandler {
                 673726384450961410L /* Moderators */ });
         put(633588473433030666L /* Slaynash's Workbench */, new long[] {
                 633590573412122634L /* Friends */});
+        put(835185040752246835L /* The Long Development */, new long[] {
+                837912560497721344L /* Team Member */,
+                836863571811106846L /* Fellow Modder */});
     }};
 
     private static final String[] alreadyHelpedSentences = new String[] {
