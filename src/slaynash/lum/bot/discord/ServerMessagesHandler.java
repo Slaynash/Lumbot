@@ -337,20 +337,28 @@ public class ServerMessagesHandler {
         if (ArrayUtils.contains(whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
             return false;
 
+        // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
+        //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         String message = event.getMessage().getContentRaw();
-        boolean isSuspicious = message.contains("https") && message.contains("@everyone");
+        int suspiciousValue = 0;
+        suspiciousValue += message.contains("https") ? 1 : 0;
+        suspiciousValue += message.contains("@everyone") ? 1 : 0;
+        suspiciousValue += message.contains("money") ? 1 : 0;
+        suspiciousValue += message.contains("loot") ? 1 : 0;
+        suspiciousValue += message.contains("trade") ? 2 : 0;
+        suspiciousValue += message.contains("skins") ? 2 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove();
 
-        handledMessages.add(new HandledServerMessageContext(event, isSuspicious));
+        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue < 2 ? 0 : (suspiciousValue > 3 ? 3 : suspiciousValue))); // should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
             .collect(Collectors.toList());
 
-        int suspiciousCount = (int)sameauthormessages.stream().filter(m -> m.isSuspicious).count();
+        int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum);
 
         if (suspiciousCount > 3) {
             String usernameWithTag = event.getAuthor().getAsTag();
