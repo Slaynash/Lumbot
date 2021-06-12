@@ -374,11 +374,10 @@ public class ServerMessagesHandler {
 
             event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
 
-            EmbedBuilder embedBuilder = new EmbedBuilder();
-            embedBuilder.setTitle("Ban Report");
-            embedBuilder.setThumbnail("https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
-            embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
-            embedBuilder.setTimestamp(Instant.now());
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
+                .setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
+                .setTimestamp(Instant.now());
             
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null)
