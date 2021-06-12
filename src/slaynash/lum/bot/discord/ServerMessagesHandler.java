@@ -158,7 +158,7 @@ public class ServerMessagesHandler {
             }
         }
 
-        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped)\\b.*)")) {
+        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
         }
