@@ -339,7 +339,7 @@ public class ServerMessagesHandler {
 
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
-        String message = event.getMessage().getContentRaw();
+        String message = event.getMessage().getContentRaw().toLowerCase();
         int suspiciousValue = 0;
         suspiciousValue += message.contains("https") ? 1 : 0;
         suspiciousValue += message.contains("@everyone") ? 1 : 0;
