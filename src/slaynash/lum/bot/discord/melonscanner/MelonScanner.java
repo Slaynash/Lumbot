@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +34,21 @@ public final class MelonScanner {
     public static String latestMLVersionBeta = "0.3.0";
     
     private static Color melonPink = new Color(255, 59, 106); 
+    
+    private static ScheduledExecutorService sheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+
+    public static void init() {
+        MelonLoaderError.init();
+        MelonScannerApisManager.startFetchingThread();
+
+        sheduledExecutor.scheduleWithFixedDelay(() -> {
+            LogCounter.UpdateLogCounter();
+        }, 30, 30, TimeUnit.SECONDS);
+    }
+
+    public static void shutdown() {
+        sheduledExecutor.shutdown();
+    }
 
 
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
@@ -109,24 +127,12 @@ public final class MelonScanner {
             }
         }
         catch (Exception exception) {
+            String channelName = messageReceivedEvent.getGuild().getName() + " #" + messageReceivedEvent.getChannel().getName() + " > " + messageReceivedEvent.getMessageId();
             String channelLink = "https://canary.discord.com/channels/" + messageReceivedEvent.getGuild().getId() + "/" + messageReceivedEvent.getChannel().getId() + "/" + messageReceivedEvent.getMessageId();
-            System.err.println("Exception while reading attachment of message " + channelLink + ":");
-            exception.printStackTrace();
-
-            try {
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setColor(Color.red);
-                embedBuilder.setTitle("MelonScanner Read Exception");
-                String channelName = messageReceivedEvent.getGuild().getName() + " #" + messageReceivedEvent.getChannel().getName() + " > " + messageReceivedEvent.getMessageId();
-                String exceptionString = "In [" + channelName + "](" + channelLink + "):\n" + exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
-                if (exceptionString.length() > 2048)
-                    exceptionString = exceptionString.substring(0, 2044) + " ...";
-                embedBuilder.setDescription(exceptionString);
-                MessageEmbed embed = embedBuilder.build();
-
-                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
-            }
-            catch (Exception e2) { e2.printStackTrace(); }
+            ExceptionUtils.reportException(
+                "Exception while reading attachment of message " + channelLink + ":",
+                "In [" + channelName + "](" + channelLink + "):",
+                exception);
         }
     }
 

@@ -71,22 +71,10 @@ public final class LogCounter {
             previousLogCount = logCount;
         }
         catch (Exception exception) {
-            System.err.println("Exception while Updating Counter");
-            exception.printStackTrace();
-
-            try {
-                EmbedBuilder embedBuilder = new EmbedBuilder();
-                embedBuilder.setColor(Color.red);
-                embedBuilder.setTitle("Exception while Updating Counter");
-                String exceptionString = exception.getMessage() + "\n" + workingPath.concat("/logs/") + "\n" + ExceptionUtils.getStackTrace(exception);
-                if (exceptionString.length() > 2048)
-                    exceptionString = exceptionString.substring(0, 2044) + " ...";
-                embedBuilder.setDescription(exceptionString);
-                MessageEmbed embed = embedBuilder.build();
-
-                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
-            }
-            catch (Exception e2) { e2.printStackTrace(); }
+            ExceptionUtils.reportException(
+                "Exception while Updating Counter",
+                workingPath.concat("/logs/"),
+                exception);
         }
     }
 }

@@ -4,17 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.LoginException;
 
 import net.dv8tion.jda.api.JDA;
@@ -31,35 +21,17 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
-import slaynash.lum.bot.discord.melonscanner.LogCounter;
-import slaynash.lum.bot.discord.melonscanner.MelonLoaderError;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.steam.Steam;
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
     public static boolean isShuttingDown = false;
-    private static ScheduledExecutorService threadPool = Executors.newSingleThreadScheduledExecutor();
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-        TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager(){
-            @Override public X509Certificate[] getAcceptedIssuers() { return null; }
-            @Override public void checkClientTrusted(X509Certificate[] certs, String authType) { }
-            @Override public void checkServerTrusted(X509Certificate[] certs, String authType) { }
-        }};
-        try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCertificates, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        }
-        catch (GeneralSecurityException e) {
-            throw new ExceptionInInitializerError(e);
-        }
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
-            threadPool.shutdown();
+            MelonScanner.shutdown();
             
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
@@ -87,8 +59,7 @@ public class Main extends ListenerAdapter {
         //loadBrokenVRCMods();
         loadVRCBuild();
 
-        MelonLoaderError.init();
-        MelonScannerApisManager.startFetchingThread();
+        MelonScanner.init();
 
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);
@@ -103,10 +74,6 @@ public class Main extends ListenerAdapter {
                 .queue();
 
         VRCApiVersionScanner.init();
-        
-        threadPool.scheduleWithFixedDelay(() -> {
-            LogCounter.UpdateLogCounter();
-        }, 30, 30, TimeUnit.SECONDS);
 
         System.out.println("LUM Started!");
     }
