@@ -345,6 +345,7 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("@everyone") ? 1 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 1 : 0;
+        suspiciousValue += message.contains("cs:go") || message.contains("csgo") ? 2 : 0;
         suspiciousValue += message.contains("trade") ? 2 : 0;
         suspiciousValue += message.contains("skins") ? 2 : 0;
 
@@ -352,7 +353,11 @@ public class ServerMessagesHandler {
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove();
 
-        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue < 2 ? 0 : (suspiciousValue > 3 ? 3 : suspiciousValue))); // should avoid false-positives, force 2 messages
+        if (suspiciousValue < 2)
+            suspiciousValue = 0;
+        if (suspiciousValue > 3 && suspiciousValue < 7)
+            suspiciousValue = 3;
+        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
@@ -360,7 +365,7 @@ public class ServerMessagesHandler {
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum);
 
-        if (suspiciousCount > 3) {
+        if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
 
