@@ -92,7 +92,7 @@ public class ServerMessagesHandler {
         Long GuildID = event.getGuild().getIdLong();
         Boolean guildConfig[] = GuildConfigurations.configurations.get(GuildID);
         if(guildConfig==null) return;
-        if(guildConfig[GuildConfigurations.ConfigurationMap.ALLON.ordinal()]) return;
+        if(!guildConfig[GuildConfigurations.ConfigurationMap.ALLON.ordinal()]) return;
         if(event.getAuthor().isBot()) return;
         CommandManager.runAsServer(event);
         String message = event.getMessage().getContentRaw().toLowerCase();
@@ -244,7 +244,7 @@ public class ServerMessagesHandler {
         long guildId = event.getGuild().getIdLong();
         boolean postedInWhitelistedServer = false;
         for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
-            if (whitelistedGuildId == guildId && whitelistedGuildId != 322211727192358914L && whitelistedGuildId != 748692902137430018L) {
+            if (whitelistedGuildId == guildId) {
                 postedInWhitelistedServer = true;
                 break;
             }
