@@ -30,12 +30,12 @@ jobs:
       - name: Upload to server
         uses: wei/curl@v1.1.1
         with:
-          args: -F 'buildfile=@target/${{ env.buildname }}' https://srv1.slaynash.fr/uploadlum.php
+          args: -F 'buildfile=@target/${{ env.buildname }}' -F 'melonscannererrors=@melonscannererrors.json' https://srv1.slaynash.fr/uploadlum.php
       
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }}
+          command: python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }} melonscannererrors.json
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
