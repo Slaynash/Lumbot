@@ -15,8 +15,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
+import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
 import slaynash.lum.bot.discord.commands.SetVRCBuild;
+import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
@@ -101,6 +103,9 @@ public class CommandManager {
         CommandManager.registerCommand(new MLBrokenModsCommand());
         
         CommandManager.registerCommand(new SetVRCBuild());
+
+        CommandManager.registerCommand(new LockDown());
+        CommandManager.registerCommand(new ThawServer());
     }
 
 
