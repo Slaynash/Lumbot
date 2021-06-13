@@ -47,6 +47,8 @@ public class ServerMessagesHandler {
         put(835185040752246835L /* The Long Development */, new long[] {
                 837912560497721344L /* Team Member */,
                 836863571811106846L /* Fellow Modder */});
+        put(835185040752246835L /* The Long Dark Modding */, new long[] {
+                370425060844109835L /* Modders */});
     }};
 
     private static final String[] alreadyHelpedSentences = new String[] {
@@ -263,7 +265,7 @@ public class ServerMessagesHandler {
         long guildId = event.getGuild().getIdLong();
         boolean postedInWhitelistedServer = false;
         for (long whitelistedGuildId : whitelistedRolesServers.keySet()) {
-            if (whitelistedGuildId == guildId) {
+            if (whitelistedGuildId == guildId && whitelistedGuildId != 835185040752246835L) {
                 postedInWhitelistedServer = true;
                 break;
             }
