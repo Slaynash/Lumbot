@@ -182,6 +182,7 @@
         ]
     },
     "modSpecificErrors": {
+        "AvatarStatsShowAuthor": "AvatarStatsShowAuthor has been replaced by [UserInfoExtensions](https://api.vrcmg.com/v0/mods/145/UserInfoExtensions.dll).",
         "CleanConsole": "CleanConsole has been added into MelonLoader and no longer needed. Please remove CleanConsole from your Mods folder.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
