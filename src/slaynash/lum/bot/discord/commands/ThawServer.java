@@ -3,7 +3,8 @@ package slaynash.lum.bot.discord.commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
-import slaynash.lum.bot.discord.Moderation;
+import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 
 public class ThawServer extends Command {
@@ -13,7 +14,12 @@ public class ThawServer extends Command {
         if (!ServerMessagesHandler.checkIfStaff(event))
             return;
         
-        event.getGuild().getRoleById(Moderation.lockDownRoles.get(event.getGuild().getIdLong())).getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
+        event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong())).getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
+        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        if (reportChannel != null)
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getIdLong() + "has thawed this server from frozen state.").queue();
+        else
+            event.getChannel().sendMessage("User " + event.getAuthor().getIdLong() + "has thawed this server from frozen state.").queue();
     }
 
     @Override
@@ -23,7 +29,7 @@ public class ThawServer extends Command {
     
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return Moderation.lockDownRoles.get(event.getGuild().getIdLong()) != null;
+        return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null;
     }
     
     @Override

@@ -6,55 +6,22 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 
 public class ServerMessagesHandler {
-
-    private static final Map<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
-        put(439093693769711616L /* VRCMG */, new long[] {
-                631581319670923274L /* Staff */,
-                662720231591903243L /* Helper */,
-                825266051277258754L /* cutie */,
-                585594394153844865L /* Modder */ });
-        put(600298024425619456L /* emmVRC */, new long[] {
-                748392927365169233L /* Admin */,
-                653722281864069133L /* Helper */ });
-        put(663449315876012052L /* MelonLoader */, new long[] {
-                663450403194798140L /* Lava Gang */,
-                663450567015792670L /* Administrator */,
-                663450611253248002L /* Moderator */,
-                663450655775522843L /* Modder */ });
-        put(673663870136746046L /* Modders & Chill */, new long[] {
-                673725166626406428L /* Modders */,
-                673726384450961410L /* Moderators */ });
-        put(633588473433030666L /* Slaynash's Workbench */, new long[] {
-                633590573412122634L /* Friends */});
-        put(835185040752246835L /* The Long Development */, new long[] {
-                837912560497721344L /* Team Member */,
-                836863571811106846L /* Fellow Modder */});
-        put(322211727192358914L /* The Long Dark Modding */, new long[] {
-                370425060844109835L /* Modders */});
-        put(748692902137430018L /* Beat Saber Legacy Group */, new long[] {
-                748701248701857972L /* Staff */,
-                750814355985006633L /* Modders */,
-                810258575620309033L /* Helper */});
-    }};
-
     private static final String[] alreadyHelpedSentences = new String[] {
         "I already answered you <:konataCry:553690186022649858>",
         "Why won't you read my answer <:angry:835647632843866122>",
@@ -122,7 +89,13 @@ public class ServerMessagesHandler {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     public static void handle(MessageReceivedEvent event) {
+        Long GuildID = event.getGuild().getIdLong();
+        Boolean guildConfig[] = GuildConfigurations.configurations.get(GuildID);
+        if(guildConfig==null) return;
+        if(guildConfig[GuildConfigurations.ConfigurationMap.ALLON.ordinal()]) return;
         if(event.getAuthor().isBot()) return;
+        CommandManager.runAsServer(event);
+        String message = event.getMessage().getContentRaw().toLowerCase();
 
         System.out.printf("[%s] [%s][%s] %s: %s\n",
                 TimeManager.getTimeForLog(),
@@ -131,31 +104,27 @@ public class ServerMessagesHandler {
                 event.getAuthor().getName(),
                 event.getMessage().getContentRaw() );
 
-        if (checkForFishing(event))
+        if (guildConfig[GuildConfigurations.ConfigurationMap.SPAMSHIELD.ordinal()] && checkForFishing(event))
             return;
 
-        if (!checkDllPostPermission(event)) {
+        if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
             event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
             return;
         }
 
-        if (event.getGuild().getIdLong() == 663449315876012052L) {
+        if (event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
             String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
             if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
                 event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
         }
-    
-        CommandManager.runAsServer(event);
-
-        String message = event.getMessage().getContentRaw().toLowerCase();
         
-        if (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]")) {
-            System.out.println("Log was typed");
+        if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
+            System.out.println("Partial Log was printed");
             
             boolean postedInWhitelistedServer = false;
             long guildId = event.getGuild().getIdLong();
-            for (long whitelistedGuildId : whitelistedRolesServers.keySet()) {
+            for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
                 if (whitelistedGuildId == guildId) {
                     postedInWhitelistedServer = true;
                     break;
@@ -167,66 +136,72 @@ public class ServerMessagesHandler {
             }
         }
 
-        else if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
-            System.out.println("Nice Lum was detected");
-            event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
-        }
-
-        else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum")) {
-            System.out.println("F off Lum was detected");
-            event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
-        }
-
-        else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
-            System.out.println("Bad Lum was detected");
-            event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
-        }
-
-        else if (message.contains("hello lum") || message.contains("hi lum")) {
-            System.out.println("Hello Lum was detected");
-            event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
-        }
-
-        else if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
+        if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
+            if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
                 message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
                 message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
                 message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
-            System.out.println("Thanks was detected");
-            if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                String sentence;
-                boolean rare = random.nextInt(100) == 69;
-                if (rare)
-                    sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
-                else {
-                    rare = random.nextInt(10) == 9;
-                    sentence = rare
-                    ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
-                    : thankedSentences    [random.nextInt(thankedSentences.length)];
-                }
+                System.out.println("Thanks was detected");
+                if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+                    String sentence;
+                    boolean rare = random.nextInt(100) == 69;
+                    if (rare)
+                        sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
+                    else {
+                        rare = random.nextInt(10) == 9;
+                        sentence = rare
+                        ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
+                        : thankedSentences    [random.nextInt(thankedSentences.length)];
+                    }
                 event.getChannel().sendMessage(sentence).queue();
+                return;
+                }
+            }
+        
+            else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
+                System.out.println("Help was detected");
+                if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+                    String sentence;
+                    boolean rare = random.nextInt(1000) == 420;
+                    if (rare)
+                        sentence = "Shut the fuck up, I literally answered your dumb ass!";
+                    else {
+                        rare = random.nextInt(10) == 9;
+                        sentence = rare
+                        ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
+                        : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                    }
+                    event.getChannel().sendMessage(sentence).queue();
+                    return;
+                }
             }
         }
-        
-        else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
-            System.out.println("Help was detected");
-            if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                String sentence;
-                boolean rare = random.nextInt(1000) == 420;
-                if (rare)
-                    sentence = "Shut the fuck up, I literally answered your dumb ass!";
-                else {
-                    rare = random.nextInt(10) == 9;
-                    sentence = rare
-                    ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
-                    : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
-                }
-                event.getChannel().sendMessage(sentence).queue();
+
+        if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
+            if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
+                System.out.println("Nice Lum was detected");
+                event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             }
-        }
-        
-        else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
-            System.out.println("Lum stole Credit");
-            event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+
+            else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum")) {
+                System.out.println("F off Lum was detected");
+                event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
+            }
+
+            else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
+                System.out.println("Bad Lum was detected");
+                event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
+            }
+
+            else if (message.contains("hello lum") || message.contains("hi lum")) {
+                System.out.println("Hello Lum was detected");
+                event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+            }
+
+            else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
+                System.out.println("Lum stole Credit");
+                event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+            }
         }
         
         new Thread(() -> {
@@ -268,7 +243,7 @@ public class ServerMessagesHandler {
     private static boolean checkDllPostPermission(MessageReceivedEvent event) {
         long guildId = event.getGuild().getIdLong();
         boolean postedInWhitelistedServer = false;
-        for (long whitelistedGuildId : whitelistedRolesServers.keySet()) {
+        for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
             if (whitelistedGuildId == guildId && whitelistedGuildId != 322211727192358914L && whitelistedGuildId != 748692902137430018L) {
                 postedInWhitelistedServer = true;
                 break;
@@ -314,9 +289,13 @@ public class ServerMessagesHandler {
         }
         return false;
     }
-
+    /**
+     * Check if sender is part of Guild Staff/Trusted
+     * @param event
+     * @return true if sender really was Guild Staff/Trusted
+     */
     public static boolean checkIfStaff(MessageReceivedEvent event){
-        for (Entry<Long, long[]> whitelistedRolesServer : whitelistedRolesServers.entrySet()) {
+        for (Entry<Long, long[]> whitelistedRolesServer : GuildConfigurations.whitelistedRolesServers.entrySet()) {
             Guild targetGuild;
             Member serverMember;
             if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
@@ -337,13 +316,13 @@ public class ServerMessagesHandler {
 
     private static boolean checkForFishing(MessageReceivedEvent event) {
 
-        if (!whitelistedRolesServers.containsKey(event.getGuild().getIdLong()))
+        if (!GuildConfigurations.whitelistedRolesServers.containsKey(event.getGuild().getIdLong()))
             return false;
 
         if(checkIfStaff(event))
             return false;
 
-        if (ArrayUtils.contains(whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
+        if (ArrayUtils.contains(GuildConfigurations.whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
             return false;
 
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
