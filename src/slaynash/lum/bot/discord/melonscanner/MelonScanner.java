@@ -408,21 +408,31 @@ public final class MelonScanner {
     }
 
     private static boolean vrchatVersionCheck(MelonScanContext context) {
-        if (context.gameBuild != null) {
-            if("VRChat".equals(context.game)) {
-                context.gameBuild = context.gameBuild.split("-", 2)[1].substring(0, 4); //VRChat build number
-                if(!context.gameBuild.equals(CommandManager.vrchatBuild)) {
-                    context.embedBuilder.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(context.gameBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
-                    context.embedColor = Color.ORANGE;
-                    return true;
-                }
+        if ((context.gameBuild != null) && "VRChat".equals(context.game)) {
+            context.gameBuild = context.gameBuild.split("-", 2)[1].substring(0, 4); //VRChat build number
+            if(Integer.parseInt(context.gameBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+                context.embedBuilder.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(context.gameBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                context.embedColor = Color.ORANGE;
+                return true;
+            }
+            else if(Integer.parseInt(context.gameBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+                context.embedBuilder.addField("VRChat:", "You are running a newer version of VRChat than we recommend: `" + sanitizeInputString(context.gameBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                context.embedColor = Color.ORANGE;
+                return true;
             }
         }
-        //for pre0.4.0 VRChat version checking
-        else if (context.emmVRCVRChatBuild != null && !context.emmVRCVRChatBuild.equals(CommandManager.vrchatBuild)) {
-            context.embedBuilder.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(context.emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
-            context.embedColor = Color.ORANGE;
-            return true;
+        //for pre0.4.0 VRChat version checking with emmVRC
+        else if (context.emmVRCVRChatBuild != null) {
+            if(Integer.parseInt(context.emmVRCVRChatBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+                context.embedBuilder.addField("VRChat:", "You are running an outdated version of VRChat: `" + sanitizeInputString(context.emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                context.embedColor = Color.ORANGE;
+                return true;
+            }
+            else if(Integer.parseInt(context.emmVRCVRChatBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+                context.embedBuilder.addField("VRChat:", "You are running a newer version of VRChat than we recommend: `" + sanitizeInputString(context.emmVRCVRChatBuild) + "` -> `" + CommandManager.vrchatBuild + "`", false);
+                context.embedColor = Color.ORANGE;
+                return true;
+            }
         }
         return false;
     }
