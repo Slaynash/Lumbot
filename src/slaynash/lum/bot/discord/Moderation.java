@@ -6,9 +6,8 @@ import java.util.HashMap;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class Moderation extends ListenerAdapter {
+public class Moderation {
 
     private static final HashMap<Long, Long> noMicChannels = new HashMap<>(){{
         put(439093693769711616L /* VRCMG */     ,673955689298788376L /* no-mic */);
@@ -22,8 +21,7 @@ public class Moderation extends ListenerAdapter {
         put(663449315876012052L /* MelonLoader */,663462327022256150L /* Member */);
     }};
 
-    @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event){
+    public static void voiceJoin(GuildVoiceJoinEvent event){
         Long guildID = (event.getGuild().getIdLong());
         if(noMicChannels.containsKey(guildID)){
             event.getJDA().getGuildById(760342261967487066L).getTextChannelById(853694950037389343L).sendMessage("<@" + event.getMember().getIdLong() +"> joined a Voice channel in " + guildID).queue();
@@ -31,8 +29,7 @@ public class Moderation extends ListenerAdapter {
         }
     }
 
-    @Override
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
+    public static void voiceLeave(GuildVoiceLeaveEvent event){
         Long guildID = (event.getGuild().getIdLong());
         if(noMicChannels.containsKey(guildID)){
             event.getJDA().getGuildById(760342261967487066L).getTextChannelById(853694950037389343L).sendMessage("<@" + event.getMember().getIdLong() +"> left a Voice channel in " + guildID).queue();

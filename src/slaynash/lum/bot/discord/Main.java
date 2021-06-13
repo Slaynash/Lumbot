@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
@@ -299,4 +301,13 @@ public class Main extends ListenerAdapter {
         }
     }
 
+    @Override
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event){
+        Moderation.voiceJoin(event);
+    }
+
+    @Override
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
+        Moderation.voiceLeave(event);
+    }
 }
