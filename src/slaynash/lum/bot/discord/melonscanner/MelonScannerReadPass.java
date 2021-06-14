@@ -372,6 +372,17 @@ public final class MelonScannerReadPass {
                 return true;
             }
         }
+        if (!context.game.isBlank()){
+            for (MelonLoaderError knownGameError : MelonLoaderError.gameSpecificErrors.get(context.game)) {
+                if (line.matches(knownGameError.regex)) {
+                    if (!context.errors.contains(knownGameError))
+                        context.errors.add(knownGameError);
+                    System.out.println("Found known game error");
+                    context.hasErrors = true;
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
