@@ -412,7 +412,7 @@ public final class MelonScanner {
             return true;
         }
         else if (context.isMLOutdated) {
-            context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.uptoalpha", context.lang, sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
             return true;
         }
         return false;
