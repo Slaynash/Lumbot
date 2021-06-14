@@ -34,7 +34,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
-            "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again."
+            "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/vrchat) and tell us if it loads."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
@@ -168,6 +168,10 @@
             {
                 "regex": "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
                 "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader 0.3.0"
+            },
+            {
+                "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.TypeLoadException: Could not resolve type with token 0100017c.*",
+                "error": "Errors detected are due to VRChat update 1102 changing the obfuscation for the Oculus build. We are working on fixing this issue."
             }
         ],
         "BloonsTD6": [
