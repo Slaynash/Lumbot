@@ -372,7 +372,7 @@ public final class MelonScannerReadPass {
                 return true;
             }
         }
-        if (context.game != null){
+        if (context.game != null && MelonLoaderError.gameSpecificErrors.containsKey(context.game)) {
             for (MelonLoaderError knownGameError : MelonLoaderError.gameSpecificErrors.get(context.game)) {
                 if (line.matches(knownGameError.regex)) {
                     if (!context.errors.contains(knownGameError))

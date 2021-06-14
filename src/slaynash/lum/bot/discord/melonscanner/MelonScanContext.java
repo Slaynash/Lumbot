@@ -14,8 +14,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MelonScanContext {
 
-    public Attachment attachment;
-    public MessageReceivedEvent messageReceivedEvent;
+    public final Attachment attachment;
+    public final MessageReceivedEvent messageReceivedEvent;
+    public final String lang;
     
     // Read pass
 
@@ -95,9 +96,10 @@ public class MelonScanContext {
     public boolean isMLOutdated;
     public boolean unidentifiedErrors;
     
-    public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent) {
+    public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent, String lang) {
         this.attachment = attachment;
         this.messageReceivedEvent = messageReceivedEvent;
+        this.lang = lang;
     }
 
 }

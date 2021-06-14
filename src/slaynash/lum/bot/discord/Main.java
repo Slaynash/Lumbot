@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
+import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.steam.Steam;
 
@@ -45,6 +46,7 @@ public class Main extends ListenerAdapter {
         }));
 
         ConfigManager.init();
+        Localization.init();
 
         DBConnectionManagerShortUrls.init();
 
