@@ -402,7 +402,7 @@ public final class MelonScanner {
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         // TODO use VersionUtils compare
-        context.isMLOutdated = context.mlVersion != null && !(context.mlVersion.equals(latestMLVersionRelease) || context.mlVersion.equals(latestMLVersionBeta));
+        context.isMLOutdated = context.mlVersion != null && !(sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || sanitizeInputString(context.mlVersion).equals(latestMLVersionBeta));
 
         if (context.isMLOutdatedVRC) {
             if (context.pre3)
