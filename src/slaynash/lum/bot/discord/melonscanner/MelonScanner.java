@@ -420,7 +420,8 @@ public final class MelonScanner {
 
     private static boolean vrchatVersionCheck(MelonScanContext context) {
         if ((context.gameBuild != null) && "VRChat".equals(context.game)) {
-            context.gameBuild = context.gameBuild.split("-", 2)[1].substring(0, 4); //VRChat build number
+            String[] tempString = context.gameBuild.split("-", 3);
+            context.gameBuild = tempString.length > 1 ? tempString[1] : tempString[0]; //VRChat build number
             if(Integer.parseInt(context.gameBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;

@@ -182,7 +182,7 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             }
 
-            else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum")) {
+            else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum")) {
                 System.out.println("F off Lum was detected");
                 event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
             }

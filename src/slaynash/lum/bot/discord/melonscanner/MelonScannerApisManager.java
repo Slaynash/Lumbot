@@ -7,9 +7,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient.Redirect;
+import java.nio.charset.StandardCharsets;
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +59,9 @@ public class MelonScannerApisManager {
                     for (int i = 0; i < aliases.length; ++i)
                         aliases[i] = processingmods.aliases[i];
 
-                    mods.add(new MelonApiMod(vrcmoddetails.name, vrcmoddetails.modversion, vrcmoddetails.downloadlink, aliases));
+                    String hash = bytesToHex(Base64.getDecoder().decode(vrcmoddetails.hash)).toLowerCase();
+
+                    mods.add(new MelonApiMod(vrcmoddetails.name, vrcmoddetails.modversion, vrcmoddetails.downloadlink, aliases, hash));
                 }
 
                 return true;
@@ -282,5 +286,16 @@ public class MelonScannerApisManager {
 
         MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
         return mod != null ? mod.downloadLink : null;
+    }
+
+    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+    public static String bytesToHex(byte[] bytes) {
+        byte[] hexChars = new byte[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars, StandardCharsets.UTF_8);
     }
 }
