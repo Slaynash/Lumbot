@@ -20,12 +20,12 @@
         "melonscanner.readerror.field": "Error reading Log. Please do not edit the log and reupload the original log.",
 
         "melonscanner.mloutdated.fieldname": "Warning:",
-        "melonscanner.mloutdated.uptoalpha": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader %s released after **%s.**",
-        "melonscanner.mloutdated.upalpha": "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader %0$s released after **%1$s.**",
-        "melonscanner.mloutdated.upbeta": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %0$s -> %1$s.",
+        "melonscanner.mloutdated.uptoalpha": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader %1$s released after **%2$s.**",
+        "melonscanner.mloutdated.upalpha": "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader %1$s released after **%2$s.**",
+        "melonscanner.mloutdated.upbeta": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
 
-        "melonscanner.vrcversioncheck.outdated": "You are running an outdated version of VRChat: `%0$s` -> `%1$s`",
-        "melonscanner.vrcversioncheck.overdated": "You are running a newer version of VRChat than we recommend: `%0$s` -> `%1$s`",
+        "melonscanner.vrcversioncheck.outdated": "You are running an outdated version of VRChat: `%1$s` -> `%2$s`",
+        "melonscanner.vrcversioncheck.overdated": "You are running a newer version of VRChat than we recommend: `%1$s` -> `%2$s`",
 
         "melonscanner.knownerrors.fieldname": "Known Errors:",
 
@@ -41,7 +41,7 @@
 
         "melonscanner.unknownmods.fieldname": "Unverified/Unknown Mods:",
         "melonscanner.unknownmods.more": "- and %s more...",
-        "melonscanner.unknownmods.modnamewithauthor": "%0$s **by** %1$s",
+        "melonscanner.unknownmods.modnamewithauthor": "%1$s **by** %2$s",
 
         "melonscanner.misplacedmods.fieldname": "Misplaced Mods:",
         "melonscanner.misplacedmods.warning": "Please move the following mods out of your Plugins and into the Mods folder.",
@@ -88,12 +88,12 @@
         "melonscanner.readerror.field": "Erreur pendant la lecture des logs. Veuillez ne pas éditer les logs et réuploader le fichier de logs originel.",
 
         "melonscanner.mloutdated.fieldname": "Attention:",
-        "melonscanner.mloutdated.uptoalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) puis cochez `Show ALPHA Pre-Releases`\nLe modding de VRChat a besoin de MelonLoader %0$s publié après **%1$s.**",
-        "melonscanner.mloutdated.upalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe modding de VRChat a besoin de MelonLoader %0$s publié après **%1$s.**",
-        "melonscanner.mloutdated.upbeta": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe MelonLoader installé n'est pas à jour: %0$s -> %1$s.",
+        "melonscanner.mloutdated.uptoalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) puis cochez `Show ALPHA Pre-Releases`\nLe modding de VRChat a besoin de MelonLoader %1$s publié après **%2$s.**",
+        "melonscanner.mloutdated.upalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe modding de VRChat a besoin de MelonLoader %1$s publié après **%2$s.**",
+        "melonscanner.mloutdated.upbeta": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe MelonLoader installé n'est pas à jour: %1$s -> %2$s.",
 
-        "melonscanner.vrcversioncheck.outdated": "Votre VRChat n'est pas à jour: `%0$s` -> `%1$s`",
-        "melonscanner.vrcversioncheck.overdated": "Vous utilisez une version de VRChat plus récente que recommandé: `%0$s` -> `%1$s`",
+        "melonscanner.vrcversioncheck.outdated": "Votre VRChat n'est pas à jour: `%1$s` -> `%2$s`",
+        "melonscanner.vrcversioncheck.overdated": "Vous utilisez une version de VRChat plus récente que recommandé: `%1$s` -> `%2$s`",
 
         "melonscanner.knownerrors.fieldname": "Erreurs Connues:",
 
@@ -109,7 +109,7 @@
 
         "melonscanner.unknownmods.fieldname": "Mods inconnus/non-vérifiés:",
         "melonscanner.unknownmods.more": "- et %s autres...",
-        "melonscanner.unknownmods.modnamewithauthor": "%0$s **par** %1$s",
+        "melonscanner.unknownmods.modnamewithauthor": "%1$s **par** %2$s",
 
         "melonscanner.misplacedmods.fieldname": "Mods Mal Placés:",
         "melonscanner.misplacedmods.warning": "Veuillez déplacer les mods suivant de votre dossier Plugins à votre dossier Mods.",
