@@ -89,12 +89,11 @@ public class ServerMessagesHandler {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     public static void handle(MessageReceivedEvent event) {
-        Long GuildID = event.getGuild().getIdLong();
-        Boolean guildConfig[] = GuildConfigurations.configurations.get(GuildID);
-        if(guildConfig==null) return;
-        if(!guildConfig[GuildConfigurations.ConfigurationMap.ALLON.ordinal()]) return;
         if(event.getAuthor().isBot()) return;
         CommandManager.runAsServer(event);
+        Long GuildID = event.getGuild().getIdLong();
+        Boolean guildConfig[];
+        guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
         String message = event.getMessage().getContentRaw().toLowerCase();
 
         System.out.printf("[%s] [%s][%s] %s: %s\n",

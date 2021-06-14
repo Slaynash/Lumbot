@@ -4,15 +4,15 @@ import java.util.HashMap;
 
 public class GuildConfigurations {
     public static final HashMap<Long, Boolean[]> configurations = new HashMap<>() {{
-                //all on, Spam Shield, dll remover, log reaction, Lum thanks, partial log remover
-        put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true,true});
-        put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true,true});
-        put(663449315876012052L /* MelonLoader */            ,new Boolean[] {true,true,true,true,true,true});
-        put(673663870136746046L /* Modders & Chill */        ,new Boolean[] {false,false,false,true,true,false});
-        put(633588473433030666L /* Slaynash's Workbench */   ,new Boolean[] {true,true,true,true,true,false});
-        put(835185040752246835L /* The Long Development */   ,new Boolean[] {true,true,false,true,true,true});
-        put(322211727192358914L /* The Long Dark Modding */  ,new Boolean[] {true,true,false,true,true,true});
-        put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,true,false,true,true,true});
+                //Spam Shield, dll remover, log reaction, Lum thanks, partial log remover
+        put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true});
+        put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true});
+        put(663449315876012052L /* MelonLoader */            ,new Boolean[] {true,true,true,true,true});
+        put(673663870136746046L /* Modders & Chill */        ,new Boolean[] {false,false,true,true,false});
+        put(633588473433030666L /* Slaynash's Workbench */   ,new Boolean[] {true,true,true,true,false});
+        put(835185040752246835L /* The Long Development */   ,new Boolean[] {true,false,true,true,true});
+        put(322211727192358914L /* The Long Dark Modding */  ,new Boolean[] {true,false,true,true,true});
+        put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,false,true,true,true});
     }};
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
@@ -58,7 +58,6 @@ public class GuildConfigurations {
     }};
     
     public enum ConfigurationMap{
-        ALLON(),
         SPAMSHIELD(),
         DLLREMOVER(),
         LOGREACTION(),
