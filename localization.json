@@ -33,6 +33,10 @@
         "melonscanner.duplicatemods.more": "- and %s more...",
         "melonscanner.duplicatemods.warning": "- Duplicate Mods are known to crash MelonLoader. Make sure there is only one copy in both Mods and Plugins folder.",
 
+        "melonscanner.corruptedmods.fieldname": "Corrupted Mods:",
+        "melonscanner.corruptedmods.more": "- and %s more...",
+        "melonscanner.corruptedmods.warning": "- These mods either failed to download properly or became corrupted. Please redownload these mods and try again.",
+
         "melonscanner.missingmods.fieldname": "Missing Dependencies:",
         "melonscanner.missingmods.more": "- and %s more...",
         
@@ -100,6 +104,10 @@
         "melonscanner.duplicatemods.fieldname": "Doublons de Mods:",
         "melonscanner.duplicatemods.more": "- et %s autres...",
         "melonscanner.duplicatemods.warning": "- Les doublons de mods sont connus pour faire planter MelonLoader. Veuillez vérifier qu'il n'y ait qu'une copie dans les dossiers Mods et Plugins.",
+
+        "melonscanner.corruptedmods.fieldname": "Mods corrompus:",
+        "melonscanner.corruptedmods.more": "- et %s autres...",
+        "melonscanner.corruptedmods.warning": "- Ces mods n'ont pas réussi à se télécharger correctement ou ont été corrompus. Veuillez retélécharger ces modules et réessayer.",
 
         "melonscanner.missingmods.fieldname": "Dépendances Manquantes:",
         "melonscanner.missingmods.more": "- et %s autres...",

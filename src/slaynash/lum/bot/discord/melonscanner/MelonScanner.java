@@ -99,6 +99,7 @@ public final class MelonScanner {
             issueFound |= knownErrorsCheck(context);
             issueFound |= duplicatedModsCheck(context);
             issueFound |= missingModsCheck(context);
+            issueFound |= coruptedModsCheck(context);
             //issueFound |= incompatibleModsCheck(context);
             issueFound |= brokenModsCheck(context);
             issueFound |= unknownModsCheck(context);
@@ -278,6 +279,9 @@ public final class MelonScanner {
                         latestModName = modDetail.name;
                         latestModVersion = modDetail.versions[0].version;
                         latestModDownloadUrl = modDetail.downloadLink;
+                        latestModHash = modDetail.hash;
+                        if(latestModVersion.getRaw() == logsModDetails.version && latestModHash != logsModDetails.hash)
+                            context.corruptedMods.add(modDetail);
                         break;
                     }
                 }
@@ -494,6 +498,25 @@ public final class MelonScanner {
             
             context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean coruptedModsCheck(MelonScanContext context) {
+        if (context.corruptedMods.size() > 0) {
+            String error = "";
+            for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
+                if(context.corruptedMods.get(i).downloadLink != null)
+                    error += "- [" + sanitizeInputString(context.corruptedMods.get(i).toString()) + "](" + context.corruptedMods.get(i).downloadLink + ")\n";
+                else
+                    error += "- " + sanitizeInputString(context.corruptedMods.get(i) + "\n");
+            if (context.corruptedMods.size() > 10)
+                error += Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10);
+           
+            error += Localization.get("melonscanner.corruptedmods.warning", context.lang);
+            context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error, false);
+            context.embedColor = Color.RED;
             return true;
         }
         return false;
