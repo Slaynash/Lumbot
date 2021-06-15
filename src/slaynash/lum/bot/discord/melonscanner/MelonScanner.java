@@ -502,9 +502,9 @@ public final class MelonScanner {
             String error = "";
             for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
                 if(context.corruptedMods.get(i).downloadLink != null)
-                    error += "- [" + sanitizeInputString(context.corruptedMods.get(i).toString()) + "](" + context.corruptedMods.get(i).downloadLink + ")\n";
+                    error += "- [" + sanitizeInputString(context.corruptedMods.get(i).name) + "](" + context.corruptedMods.get(i).downloadLink + ")\n";
                 else
-                    error += "- " + sanitizeInputString(context.corruptedMods.get(i) + "\n");
+                    error += "- " + sanitizeInputString(context.corruptedMods.get(i).name + "\n");
             if (context.corruptedMods.size() > 10)
                 error += Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10);
            
