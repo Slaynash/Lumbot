@@ -99,7 +99,7 @@ public final class MelonScanner {
             issueFound |= knownErrorsCheck(context);
             issueFound |= duplicatedModsCheck(context);
             issueFound |= missingModsCheck(context);
-            issueFound |= coruptedModsCheck(context);
+            issueFound |= corruptedModsCheck(context);
             //issueFound |= incompatibleModsCheck(context);
             issueFound |= brokenModsCheck(context);
             issueFound |= unknownModsCheck(context);
@@ -275,7 +275,7 @@ public final class MelonScanner {
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
                     latestModHash = modDetail.hash;
-                    if(latestModVersion.getRaw() == logsModDetails.version && latestModHash != logsModDetails.hash)
+                    if(latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
                     break;
                 }
@@ -497,7 +497,7 @@ public final class MelonScanner {
         return false;
     }
 
-    private static boolean coruptedModsCheck(MelonScanContext context) {
+    private static boolean corruptedModsCheck(MelonScanContext context) {
         if (context.corruptedMods.size() > 0) {
             String error = "";
             for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
