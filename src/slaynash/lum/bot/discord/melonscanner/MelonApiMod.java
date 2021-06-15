@@ -5,22 +5,20 @@ public class MelonApiMod {
     public ModVersion[] versions;
     public String downloadLink;
     public String[] aliases;
-    public String hash;
 
-    public MelonApiMod(String name, ModVersion[] versions, String downloadLink, String[] aliases, String hash) {
+    public MelonApiMod(String name, ModVersion[] versions, String downloadLink, String[] aliases) {
         this.name = name;
         this.versions = versions;
         this.downloadLink = downloadLink;
         this.aliases = aliases;
-        this.hash = hash;
     }
     
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases, String hash) {
-        this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases, hash);
+        this(name, new ModVersion[] {new ModVersion(version, hash)}, downloadLink, aliases);
     }
 
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases) {
-        this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases, null);
+        this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases);
     }
     
     public MelonApiMod(String name, String version, String downloadLink) {
