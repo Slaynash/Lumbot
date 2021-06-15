@@ -270,20 +270,14 @@ public final class MelonScanner {
             boolean deprecatedName = false;
             for (MelonApiMod modDetail : context.modDetails) {
                 if (modDetail.name.equals(modName) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
-                    /*
-                    if (checkUsingHash) {
-                        // TODO Hash comparison
-                    }
-                    else*/ {
-                        System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
-                        latestModName = modDetail.name;
-                        latestModVersion = modDetail.versions[0].version;
-                        latestModDownloadUrl = modDetail.downloadLink;
-                        latestModHash = modDetail.hash;
-                        if(latestModVersion.getRaw() == logsModDetails.version && latestModHash != logsModDetails.hash)
-                            context.corruptedMods.add(modDetail);
-                        break;
-                    }
+                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
+                    latestModName = modDetail.name;
+                    latestModVersion = modDetail.versions[0].version;
+                    latestModDownloadUrl = modDetail.downloadLink;
+                    latestModHash = modDetail.hash;
+                    if(latestModVersion.getRaw() == logsModDetails.version && latestModHash != logsModDetails.hash)
+                        context.corruptedMods.add(modDetail);
+                    break;
                 }
             }
 
@@ -293,7 +287,7 @@ public final class MelonScanner {
             else if (CommandManager.brokenVrchatMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || /*checkUsingHash ? (modHash != null && !modHash.equals(latestModHash)) :*/ VersionUtils.CompareVersion(latestModVersion, modVersion) > 0) {
+            else if (deprecatedName || VersionUtils.CompareVersion(latestModVersion, modVersion) > 0) {
                 context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }

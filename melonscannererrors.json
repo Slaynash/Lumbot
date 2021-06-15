@@ -78,7 +78,7 @@
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-            "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to alpha 0.3.0, Make sure to enable \"Show ALPHA Pre-Releases\" in the installer settings."
+            "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to 0.3.0."
         },
         {
             "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
