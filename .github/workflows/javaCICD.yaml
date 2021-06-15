@@ -44,7 +44,16 @@ jobs:
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }} melonscannererrors.json localization.json
+          command: |
+            python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }} \
+            melonscannererrors.json \
+            localization.json \
+            apiscripts/vrcmg.lua \
+            apiscripts/btd6_inferno.lua \
+            apiscripts/btd6_gurrenm4.lua \
+            apiscripts/audica_ahriana.lua \
+            apiscripts/tld.lua
+
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
           username: ${{ secrets.SSH_USERNAME }}
