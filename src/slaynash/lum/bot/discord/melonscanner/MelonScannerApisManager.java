@@ -1,7 +1,7 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
-import java.lang.reflect.Type;
+import java.io.FileInputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -19,21 +19,31 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonElement;
+
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LoadState;
+import org.luaj.vm2.LuaError;
+import org.luaj.vm2.LuaTable;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.Varargs;
+import org.luaj.vm2.compiler.LuaC;
+import org.luaj.vm2.lib.Bit32Lib;
+import org.luaj.vm2.lib.OneArgFunction;
+import org.luaj.vm2.lib.PackageLib;
+import org.luaj.vm2.lib.TableLib;
+import org.luaj.vm2.lib.jse.CoerceJavaToLua;
+import org.luaj.vm2.lib.jse.JseBaseLib;
+import org.luaj.vm2.lib.jse.JseMathLib;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.melonscanner.apis.AudicaModDetails;
-import slaynash.lum.bot.discord.melonscanner.apis.BTD6Gurrenm4ModDetails;
-import slaynash.lum.bot.discord.melonscanner.apis.BTD6InfernoModDetails;
-import slaynash.lum.bot.discord.melonscanner.apis.TheLongDarkModDetails;
-import slaynash.lum.bot.discord.melonscanner.apis.VRCModDetails;
 
 public class MelonScannerApisManager {
 
-    private static List<MelonScannerApi<?>> apis = new ArrayList<>();
+    private static List<MelonScannerApi> apis = new ArrayList<>();
     
     private final static HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -41,11 +51,20 @@ public class MelonScannerApisManager {
             .build();
 
     private static Gson gson = new Gson();
+    private static Globals server_globals;
+    
     
     private static Thread fetchThread;
     private static Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     static {
+        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", false /* Check using hashes? */));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json", false /* Check using hashes? */));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json", false /* Check using hashes? */));
+        apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json", false /* Check using hashes? */));
+        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json", false /* Check using hashes? */));
+
+        /*
         apis.add(new MelonScannerApi<ArrayList<VRCModDetails>>(
             "VRChat",
             "https://api.vrcmg.com/v0/mods.json",
@@ -67,7 +86,9 @@ public class MelonScannerApisManager {
                 return true;
             }
         ));
+        */
 
+        /*
         apis.add(new MelonScannerApi<HashMap<String, BTD6InfernoModDetails>>(
             "BloonsTD6",
             "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json",
@@ -115,6 +136,7 @@ public class MelonScannerApisManager {
                 return true;
             }
         ));
+        */
     }
     
     public static void startFetchingThread() {
@@ -124,7 +146,7 @@ public class MelonScannerApisManager {
                 // We use a temp Map to avoid clearing the common one
                 Map<String, List<MelonApiMod>> gamesTemp = new HashMap<>();
 
-                for (MelonScannerApi<?> api : apis) {
+                for (MelonScannerApi api : apis) {
 
                     HttpRequest request = HttpRequest.newBuilder()
                         .GET()
@@ -134,17 +156,98 @@ public class MelonScannerApisManager {
                         .build();
 
                     try {
+
+                        // API request
+
                         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                         if (response.statusCode() < 200 || response.statusCode() >= 400)
                             throw new Exception("Failed to fetch remote API data (server returned code " + response.statusCode() + ")");
                         
                         String apiDataRaw = response.body();
+                        JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
+                        // Script pass
+
+                        if (server_globals == null) {
+                            server_globals = new Globals();
+                            server_globals.load(new JseBaseLib());
+                            server_globals.load(new PackageLib());
+                            server_globals.load(new JseMathLib());
+                            
+                            server_globals.set("base64toLowerHexString", new base64toLowerHexString());
+
+                            LoadState.install(server_globals);
+		                    LuaC.install(server_globals);
+                        }
+
+                        Globals user_globals = new Globals();
+                        user_globals.load(new JseBaseLib());
+                        user_globals.load(new PackageLib());
+                        user_globals.load(new Bit32Lib());
+                        user_globals.load(new TableLib());
+                        user_globals.load(new JseMathLib());
+                            
+                        user_globals.set("base64toLowerHexString", new base64toLowerHexString());
+
+                        user_globals.set("data", CoerceJavaToLua.coerce(data));
+
+                        FileInputStream fis = new FileInputStream("apiscripts/" + api.name + ".lua"); // TODO compile and cache
+                        LuaValue modsLuaRaw = server_globals.load(fis, api.name + ".lua", "t", user_globals).call();
+                        fis.close();
+
+                        // Parse data returned by script
+                        
                         List<MelonApiMod> apiMods = new ArrayList<>();
-                        if (api.parse(apiDataRaw, apiMods))
-                            api.cachedMods = apiMods;
-                        else
+
+                        if (modsLuaRaw == LuaValue.FALSE)
                             apiMods = api.cachedMods;
+                        else {
+                            LuaTable mods = modsLuaRaw.checktable();
+
+                            LuaValue k = LuaValue.NIL;
+                            Varargs n;
+                            while (!(k = (n = mods.next(k)).arg1()).isnil()) {
+                                LuaValue v = n.arg(2);
+                                try { k.checkint(); }
+                                catch (LuaError e) {
+                                    System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
+                                    continue;
+                                }
+                                
+                                LuaTable mod = null;
+                                try {
+                                    mod = v.checktable();
+                                }
+                                catch (LuaError e) {
+                                    System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
+                                    continue;
+                                }
+
+                                String name = mod.get("name").checkjstring();
+                                System.out.println("[API] Processing mod " + name);
+                                String version = mod.get("version").checkjstring();
+                                String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
+                                String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
+                                String[] aliases = null;
+                                LuaValue aliasesRaw = mod.get("aliases");
+                                if (aliasesRaw != LuaValue.NIL) {
+                                    LuaTable aliasesTable = aliasesRaw.checktable();
+                                    aliases = new String[aliasesTable.length()];
+                                    int iAlias = 0;
+                                    LuaValue k2 = LuaValue.NIL;
+                                    Varargs n2;
+                                    while (!(k2 = (n2 = aliasesTable.next(k2)).arg1()).isnil()) {
+                                        aliases[iAlias++] = n2.arg(2).checkjstring();
+                                    }
+                                }
+
+                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
+                            }
+
+                            api.cachedMods = apiMods;
+                        }
+
+                        // Update stored api datas
 
                         List<MelonApiMod> currentMods = gamesTemp.get(api.game);
                         if (currentMods == null || currentMods.isEmpty())
@@ -236,32 +339,29 @@ public class MelonScannerApisManager {
     
     // Additional classes
 
-    private static class MelonScannerApi<T> {
-
-        public final String game;
-        public final String endpoint;
-        public final boolean compareUsingHashes;
-        public final Type type;
-        public final IMelonApiParser<T> parser;
-
-        public List<MelonApiMod> cachedMods = new ArrayList<>();
-
-        public MelonScannerApi(String game, String endpoint, boolean compareUsingHashes, Type type, IMelonApiParser<T> parser) {
-            this.game = game;
-            this.endpoint = endpoint;
-            this.compareUsingHashes = compareUsingHashes;
-            this.type = type;
-            this.parser = parser;
-        }
-
-        public boolean parse(String apiDataRaw, List<MelonApiMod> mods) {
-            T apiData = gson.fromJson(apiDataRaw, type);
-            return parser.parse(apiData, mods);
+    private static class base64toLowerHexString extends OneArgFunction
+    {
+        @Override
+        public LuaValue call(LuaValue arg) {
+            return LuaValue.valueOf(bytesToHex(Base64.getDecoder().decode(arg.checkjstring())).toLowerCase());
         }
     }
 
-    private static interface IMelonApiParser<T> {
-        public boolean parse(T apiData, List<MelonApiMod> mods);
+    private static class MelonScannerApi {
+
+        public final String game;
+        public final String name;
+        public final String endpoint;
+        public final boolean compareUsingHashes;
+
+        public List<MelonApiMod> cachedMods = new ArrayList<>();
+
+        public MelonScannerApi(String game, String name, String endpoint, boolean compareUsingHashes) {
+            this.game = game;
+            this.name = name;
+            this.endpoint = endpoint;
+            this.compareUsingHashes = compareUsingHashes;
+        }
     }
 
     public static List<MelonApiMod> getMods(String game) {
@@ -272,7 +372,7 @@ public class MelonScannerApisManager {
     }
 
     public static boolean compareUsingHash(String game) {
-        MelonScannerApi<?> api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
+        MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
         return api == null ? false : api.compareUsingHashes;
     }
 

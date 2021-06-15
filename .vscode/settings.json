@@ -1,3 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "Lua.diagnostics.globals": [
+        "data",
+        "base64toLowerHexString"
+    ]
 }

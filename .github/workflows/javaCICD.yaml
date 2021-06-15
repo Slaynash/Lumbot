@@ -30,7 +30,16 @@ jobs:
       - name: Upload to server
         uses: wei/curl@v1.1.1
         with:
-          args: -F 'buildfile=@target/${{ env.buildname }}' -F 'melonscannererrors=@melonscannererrors.json' -F 'localization=@localization.json' https://srv1.slaynash.fr/uploadlum.php
+          args: |
+            -F 'buildfile=@target/${{ env.buildname }}' \
+            -F 'melonscannererrors=@melonscannererrors.json' \
+            -F 'localization=@localization.json' \
+            -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
+            -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
+            -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
+            -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
+            -F 'apiscripts/tld=@apiscripts/tld.lua' \
+            https://srv1.slaynash.fr/uploadlum.php
       
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
