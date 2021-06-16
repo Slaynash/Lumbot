@@ -47,11 +47,6 @@ public final class LogCounter {
             File directory = new File(directoryPath);
             if (!directory.exists())
                 directory.mkdirs(); // in case log folder is missing
-            else{
-                System.out.println("Lum banned someone twice");
-                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage("Lum banned someone twice").queue(); // I am currious if this happens
-                return;
-            }
 
             Files.writeString(Path.of(directoryPath, bannedUser + ".txt"), message);
         }

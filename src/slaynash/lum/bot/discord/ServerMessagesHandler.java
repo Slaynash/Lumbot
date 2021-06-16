@@ -357,9 +357,9 @@ public class ServerMessagesHandler {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
 
-            LogCounter.AddSSCounter(userId, message);
-
             event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
+
+            LogCounter.AddSSCounter(userId, message);
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
