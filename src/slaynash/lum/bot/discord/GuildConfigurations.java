@@ -13,6 +13,8 @@ public class GuildConfigurations {
         put(835185040752246835L /* The Long Development */   ,new Boolean[] {true,false,true,true,true});
         put(322211727192358914L /* The Long Dark Modding */  ,new Boolean[] {true,false,true,true,true});
         put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,false,true,true,true});
+        put(818707954986778644L /* louky's betas */          ,new Boolean[] {true,false,false,true,false});
+        put(818707954986778644L /* Lily's Mods */            ,new Boolean[] {true,false,false,true,false});
     }};
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
