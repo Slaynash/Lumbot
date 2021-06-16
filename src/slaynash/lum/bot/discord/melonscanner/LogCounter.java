@@ -42,7 +42,7 @@ public final class LogCounter {
 
     public static void AddSSCounter(String bannedUser, String message) {
         try{
-            String directoryPath = workingPath.concat("/SSlogs/" + bannedUser);
+            String directoryPath = workingPath.concat("/SSlogs/");
 
             File directory = new File(directoryPath);
             if (!directory.exists())
@@ -53,7 +53,7 @@ public final class LogCounter {
                 return;
             }
 
-            Files.writeString(Path.of(directoryPath), message);
+            Files.writeString(Path.of(directoryPath, bannedUser + ".txt"), message);
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
@@ -82,7 +82,6 @@ public final class LogCounter {
 
             directoryPath = workingPath.concat("/SSlogs/");
             directory = new File(directoryPath);
-            directory.mkdirs(); // create directory if empty
             int sslogCount = directory.listFiles().length;
             if(sslogCount > 0){
                 // remove folders that is older then 24 hours
