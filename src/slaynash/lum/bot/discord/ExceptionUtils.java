@@ -1,7 +1,6 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -31,7 +30,7 @@ public final class ExceptionUtils {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.red);
             embedBuilder.setTitle(title);
-            String exceptionString = ExceptionUtils.getStackTrace(exception);
+            String exceptionString = comment + "\n" + ExceptionUtils.getStackTrace(exception);
             if (exceptionString.length() > 2048)
                 exceptionString = exceptionString.substring(0, 2044) + " ...";
             embedBuilder.setDescription(exceptionString);
@@ -41,5 +40,8 @@ public final class ExceptionUtils {
         }
         catch (Exception e2) { e2.printStackTrace(); }
     }
-    
+
+    public static void reportException(String title, Exception exception) {
+        reportException(title, null, exception);
+    }
 }

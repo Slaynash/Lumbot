@@ -2,13 +2,14 @@ package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpClient.Redirect;
-import java.nio.charset.StandardCharsets;
 import java.net.http.HttpTimeoutException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -58,85 +59,11 @@ public class MelonScannerApisManager {
     private static Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     static {
-        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", false /* Check using hashes? */));
+        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true /* Check using hashes? */));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json", false /* Check using hashes? */));
-
-        /*
-        apis.add(new MelonScannerApi<ArrayList<VRCModDetails>>(
-            "VRChat",
-            "https://api.vrcmg.com/v0/mods.json",
-            false, // Check using hashes?
-            new TypeToken<ArrayList<VRCModDetails>>() {}.getType(),
-            (apiData, mods) -> {
-                for (VRCModDetails processingmods : apiData) {
-                    VRCModDetails.VRCModVersionDetails vrcmoddetails = processingmods.versions[0];
-
-                    String[] aliases = new String[processingmods.aliases.length - 1];
-                    for (int i = 0; i < aliases.length; ++i)
-                        aliases[i] = processingmods.aliases[i];
-
-                    String hash = bytesToHex(Base64.getDecoder().decode(vrcmoddetails.hash)).toLowerCase();
-
-                    mods.add(new MelonApiMod(vrcmoddetails.name, vrcmoddetails.modversion, vrcmoddetails.downloadlink, aliases, hash));
-                }
-
-                return true;
-            }
-        ));
-        */
-
-        /*
-        apis.add(new MelonScannerApi<HashMap<String, BTD6InfernoModDetails>>(
-            "BloonsTD6",
-            "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json",
-            false, // Check using hashes?
-            new TypeToken<HashMap<String, BTD6InfernoModDetails>>() {}.getType(),
-            (apiData, mods) -> {
-                for (Entry<String, BTD6InfernoModDetails> mod : apiData.entrySet())
-                    mods.add(new MelonApiMod(mod.getKey(), mod.getValue().version, null));
-                return true;
-            }
-        ));
-
-        apis.add(new MelonScannerApi<HashMap<String, BTD6Gurrenm4ModDetails>>(
-            "BloonsTD6",
-            "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json",
-            false, // Check using hashes?
-            new TypeToken<HashMap<String, BTD6Gurrenm4ModDetails>>() {}.getType(),
-            (apiData, mods) -> {
-                for (Entry<String, BTD6Gurrenm4ModDetails> mod : apiData.entrySet())
-                    mods.add(new MelonApiMod(mod.getKey(), mod.getValue().version, null));
-                return true;
-            }
-        ));
-
-        apis.add(new MelonScannerApi<HashMap<String, AudicaModDetails>>(
-            "Audica",
-            "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json",
-            false, // Check using hashes?
-            new TypeToken<HashMap<String, AudicaModDetails>>() {}.getType(),
-            (apiData, mods) -> {
-                for (Entry<String, AudicaModDetails> mod : apiData.entrySet())
-                    mods.add(new MelonApiMod(mod.getKey(), mod.getValue().version, mod.getValue().download[0].browser_download_url));
-                return true;
-            }
-        ));
-
-        apis.add(new MelonScannerApi<HashMap<String, TheLongDarkModDetails>>(
-            "TheLongDark",
-            "https://tld.xpazeapps.com/api.json",
-            false, // Check using hashes?
-            new TypeToken<HashMap<String, TheLongDarkModDetails>>() {}.getType(),
-            (apiData, mods) -> {
-                for (Entry<String, TheLongDarkModDetails> mod : apiData.entrySet())
-                    mods.add(new MelonApiMod(mod.getKey(), mod.getValue().version, mod.getValue().download.browser_download_url, mod.getValue().aliases));
-                return true;
-            }
-        ));
-        */
     }
     
     public static void startFetchingThread() {
@@ -298,6 +225,18 @@ public class MelonScannerApisManager {
                             EmbedBuilder embedBuilder = new EmbedBuilder();
                             embedBuilder.setColor(Color.orange);
                             embedBuilder.setTitle("MelonScanner API Timed Out for " + api.endpoint);
+                            MessageEmbed embed = embedBuilder.build();
+                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+                        }
+                        catch (Exception e2) { e2.printStackTrace(); }
+                    }
+                    catch (IOException exception) {
+                        System.err.println("Fetching " + api.endpoint + " timedout:");
+
+                        try {
+                            EmbedBuilder embedBuilder = new EmbedBuilder();
+                            embedBuilder.setColor(Color.orange);
+                            embedBuilder.setTitle("MelonScanner API Connection Closed for " + api.endpoint);
                             MessageEmbed embed = embedBuilder.build();
                             JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
                         }

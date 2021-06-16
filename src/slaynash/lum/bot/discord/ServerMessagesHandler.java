@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 
 public class ServerMessagesHandler {
@@ -355,6 +356,8 @@ public class ServerMessagesHandler {
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
+
+            LogCounter.AddSSCounter(userId, message);
 
             event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
 
