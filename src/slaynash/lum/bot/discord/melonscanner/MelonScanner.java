@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
@@ -55,8 +55,10 @@ public final class MelonScanner {
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
         
         try {
-
             String lang = "en";
+
+            if(messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
+                lang = "fr";
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
             for (String messagePart : messageParts) {
