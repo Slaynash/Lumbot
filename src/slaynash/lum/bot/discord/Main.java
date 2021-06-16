@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -311,5 +312,12 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
         Moderation.voiceLeave(event);
+    }
+
+    @Override
+    public void onGuildJoin(GuildJoinEvent event){
+        event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
+            "Thank you for using Lum!\nLum has a few features that can be enabled.\nThey are Scam Shield, DLL remover, post-log reaction, Lum thanks reply, and partial log remover." +
+            "If you would like any of these enabled or for more info, please contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
     }
 }

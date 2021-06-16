@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class GuildConfigurations {
     public static final HashMap<Long, Boolean[]> configurations = new HashMap<>() {{
-                //Spam Shield, dll remover, log reaction, Lum thanks, partial log remover
+                //Scam Shield, dll remover, log reaction, Lum thanks, partial log remover
         put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true});
         put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true});
         put(663449315876012052L /* MelonLoader */            ,new Boolean[] {true,true,true,true,true});
@@ -15,6 +15,7 @@ public class GuildConfigurations {
         put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,false,true,true,true});
         put(818707954986778644L /* louky's betas */          ,new Boolean[] {true,false,false,true,false});
         put(818707954986778644L /* Lily's Mods */            ,new Boolean[] {true,false,false,true,false});
+        put(818707954986778644L /* 1330 Studios */           ,new Boolean[] {true,false,true,true,true});
     }};
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
@@ -60,7 +61,7 @@ public class GuildConfigurations {
     }};
     
     public enum ConfigurationMap{
-        SPAMSHIELD(),
+        SCAMSHIELD(),
         DLLREMOVER(),
         LOGREACTION(),
         LUMREPLIES(),

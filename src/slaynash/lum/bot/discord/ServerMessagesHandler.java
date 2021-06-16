@@ -104,7 +104,7 @@ public class ServerMessagesHandler {
                 event.getAuthor().getName(),
                 event.getMessage().getContentRaw() );
 
-        if (guildConfig[GuildConfigurations.ConfigurationMap.SPAMSHIELD.ordinal()] && checkForFishing(event))
+        if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && checkForFishing(event))
             return;
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
@@ -335,23 +335,25 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("loot") ? 1 : 0;
         suspiciousValue += message.contains("cs:go") || message.contains("csgo") ? 2 : 0;
         suspiciousValue += message.contains("trade") ? 2 : 0;
-        suspiciousValue += message.contains("skins") ? 2 : 0;
+        suspiciousValue += message.contains("skins") ? 1 : 0;
+        suspiciousValue += message.contains("knife") ? 2 : 0;
+        suspiciousValue += message.contains("offer") ? 1 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
-            handledMessages.remove();
+            handledMessages.remove(); //remove all saved messages that is older then 60 seconds
 
         if (suspiciousValue < 2)
             suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 7)
+        if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
-        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // should avoid false-positives, force 2 messages
+        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
             .collect(Collectors.toList());
 
-        int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum);
+        int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
@@ -359,7 +361,7 @@ public class ServerMessagesHandler {
 
             event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
 
-            LogCounter.AddSSCounter(userId, message);
+            LogCounter.AddSSCounter(userId, message); // add to status counter
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
