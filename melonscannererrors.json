@@ -46,7 +46,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
-            "error": "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader 0.3.0."
+            "error": "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader 0.4.0."
         },
         {
             "regex": "\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
@@ -78,7 +78,7 @@
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
-            "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to 0.3.0."
+            "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to 0.4.0."
         },
         {
             "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
@@ -167,7 +167,7 @@
             },
             {
                 "regex": "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
-                "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader 0.3.0"
+                "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader 0.4.0"
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.TypeLoadException: Could not resolve type with token 0100017c.*",

@@ -7,7 +7,7 @@
         "melonscanner.noissue.field": "- If you had issues please say so and wait for someone to check the log",
 
         "melonscanner.onelogatatime": "Please send one log at a time.",
-        "melonscanner.vrchat.oldemmvrc": "This is an old log from emmVRC and should be deleted. Please upload your MelonLoader/Latest.log or update MelonLoader to 0.3.0 if missing.",
+        "melonscanner.vrchat.oldemmvrc": "This is an old log from emmVRC and should be deleted. Please upload your MelonLoader/Latest.log or update MelonLoader to 0.4.0 if missing.",
         "melonscanner.logautocheckresult": "Log Autocheck Result:",
         
         "melonscanner.reportmessage.logdayolds": "this log is %s days old",
@@ -79,7 +79,7 @@
         "melonscanner.noissue.field": "- Si vous aviez des problèmes, veuillez le faire savoir et attendre que quelqu'un analyse les logs",
 
         "melonscanner.onelogatatime": "Veuillez envoyer un seul fichier à la fois.",
-        "melonscanner.vrchat.oldemmvrc": "Ceci est un vieux fichier de logs d'emmVRC et devrait être supprimé. Veuillez uploader votre MelonLoader/Latest.log ou mettre à jour MelonLoader en 0.3.0 s'il est manquant.",
+        "melonscanner.vrchat.oldemmvrc": "Ceci est un vieux fichier de logs d'emmVRC et devrait être supprimé. Veuillez uploader votre MelonLoader/Latest.log ou mettre à jour MelonLoader en 0.4.0 s'il est manquant.",
         "melonscanner.logautocheckresult": "Log Autocheck Result:",
         
         "melonscanner.reportmessage.logdayolds": "ces logs datent d'il y a %s jours",

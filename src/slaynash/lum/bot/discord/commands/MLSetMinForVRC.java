@@ -26,13 +26,8 @@ public class MLSetMinForVRC extends Command {
         String hash = parts[1];
         System.out.println("[MLSetMinForVRC] hash: " + paramString);
         
-        try {
-            Integer.parseInt(hash);
-        }
-        catch (Exception e) {
+        if(!hash.matches("^[0-9]{5,}$"))
             paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
-            return;
-        }
         
         CommandManager.melonLoaderVRCHash = hash;
         CommandManager.melonLoaderVRCMinDate = parts[2];
