@@ -29,7 +29,7 @@ public class MelonScanContext {
 
     // MelonLoader infos
     public String mlName;
-    public String mlVersion = "";
+    public String mlVersion;
     public String mlHashCode;
     public boolean pre3 = false;
     public boolean alpha = false;

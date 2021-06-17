@@ -405,7 +405,7 @@ public final class MelonScanner {
         context.isMLOutdated = context.mlVersion != null && !(sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || sanitizeInputString(context.mlVersion).equals(latestMLVersionBeta));
 
         if (context.isMLOutdatedVRC) {
-            if (!context.mlVersion.equals(latestMLVersionRelease))
+            if (!latestMLVersionRelease.equals(context.mlVersion))
                 context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
             else
                 context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
