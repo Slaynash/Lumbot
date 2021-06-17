@@ -118,7 +118,11 @@ public class ServerMessagesHandler {
             if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
                 event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
         }
-        
+
+        if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
+            event.getMessage().addReaction("<:baka:828070018935685130>"); // was requested
+        }
+
         if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
             System.out.println("Partial Log was printed");
             
