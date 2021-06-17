@@ -135,7 +135,7 @@ public final class MelonScanner {
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
-                messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbed(context.embedBuilder.build()).build()).queue();
+                messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
             }
         }
         catch (Exception exception) {
@@ -701,13 +701,13 @@ public final class MelonScanner {
         embedBuilder.setDescription(message);
         MessageEmbed embed = embedBuilder.build();
 
-        messageReceivedEvent.getMessage().reply(embed);
+        messageReceivedEvent.getMessage().replyEmbeds(embed);
     }
 
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
-            event.getGuild().getTextChannelById(reportChannel).sendMessage(
+            event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
                     JDAManager.wrapMessageInEmbed(
                             "User <@" + event.getMember().getId() + "> is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.orange)).queue();

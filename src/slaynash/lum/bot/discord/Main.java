@@ -42,7 +42,7 @@ public class Main extends ListenerAdapter {
             jda
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessage(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                 .complete();
         }));
 
@@ -75,7 +75,7 @@ public class Main extends ListenerAdapter {
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessage(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
                 .queue();
 
         VRCApiVersionScanner.init();
@@ -273,7 +273,7 @@ public class Main extends ListenerAdapter {
         if((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for(TextChannel c : guild.getTextChannels()) {
                 if(c.getId().equals(channelId)) {
-                    ((TextChannel)c).sendMessage(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    ((TextChannel)c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }

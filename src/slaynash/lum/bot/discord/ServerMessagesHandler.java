@@ -109,7 +109,7 @@ public class ServerMessagesHandler {
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
             return;
         }
 
@@ -360,9 +360,9 @@ public class ServerMessagesHandler {
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null)
-                event.getGuild().getTextChannelById(reportChannel).sendMessage(embedBuilder.build()).queue();
+                event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queue();
             else
-                event.getChannel().sendMessage(embedBuilder.build()).queue();
+                event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 
             return true;
         }

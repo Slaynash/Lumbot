@@ -23,7 +23,7 @@ public class CommandLaunchCommand extends Command {
             m_globals.get("dofile").call(LuaValue.valueOf(rom.toString()));
         }
         catch (LuaError e) {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("An error has occured: \"" + command.substring(2).split(" ")[0] + "\"\n" + e.getMessage(), Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("An error has occured: \"" + command.substring(2).split(" ")[0] + "\"\n" + e.getMessage(), Color.RED)).queue();
             e.printStackTrace();
         }
     }

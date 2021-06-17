@@ -34,11 +34,11 @@ public class SetVRCBuild extends Command {
                 e.printStackTrace();
             }
             
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();
             
         }
         catch (Exception e) {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbuild <build>", Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbuild <build>", Color.RED)).queue();
         }
     }
     

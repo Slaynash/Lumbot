@@ -19,7 +19,7 @@ public class MLSetMinForVRC extends Command {
         String[] parts = paramString.split(" ", 3);
 
         if (parts.length != 3) {
-            paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
             return;
         }
 
@@ -27,7 +27,7 @@ public class MLSetMinForVRC extends Command {
         System.out.println("[MLSetMinForVRC] hash: " + paramString);
         
         if(!hash.matches("^[0-9]{5,}$"))
-            paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
         
         CommandManager.melonLoaderVRCHash = hash;
         CommandManager.melonLoaderVRCMinDate = parts[2];

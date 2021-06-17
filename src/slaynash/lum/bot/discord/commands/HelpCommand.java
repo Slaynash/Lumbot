@@ -29,12 +29,12 @@ public class HelpCommand extends Command {
             }
         }
         if (!empty) {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(helpMessage, Color.CYAN)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage, Color.CYAN)).queue();
         }
         else
         {
             helpMessage = helpMessage + "**Subhelp directory not found**";
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(helpMessage, Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage, Color.RED)).queue();
         }
     }
     
