@@ -18,6 +18,7 @@ public class Slash {
     }
 
     public static void buttonUpdate(ButtonClickEvent event){
+        //I am assuming here that if Lum sent buttons to user then they are server Owner
         if (event.getComponentId().equals("ss")) {
             ssB = !ssB;
             event.editButton(ssB ? Button.success("ss", "Scam Shield"):Button.danger("ss", "Scam Shield")).queue();
