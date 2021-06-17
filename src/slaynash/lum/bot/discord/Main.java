@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
@@ -17,16 +18,23 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
 import slaynash.lum.bot.Localization;
+import slaynash.lum.bot.discord.commands.Slash;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.steam.Steam;
+
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
@@ -63,6 +71,7 @@ public class Main extends ListenerAdapter {
         loadMLReportChannels();
         //loadBrokenVRCMods();
         loadVRCBuild();
+        loadGuildConfigs();
 
         MelonScanner.init();
 
@@ -79,6 +88,8 @@ public class Main extends ListenerAdapter {
                 .queue();
 
         VRCApiVersionScanner.init();
+
+        jda.updateCommands().addCommands(new CommandData("config", "send server config buttons").addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue();
 
         System.out.println("LUM Started!");
     }
@@ -244,6 +255,26 @@ public class Main extends ListenerAdapter {
         }
     }
 
+    private static void loadGuildConfigs() {
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("guildconfigurations.txt"));
+            String line;
+            HashMap<Long, Boolean[]> tempMap = new HashMap<>();
+            while ((line = reader.readLine()) != null) {
+                String[] broke = line.split(" ");
+                Boolean[] tempBooleans = new Boolean[broke.length - 1];
+                for (int i = 1; i < broke.length; i++)
+                    tempBooleans[i - 1] = Boolean.parseBoolean(broke[i]);
+                tempMap.put(Long.parseLong(broke[0]), tempBooleans);
+            }
+            reader.close();
+            GuildConfigurations.configurations = tempMap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) {
@@ -319,5 +350,15 @@ public class Main extends ListenerAdapter {
         event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
             "Thank you for using Lum!\nLum has a few features that can be enabled.\nThey are Scam Shield, DLL remover, post-log reaction, Lum thanks reply, and partial log remover." +
             "If you would like any of these enabled or for more info, please contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+    }
+
+    @Override
+    public void onSlashCommand(SlashCommandEvent event) {
+        Slash.slashRun(event);
+    }
+
+    @Override
+    public void onButtonClick(ButtonClickEvent event) {
+        Slash.buttonUpdate(event);
     }
 }

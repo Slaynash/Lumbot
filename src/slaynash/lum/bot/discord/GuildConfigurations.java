@@ -3,7 +3,7 @@ package slaynash.lum.bot.discord;
 import java.util.HashMap;
 
 public class GuildConfigurations {
-    public static final HashMap<Long, Boolean[]> configurations = new HashMap<>() {{
+    public static HashMap<Long, Boolean[]> configurations;
                 //Scam Shield, dll remover, log reaction, Lum thanks, partial log remover, general log remover
         put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true,true});
         put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true,true});
@@ -16,7 +16,6 @@ public class GuildConfigurations {
         put(818707954986778644L /* louky's betas */          ,new Boolean[] {true,false,false,true,false,false});
         put(818707954986778644L /* Lily's Mods */            ,new Boolean[] {true,false,false,true,false,false});
         put(818707954986778644L /* 1330 Studios */           ,new Boolean[] {true,false,true,true,true,false});
-    }};
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
         put(439093693769711616L /* VRCMG */, new long[] {
