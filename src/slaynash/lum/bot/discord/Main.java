@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -27,7 +28,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
 import slaynash.lum.bot.Localization;
@@ -89,7 +89,7 @@ public class Main extends ListenerAdapter {
 
         VRCApiVersionScanner.init();
 
-        jda.updateCommands().addCommands(new CommandData("config", "send server config buttons").addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue();
+        registerCommands();
 
         System.out.println("LUM Started!");
     }
@@ -256,6 +256,23 @@ public class Main extends ListenerAdapter {
     }
 
     private static void loadGuildConfigs() {
+        File f = new File("guildconfigurations.txt");
+        if(!f.exists()) { 
+            GuildConfigurations.configurations = new HashMap<>() {{
+            put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true,true});
+            put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true,true});
+            put(663449315876012052L /* MelonLoader */            ,new Boolean[] {true,true,true,true,true,true});
+            put(673663870136746046L /* Modders & Chill */        ,new Boolean[] {false,false,true,true,false,false});
+            put(633588473433030666L /* Slaynash's Workbench */   ,new Boolean[] {true,true,true,true,false,false});
+            put(835185040752246835L /* The Long Development */   ,new Boolean[] {true,false,true,true,true,false});
+            put(322211727192358914L /* The Long Dark Modding */  ,new Boolean[] {true,false,true,true,true,false});
+            put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,false,true,true,true,false});
+            put(818707954986778644L /* louky's betas */          ,new Boolean[] {true,false,false,true,false,false});
+            put(818707954986778644L /* Lily's Mods */            ,new Boolean[] {true,false,false,true,false,false});
+            put(818707954986778644L /* 1330 Studios */           ,new Boolean[] {true,false,true,true,true,false});
+            }};
+        CommandManager.saveGuildConfigs();
+        }else{
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("guildconfigurations.txt"));
@@ -272,7 +289,7 @@ public class Main extends ListenerAdapter {
             GuildConfigurations.configurations = tempMap;
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }}
     }
 
     @Override
@@ -348,8 +365,8 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildJoin(GuildJoinEvent event){
         event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
-            "Thank you for using Lum!\nLum has a few features that can be enabled.\nThey are Scam Shield, DLL remover, post-log reaction, Lum thanks reply, and partial log remover." +
-            "If you would like any of these enabled or for more info, please contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+            "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n" +
+            "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
     }
 
     @Override
@@ -360,5 +377,13 @@ public class Main extends ListenerAdapter {
     @Override
     public void onButtonClick(ButtonClickEvent event) {
         Slash.buttonUpdate(event);
+    }
+
+    private static void registerCommands(){
+        JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
+            .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
+        for(Guild guild : JDAManager.getJDA().getGuilds()){
+            guild.upsertCommand("config", "send server config buttons for this guild").queue(); // Guild command
+        }
     }
 }
