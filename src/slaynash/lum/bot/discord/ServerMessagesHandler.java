@@ -204,35 +204,19 @@ public class ServerMessagesHandler {
             }
         }
         
-        new Thread(() -> {
-            try {
-                MelonScanner.scanMessage(event);
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-                
-                String error = "**An error has occured while reading logs:**\n" + ExceptionUtils.getStackTrace(e);
-                
-                if (error.length() > 1000) {
-                    String[] lines = error.split("\n");
-                    String toSend = "";
-                    int i = 0;
-                    
-                    while (i < lines.length) {
-                        if ((toSend + lines[i] + 1).length() > 1000) {
-                            toSend += "...";
-                            break;
-                        }
-                        
-                        toSend += "\n" + lines[i];
-                    }
-                    
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(toSend, Color.RED)).queue();
+        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && !checkIfStaff(event)){
+            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload to #help-and-support or #log-scanner channel instead of #general").queue();
+            event.getMessage().delete().queue();
+        } else {
+            new Thread(() -> {
+                try {
+                    MelonScanner.scanMessage(event);
                 }
-                else
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed(error, Color.RED)).queue();
-            }
-        }).start();
+                catch(Exception e) {
+                    ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
+                }
+            }).start();
+        }
     }
 
     /**

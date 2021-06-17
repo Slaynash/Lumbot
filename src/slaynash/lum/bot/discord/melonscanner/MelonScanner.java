@@ -142,9 +142,9 @@ public final class MelonScanner {
             String channelName = messageReceivedEvent.getGuild().getName() + " #" + messageReceivedEvent.getChannel().getName() + " > " + messageReceivedEvent.getMessageId();
             String channelLink = "https://canary.discord.com/channels/" + messageReceivedEvent.getGuild().getId() + "/" + messageReceivedEvent.getChannel().getId() + "/" + messageReceivedEvent.getMessageId();
             ExceptionUtils.reportException(
-                "Exception while reading attachment of message " + channelLink + ":",
+                "Exception while reading attachment of message:",
                 "In [" + channelName + "](" + channelLink + "):",
-                exception);
+                exception, messageReceivedEvent.getTextChannel());
         }
     }
 
