@@ -20,6 +20,7 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Main;
@@ -168,6 +169,7 @@ public class Steam {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Depot" + (changeBranches.size() > 0 ? "s" : "") + " updated");
                     String description = "";
+                    boolean isPublicBranchUpdate = false;
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
                         if (!oldBranches.containsKey(changedBranch.getKey()))
                         {
@@ -188,12 +190,19 @@ public class Steam {
                             description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
                             if(newBranchDetails.description != null)
                                 description += " - Description: " + newBranchDetails.description + "\n";
+
+                            if (changedBranch.getKey().equals("public"))
+                                isPublicBranchUpdate = true;
                         }
                     }
                     eb.setDescription(description);
                     MessageEmbed embed = eb.build();
+                    MessageBuilder mb = new MessageBuilder();
+                    if (isPublicBranchUpdate)
+                        mb.setContent("@everyone");
+                    mb.setEmbed(embed);
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(embed).queue();
+                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(mb.build()).queue();
                 }
 
                 vrchatAppDetails = newAppDetails;
