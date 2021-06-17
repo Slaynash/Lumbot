@@ -120,12 +120,12 @@ public class ServerMessagesHandler {
         }
 
         if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
-            event.getMessage().addReaction("<:baka:828070018935685130>"); // was requested
+            event.getMessage().addReaction("<:baka:828070018935685130>").queue(); // was requested
         }
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
             System.out.println("Partial Log was printed");
-            
+
             boolean postedInWhitelistedServer = false;
             long guildId = event.getGuild().getIdLong();
             for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
@@ -161,7 +161,7 @@ public class ServerMessagesHandler {
                 return;
                 }
             }
-        
+
             else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
                 System.out.println("Help was detected");
                 if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
@@ -207,7 +207,7 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
             }
         }
-        
+
         if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
             event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
             event.getMessage().delete().queue();
@@ -237,15 +237,15 @@ public class ServerMessagesHandler {
                 break;
             }
         }
-        
+
         if (!postedInWhitelistedServer)
             return true; // Not a whitelisted server
-        
+
         for (Attachment attachment : event.getMessage().getAttachments()) {
             fileExt = attachment.getFileExtension();
             if (fileExt == null) fileExt = "";
             fileExt = fileExt.toLowerCase();
-            
+
             if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") ||
              fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
 
@@ -257,16 +257,16 @@ public class ServerMessagesHandler {
         }
         return true; // No attachement, or no DLL
     }
-    
+
     public static void addNewHelpedRecently(MessageReceivedEvent event) {
         for (int i = helpedRecently.size() - 1; i >= 0; --i)
             if (helpedRecently.get(i).time + helpDuration < Instant.now().getEpochSecond())
                 helpedRecently.remove(i);
-        
+
         helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
         System.out.println("Helped recently added");
     }
-    
+
     public static boolean wasHelpedRecently(MessageReceivedEvent event) {
         for (int i = 0; i < helpedRecently.size(); ++i) {
             HelpedRecentlyData hrd = helpedRecently.get(i);
@@ -327,6 +327,7 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("knife") ? 2 : 0;
         suspiciousValue += message.contains("offer") ? 1 : 0;
         suspiciousValue += message.contains("btc") ? 1 : 0;
+        suspiciousValue += message.contains("tradeofer") ? 3 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
@@ -356,7 +357,7 @@ public class ServerMessagesHandler {
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
                 .setTimestamp(Instant.now());
-            
+
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null)
                 event.getGuild().getTextChannelById(reportChannel).sendMessage(embedBuilder.build()).queue();
