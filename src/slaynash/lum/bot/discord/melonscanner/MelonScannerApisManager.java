@@ -226,7 +226,7 @@ public class MelonScannerApisManager {
                             embedBuilder.setColor(Color.orange);
                             embedBuilder.setTitle("MelonScanner API Timed Out for " + api.endpoint);
                             MessageEmbed embed = embedBuilder.build();
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
                         }
                         catch (Exception e2) { e2.printStackTrace(); }
                     }
@@ -238,7 +238,7 @@ public class MelonScannerApisManager {
                             embedBuilder.setColor(Color.orange);
                             embedBuilder.setTitle("MelonScanner API Connection Closed for " + api.endpoint);
                             MessageEmbed embed = embedBuilder.build();
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
                         }
                         catch (Exception e2) { e2.printStackTrace(); }
                     }
@@ -256,7 +256,7 @@ public class MelonScannerApisManager {
                             embedBuilder.setDescription(exceptionString);
                             MessageEmbed embed = embedBuilder.build();
 
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
                         }
                         catch (Exception e2) { e2.printStackTrace(); }
                     }

@@ -109,7 +109,7 @@ public class ServerMessagesHandler {
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
             event.getMessage().delete().queue();
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
             return;
         }
 
@@ -120,7 +120,7 @@ public class ServerMessagesHandler {
         }
 
         if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
-            event.getMessage().addReaction("<:baka:828070018935685130>").queue(); // was requested
+            event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
         }
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
@@ -360,9 +360,9 @@ public class ServerMessagesHandler {
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null)
-                event.getGuild().getTextChannelById(reportChannel).sendMessage(embedBuilder.build()).queue();
+                event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queue();
             else
-                event.getChannel().sendMessage(embedBuilder.build()).queue();
+                event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 
             return true;
         }

@@ -19,14 +19,14 @@ public class RankColorCommand extends Command {
     protected void onServer(String command, MessageReceivedEvent event) {
         try {
             if(command.split(" ").length == 1 || (arg = command.split(" ", 2)[1]).equals("help") || !arg.startsWith("#")){
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Usage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.BLUE)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.BLUE)).queue();
             }else if(arg.length() != 7){
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.RED)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.RED)).queue();
             }
             else {
                 for(char c:arg.substring(1).toCharArray()) {
                     if(!(('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'))) {
-                        event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.RED)).queue();
+                        event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: "+getHelpName()+" <hexcolor>\nExemple (pure green): "+getHelpName()+" #00ff00", Color.RED)).queue();
                         return;
                     }
                 }
@@ -77,7 +77,7 @@ public class RankColorCommand extends Command {
             }
         }
         catch(Exception e) {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("An error has occured:\n"+e.toString()+"\n at "+e.getStackTrace()[0], Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("An error has occured:\n"+e.toString()+"\n at "+e.getStackTrace()[0], Color.RED)).queue();
         }
     }
 

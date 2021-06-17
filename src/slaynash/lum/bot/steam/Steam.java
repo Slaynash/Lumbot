@@ -111,7 +111,7 @@ public class Steam {
                     eb.setTitle("New Steam changelist available (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameId + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
                     MessageEmbed embed = eb.build();
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(embed).queue();
+                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
                     
                     apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
                 }
@@ -200,7 +200,7 @@ public class Steam {
                     MessageBuilder mb = new MessageBuilder();
                     if (isPublicBranchUpdate)
                         mb.setContent("@everyone");
-                    mb.setEmbed(embed);
+                    mb.setEmbeds(embed);
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(mb.build()).queue();
                 }

@@ -26,18 +26,18 @@ public class SetScreeningRoleHandlerCommand extends Command {
         if (params.length == 2) {
             Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[1]);
             if (role == null) {
-                paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
+                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
                 return;
             }
 
             CommandManager.autoScreeningRoles.put(paramMessageReceivedEvent.getGuild().getIdLong(), role.getIdLong());
             CommandManager.saveScreenings();
-            paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Successfully set screening role", Color.GREEN)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Successfully set screening role", Color.GREEN)).queue();
         }
         else {
             CommandManager.autoScreeningRoles.remove(paramMessageReceivedEvent.getGuild().getIdLong());
             CommandManager.saveScreenings();
-            paramMessageReceivedEvent.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Successfully removed screening role", Color.GREEN)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Successfully removed screening role", Color.GREEN)).queue();
         }
 
     }

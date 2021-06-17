@@ -17,8 +17,6 @@ import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
 import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
-import slaynash.lum.bot.discord.commands.SetVRCBuild;
-import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
@@ -26,6 +24,8 @@ import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
+import slaynash.lum.bot.discord.commands.SetVRCBuild;
+import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 
@@ -198,8 +198,20 @@ public class CommandManager {
             e.printStackTrace();
         }
     }
-    
-    
+
+    public static void saveGuildConfigs() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("guildconfigurations.txt"))) {
+            for (Entry<Long, Boolean[]> saveconfigurations : GuildConfigurations.configurations.entrySet()) {
+                writer.write(saveconfigurations.getKey().toString());
+                for (Boolean bool : saveconfigurations.getValue()) {
+                    writer.write(" " + bool.toString());
+                }
+                writer.write("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static List<Command> getCommands() {
         return commands;

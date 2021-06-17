@@ -2,8 +2,10 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
 
@@ -17,16 +19,22 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
 import slaynash.lum.bot.Localization;
+import slaynash.lum.bot.discord.commands.Slash;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.steam.Steam;
+
 
 public class Main extends ListenerAdapter {
     public static JDA jda;
@@ -42,7 +50,7 @@ public class Main extends ListenerAdapter {
             jda
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessage(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                 .complete();
         }));
 
@@ -63,6 +71,7 @@ public class Main extends ListenerAdapter {
         loadMLReportChannels();
         //loadBrokenVRCMods();
         loadVRCBuild();
+        loadGuildConfigs();
 
         MelonScanner.init();
 
@@ -75,10 +84,12 @@ public class Main extends ListenerAdapter {
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessage(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
                 .queue();
 
         VRCApiVersionScanner.init();
+
+        registerCommands();
 
         System.out.println("LUM Started!");
     }
@@ -244,6 +255,43 @@ public class Main extends ListenerAdapter {
         }
     }
 
+    private static void loadGuildConfigs() {
+        File f = new File("guildconfigurations.txt");
+        if(!f.exists()) { 
+            GuildConfigurations.configurations = new HashMap<>() {{
+            put(439093693769711616L /* VRCMG */                  ,new Boolean[] {true,true,true,true,true,true});
+            put(600298024425619456L /* emmVRC */                 ,new Boolean[] {true,true,true,true,true,true});
+            put(663449315876012052L /* MelonLoader */            ,new Boolean[] {true,true,true,true,true,true});
+            put(673663870136746046L /* Modders & Chill */        ,new Boolean[] {false,false,true,true,false,false});
+            put(633588473433030666L /* Slaynash's Workbench */   ,new Boolean[] {true,true,true,true,false,false});
+            put(835185040752246835L /* The Long Development */   ,new Boolean[] {true,false,true,true,true,false});
+            put(322211727192358914L /* The Long Dark Modding */  ,new Boolean[] {true,false,true,true,true,false});
+            put(748692902137430018L /* Beat Saber Legacy Group */,new Boolean[] {true,false,true,true,true,false});
+            put(818707954986778644L /* louky's betas */          ,new Boolean[] {true,false,false,true,false,false});
+            put(818707954986778644L /* Lily's Mods */            ,new Boolean[] {true,false,false,true,false,false});
+            put(818707954986778644L /* 1330 Studios */           ,new Boolean[] {true,false,true,true,true,false});
+            }};
+        CommandManager.saveGuildConfigs();
+        }else{
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("guildconfigurations.txt"));
+            String line;
+            HashMap<Long, Boolean[]> tempMap = new HashMap<>();
+            while ((line = reader.readLine()) != null) {
+                String[] broke = line.split(" ");
+                Boolean[] tempBooleans = new Boolean[broke.length - 1];
+                for (int i = 1; i < broke.length; i++)
+                    tempBooleans[i - 1] = Boolean.parseBoolean(broke[i]);
+                tempMap.put(Long.parseLong(broke[0]), tempBooleans);
+            }
+            reader.close();
+            GuildConfigurations.configurations = tempMap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }}
+    }
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) {
@@ -273,7 +321,7 @@ public class Main extends ListenerAdapter {
         if((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for(TextChannel c : guild.getTextChannels()) {
                 if(c.getId().equals(channelId)) {
-                    ((TextChannel)c).sendMessage(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    ((TextChannel)c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }
@@ -317,7 +365,25 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildJoin(GuildJoinEvent event){
         event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
-            "Thank you for using Lum!\nLum has a few features that can be enabled.\nThey are Scam Shield, DLL remover, post-log reaction, Lum thanks reply, and partial log remover." +
-            "If you would like any of these enabled or for more info, please contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+            "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n" +
+            "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+    }
+
+    @Override
+    public void onSlashCommand(SlashCommandEvent event) {
+        Slash.slashRun(event);
+    }
+
+    @Override
+    public void onButtonClick(ButtonClickEvent event) {
+        Slash.buttonUpdate(event);
+    }
+
+    private static void registerCommands(){
+        JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
+            .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
+        for(Guild guild : JDAManager.getJDA().getGuilds()){
+            guild.upsertCommand("config", "send server config buttons for this guild").queue(); // Guild command
+        }
     }
 }

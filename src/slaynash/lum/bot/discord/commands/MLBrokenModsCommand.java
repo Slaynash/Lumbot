@@ -162,7 +162,7 @@ public class MLBrokenModsCommand extends Command {
         }
         */
         else
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [list]", Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [list]", Color.RED)).queue();
     }
     
     @Override

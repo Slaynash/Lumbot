@@ -37,7 +37,7 @@ public final class ExceptionUtils {
             embedBuilder.setDescription(exceptionString);
             MessageEmbed embed = embedBuilder.build();
 
-            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage(embed).queue();
+            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
 
             if(textChannel != null){
                 EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
@@ -45,7 +45,7 @@ public final class ExceptionUtils {
                 sorryEmbedBuilder.setTitle(title);
                 sorryEmbedBuilder.setDescription("Lum has encounter an error and has notified the devs.");
                 MessageEmbed sorryEmbed = sorryEmbedBuilder.build();
-                textChannel.sendMessage(sorryEmbed);
+                textChannel.sendMessageEmbeds(sorryEmbed);
             }
         }
         catch (Exception e2) { e2.printStackTrace(); }
