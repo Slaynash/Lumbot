@@ -204,8 +204,8 @@ public class ServerMessagesHandler {
             }
         }
         
-        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && !checkIfStaff(event)){
-            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload to #help-and-support or #log-scanner channel instead of #general").queue();
+        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
+            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
             event.getMessage().delete().queue();
         } else {
             new Thread(() -> {

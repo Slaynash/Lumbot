@@ -172,7 +172,7 @@ public final class MelonScanner {
         return false;
     }
 
-    private static boolean isValidFileFormat(Attachment attachment) {
+    public static boolean isValidFileFormat(Attachment attachment) {
         return attachment.getFileExtension() != null && (
             attachment.getFileExtension().toLowerCase().equals("log") ||
             attachment.getFileExtension().toLowerCase().equals("txt"));
