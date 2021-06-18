@@ -90,137 +90,141 @@ public class ServerMessagesHandler {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     public static void handle(MessageReceivedEvent event) {
-        if(event.getAuthor().isBot()) return;
-        CommandManager.runAsServer(event);
-        Long GuildID = event.getGuild().getIdLong();
-        Boolean guildConfig[];
-        guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
-        String message = event.getMessage().getContentRaw().toLowerCase();
+        try{
+            if(event.getAuthor().isBot()) return;
+            CommandManager.runAsServer(event);
+            Long GuildID = event.getGuild().getIdLong();
+            Boolean guildConfig[];
+            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
+            String message = event.getMessage().getContentRaw().toLowerCase();
 
-        System.out.printf("[%s] [%s][%s] %s: %s\n",
-                TimeManager.getTimeForLog(),
-                event.getGuild().getName(),
-                event.getTextChannel().getName(),
-                event.getAuthor().getName(),
-                event.getMessage().getContentRaw() );
+            System.out.printf("[%s] [%s][%s] %s: %s\n",
+                    TimeManager.getTimeForLog(),
+                    event.getGuild().getName(),
+                    event.getTextChannel().getName(),
+                    event.getAuthor().getName(),
+                    event.getMessage().getContentRaw() );
 
-        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
-            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
-            event.getMessage().delete().queue();
-        }
-        else {
-            new Thread(() -> {
-                try {
-                    MelonScanner.scanMessage(event);
-                }
-                catch(Exception e) {
-                    ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
-                }
-            }).start();
-        }
-
-        if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && checkForFishing(event))
-            return;
-
-        if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
-            event.getMessage().delete().queue();
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
-            return;
-        }
-
-        if (event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
-            String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
-            if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
-                event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
-        }
-
-        if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
-            event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
-        }
-
-        if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
-            System.out.println("Partial Log was printed");
-
-            boolean postedInWhitelistedServer = false;
-            long guildId = event.getGuild().getIdLong();
-            for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
-                if (whitelistedGuildId == guildId) {
-                    postedInWhitelistedServer = true;
-                    break;
-                }
-            }
-            if (postedInWhitelistedServer && !checkIfStaff(event)) {
-                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
+            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
+                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
                 event.getMessage().delete().queue();
             }
-        }
-
-        if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-            if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
-                message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
-                message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
-                System.out.println("Thanks was detected");
-                if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                    String sentence;
-                    boolean rare = random.nextInt(100) == 69;
-                    if (rare)
-                        sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
-                    else {
-                        rare = random.nextInt(10) == 9;
-                        sentence = rare
-                        ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
-                        : thankedSentences    [random.nextInt(thankedSentences.length)];
+            else {
+                new Thread(() -> {
+                    try {
+                        MelonScanner.scanMessage(event);
                     }
-                event.getChannel().sendMessage(sentence).queue();
+                    catch(Exception e) {
+                        ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
+                    }
+                }).start();
+            }
+
+            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && checkForFishing(event))
                 return;
-                }
+
+            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
+                event.getMessage().delete().queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+                return;
             }
 
-            else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
-                System.out.println("Help was detected");
-                if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                    String sentence;
-                    boolean rare = random.nextInt(1000) == 420;
-                    if (rare)
-                        sentence = "Shut the fuck up, I literally answered your dumb ass!";
-                    else {
-                        rare = random.nextInt(10) == 9;
-                        sentence = rare
-                        ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
-                        : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+            if (event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
+                String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
+                if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
+                    event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
+            }
+
+            if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
+                event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
+            }
+
+            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
+                System.out.println("Partial Log was printed");
+
+                boolean postedInWhitelistedServer = false;
+                long guildId = event.getGuild().getIdLong();
+                for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
+                    if (whitelistedGuildId == guildId) {
+                        postedInWhitelistedServer = true;
+                        break;
                     }
-                    event.getChannel().sendMessage(sentence).queue();
-                    return;
+                }
+                if (postedInWhitelistedServer && !checkIfStaff(event)) {
+                    event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
+                    event.getMessage().delete().queue();
                 }
             }
-        }
 
-        if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-            if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
-                System.out.println("Nice Lum was detected");
-                event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
+            if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
+                if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
+                    message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
+                    message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
+                    message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
+                    System.out.println("Thanks was detected");
+                    if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+                        String sentence;
+                        boolean rare = random.nextInt(100) == 69;
+                        if (rare)
+                            sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
+                        else {
+                            rare = random.nextInt(10) == 9;
+                            sentence = rare
+                            ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
+                            : thankedSentences    [random.nextInt(thankedSentences.length)];
+                        }
+                    event.getChannel().sendMessage(sentence).queue();
+                return;
+                    }
+                }
+
+                else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
+                    System.out.println("Help was detected");
+                    if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
+                        String sentence;
+                        boolean rare = random.nextInt(1000) == 420;
+                        if (rare)
+                            sentence = "Shut the fuck up, I literally answered your dumb ass!";
+                        else {
+                            rare = random.nextInt(10) == 9;
+                            sentence = rare
+                            ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
+                            : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                        }
+                        event.getChannel().sendMessage(sentence).queue();
+                        return;
+                    }
+                }
             }
 
-            else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum")) {
-                System.out.println("F off Lum was detected");
-                event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
-            }
+            if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
+                if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
+                    System.out.println("Nice Lum was detected");
+                    event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
+                }
 
-            else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
-                System.out.println("Bad Lum was detected");
-                event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
-            }
+                else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum")) {
+                    System.out.println("F off Lum was detected");
+                    event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
+                }
 
-            else if (message.contains("hello lum") || message.contains("hi lum")) {
-                System.out.println("Hello Lum was detected");
-                event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
-            }
+                else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
+                    System.out.println("Bad Lum was detected");
+                    event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
+                }
 
-            else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
-                System.out.println("Lum stole Credit");
-                event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+                else if (message.contains("hello lum") || message.contains("hi lum")) {
+                    System.out.println("Hello Lum was detected");
+                    event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+                }
+
+                else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
+                    System.out.println("Lum stole Credit");
+                    event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+                }
             }
+        }catch(Exception e) {
+            ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());
         }
     }
 
