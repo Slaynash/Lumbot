@@ -26,6 +26,11 @@ public class SetVRCBuild extends Command {
         try {
             Integer.parseInt(parts[1]);
 
+            if(CommandManager.vrchatBuild.equals(parts[1])){
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("VRChat build is already set to " + parts[1], Color.ORANGE)).queue();
+                return;
+            }
+
             CommandManager.vrchatBuild = parts[1];
             
             try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("vrchatbuild.txt"))) {
