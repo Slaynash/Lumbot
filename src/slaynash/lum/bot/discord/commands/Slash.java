@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
 
@@ -66,22 +67,26 @@ public class Slash {
     }
 
     private static void sendReply(SlashCommandEvent event, String guildID){
-        Guild guild = event.getJDA().getGuildById(guildID);
-        Boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
-        if (guild != null){
-            if (event.getUser().getId().equals(event.getGuild().getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
-                event.reply("Server Config for " + guild.getName() + ": " + guildID)
-                    .addActionRow(
-                        config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
-                        config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"),
-                        config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"))
-                    .addActionRow(
-                        config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
-                        config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
-                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
-                    .addActionRow(
-                        Button.danger("delete", "Delete this message")).queue();
-            }
-        } else event.reply("Guild not found.");
+        try {
+            Guild guild = event.getJDA().getGuildById(guildID);
+            Boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
+            if (guild != null){
+                if (event.getUser().getId().equals(guild.getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
+                    event.reply("Server Config for " + guild.getName() + ": " + guildID)
+                        .addActionRow(
+                            config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
+                            config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"),
+                            config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"))
+                        .addActionRow(
+                            config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
+                            config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
+                            config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
+                        .addActionRow(
+                            Button.danger("delete", "Delete this message")).queue();
+                } else event.reply("You do not have permission to use this command.");
+            } else event.reply("Guild not found.");
+        } catch (Exception e) {
+            ExceptionUtils.reportException("An error has occured while sending Slash Reply:", e);
+        }
     }
 }

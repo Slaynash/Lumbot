@@ -94,7 +94,7 @@ public class ServerMessagesHandler {
         CommandManager.runAsServer(event);
         Long GuildID = event.getGuild().getIdLong();
         Boolean guildConfig[];
-        guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
+        guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
         String message = event.getMessage().getContentRaw().toLowerCase();
 
         System.out.printf("[%s] [%s][%s] %s: %s\n",
@@ -103,6 +103,21 @@ public class ServerMessagesHandler {
                 event.getTextChannel().getName(),
                 event.getAuthor().getName(),
                 event.getMessage().getContentRaw() );
+
+        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
+            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
+            event.getMessage().delete().queue();
+        }
+        else {
+            new Thread(() -> {
+                try {
+                    MelonScanner.scanMessage(event);
+                }
+                catch(Exception e) {
+                    ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
+                }
+            }).start();
+        }
 
         if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && checkForFishing(event))
             return;
@@ -206,20 +221,6 @@ public class ServerMessagesHandler {
                 System.out.println("Lum stole Credit");
                 event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
             }
-        }
-
-        if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
-            event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
-            event.getMessage().delete().queue();
-        } else {
-            new Thread(() -> {
-                try {
-                    MelonScanner.scanMessage(event);
-                }
-                catch(Exception e) {
-                    ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
-                }
-            }).start();
         }
     }
 

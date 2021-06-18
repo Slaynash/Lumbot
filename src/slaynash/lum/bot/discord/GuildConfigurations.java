@@ -48,7 +48,7 @@ public class GuildConfigurations {
         put(663449315876012052L /* MelonLoader */,701494833495408640L /* voice-chat */);
     }};
     
-    public enum ConfigurationMap{
+    public enum ConfigurationMap{ //If you add a new setting, don't forget to increment default size in ServerMessagesHandler
         SCAMSHIELD(),
         DLLREMOVER(),
         LOGREACTION(),
