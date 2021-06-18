@@ -70,6 +70,7 @@ public class Slash {
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
             Boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
+            if (config == null) config = new Boolean[] {false,false,false,false,false,false};
             if (guild != null){
                 if (event.getUser().getId().equals(guild.getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
                     event.reply("Server Config for " + guild.getName() + ": " + guildID)
