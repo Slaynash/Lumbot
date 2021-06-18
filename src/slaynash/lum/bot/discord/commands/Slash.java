@@ -29,7 +29,7 @@ public class Slash {
             }
             Long guildID = Long.valueOf(message[message.length - 1]);
             Boolean[] config = GuildConfigurations.configurations.get(guildID);
-            if (event.getUser().getId().equals(event.getGuild().getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
+            if (event.getUser().getId().equals(event.getJDA().getGuildById(guildID).getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
                 switch(event.getComponentId()) {
                 case ("ss") :
                     config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
