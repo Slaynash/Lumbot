@@ -97,6 +97,7 @@ public class ServerMessagesHandler {
             Boolean guildConfig[];
             guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
             String message = event.getMessage().getContentRaw().toLowerCase();
+            List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s: %s\n",
                     TimeManager.getTimeForLog(),
@@ -105,7 +106,7 @@ public class ServerMessagesHandler {
                     event.getAuthor().getName(),
                     event.getMessage().getContentRaw() );
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && MelonScanner.isValidFileFormat(event.getMessage().getAttachments().get(0)) && !checkIfStaff(event)){
+            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
                 event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
                 event.getMessage().delete().queue();
             }
