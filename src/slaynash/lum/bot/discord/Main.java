@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.security.auth.login.LoginException;
@@ -27,6 +28,8 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Type;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerShortUrls;
 import slaynash.lum.bot.Localization;
@@ -366,7 +369,8 @@ public class Main extends ListenerAdapter {
         JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
             .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
         for(Guild guild : JDAManager.getJDA().getGuilds()){
-            guild.upsertCommand("config", "send server config buttons for this guild").queue(); // Guild command
+            var cmd = guild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete(); // Guild command
+            guild.updateCommandPrivilegesById(cmd.getIdLong(), Arrays.asList(new CommandPrivilege(Type.USER, true, guild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
         }
     }
 }
