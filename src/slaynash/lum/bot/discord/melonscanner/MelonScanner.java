@@ -401,14 +401,22 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        // TODO use VersionUtils compare
         context.isMLOutdated = context.mlVersion != null && !(sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || sanitizeInputString(context.mlVersion).equals(latestMLVersionBeta));
 
         if (context.isMLOutdatedVRC) {
-            if (!latestMLVersionRelease.equals(context.mlVersion))
-                context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
-            else
-                context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
+            int result = VersionUtils.CompareVersion(latestMLVersionRelease, context.mlVersion);
+            switch(result){
+                case 1: //left more recent
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
+                    break;
+                case 0: //identicals
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
+                    break;
+                case -1: //right more recent
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, latestMLVersionBeta), false);
+                    break;
+                default:
+            }
             return true;
         }
         else if (context.isMLOutdated) {

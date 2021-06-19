@@ -23,6 +23,7 @@
         "melonscanner.mloutdated.uptoalpha": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`\nVRChat modding requires MelonLoader %1$s released after **%2$s.**",
         "melonscanner.mloutdated.upalpha": "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nVRChat modding requires MelonLoader %1$s released after **%2$s.**",
         "melonscanner.mloutdated.upbeta": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
+        "melonscanner.mloutdated.downgrade": "Please downgrade MelonLoader to %1$s. We can not guarantee that prerelease versions will work reliably.",
 
         "melonscanner.vrcversioncheck.outdated": "You are running an outdated version of VRChat: `%1$s` -> `%2$s`",
         "melonscanner.vrcversioncheck.overdated": "You are running a newer version of VRChat than we recommend: `%1$s` -> `%2$s`",
@@ -95,6 +96,7 @@
         "melonscanner.mloutdated.uptoalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) puis cochez `Show ALPHA Pre-Releases`\nLe modding de VRChat a besoin de MelonLoader %1$s publié après **%2$s.**",
         "melonscanner.mloutdated.upalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe modding de VRChat a besoin de MelonLoader %1$s publié après **%2$s.**",
         "melonscanner.mloutdated.upbeta": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe MelonLoader installé n'est pas à jour: %1$s -> %2$s.",
+        "melonscanner.mloutdated.downgrade": "Veuillez rétrograder MelonLoader à %1$s. Nous ne pouvons pas garantir que les versions préliminaires fonctionneront de manière fiable.",
 
         "melonscanner.vrcversioncheck.outdated": "Votre VRChat n'est pas à jour: `%1$s` -> `%2$s`",
         "melonscanner.vrcversioncheck.overdated": "Vous utilisez une version de VRChat plus récente que recommandé: `%1$s` -> `%2$s`",
