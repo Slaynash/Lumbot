@@ -564,7 +564,7 @@ public final class MelonScanner {
             for (int i = 0; i < context.unknownMods.size() && i < 10; ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = sanitizeInputString(md.name);
-                if (!(md.version.isBlank() || md.version.length() > 20))
+                if (md.version != null && !md.version.isBlank())
                     unknowModOut += " " + sanitizeInputString(md.version);
                 if (md.author != null)
                     unknowModOut = Localization.getFormat("melonscanner.unknownmods.modnamewithauthor", context.lang, unknowModOut, sanitizeInputString(md.author));
