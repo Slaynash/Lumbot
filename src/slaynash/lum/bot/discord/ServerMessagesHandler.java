@@ -328,6 +328,7 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("offer") ? 1 : 0;
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("tradeofer") ? 3 : 0;
+        suspiciousValue += message.contains("free") ? 1 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)

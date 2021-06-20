@@ -99,6 +99,10 @@
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or complile the source yourself."
+        },
+        {
+            "regex": ".*Could not load file or assembly 'UnityEngine.*",
+            "error": "Please reinstall MelonLoader or whilelist MelonLoader in your virus scanner."
         }
     ],
     "knownErrors": [
