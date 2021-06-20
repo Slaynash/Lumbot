@@ -43,7 +43,7 @@ public final class MelonScanner {
         MelonScannerApisManager.startFetchingThread();
 
         sheduledExecutor.scheduleWithFixedDelay(() -> {
-            LogCounter.UpdateLogCounter();
+            LogCounter.UpdateCounter();
         }, 30, 30, TimeUnit.SECONDS);
     }
 

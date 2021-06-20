@@ -19,18 +19,14 @@ public final class LogCounter {
 
     public static void AddtoCounter(Attachment attachment) {
         try{
-            String directoryPath = workingPath.concat("/logs/" + Instant.now().toString().replaceAll(":", ";"));
+            String directoryPath = workingPath.concat("/logs/");
 
-            File directory = new File(directoryPath);
-            if (!directory.exists())
-                directory.mkdirs(); // in case log folder is missing
-            else{
-                System.out.println("Lum time traveled");
-                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage("Lum time traveled").queue(); // I am currious if this happens
-                return;
-            }
+            // File directory = new File(directoryPath);
+            // if (!directory.exists())
+            //     directory.mkdirs(); // in case log folder is missing
 
-            attachment.downloadToFile(directoryPath);
+            attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + attachment.getFileName())
+                .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
@@ -40,15 +36,15 @@ public final class LogCounter {
         }
     }
 
-    public static void AddSSCounter(String bannedUser, String message) {
+    public static void AddSSCounter(String bannedUser, String message, String guildID) {
         try{
             String directoryPath = workingPath.concat("/SSlogs/");
 
-            File directory = new File(directoryPath);
-            if (!directory.exists())
-                directory.mkdirs(); // in case log folder is missing
+            // File directory = new File(directoryPath);
+            // if (!directory.exists())
+            //     directory.mkdirs(); // in case log folder is missing
 
-            Files.writeString(Path.of(directoryPath, bannedUser + ".txt"), message);
+            Files.writeString(Path.of(directoryPath, bannedUser + guildID + ".txt"), message);
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
@@ -58,7 +54,7 @@ public final class LogCounter {
         }
     }
 
-    public static void UpdateLogCounter() {
+    public static void UpdateCounter() {
         try{
             Date date = new Date();
             String directoryPath = workingPath.concat("/logs/");

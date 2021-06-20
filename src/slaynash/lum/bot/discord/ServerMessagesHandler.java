@@ -310,13 +310,7 @@ public class ServerMessagesHandler {
 
     private static boolean checkForFishing(MessageReceivedEvent event) {
 
-        if (!GuildConfigurations.whitelistedRolesServers.containsKey(event.getGuild().getIdLong()))
-            return false;
-
         if(checkIfStaff(event))
-            return false;
-
-        if (ArrayUtils.contains(GuildConfigurations.whitelistedRolesServers.get(event.getGuild().getIdLong()), event.getAuthor().getIdLong()))
             return false;
 
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
@@ -357,7 +351,7 @@ public class ServerMessagesHandler {
 
             event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
 
-            LogCounter.AddSSCounter(userId, message); // add to status counter
+            LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
 
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
