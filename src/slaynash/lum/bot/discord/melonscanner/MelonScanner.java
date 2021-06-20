@@ -723,6 +723,8 @@ public final class MelonScanner {
     }
     
     private static String sanitizeInputString(String input) {
+        if(input == null) input = "";
+
         input = input
         .replace("](", " ")
         .replace("@", "@ ")

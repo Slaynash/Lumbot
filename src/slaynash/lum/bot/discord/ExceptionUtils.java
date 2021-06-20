@@ -45,7 +45,7 @@ public final class ExceptionUtils {
                 sorryEmbedBuilder.setTitle(title);
                 sorryEmbedBuilder.setDescription("Lum has encounter an error and has notified the devs.");
                 MessageEmbed sorryEmbed = sorryEmbedBuilder.build();
-                textChannel.sendMessageEmbeds(sorryEmbed);
+                textChannel.sendMessageEmbeds(sorryEmbed).queue();;
             }
         }
         catch (Exception e2) { e2.printStackTrace(); }
