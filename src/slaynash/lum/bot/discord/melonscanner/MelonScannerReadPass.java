@@ -190,7 +190,7 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*")) {
             String[] split = line.split("\\\\");
-            context.oldMods.add(split[split.length-1].split(".")[0]);
+            context.oldMods.add(split[split.length-1].split("\\.")[0]);
             return true;
         }
         return false;
