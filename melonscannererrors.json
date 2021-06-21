@@ -69,10 +69,6 @@
             "error": "Please use forward slashes (`/`) in MelonPreferences.cfg"
         },
         {
-            "regex": ".*No MelonInfoAttribute Found.*",
-            "error": "An old invalid mod attempted to load."
-        },
-        {
             "regex": ".*Invalid Version given to MelonInfoAttribute.*",
             "error": "An invalid/broken mod attempted to load."
         },
@@ -211,7 +207,7 @@
         "ClearVRAM": "ClearVRAM is no longer needed as this bug is now fixed in VRChat.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
-        "DiscordRichPresence-ML": "DiscordRichPresence-ML is no longer needed as this bug is now fixed in VRChat.",
+        "DiscordRichPresence-ML": "DiscordRichPresence-ML has been added into VRChat and also no longer works and can be removed.",
         "DownloadFix": "DownloadFix is no longer needed as this bug is now fixed in VRChat.",
         "Final IK Sanity": "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder.",
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",

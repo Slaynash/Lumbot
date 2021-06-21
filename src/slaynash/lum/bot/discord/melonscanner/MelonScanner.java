@@ -105,6 +105,7 @@ public final class MelonScanner {
             issueFound |= corruptedModsCheck(context);
             //issueFound |= incompatibleModsCheck(context);
             issueFound |= brokenModsCheck(context);
+            issueFound |= oldModsCheck(context);
             issueFound |= unknownModsCheck(context);
             issueFound |= outdatedModsCheck(context);
             issueFound |= misplacedModsCheck(context);
@@ -554,6 +555,36 @@ public final class MelonScanner {
             
             context.embedBuilder.addField(Localization.get("melonscanner.brokenmods.fieldname", context.lang), error, false);
             context.embedColor = Color.RED;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean oldModsCheck(MelonScanContext context) {
+        if (context.oldMods.size() > 0) {
+            String error = "";
+            boolean added = false;
+            for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
+                boolean found = false;
+                for (MelonApiMod modDetail : context.modDetails) {
+                    String modName = context.oldMods.get(i);
+                    if (modDetail.name.equals(modName)) {
+                        context.outdatedMods.add(new MelonOutdatedMod(modName, modDetail.name, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    error += "- " + sanitizeInputString(context.oldMods.get(i) + "\n");
+                    added = true;
+                }
+            }
+            if (context.oldMods.size() > 20)
+                error += Localization.getFormat("melonscanner.oldmods.more", context.lang, context.oldMods.size() - 20);
+            if (added) {
+                context.embedBuilder.addField(Localization.get("melonscanner.oldmods.fieldname", context.lang), error, false);
+                context.embedColor = Color.RED;
+            }
             return true;
         }
         return false;

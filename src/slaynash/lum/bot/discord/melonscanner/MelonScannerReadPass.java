@@ -40,7 +40,7 @@ public final class MelonScannerReadPass {
                 
                 if (line.isBlank()) continue;
 
-                if ((
+                if (
                     mlVersionCheck(line, context) ||
                     gameNameCheck(line, context) ||
                     mlHashCodeCheck(line, context) ||
@@ -50,8 +50,9 @@ public final class MelonScannerReadPass {
                     modPreListingCheck(line, context) ||
                     misplacedCheck(line, context) ||
                     duplicateCheck(line, context) ||
-                    missingMLFileCheck(line, context)
-                )) continue;
+                    missingMLFileCheck(line, context) ||
+                    oldModCheck(line, context)
+                ) continue;
 
 
                 if (!(unhollowerErrorCheck(line, context) || knownErrorCheck(line, context) || incompatibleAssemblyErrorCheck(line, context)))
@@ -181,6 +182,15 @@ public final class MelonScannerReadPass {
         if (line.matches("- '.*' is missing the following dependencies:")) {
             context.currentMissingDependenciesMods = line.split("'", 3)[1];
             context.readingMissingDependencies = true;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean oldModCheck(String line, MelonScanContext context) {
+        if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*")) {
+            String[] split = line.split("\\");
+            context.oldMods.add(split[split.length-1].split(".")[0]);
             return true;
         }
         return false;

@@ -83,6 +83,7 @@ public class MelonScanContext {
     public List<String> brokenMods = new ArrayList<>();
     public List<MelonOutdatedMod> outdatedMods = new ArrayList<MelonOutdatedMod>();
     public List<MelonApiMod> corruptedMods = new ArrayList<MelonApiMod>();
+    public List<String> oldMods = new ArrayList<String>();
     /*
     public List<String> universalMods = new ArrayList<String>();
     public List<String> incompatibleMods = new ArrayList<String>();
