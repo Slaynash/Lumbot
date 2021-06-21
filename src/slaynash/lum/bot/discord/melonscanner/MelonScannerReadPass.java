@@ -328,7 +328,7 @@ public final class MelonScannerReadPass {
                 context.duplicatedMods.add(new MelonDuplicateMod(line.substring(line.lastIndexOf(":") + 2)));
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+\\] \\[WARNING\\] Duplicate File.*")) {
+        else if (line.matches("\\[[0-9.:]+\\] \\[(WARNING|ERROR)\\] Duplicate File.*")) {
             System.out.println("Duplicate in Mods");
             if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(line.substring(line.lastIndexOf("\\") + 1).split("[.]", 2)[0]));

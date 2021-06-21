@@ -115,6 +115,14 @@
             "error": "Mod config has been corrupted. Please delete UserData/MelonPreferences.cfg"
         },
         {
+            "regex": ".*Tomlet.Exceptions.TomlEOFException: Found unexpected EOF on line \\d+ when parsing TOML file",
+            "error": "Mod config has been corrupted or emptied. Please remove UserData/MelonPreferences.cfg"
+        },
+        {
+            "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
+            "error": "Unexpected comma in ML settings. This issue has been fixed for the next update of ML but you can fix it temporarly by changing the decimal symbol to `.` in Window's settings."
+        },
+        {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",
             "error": "The storage space is full. Please free some space and try your game again."
         }
@@ -203,6 +211,7 @@
         "ClearVRAM": "ClearVRAM is no longer needed as this bug is now fixed in VRChat.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
+        "DiscordRichPresence-ML": "DiscordRichPresence-ML is no longer needed as this bug is now fixed in VRChat.",
         "DownloadFix": "DownloadFix is no longer needed as this bug is now fixed in VRChat.",
         "Final IK Sanity": "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder.",
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
