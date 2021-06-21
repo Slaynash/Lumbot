@@ -76,6 +76,7 @@ public final class MelonScanner {
                 return;
             
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
+
             if (oldEmmVRCLogCheck(context))
                 return;
 
@@ -676,9 +677,14 @@ public final class MelonScanner {
             if (context.noMods && context.missingMods.size() == 0 && context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
                 
-            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
-                error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
-            
+            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError)){
+                if(context.messageReceivedEvent.getGuild().getIdLong() == 600298024425619456L)
+                    error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
+                else if(context.messageReceivedEvent.getGuild().getIdLong() == 439093693769711616L)
+                    error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
+                else
+                    error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
+            }
             if (context.hasNonModErrors && context.errors.size() == 0) {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
                 context.unidentifiedErrors = true;
