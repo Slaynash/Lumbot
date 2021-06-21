@@ -43,7 +43,7 @@ public final class ExceptionUtils {
                 EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
                 sorryEmbedBuilder.setColor(Color.red);
                 sorryEmbedBuilder.setTitle(title);
-                sorryEmbedBuilder.setDescription("Lum has encounter an error and has notified the devs.");
+                sorryEmbedBuilder.setDescription("Lum has encountered an error and has notified the devs.");
                 MessageEmbed sorryEmbed = sorryEmbedBuilder.build();
                 textChannel.sendMessageEmbeds(sorryEmbed).queue();;
             }
