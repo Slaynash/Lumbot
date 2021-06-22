@@ -97,7 +97,7 @@
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or complile the source yourself."
         },
         {
-            "regex": ".*Could not load file or assembly 'UnityEngine.*",
+            "regex": ".*due to: Could not load file or assembly '.*",
             "error": "Please reinstall MelonLoader or whilelist MelonLoader in your virus scanner."
         }
     ],
@@ -193,7 +193,7 @@
         "BloonsTD6": [
             {
                 "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.ArgumentException: No target method specified for class NKHook6.*",
-                "error": "NKHook6 is not working due to recent BTD6 update. Please remove NKHook6 from your Mods folder."
+                "error": "NKHook6 is no longer working. Please remove NKHook6 from your Mods folder."
             },
             {
                 "regex": "  at alldartling.Main+Awake_Patch.Postfix.*",
@@ -219,6 +219,7 @@
         "Portal Confirmation": "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it.",
         "YoutubeDLUpdater": "YoutubeDLUpdater is no longer needed and should be removed.",
 
-        "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder."
+        "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
+        "NKHook6": "NKHook6 is broken and should be removed from the mods folder."
     }
 }
