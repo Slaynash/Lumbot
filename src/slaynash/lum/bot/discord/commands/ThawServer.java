@@ -13,8 +13,12 @@ public class ThawServer extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!ServerMessagesHandler.checkIfStaff(event))
             return;
-        
-        event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong())).getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
+
+        Long lockedDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
+        if(lockedDownRole == null)
+            return;
+
+        event.getGuild().getRoleById(lockedDownRole).getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null)
             event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getIdLong() + "has thawed this server from frozen state.").queue();
