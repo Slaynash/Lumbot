@@ -49,6 +49,10 @@
       <name>m2-dv8tion</name>
       <url>https://m2.dv8tion.net/releases</url>
     </repository>
+    <repository>
+      <id>snapshots-repo</id> <!-- for JavaSteam -->
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -78,10 +82,15 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>8.0.23</version>
     </dependency>
-    <dependency>
+    <dependency> <!-- for JavaSteam -->
       <groupId>in.dragonbra</groupId>
       <artifactId>javasteam</artifactId>
       <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+      <dependency> <!-- NON-ANDROID ONLY -->
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
+      <version>1.68</version>
     </dependency>
   </dependencies>
 
