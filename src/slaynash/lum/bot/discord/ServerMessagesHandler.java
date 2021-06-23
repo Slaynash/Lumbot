@@ -318,7 +318,8 @@ public class ServerMessagesHandler {
         String message = event.getMessage().getContentRaw().toLowerCase();
         int suspiciousValue = 0;
         suspiciousValue += message.contains("http") ? 1 : 0;
-        suspiciousValue += message.contains("@everyone") ? 1 : 0;
+        suspiciousValue += message.contains(".ru/") ? 1 : 0;
+        suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 1 : 0;
         suspiciousValue += message.contains("cs:go") || message.contains("csgo") ? 2 : 0;
@@ -329,6 +330,9 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("tradeofer") ? 3 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
+        suspiciousValue += message.contains("case") ? 1 : 0;
+        suspiciousValue += message.contains("!!!!") ? 1 : 0;
+        suspiciousValue += message.contains("code: ") ? 2 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
