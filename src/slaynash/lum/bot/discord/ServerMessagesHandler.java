@@ -322,7 +322,7 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 1 : 0;
-        suspiciousValue += message.contains("cs:go") || message.contains("csgo") ? 2 : 0;
+        suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
         suspiciousValue += message.contains("trade") ? 2 : 0;
         suspiciousValue += message.contains("skins") ? 1 : 0;
         suspiciousValue += message.contains("knife") ? 2 : 0;
@@ -332,7 +332,7 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!!") ? 1 : 0;
-        suspiciousValue += message.contains("code: ") ? 2 : 0;
+        suspiciousValue += message.contains("code:") ? 2 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
