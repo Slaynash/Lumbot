@@ -15,7 +15,7 @@ public class Purge extends Command {
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         try{
-            if (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || !ServerMessagesHandler.checkIfStaff(event))
+            if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || !ServerMessagesHandler.checkIfStaff(event))
                 return;
 
             String[] params = paramString.split(" ", 2);
