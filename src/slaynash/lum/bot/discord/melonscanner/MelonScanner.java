@@ -318,9 +318,9 @@ public final class MelonScanner {
     private static void prepareEmbed(MelonScanContext context) {
         context.embedBuilder = new EmbedBuilder();
         context.reportMessage = new StringBuilder();
-        context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang));
-        context.embedBuilder.setTimestamp(Instant.now());
-        context.embedBuilder.setFooter("Lum Log Scanner");
+        context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))
+                            .setTimestamp(Instant.now())
+                            .setFooter("Lum Log Scanner");
         
         if (context.game != null) {
             switch (context.game) {
@@ -742,8 +742,8 @@ public final class MelonScanner {
 
     static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(color);
-        embedBuilder.setDescription(message);
+        embedBuilder.setColor(color)
+                    .setDescription(message);
         MessageEmbed embed = embedBuilder.build();
 
         messageReceivedEvent.getMessage().replyEmbeds(embed);

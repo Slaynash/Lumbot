@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -353,18 +354,21 @@ public class ServerMessagesHandler {
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-
-            event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
-
-            LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
-
+            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
-                .setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
-                .setFooter("Received " + suspiciousCount + "naughty points.")
                 .setTimestamp(Instant.now());
 
-            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+            if(event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)){
+                event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
+                            .setFooter("Received " + suspiciousCount + "naughty points.");
+                LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
+            }
+            else {
+                embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
+            }
+            
             if (reportChannel != null)
                 event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queue();
             else
