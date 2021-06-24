@@ -11,7 +11,7 @@ public class ThawServer extends Command {
     
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
-        if (!ServerMessagesHandler.checkIfStaff(event))
+        if (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || !ServerMessagesHandler.checkIfStaff(event))
             return;
 
         Long lockedDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());

@@ -19,6 +19,7 @@ import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
+import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
@@ -106,6 +107,7 @@ public class CommandManager {
 
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new ThawServer());
+        CommandManager.registerCommand(new Purge());
     }
 
 
