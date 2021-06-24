@@ -320,20 +320,21 @@ public class ServerMessagesHandler {
         int suspiciousValue = 0;
         suspiciousValue += message.contains("http") ? 1 : 0;
         suspiciousValue += message.contains(".ru/") ? 1 : 0;
+        suspiciousValue += message.contains("bit.ly") ? 2 : 0;
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
-        suspiciousValue += message.contains("loot") ? 1 : 0;
+        suspiciousValue += message.contains("loot") ? 2 : 0;
         suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
         suspiciousValue += message.contains("trade") ? 2 : 0;
-        suspiciousValue += message.contains("skins") ? 1 : 0;
+        suspiciousValue += message.contains("skin") ? 1 : 0;
         suspiciousValue += message.contains("knife") ? 2 : 0;
         suspiciousValue += message.contains("offer") ? 1 : 0;
         suspiciousValue += message.contains("btc") ? 1 : 0;
-        suspiciousValue += message.contains("tradeofer") ? 3 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!!") ? 1 : 0;
         suspiciousValue += message.contains("code:") ? 2 : 0;
+        suspiciousValue += message.contains("booster") ? 2 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
@@ -343,7 +344,8 @@ public class ServerMessagesHandler {
             suspiciousValue = 0;
         if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
-        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // saves a copy of message and point, should avoid false-positives, force 2 messages
+        if (suspiciousValue > 0)
+            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
@@ -362,13 +364,13 @@ public class ServerMessagesHandler {
             if(event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)){
                 event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
-                            .setFooter("Received " + suspiciousCount + "naughty points.");
+                            .setFooter("Received " + suspiciousCount + " naughty points.");
                 LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else {
                 embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
             }
-            
+
             if (reportChannel != null)
                 event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queue();
             else
