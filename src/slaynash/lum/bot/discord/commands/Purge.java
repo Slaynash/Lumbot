@@ -15,8 +15,10 @@ public class Purge extends Command {
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         try{
-            if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || !ServerMessagesHandler.checkIfStaff(event))
+            if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) && !ServerMessagesHandler.checkIfStaff(event)){
+                event.getMessage().reply("You do not have perms to use this command.").queue();
                 return;
+            }
 
             String[] params = paramString.split(" ", 2);
 
