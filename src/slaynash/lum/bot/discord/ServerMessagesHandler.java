@@ -361,6 +361,7 @@ public class ServerMessagesHandler {
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
+                .setFooter("Received " + suspiciousCount + "naughty points.")
                 .setTimestamp(Instant.now());
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
