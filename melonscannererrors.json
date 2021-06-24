@@ -98,7 +98,7 @@
         },
         {
             "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Please reinstall MelonLoader or whilelist MelonLoader in your virus scanner."
+            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         }
     ],
     "knownErrors": [

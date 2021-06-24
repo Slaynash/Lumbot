@@ -188,7 +188,19 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean oldModCheck(String line, MelonScanContext context) {
-        if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")) {
+        if(line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")){
+            if(line.contains("Could not load file or assembly '")){
+                context.missingMods.add(line.split("Could not load file or assembly '")[1].split(",")[0]);
+                return true;
+            }
+            else {
+                String[] split = line.split("\\\\");
+                context.oldMods.add(split[split.length-1].split("\\.")[0]);
+                return true;
+            }
+        }
+
+        if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*")) {
             String[] split = line.split("\\\\");
             context.oldMods.add(split[split.length-1].split("\\.")[0]);
             return true;
