@@ -50,7 +50,7 @@ public class Purge extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || !ServerMessagesHandler.checkIfStaff(event));
+        return (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || ServerMessagesHandler.checkIfStaff(event));
     }
 
     @Override
