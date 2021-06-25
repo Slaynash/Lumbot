@@ -140,7 +140,11 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
-            context.tmpModAuthor = line.split(" ")[2];
+            String[] temp = line.split(" ");
+            if(temp.length>2)
+                context.tmpModAuthor = line.split(" ")[2];
+            else 
+                context.tmpModAuthor = "Broken Author";
             return true;
         }
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} SHA256 Hash: [a-zA-Z0-9]+")) {
