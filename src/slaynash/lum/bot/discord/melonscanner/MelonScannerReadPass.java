@@ -438,5 +438,4 @@ public final class MelonScannerReadPass {
         if (line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] .*"))
             context.consoleCopyPaste = true;
     }
-    
 }
