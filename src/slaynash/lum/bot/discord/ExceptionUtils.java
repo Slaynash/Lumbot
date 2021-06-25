@@ -29,8 +29,14 @@ public final class ExceptionUtils {
 
         try {
             EmbedBuilder embedBuilder = new EmbedBuilder();
+            if(textChannel == null){
+                embedBuilder.setTitle(title);
+            } else{
+                String channelName = textChannel.getGuild().getName() + " #" + textChannel.getName() + " > " + textChannel.getId();
+                String channelLink = "https://canary.discord.com/channels/" + textChannel.getGuild().getId() + "/" + textChannel.getId() + "/" + textChannel.getLatestMessageId();
+                embedBuilder.setTitle(title + " In [" + channelName + "](" + channelLink + "):");
+            }
             embedBuilder.setColor(Color.red);
-            embedBuilder.setTitle(title);
             String exceptionString = comment + "\n" + ExceptionUtils.getStackTrace(exception);
             if (exceptionString.length() > 2048)
                 exceptionString = exceptionString.substring(0, 2044) + " ...";
