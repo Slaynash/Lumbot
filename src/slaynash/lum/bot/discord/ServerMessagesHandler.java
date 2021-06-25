@@ -107,8 +107,8 @@ public class ServerMessagesHandler {
                     event.getAuthor().getName(),
                     event.getMessage().getContentRaw() );
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general") && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
-                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead of #general").queue();
+            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
+                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead.").queue();
                 event.getMessage().delete().queue();
             }
             else {
@@ -350,15 +350,15 @@ public class ServerMessagesHandler {
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove(); //remove all saved messages that is older then 60 seconds
 
-        if (suspiciousValue < 2)
+        if (suspiciousValue < 3)
             suspiciousValue = 0;
         if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
-            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue)); // saves a copy of message and point, should avoid false-positives, force 2 messages
+            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, event.getGuild().getIdLong())); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong())
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == event.getGuild().getIdLong())
             .collect(Collectors.toList());
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
