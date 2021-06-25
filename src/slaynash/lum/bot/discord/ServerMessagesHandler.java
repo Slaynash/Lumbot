@@ -226,11 +226,12 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (event.getGuild().getIdLong() == 600298024425619456L && event.getMessage().getCategory().getIdLong() != 600914209303298058L && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
+            Long category = event.getMessage().getCategory().getIdLong();
+            if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
                 System.out.println("Forgot pin asked");
                 event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
             }
-            else if (event.getGuild().getIdLong() == 600298024425619456L && event.getMessage().getCategory().getIdLong() != 600914209303298058L && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
+            else if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
                 System.out.println("Stealth mode asked");
                 event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
             }
