@@ -200,17 +200,17 @@ public class ServerMessagesHandler {
             }
 
             if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches("(.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cutie|helped|thank)\\b.*)")) {
+                if (message.matches("(.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*)")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                 }
 
-                else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum")) {
+                else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum") || message.contains("kill lum")) {
                     System.out.println("F off Lum was detected");
                     event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
                 }
 
-                else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum")) {
+                else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum") || (message.contains("lum") && message.contains("smh"))) {
                     System.out.println("Bad Lum was detected");
                     event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
                 }
