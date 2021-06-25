@@ -77,6 +77,9 @@ public final class MelonScanner {
             
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
 
+            if ("message.txt".equals(attachment.getFileName()))
+                context.consoleCopyPaste = true;
+
             if (oldEmmVRCLogCheck(context))
                 return;
 
@@ -764,7 +767,7 @@ public final class MelonScanner {
         .replace("*", "\\*")
         .replace("`", "\\`");
         
-        input = Pattern.compile("(nigg(er|a)|porn)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
+        input = Pattern.compile("(nigg(er|a)|porn|penis)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
         
         input = input.substring(0, input.length() > 50 ? 50 : input.length()); // limit inputs to 50 chars
         
