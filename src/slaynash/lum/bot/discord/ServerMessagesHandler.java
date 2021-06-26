@@ -204,26 +204,31 @@ public class ServerMessagesHandler {
                 if (message.matches("(.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*)")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
+                    return;
                 }
 
                 else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum") || message.contains("kill lum")) {
                     System.out.println("F off Lum was detected");
                     event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
+                    return;
                 }
 
                 else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum") || (message.contains("lum") && message.contains("smh"))) {
                     System.out.println("Bad Lum was detected");
                     event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
+                    return;
                 }
 
                 else if (message.contains("hello lum") || message.contains("hi lum")) {
                     System.out.println("Hello Lum was detected");
                     event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+                    return;
                 }
 
                 else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
                     System.out.println("Lum stole Credit");
                     event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+                    return;
                 }
             }
 
@@ -231,10 +236,18 @@ public class ServerMessagesHandler {
             if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
                 System.out.println("Forgot pin asked");
                 event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
+                return;
             }
             else if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
                 System.out.println("Stealth mode asked");
                 event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
+                return;
+            }
+
+            if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
+                System.out.println("VRChatUtilityKit print");
+                event.getChannel().sendMessage("Please download [VRChatUtilityKit](https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll) and put it in your Mods folder.").queue();
+                return;
             }
         }catch(Exception e) {
             ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());

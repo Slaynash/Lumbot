@@ -84,8 +84,8 @@ public final class MelonScannerReadPass {
         if (
             line.matches(".*NetQueue: Setting up.") ||
             line.matches("---- Minecraft Crash Report ----") ||
-            line.matches(".*melon_slice.*") ||
-            line.matches(".*Injecting coremod.*")
+            line.contains("melon_slice") ||
+            line.contains("Injecting coremod")
         ) {
             System.out.println("Minecraft Log detected");
             MelonScanner.replyStandard("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
@@ -95,7 +95,7 @@ public final class MelonScannerReadPass {
     }
 
     private static void pirateCheck(String line, MelonScanContext context) {
-        if (line.matches(".*Bloons.TD.6.*") || line.matches(".*Bloons.TD6.*")) {
+        if (line.contains("Bloons.TD.6") || line.contains("Bloons.TD6")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
             //reportUserPiratedBTD(event);
@@ -330,14 +330,14 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean misplacedCheck(String line, MelonScanContext context) {
-        if (line.matches(".*is in the Plugins Folder:.*")) {
+        if (line.contains("is in the Plugins Folder:")) {
             System.out.println("Misplaced Mod in Plugins");
             String modname = line.split("Mod ")[1].split(" is")[0].trim();
             if (!context.misplacedMods.contains(modname))
                 context.misplacedMods.add(modname);
             return true;
         }
-        else if (line.matches(".*is in the Mods Folder:.*")) {
+        else if (line.contains("is in the Mods Folder:")) {
             System.out.println("Misplaced Plugin in Mods");
             String pluginname = line.split("Plugin ")[1].split(" is")[0].trim();
             if (!context.misplacedPlugins.contains(pluginname))
@@ -350,14 +350,16 @@ public final class MelonScannerReadPass {
     private static boolean duplicateCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
             System.out.println("Duplicate in Mods and Plugins");
+            context.tmpModName = line.substring(line.lastIndexOf(":") + 2);
             if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
-                context.duplicatedMods.add(new MelonDuplicateMod(line.substring(line.lastIndexOf(":") + 2)));
+                context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName));
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+\\] \\[(WARNING|ERROR)\\] Duplicate File.*")) {
+        else if (line.matches("\\[[0-9.:]+\\] \\[(WARNING|ERROR)\\] Duplicate (File|Mod|Plugin).*")) {
             System.out.println("Duplicate in Mods");
+            context.tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
             if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
-                context.duplicatedMods.add(new MelonDuplicateMod(line.substring(line.lastIndexOf("\\") + 1).split("[.]", 2)[0]));
+                context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName));
             return true;
         }
         return false;
