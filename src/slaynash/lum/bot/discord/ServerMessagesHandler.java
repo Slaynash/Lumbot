@@ -107,7 +107,7 @@ public class ServerMessagesHandler {
                     event.getAuthor().getName(),
                     event.getMessage().getContentRaw() );
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
+            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
                 event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead.").queue();
                 event.getMessage().delete().queue();
             }
