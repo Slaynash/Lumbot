@@ -246,7 +246,7 @@ public class ServerMessagesHandler {
 
             if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
                 System.out.println("VRChatUtilityKit print");
-                event.getChannel().sendMessage("Please download [VRChatUtilityKit](https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll) and put it in your Mods folder.").queue();
+                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll and put it in your Mods folder.").queue();
                 return;
             }
         }catch(Exception e) {

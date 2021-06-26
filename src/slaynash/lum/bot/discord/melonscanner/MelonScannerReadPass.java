@@ -350,16 +350,16 @@ public final class MelonScannerReadPass {
     private static boolean duplicateCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
             System.out.println("Duplicate in Mods and Plugins");
-            context.tmpModName = line.substring(line.lastIndexOf(":") + 2);
-            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
-                context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName));
+            String tmpModName = line.substring(line.lastIndexOf(":") + 2);
+            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(tmpModName)))
+                context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
             return true;
         }
         else if (line.matches("\\[[0-9.:]+\\] \\[(WARNING|ERROR)\\] Duplicate (File|Mod|Plugin).*")) {
             System.out.println("Duplicate in Mods");
-            context.tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
-            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
-                context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName));
+            String tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
+            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(tmpModName)))
+                context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
             return true;
         }
         return false;
