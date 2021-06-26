@@ -123,7 +123,7 @@ public final class MelonScanner {
                 if(!context.unidentifiedErrors)
                     ServerMessagesHandler.addNewHelpedRecently(messageReceivedEvent);
             }
-            else if (context.mlVersion != null) {
+            else if (context.mlVersion != null || context.modifiedML) {
                 if (context.hasErrors) {
                     context.embedBuilder.addField(Localization.get("melonscanner.unidentifiederrors.fieldname", lang), Localization.get("melonscanner.unidentifiederrors.field", lang) , false);
                     context.embedColor = Color.RED;
@@ -310,6 +310,7 @@ public final class MelonScanner {
                 return;
             }
         }
+        context.modifiedML = true;
         System.out.println("unknown hash");
         reportUserModifiedML(context.messageReceivedEvent);
     }
@@ -565,7 +566,7 @@ public final class MelonScanner {
             boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
                 boolean found = false;
-                if (context.modDetails.size() > 0){ //null check for games with an API
+                if (context.modDetails != null){ //null check for games with an API
                     for (MelonApiMod modDetail : context.modDetails) {
                         String modName = context.oldMods.get(i);
                         if (modDetail.name.equals(modName)) {

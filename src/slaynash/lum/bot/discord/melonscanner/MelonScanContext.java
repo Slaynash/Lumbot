@@ -26,6 +26,7 @@ public class MelonScanContext {
     
     public boolean pirate = false;
     public boolean consoleCopyPaste = false;
+    public boolean modifiedML = false;
 
     // MelonLoader infos
     public String mlName;

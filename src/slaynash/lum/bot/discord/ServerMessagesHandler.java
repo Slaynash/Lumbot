@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -328,6 +329,7 @@ public class ServerMessagesHandler {
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         String message = event.getMessage().getContentRaw().toLowerCase();
         int suspiciousValue = 0;
+        suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("http") ? 1 : 0;
         suspiciousValue += message.contains(".ru/") ? 1 : 0;
         suspiciousValue += message.contains("bit.ly") ? 2 : 0;
@@ -345,6 +347,8 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("!!!!") ? 1 : 0;
         suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 2 : 0;
+        suspiciousValue += message.contains("dollar") ? 1 : 0;
+        suspiciousValue += message.contains("hour") ? 1 : 0;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)

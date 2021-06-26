@@ -423,7 +423,7 @@ public final class MelonScannerReadPass {
 
     private static void unknownErrorCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[[^\\[]+\\] \\[(Error|ERROR)\\].*") && !line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] \\[(Error|ERROR)\\].*")) {
-            String mod = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[", 2)[1].split("\\]", 2)[0];
+            String mod = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} \\[", 2)[1].split("\\]", 2)[0].replace("_", " ");
             if (!context.modsThrowingErrors.contains(mod))
                 context.modsThrowingErrors.add(mod);
             System.out.println("Found mod error, caused by " + mod + ": " + line);
@@ -435,8 +435,6 @@ public final class MelonScannerReadPass {
             System.out.println("Found non-mod error: " + line);
         }
     }
-
-
 
     private static void consoleCopypasteCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\] \\[MelonLoader\\] .*"))
