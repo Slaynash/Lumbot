@@ -565,12 +565,14 @@ public final class MelonScanner {
             boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
                 boolean found = false;
-                for (MelonApiMod modDetail : context.modDetails) {
-                    String modName = context.oldMods.get(i);
-                    if (modDetail.name.equals(modName)) {
-                        context.outdatedMods.add(new MelonOutdatedMod(modName, modDetail.name, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                        found = true;
-                        break;
+                if (context.modDetails.size() > 0){ //null check for games with an API
+                    for (MelonApiMod modDetail : context.modDetails) {
+                        String modName = context.oldMods.get(i);
+                        if (modDetail.name.equals(modName)) {
+                            context.outdatedMods.add(new MelonOutdatedMod(modName, modDetail.name, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if (!found) {
