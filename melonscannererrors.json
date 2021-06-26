@@ -121,6 +121,10 @@
         {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",
             "error": "The storage space is full. Please free some space and try your game again."
+        },
+        {
+            "regex": "System.IO.InvalidDataException: Central Directory corrupt. ---> System.IO.IOException: An attempt was made to move the file pointer before the beginning of the file.",
+            "error": "Please redownload the installer from [GitHub](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and try to install ML with it."
         }
     ],
     "gameSpecificErrors": {
