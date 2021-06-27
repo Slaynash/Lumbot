@@ -382,12 +382,14 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("booster") ? 2 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
         suspiciousValue += message.contains("test") ? 1 : 0;
+        suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;
         if (suspiciousValue > 0){
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
             suspiciousValue += message.contains("bit.ly") ? 2 : 0;
             suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
+            suspiciousValue += message.contains("mega.nz") ? 2 : 0;
             suspiciousValue += message.contains("hour") ? 1 : 0;
         }
 
@@ -395,7 +397,7 @@ public class ServerMessagesHandler {
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove(); //remove all saved messages that is older then 60 seconds
 
-        if (suspiciousValue < 3)
+        if (suspiciousValue < 2)
             suspiciousValue = 0;
         if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
@@ -408,7 +410,7 @@ public class ServerMessagesHandler {
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (suspiciousCount > 4) {
+        if (suspiciousCount >= 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
