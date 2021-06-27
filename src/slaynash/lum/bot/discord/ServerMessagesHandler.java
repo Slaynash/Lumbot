@@ -225,7 +225,7 @@ public class ServerMessagesHandler {
             }
 
             if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches("(.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*")) {
+                if (message.matches(".*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                     return;
