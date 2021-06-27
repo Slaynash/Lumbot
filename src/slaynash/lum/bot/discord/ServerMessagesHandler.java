@@ -260,6 +260,18 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage("To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`. Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.").queue();
                 return;
             }
+
+            if (message.startsWith("!uix")) {
+                System.out.println("UIX printed");
+                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/55/UIExpansionKit.dll and put it in your Mods folder.").queue();
+                return;
+            }
+
+            if (message.startsWith("!vrcx")) {
+                System.out.println("VRCX printed");
+                event.getChannel().sendMessage("VRCX is not a mod and you can find it here: https://github.com/pypy-vrc/VRCX").queue();
+                return;
+            }
         }catch(Exception e) {
             ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());
         }
@@ -369,10 +381,13 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 2 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
+        suspiciousValue += message.contains("test") ? 1 : 0;
+        suspiciousValue += message.contains("100%") ? 1 : 0;
         if (suspiciousValue > 0){
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
             suspiciousValue += message.contains("bit.ly") ? 2 : 0;
+            suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
             suspiciousValue += message.contains("hour") ? 1 : 0;
         }
 
