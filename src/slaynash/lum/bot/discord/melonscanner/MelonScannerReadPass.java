@@ -194,19 +194,25 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(String line, MelonScanContext context) {
         if(line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")){
             if(line.contains("Could not load file or assembly '")){
-                context.missingMods.add(line.split("Could not load file or assembly '")[1].split(",")[0]);
+                String missingName = line.split("Could not load file or assembly '")[1].split(",")[0];
+                if (!context.missingMods.contains(missingName))
+                    context.missingMods.add(missingName);
                 return true;
             }
             else {
                 String[] split = line.split("\\\\");
-                context.oldMods.add(split[split.length-1].split("\\.")[0]);
+                String oldName = split[split.length-1].split("\\.")[0];
+                if (!context.oldMods.contains(oldName))
+                    context.oldMods.add(oldName);
                 return true;
             }
         }
 
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Invalid Author given to MelonInfoAttribute.*")) {
             String[] split = line.split("\\\\");
-            context.oldMods.add(split[split.length-1].split("\\.")[0]);
+            String oldName = split[split.length-1].split("\\.")[0];
+            if (!context.oldMods.contains(oldName))
+                context.oldMods.add(oldName);
             return true;
         }
         return false;
