@@ -199,6 +199,13 @@ public final class MelonScannerReadPass {
                     context.missingMods.add(missingName);
                 return true;
             }
+            else if(line.contains("exception")){
+                String[] split = line.split("\\\\");
+                String erroringName = split[split.length-1].split("\\.")[0];
+                if (!context.modsThrowingErrors.contains(erroringName))
+                    context.modsThrowingErrors.add(erroringName);
+                return true;
+            }
             else {
                 String[] split = line.split("\\\\");
                 String oldName = split[split.length-1].split("\\.")[0];
