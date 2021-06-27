@@ -272,8 +272,8 @@ public final class MelonScannerReadPass {
 
     private static boolean processIncompatibilityListing(String line, MelonScanContext context) throws IOException {
         if (line.matches("    - '.*'.*")) {
-            String missingModName = line.split("'", 3)[1];
-            context.duplicatedMods.add(new MelonDuplicateMod(context.currentIncompatibleMods,missingModName));
+            String incompatibleModName = line.split("'", 3)[1];
+            context.incompatibleMods.add(new MelonIncompatibleMod(context.currentIncompatibleMods,incompatibleModName));
             return true;
         }
         else if (line.matches("- '.*' is incompatible with the following Melons:")) {
@@ -281,8 +281,8 @@ public final class MelonScannerReadPass {
             return true;
         }
         else {
-            System.out.println("Done listing missing dependencies on line: " + line);
-            context.readingMissingDependencies = false;
+            System.out.println("Done listing Incompatibility on line: " + line);
+            context.readingIncompatibility = false;
         }
 
         return false;
