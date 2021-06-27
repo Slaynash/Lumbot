@@ -1,6 +1,12 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -96,6 +102,18 @@ public class ServerMessagesHandler {
 
     private static ScheduledFuture<?> ssQueued;
 
+    private static final HttpRequest request = HttpRequest.newBuilder()
+        .GET()
+        .uri(URI.create("https://icanhazdadjoke.com/"))
+        .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
+        .setHeader("Accept", "text/plain")
+        .timeout(Duration.ofSeconds(20))
+        .build();
+    private static final HttpClient httpClient = HttpClient.newBuilder()
+        .version(HttpClient.Version.HTTP_2)
+        .followRedirects(Redirect.ALWAYS)
+        .build();
+
     public static void handle(MessageReceivedEvent event) {
         try{
             if(event.getAuthor().isBot()) return;
@@ -104,6 +122,7 @@ public class ServerMessagesHandler {
             Boolean guildConfig[];
             guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
             String message = event.getMessage().getContentRaw().toLowerCase();
+            boolean hasLum = message.contains("lum");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s: %s\n",
@@ -205,32 +224,32 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches("(.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*) (.*\\blum\\b.*)|(.*\\blum\\b.*) (.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*)")) {
+            if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
+                if (message.matches("(.*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains(/*f*/" off lum") || message.contains(/*f*/" you lum") || message.contains("stfu lum") || message.contains("kill lum")) {
+                else if (message.contains(/*f*/" off ") || message.contains(/*f*/" you ") || message.contains("stfu") || message.contains("kill ")) {
                     System.out.println("F off Lum was detected");
                     event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains("bad lum") || message.contains("lum shush") || message.contains(/*shut*/" up lum") || message.contains(/*shush*/" it lum") || (message.contains("lum") && message.contains("smh"))) {
+                else if (message.contains("bad") || message.contains("shush") || message.contains(/*shut*/" up") || message.contains(/*shush*/" it") || message.contains("smh")) {
                     System.out.println("Bad Lum was detected");
                     event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains("hello lum") || message.contains("hi lum")) {
+                else if (message.contains("hello") || message.contains("hi")) {
                     System.out.println("Hello Lum was detected");
                     event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
                     return;
                 }
 
-                else if ((message.contains("credit") || message.contains("stole")) && message.contains("lum")) {
+                else if (message.contains("credit") || message.contains("stole")) {
                     System.out.println("Lum stole Credit");
                     event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
                     return;
@@ -270,6 +289,13 @@ public class ServerMessagesHandler {
             if (message.startsWith("!vrcx")) {
                 System.out.println("VRCX printed");
                 event.getChannel().sendMessage("VRCX is not a mod and you can find it here: <https://github.com/Natsumi-sama/VRCX>").queue();
+                return;
+            }
+
+            if (hasLum && message.contains("joke")) {
+                System.out.println("Requested a joke");
+                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                event.getChannel().sendMessage(response.body()).queue();
                 return;
             }
         }catch(Exception e) {
@@ -410,7 +436,7 @@ public class ServerMessagesHandler {
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (suspiciousCount >= 4) {
+        if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
