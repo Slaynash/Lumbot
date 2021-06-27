@@ -566,13 +566,20 @@ public final class MelonScanner {
             boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
                 boolean found = false;
-                if (context.modDetails != null){ //null check for games with an API
+                String modName = context.oldMods.get(i);
+                if (context.modDetails != null){ //null check for games without an API
                     for (MelonApiMod modDetail : context.modDetails) {
-                        String modName = context.oldMods.get(i);
-                        if (modDetail.name.equals(modName)) {
+                        if (modDetail.name.equals(modName)) { //I not sure if all all APIs contain the recent name in aliases so I just do a check
                             context.outdatedMods.add(new MelonOutdatedMod(modName, modDetail.name, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
                             found = true;
                             break;
+                        }
+                        for(String alias : modDetail.aliases){ //not sure if this is how I do aliases
+                            if (alias.equals(modName)) {
+                                context.outdatedMods.add(new MelonOutdatedMod(modName, alias, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                                found = true;
+                                break;
+                            }
                         }
                     }
                 }
