@@ -12,12 +12,15 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -90,6 +93,8 @@ public class ServerMessagesHandler {
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
+
+    private static ScheduledFuture<?> ssQueued;
 
     public static void handle(MessageReceivedEvent event) {
         try{
@@ -343,9 +348,6 @@ public class ServerMessagesHandler {
         String message = event.getMessage().getContentRaw().toLowerCase();
         int suspiciousValue = 0;
         suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
-        suspiciousValue += message.contains("http") ? 1 : 0;
-        suspiciousValue += message.contains(".ru/") ? 1 : 0;
-        suspiciousValue += message.contains("bit.ly") ? 2 : 0;
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
@@ -361,7 +363,12 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 2 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
-        suspiciousValue += message.contains("hour") ? 1 : 0;
+        if (suspiciousValue > 0){
+            suspiciousValue += message.contains("http") ? 1 : 0;
+            suspiciousValue += message.contains(".ru/") ? 1 : 0;
+            suspiciousValue += message.contains("bit.ly") ? 2 : 0;
+            suspiciousValue += message.contains("hour") ? 1 : 0;
+        }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
@@ -386,20 +393,32 @@ public class ServerMessagesHandler {
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
-                .setTimestamp(Instant.now());
+                .setTimestamp(Instant.now())
+                .setFooter("Received " + suspiciousCount + " naughty points.");
 
             if(event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)){
                 event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
-                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield")
-                            .setFooter("Received " + suspiciousCount + " naughty points.");
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
                 LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else {
-                embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
+                if(event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
+                    List<Message> messagelist = new ArrayList<>();
+                    sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
+                    if(messagelist.size() == 1)
+                        event.getMessage().delete().queue();
+                    else if (messagelist.size() > 1)
+                        event.getTextChannel().deleteMessages(messagelist).queue();
+                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have ban perms but did remove messages.");
+                }
+                else
+                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
             }
 
-            if (reportChannel != null)
-                event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queue();
+            if (reportChannel != null){
+                ssQueued.cancel(/*mayInterruptIfRunning*/ true);
+                ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
+            }
             else
                 event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
 
