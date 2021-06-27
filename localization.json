@@ -40,6 +40,9 @@
 
         "melonscanner.missingmods.fieldname": "Missing Dependencies:",
         "melonscanner.missingmods.more": "- and %s more...",
+
+        "melonscanner.incompatibleMods.fieldname": "Incompatible Mods:",
+        "melonscanner.incompatibleMods.more": "- and %s more...",
         
         "melonscanner.brokenmods.fieldname": "Currently Broken Mods:",
         "melonscanner.brokenmods.more": "- and %s more...",
@@ -118,6 +121,9 @@
 
         "melonscanner.missingmods.fieldname": "Dépendances Manquantes:",
         "melonscanner.missingmods.more": "- et %s autres...",
+
+        "melonscanner.incompatibleMods.fieldname": "Mods Incompatibles:",
+        "melonscanner.incompatibleMods.more": "- et %s autres...",
         
         "melonscanner.brokenmods.fieldname": "Mods actuellement cassés:",
         "melonscanner.brokenmods.more": "- et %s autres...",

@@ -105,6 +105,7 @@ public final class MelonScanner {
             issueFound |= knownErrorsCheck(context);
             issueFound |= duplicatedModsCheck(context);
             issueFound |= missingModsCheck(context);
+            issueFound |= incompatibleModsCheck(context);
             issueFound |= corruptedModsCheck(context);
             //issueFound |= incompatibleModsCheck(context);
             issueFound |= brokenModsCheck(context);
@@ -503,6 +504,23 @@ public final class MelonScanner {
                 error += Localization.getFormat("melonscanner.missingmods.more", context.lang, context.missingMods.size() - 10);
             
             context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error, false);
+            context.embedColor = Color.ORANGE;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean incompatibleModsCheck(MelonScanContext context) {
+        if (context.incompatibleMods.size() > 0) {
+            String error = "";
+            for (int i = 0; i < context.incompatibleMods.size() && i < 10; ++i) {
+                MelonIncompatibleMod incompatibleMod = context.incompatibleMods.get(i);
+                error += "- " + incompatibleMod.mod + " is incompatible with " + incompatibleMod.incompatible + "\n";
+            }
+            if (context.incompatibleMods.size() > 10)
+                error += Localization.getFormat("melonscanner.incompatibleMods.more", context.lang, context.incompatibleMods.size() - 10);
+            
+            context.embedBuilder.addField(Localization.get("melonscanner.incompatibleMods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
             return true;
         }

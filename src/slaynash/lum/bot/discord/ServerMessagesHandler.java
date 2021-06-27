@@ -254,6 +254,12 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll and put it in your Mods folder.").queue();
                 return;
             }
+
+            if (message.startsWith("!log") || message.startsWith("!logs")) {
+                System.out.println("logs printed");
+                event.getChannel().sendMessage("To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`. Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFrom there, open the `Logs` folder, then drag and drop the latest MelonLoader or mod-specific log file into Discord.\n*If you are using the MelonLoader v0.3.0 ALPHA Pre-Release, navigate to the `MelonLoader` folder instead, then drag and drop `Latest.log` into Discord.*").queue();
+                return;
+            }
         }catch(Exception e) {
             ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());
         }

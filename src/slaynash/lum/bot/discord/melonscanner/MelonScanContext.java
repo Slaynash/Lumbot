@@ -59,11 +59,18 @@ public class MelonScanContext {
     public List<MelonDuplicateMod> duplicatedMods = new ArrayList<MelonDuplicateMod>();
 
     // Missing dependencies - temp
-    public String currentMissingDependenciesMods = "";
+    public String currentMissingDependenciesMods = ""; //isn't used
     public boolean readingMissingDependencies = false;
 
     // Missing dependencies - final
     public List<String> missingMods = new ArrayList<>();
+
+    // Incompatibility - temp
+    public String currentIncompatibleMods = "";
+    public boolean readingIncompatibility = false;
+
+    // Incompatibility - final
+    public List<MelonIncompatibleMod> incompatibleMods = new ArrayList<MelonIncompatibleMod>();
 
     // Error handling
     public boolean hasErrors = false;

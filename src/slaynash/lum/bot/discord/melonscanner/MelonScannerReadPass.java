@@ -37,6 +37,13 @@ public final class MelonScannerReadPass {
                     if (processMissingDependenciesListing(line, context))
                         continue;
 
+                if (incompatibilityCheck(line, context))
+                    continue;
+
+                if (context.readingIncompatibility)
+                    if (processIncompatibilityListing(line, context))
+                        continue;
+
                 
                 if (line.isBlank()) continue;
 
@@ -191,6 +198,15 @@ public final class MelonScannerReadPass {
         return false;
     }
 
+    private static boolean incompatibilityCheck(String line, MelonScanContext context) {
+        if (line.matches("- '.*' is incompatible with the following Melons:")) {
+            context.currentIncompatibleMods = line.split("'", 3)[1];
+            context.readingIncompatibility = true;
+            return true;
+        }
+        return false;
+    }
+
     private static boolean oldModCheck(String line, MelonScanContext context) {
         if(line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")){
             if(line.contains("Could not load file or assembly '")){
@@ -236,7 +252,11 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) {
+        else if (line.matches("- '.*' is missing the following dependencies:")) {
+            context.currentMissingDependenciesMods = line.split("'", 3)[1];
+            return true;
+        }
+        else if (line.matches("\\[[0-9.:]+\\] \\[Warning\\] Some mods are missing dependencies, which you may have to install\\.")) { //TODO check if warning is all caps
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
             context.bufferedReader.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
@@ -250,6 +270,23 @@ public final class MelonScannerReadPass {
         return false;
     }
 
+    private static boolean processIncompatibilityListing(String line, MelonScanContext context) throws IOException {
+        if (line.matches("    - '.*'.*")) {
+            String missingModName = line.split("'", 3)[1];
+            context.duplicatedMods.add(new MelonDuplicateMod(context.currentIncompatibleMods,missingModName));
+            return true;
+        }
+        else if (line.matches("- '.*' is incompatible with the following Melons:")) {
+            context.currentIncompatibleMods = line.split("'", 3)[1];
+            return true;
+        }
+        else {
+            System.out.println("Done listing missing dependencies on line: " + line);
+            context.readingMissingDependencies = false;
+        }
+
+        return false;
+    }
 
     private static boolean mlVersionCheck(String line, MelonScanContext context) {
         if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Using v0\\..*")) {
