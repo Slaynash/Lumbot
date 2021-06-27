@@ -416,7 +416,8 @@ public class ServerMessagesHandler {
             }
 
             if (reportChannel != null){
-                ssQueued.cancel(/*mayInterruptIfRunning*/ true);
+                if (ssQueued != null)
+                    ssQueued.cancel(/*mayInterruptIfRunning*/ true);
                 ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
             }
             else
