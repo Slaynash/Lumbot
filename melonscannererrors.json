@@ -129,6 +129,10 @@
         {
             "regex": "System.IO.InvalidDataException: Central Directory corrupt. ---> System.IO.IOException: An attempt was made to move the file pointer before the beginning of the file.",
             "error": "Please redownload the installer from [GitHub](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and try to install ML with it."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*VRCModUpdater.Core.dll.*",
+            "error": "Please do not move VRCModUpdater.Core.dll out of your `VRChat\\UserData` folder."
         }
     ],
     "gameSpecificErrors": {

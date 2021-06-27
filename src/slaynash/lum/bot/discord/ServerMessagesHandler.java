@@ -269,7 +269,7 @@ public class ServerMessagesHandler {
 
             if (message.startsWith("!vrcx")) {
                 System.out.println("VRCX printed");
-                event.getChannel().sendMessage("VRCX is not a mod and you can find it here: https://github.com/pypy-vrc/VRCX").queue();
+                event.getChannel().sendMessage("VRCX is not a mod and you can find it here: <https://github.com/Natsumi-sama/VRCX>").queue();
                 return;
             }
         }catch(Exception e) {
