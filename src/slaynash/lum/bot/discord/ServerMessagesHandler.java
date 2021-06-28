@@ -122,7 +122,7 @@ public class ServerMessagesHandler {
             boolean guildConfig[];
             guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(GuildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
-            boolean hasLum = message.contains("lum");
+            boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s: %s\n",
@@ -225,31 +225,31 @@ public class ServerMessagesHandler {
             }
 
             if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches(".*\\b(good|nice|love|cool|cute|cutie|helped|thank|pet|pat)\\b.*")) {
+                if (message.matches(".*\\b(good|nice|love|cool|cute|cutie|adorable|helped|thank|pet|pat)\\b.*")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains(/*f*/" off ") || message.contains(/*f*/" you ") || message.contains("stfu") || message.contains("kill ")) {
+                if (message.matches(".*\\b(off|you|stfu|kill)\\b.*")) {
                     System.out.println("F off Lum was detected");
                     event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains("bad") || message.contains("shush") || message.contains(/*shut*/" up") || message.contains(/*shush*/" it") || message.contains("smh")) {
+                if (message.matches(".*\\b(bad|shush|up|it|smh)\\b.*")) {
                     System.out.println("Bad Lum was detected");
                     event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains("hello") || message.contains("hi")) {
+                if (message.matches(".*\\b(hello|hi)\\b.*")) {
                     System.out.println("Hello Lum was detected");
                     event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
                     return;
                 }
 
-                else if (message.contains("credit") || message.contains("stole")) {
+                if (message.matches(".*\\b(credit|stole)\\b.*")) {
                     System.out.println("Lum stole Credit");
                     event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
                     return;
@@ -262,7 +262,7 @@ public class ServerMessagesHandler {
                 event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
                 return;
             }
-            else if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
+            if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
                 System.out.println("Stealth mode asked");
                 event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
                 return;
