@@ -121,7 +121,7 @@ public class ServerMessagesHandler {
             Long GuildID = event.getGuild().getIdLong();
             Boolean guildConfig[];
             guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
-            String message = event.getMessage().getContentRaw().toLowerCase();
+            String message = event.getMessage().getContentStripped().toLowerCase();
             boolean hasLum = message.contains("lum");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
