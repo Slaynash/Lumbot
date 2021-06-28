@@ -89,7 +89,8 @@ public class ServerMessagesHandler {
 
     private static final String[] gunLum = new String[] {
         "<:Neko_cat_Gun:851934721914175498>",
-        "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497"
+        "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497",
+        "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746"
     };
 
     private static final int helpDuration = 6 * 60; //in seconds
@@ -226,7 +227,7 @@ public class ServerMessagesHandler {
             }
 
             if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches(".*\\b(good|nice|love|cool|cute|cutie|adorable|helped|thank|pet|pat)\\b.*")) {
+                if (message.matches(".*\\b(good|nice|love(ly){0,1}|cool|cuti{0,1}e|adorable|helped|thank(s){0,}|p(e|a)t)\\b.*")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                     return;
@@ -238,7 +239,7 @@ public class ServerMessagesHandler {
                     return;
                 }
 
-                if (message.matches(".*\\b(bad|shush|up|it|smh)\\b.*")) {
+                if (message.matches(".*\\b(bad|shush|up|smh)\\b.*")) {
                     System.out.println("Bad Lum was detected");
                     event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
                     return;
