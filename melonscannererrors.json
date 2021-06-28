@@ -208,6 +208,10 @@
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[emmVRCLoader\\] Error occured while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
                 "error": "Please make sure that the launch options is cleared."
+            },
+            {
+                "regex": ".*\\[emmVRCLoader\\] \\[ERROR\\] Unable to find field \"currentPage\" in QuickMenu",
+                "error": "Please click on the button UI Elements then try to dismiss the emmVRC notifications."
             }
         ],
         "BloonsTD6": [
