@@ -216,6 +216,10 @@
             {
                 "regex": "\\[[0-9.:]+\\] \\[Boneworks_Modding_Toolkit\\] \\[ERROR\\] System.ArgumentNullException: Value cannot be null.",
                 "error": "Please replace Boneworks Modding Toolkit with [ModThatIsNotMod](https://bonetome.com/boneworks/code/1015/)."
+            },
+            {
+                "regex": ".*No .melon files found in UserData\\CustomItems\\",
+                "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
             }
         ]
     },
@@ -240,6 +244,7 @@
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
         "NKHook6": "NKHook6 is broken and should be removed from the mods folder.",
 
-        "Custom Items Framework": "Please replace Custom Items Framework with [ModThatIsNotMod](https://bonetome.com/boneworks/code/1015/)."
+        "Custom Items Framework": "Please replace Custom Items Framework with [ModThatIsNotMod](https://bonetome.com/boneworks/code/1015/).",
+        "EasyMenu": "Please replace EasyMenu with [ModThatIsNotMod](https://bonetome.com/boneworks/code/1015/)."
     }
 }
