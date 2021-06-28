@@ -200,6 +200,10 @@
             {
                 "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Exception in coroutine of type emmVRC.Hacks.EmojiFavourites.*",
                 "error": "emmVRC's Emoji Favorites is currently not working. We are working on fixing this issue."
+            },
+            {
+                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[emmVRCLoader\\] Error occured while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
+                "error": "Please make sure that the launch options is cleared."
             }
         ],
         "BloonsTD6": [
