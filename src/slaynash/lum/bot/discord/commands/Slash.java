@@ -47,6 +47,10 @@ public class Slash {
                     config[ConfigurationMap.LUMREPLIES.ordinal()] = !config[ConfigurationMap.LUMREPLIES.ordinal()];
                     event.editButton(config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum")).queue();
                     break;
+                case ("dad") :
+                    config[ConfigurationMap.DADJOKES.ordinal()] = !config[ConfigurationMap.DADJOKES.ordinal()];
+                    event.editButton(config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
+                    break;
                 case ("partial") :
                     config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] = !config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()];
                     event.editButton(config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover")).queue() ;
@@ -85,7 +89,8 @@ public class Slash {
                         .addActionRow(
                             config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
                             config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"),
-                            config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"))
+                            config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
+                            config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
                         .addActionRow(
                             config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
                             config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),

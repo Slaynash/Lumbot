@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 public class GuildConfigurations {
     public static HashMap<Long, Boolean[]> configurations;
-        //Scam Shield, dll remover, log reaction, Lum thanks, partial log remover, general log remover
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
         put(439093693769711616L /* VRCMG */, new long[] {
@@ -50,12 +49,13 @@ public class GuildConfigurations {
         put(716536783621587004L /* Totally Wholesome */,725076119623303380L /* mute-voice */);
     }};
     
-    public enum ConfigurationMap{ //If you add a new setting, don't forget to increment default size in ServerMessagesHandler
+    public enum ConfigurationMap{
         SCAMSHIELD(),
         DLLREMOVER(),
         LOGREACTION(),
         LUMREPLIES(),
         PARTIALLOGREMOVER(),
-        GENERALLOGREMOVER();
+        GENERALLOGREMOVER(),
+        DADJOKES();
     }
 }

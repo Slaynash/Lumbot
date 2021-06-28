@@ -120,7 +120,7 @@ public class ServerMessagesHandler {
             CommandManager.runAsServer(event);
             Long GuildID = event.getGuild().getIdLong();
             Boolean guildConfig[];
-            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[] {false,false,false,false,false,false} : GuildConfigurations.configurations.get(GuildID);
+            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(GuildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
             boolean hasLum = message.contains("lum");
             List<Attachment> attachments = event.getMessage().getAttachments();
@@ -292,7 +292,7 @@ public class ServerMessagesHandler {
                 return;
             }
 
-            if (hasLum && message.contains("joke")) {
+            if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && message.contains("joke")) {
                 System.out.println("Requested a joke");
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 event.getChannel().sendMessage(response.body()).queue();
