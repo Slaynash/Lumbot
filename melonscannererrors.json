@@ -218,7 +218,7 @@
                 "error": "Please replace Boneworks Modding Toolkit with [ModThatIsNotMod](https://bonetome.com/boneworks/code/1015/)."
             },
             {
-                "regex": ".*No .melon files found in UserData\\CustomItems\\",
+                "regex": ".*No .melon files found in UserData\\\\CustomItems\\\\",
                 "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
             }
         ]

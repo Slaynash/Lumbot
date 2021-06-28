@@ -156,7 +156,7 @@ public class ServerMessagesHandler {
                 return;
             }
 
-            if (event.getGuild().getIdLong() == 663449315876012052L /* MelonLoader */) {
+            if (GuildID == 663449315876012052L /* MelonLoader */) {
                 String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
                 if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
                     event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
@@ -170,7 +170,7 @@ public class ServerMessagesHandler {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;
-                long guildId = event.getGuild().getIdLong();
+                long guildId = GuildID;
                 for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
                     if (whitelistedGuildId == guildId) {
                         postedInWhitelistedServer = true;
@@ -257,12 +257,12 @@ public class ServerMessagesHandler {
             }
 
             Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-            if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
+            if (GuildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
                 System.out.println("Forgot pin asked");
                 event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
                 return;
             }
-            if (event.getGuild().getIdLong() == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
+            if (GuildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
                 System.out.println("Stealth mode asked");
                 event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
                 return;
@@ -274,9 +274,14 @@ public class ServerMessagesHandler {
                 return;
             }
 
-            if (message.startsWith("!log") || message.startsWith("!logs")) {
+            if (message.startsWith("!log")) {
                 System.out.println("logs printed");
-                event.getChannel().sendMessage("To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`. Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.").queue();
+                String sendMessage;
+                if (GuildID == 835185040752246835L || GuildID == 322211727192358914L) /*TLD*/
+                    sendMessage = "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Epic Games (or EGS)**: `C:\\Program Files\\Epic Games\\(game)`\n**GOG**: `C:\\Program Files(x86)\\Gog Galaxy\\Games\\(game)`\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
+                else
+                    sendMessage = "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`. Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
+                event.getChannel().sendMessage(sendMessage).queue();
                 return;
             }
 
@@ -384,6 +389,8 @@ public class ServerMessagesHandler {
 
     private static boolean checkForFishing(MessageReceivedEvent event) {
 
+        Long GuildID = event.getGuild().getIdLong();
+
         if(checkIfStaff(event))
             return false;
 
@@ -428,10 +435,10 @@ public class ServerMessagesHandler {
         if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
-            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, event.getGuild().getIdLong())); // saves a copy of message and point, should avoid false-positives, force 2 messages
+            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, GuildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == event.getGuild().getIdLong())
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == GuildID)
             .collect(Collectors.toList());
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
@@ -439,7 +446,7 @@ public class ServerMessagesHandler {
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+            String reportChannel = CommandManager.mlReportChannels.get(GuildID);
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
