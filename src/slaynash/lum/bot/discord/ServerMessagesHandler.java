@@ -119,8 +119,8 @@ public class ServerMessagesHandler {
             if(event.getAuthor().isBot()) return;
             CommandManager.runAsServer(event);
             Long GuildID = event.getGuild().getIdLong();
-            Boolean guildConfig[];
-            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new Boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(GuildID);
+            boolean guildConfig[];
+            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(GuildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
             boolean hasLum = message.contains("lum");
             List<Attachment> attachments = event.getMessage().getAttachments();

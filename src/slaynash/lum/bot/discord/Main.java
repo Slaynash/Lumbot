@@ -262,10 +262,10 @@ public class Main extends ListenerAdapter {
         try {
             reader = new BufferedReader(new FileReader("guildconfigurations.txt"));
             String line;
-            HashMap<Long, Boolean[]> tempMap = new HashMap<>();
+            HashMap<Long, boolean[]> tempMap = new HashMap<>();
             while ((line = reader.readLine()) != null) {
                 String[] broke = line.split(" ");
-                Boolean[] tempBooleans = new Boolean[GuildConfigurations.ConfigurationMap.values().length];
+                boolean[] tempBooleans = new boolean[GuildConfigurations.ConfigurationMap.values().length];
                 for (int i = 1; i < broke.length; i++)
                     tempBooleans[i - 1] = Boolean.parseBoolean(broke[i]);
                 tempMap.put(Long.parseLong(broke[0]), tempBooleans);

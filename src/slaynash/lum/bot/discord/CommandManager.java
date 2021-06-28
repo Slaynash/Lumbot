@@ -203,7 +203,7 @@ public class CommandManager {
 
     public static void saveGuildConfigs() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("guildconfigurations.txt"))) {
-            for (Entry<Long, Boolean[]> saveconfigurations : GuildConfigurations.configurations.entrySet()) {
+            for (Entry<Long, boolean[]> saveconfigurations : GuildConfigurations.configurations.entrySet()) {
                 writer.write(saveconfigurations.getKey().toString());
                 for (Boolean bool : saveconfigurations.getValue()) {
                     writer.write(" " + bool.toString());

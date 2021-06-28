@@ -28,7 +28,7 @@ public class Slash {
                 return;
             }
             Long guildID = Long.valueOf(message[message.length - 1]);
-            Boolean[] config = GuildConfigurations.configurations.get(guildID);
+            boolean[] config = GuildConfigurations.configurations.get(guildID);
             if (event.getUser().getId().equals(event.getJDA().getGuildById(guildID).getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
                 switch(event.getComponentId()) {
                 case ("ss") :
@@ -77,9 +77,9 @@ public class Slash {
     private static void sendReply(SlashCommandEvent event, String guildID){
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
-            Boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
+            boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
             if (config == null) {
-                config = new Boolean[] {false,false,false,false,false,false};
+                config = new boolean[GuildConfigurations.ConfigurationMap.values().length];
                 GuildConfigurations.configurations.put(Long.valueOf(guildID), config);
                 CommandManager.saveGuildConfigs();
             }

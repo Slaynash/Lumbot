@@ -3,7 +3,7 @@ package slaynash.lum.bot.discord;
 import java.util.HashMap;
 
 public class GuildConfigurations {
-    public static HashMap<Long, Boolean[]> configurations;
+    public static HashMap<Long, boolean[]> configurations;
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
         put(439093693769711616L /* VRCMG */, new long[] {
