@@ -103,6 +103,10 @@
         {
             "regex": ".*AssemblyGenerator.dll Does Not Exist!",
             "error": "AssemblyGenerator missing. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
+        },
+        {
+            "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
+            "error": "Failed to contact MelonLoaderAPI server. This issue has been fixed in the latest alpha build of MelonLoader which you can get [here](https://github.com/LavaGang/MelonLoader/actions)"
         }
     ],
     "knownErrors": [
