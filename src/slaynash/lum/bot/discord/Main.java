@@ -378,9 +378,12 @@ public class Main extends ListenerAdapter {
                 .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
             for(Guild tempGuild : JDAManager.getJDA().getGuilds()){
                 loopGuild = tempGuild;
-                Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
-                loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
-
+                try {
+                    Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
+                    loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
+                } catch (Exception e) {
+                    System.out.println("Failed to register slash command for: " + loopGuild.getName());
+                }
             }
         } catch (Exception e) {
             ExceptionUtils.reportException(
