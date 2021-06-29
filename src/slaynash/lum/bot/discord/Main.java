@@ -43,57 +43,62 @@ public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            isShuttingDown = true;
-            MelonScanner.shutdown();
-            
-            JDA jda = JDAManager.getJDA();
-            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-            jda
-                .getGuildById(633588473433030666L)
-                .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
-                .complete();
-        }));
+        try {
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                isShuttingDown = true;
+                MelonScanner.shutdown();
+                
+                JDA jda = JDAManager.getJDA();
+                if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+                jda
+                    .getGuildById(633588473433030666L)
+                    .getTextChannelById(808076226064941086L)
+                    .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                    .complete();
+            }));
 
-        ConfigManager.init();
-        Localization.init();
+            ConfigManager.init();
+            Localization.init();
 
-        DBConnectionManagerShortUrls.init();
+            DBConnectionManagerShortUrls.init();
 
-        new Steam().start();
-        
-        loadLogchannelList();
-        loadVerifychannelList();
-        loadReactionsList();
-        loadScreeningRolesList();
-        loadMelonLoaderVersions();
-        loadMLHashes();
-        loadMLVRCHash();
-        loadMLReportChannels();
-        //loadBrokenVRCMods();
-        loadVRCBuild();
-        loadGuildConfigs();
+            new Steam().start();
 
-        MelonScanner.init();
+            loadLogchannelList();
+            loadVerifychannelList();
+            loadReactionsList();
+            loadScreeningRolesList();
+            loadMelonLoaderVersions();
+            loadMLHashes();
+            loadMLVRCHash();
+            loadMLReportChannels();
+            //loadBrokenVRCMods();
+            loadVRCBuild();
+            loadGuildConfigs();
 
-        CommandManager.init();
-        JDAManager.init(ConfigManager.discordToken);
-        
-        JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
+            MelonScanner.init();
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-            JDAManager.getJDA()
-                .getGuildById(633588473433030666L)
-                .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
-                .queue();
+            CommandManager.init();
+            JDAManager.init(ConfigManager.discordToken);
 
-        VRCApiVersionScanner.init();
+            JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
 
-        registerCommands();
+            if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+                JDAManager.getJDA()
+                    .getGuildById(633588473433030666L)
+                    .getTextChannelById(808076226064941086L)
+                    .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                    .queue();
 
-        System.out.println("LUM Started!");
+            VRCApiVersionScanner.init();
+
+            registerCommands();
+
+            System.out.println("LUM Started!");
+        } catch (Exception e) {
+            ExceptionUtils.reportException(
+                "Main Exception:", e);
+        }
     }
 
     private static void loadReactionsList() {
@@ -366,11 +371,20 @@ public class Main extends ListenerAdapter {
     }
 
     private static void registerCommands(){
-        JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
-            .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
-        for(Guild guild : JDAManager.getJDA().getGuilds()){
-            var cmd = guild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete(); // Guild command
-            guild.updateCommandPrivilegesById(cmd.getIdLong(), Arrays.asList(new CommandPrivilege(Type.USER, true, guild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
+        Guild loopGuild = null;
+        try {
+            JDAManager.getJDA().setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
+            JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
+                .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
+            for(Guild tempGuild : JDAManager.getJDA().getGuilds()){
+                loopGuild = tempGuild;
+                Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
+                loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
+
+            }
+        } catch (Exception e) {
+            ExceptionUtils.reportException(
+                "Error registering command for " + loopGuild.getName() + " :", e);
         }
     }
 }
