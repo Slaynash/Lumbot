@@ -227,7 +227,7 @@ public class ServerMessagesHandler {
             }
 
             if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches(".*\\b(good|nice|love(ly){0,1}|cool|cuti{0,1}e|adorable|helped|thank(s){0,}|p(e|a)t)\\b.*")) {
+                if (message.matches(".*\\b(good|nice|love(ly){0,1}|cool|cuti{0,1}e(st){0,1}|adorable|helped|thank(s){0,}|(head){0,1}p(e|a)t)\\b.*")) {
                     System.out.println("Nice Lum was detected");
                     event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
                     return;
