@@ -752,8 +752,10 @@ public final class MelonScanner {
                     error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
                 else if(guildID == 439093693769711616L)
                     error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
-                else if(guildID == 322211727192358914L || guildID == 835185040752246835L)
+                else if(guildID == 322211727192358914L || guildID == 835185040752246835L){
                     error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
+                    context.embedBuilder.setThumbnail("https://pbs.twimg.com/media/EU5rcX4WsAMcc-y?format=jpg");
+                }
                 else
                     error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
             }
