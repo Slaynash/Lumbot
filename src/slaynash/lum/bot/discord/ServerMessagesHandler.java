@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -473,17 +474,21 @@ public class ServerMessagesHandler {
                     embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
             }
 
+            MessageEmbed builtEmbed = embedBuilder.build();
+            if(builtEmbed.isEmpty()){
+                ExceptionUtils.reportException("Scam Shield report Embed is empty", "Guild: " + GuildID);
+                return true;
+            }
             if (reportChannel != null){
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
-                ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
+                ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(builtEmbed).queueAfter(10, TimeUnit.SECONDS);
             }
             else
-                event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                event.getTextChannel().sendMessageEmbeds(builtEmbed).queue();
 
             return true;
         }
-
         return false;
     }
 }
