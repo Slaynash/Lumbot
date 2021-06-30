@@ -63,7 +63,8 @@
         "melonscanner.misplacedplugins.more": "- and %s more...",
 
         "melonscanner.outdatedmods.fieldname": "Outdated Mods:",
-        "melonscanner.outdatedmods.vrcmuwarning": "- Consider getting [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and moving it to the **Plugins** folder",
+        "melonscanner.outdatedmods.vrcmuwarning": "- Consider getting [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder",
+        "melonscanner.outdatedmods.tldmuwarning": "- Consider getting [AutoUpdatingPlugin](https://github.com/ds5678/AutoUpdatingPlugin/releases/latest/download/AutoUpdatingPlugin.dll) and move it to the **Plugins** folder",
         "melonscanner.outdatedmods.more": "- and %s more...",
         
         "melonscanner.modsthrowingerrors.fieldname": "Mods With Errors:",
@@ -145,6 +146,7 @@
 
         "melonscanner.outdatedmods.fieldname": "Mods Pas à Jour:",
         "melonscanner.outdatedmods.vrcmuwarning": "- Envisagez d'acquérir [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) et de le déplacer dans le dossier **Plugins**",
+        "melonscanner.outdatedmods.tldmuwarning": "- Envisagez d'acquérir [AutoUpdatingPlugin](https://github.com/ds5678/AutoUpdatingPlugin/releases/latest/download/AutoUpdatingPlugin.dll) et de le déplacer dans le dossier **Plugins**",
         "melonscanner.outdatedmods.more": "- et %s autres...",
         
         "melonscanner.modsthrowingerrors.fieldname": "Mods avec des Erreurs:",

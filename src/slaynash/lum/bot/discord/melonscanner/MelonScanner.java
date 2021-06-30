@@ -678,8 +678,19 @@ public final class MelonScanner {
 
     private static boolean outdatedModsCheck(MelonScanContext context) {
         if (context.outdatedMods.size() > 0) {
-            String vrcmuMessage = "VRChat".equals(context.game) ? Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang) : "";
-            
+            String muMessage;
+            switch (context.game) {
+                case "VRChat":
+                    muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
+                    break;
+                case "TheLongDark":
+                    muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
+                    break;
+                default:
+                    muMessage = "";
+                    break;
+            }
+
             String error = "";
             String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0), context);
             for (int i = 0; i < context.outdatedMods.size() && i < 20; ++i) {
@@ -690,13 +701,13 @@ public final class MelonScanner {
                 else 
                     break; // no next outdated Mod
                 
-                if (error.length() + nextModLine.length() + vrcmuMessage.length() + 18 > 1024){
+                if (error.length() + nextModLine.length() + muMessage.length() + 18 > 1024){
                     error += Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.outdatedMods.size() - i) + "\n"; //length is about 17 char
                     break;
                 }
             }
             if (context.outdatedMods.size() >= 3)
-                error += vrcmuMessage;
+                error += muMessage;
             
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
