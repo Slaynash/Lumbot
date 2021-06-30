@@ -747,10 +747,13 @@ public final class MelonScanner {
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
                 
             if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError)){
-                if(context.messageReceivedEvent.getGuild().getIdLong() == 600298024425619456L)
+                Long guildID = context.messageReceivedEvent.getGuild().getIdLong();
+                if(guildID == 600298024425619456L)
                     error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
-                else if(context.messageReceivedEvent.getGuild().getIdLong() == 439093693769711616L)
+                else if(guildID == 439093693769711616L)
                     error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
+                else if(guildID == 322211727192358914L || guildID == 835185040752246835L)
+                    error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
                 else
                     error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
             }
