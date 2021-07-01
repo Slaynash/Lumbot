@@ -331,8 +331,8 @@ public class Main extends ListenerAdapter {
             System.err.println("!onGuildMemberUpdatePending received, but guild is null!");
             return;
         }
-        if (CommandManager.autoScreeningRoles == null){
-            System.err.println("!autoScreeningRoles is null!");
+        if (CommandManager.autoScreeningRoles.isEmpty()){
+            System.err.println("!autoScreeningRoles is Empty!");
             return;
         }
         long targetRoleId = CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong());
