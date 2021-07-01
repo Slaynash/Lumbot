@@ -15,7 +15,7 @@ public final class ExceptionUtils {
     Returns a String representation of the exception's stack trace
     @param exception The target exception
     */
-    public static String getStackTrace(Exception exception) {
+    public static String getStackTrace(Throwable exception) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
 
@@ -24,7 +24,7 @@ public final class ExceptionUtils {
         return sw.toString();
     }
     
-    public static void reportException(String title, String comment, Exception exception, TextChannel textChannel) {
+    public static void reportException(String title, String comment, Throwable exception, TextChannel textChannel) {
         System.err.println(title);
         String exceptionString = "";
 
@@ -65,13 +65,13 @@ public final class ExceptionUtils {
         catch (Exception e2) { e2.printStackTrace(); }
     }
 
-    public static void reportException(String title, Exception exception) {
+    public static void reportException(String title, Throwable exception) {
         reportException(title, null, exception, null);
     }
-    public static void reportException(String title, String comment, Exception exception) {
+    public static void reportException(String title, String comment, Throwable exception) {
         reportException(title, comment, exception, null);
     }
-    public static void reportException(String title, Exception exception, TextChannel textChannel) {
+    public static void reportException(String title, Throwable exception, TextChannel textChannel) {
         reportException(title, null, exception, textChannel);
     }
 

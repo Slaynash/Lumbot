@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -51,61 +52,61 @@ public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-        try {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                isShuttingDown = true;
-                MelonScanner.shutdown();
-                
-                JDA jda = JDAManager.getJDA();
-                if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-                jda
-                    .getGuildById(633588473433030666L)
-                    .getTextChannelById(808076226064941086L)
-                    .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
-                    .complete();
-            }));
 
-            ConfigManager.init();
-            Localization.init();
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
+        });
 
-            DBConnectionManagerShortUrls.init();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            isShuttingDown = true;
+            MelonScanner.shutdown();
+            
+            JDA jda = JDAManager.getJDA();
+            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            jda
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                .complete();
+        }));
 
-            new Steam().start();
+        ConfigManager.init();
+        Localization.init();
 
-            loadLogchannelList();
-            loadVerifychannelList();
-            loadReactionsList();
-            loadScreeningRolesList();
-            loadMelonLoaderVersions();
-            loadMLHashes();
-            loadMLVRCHash();
-            loadMLReportChannels();
-            loadVRCBuild();
-            loadGuildConfigs();
+        DBConnectionManagerShortUrls.init();
 
-            MelonScanner.init();
+        new Steam().start();
 
-            CommandManager.init();
-            JDAManager.init(ConfigManager.discordToken);
+        loadLogchannelList();
+        loadVerifychannelList();
+        loadReactionsList();
+        loadScreeningRolesList();
+        loadMelonLoaderVersions();
+        loadMLHashes();
+        loadMLVRCHash();
+        loadMLReportChannels();
+        loadVRCBuild();
+        loadGuildConfigs();
 
-            JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
+        MelonScanner.init();
 
-            if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-                JDAManager.getJDA()
-                    .getGuildById(633588473433030666L)
-                    .getTextChannelById(808076226064941086L)
-                    .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
-                    .queue();
+        CommandManager.init();
+        JDAManager.init(ConfigManager.discordToken);
 
-            VRCApiVersionScanner.init();
+        JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
 
-            registerCommands();
+        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            JDAManager.getJDA()
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .queue();
 
-            System.out.println("LUM Started!");
-        } catch (Exception e) {
-            ExceptionUtils.reportException(
-                "Main Exception:", e);
-        }
+        VRCApiVersionScanner.init();
+
+        registerCommands();
+
+        System.out.println("LUM Started!");
     }
 
     private static void loadReactionsList() {
@@ -380,6 +381,18 @@ public class Main extends ListenerAdapter {
         } catch (Exception e) {
             ExceptionUtils.reportException(
                 "Error registering command for " + loopGuild.getName() + " :", e);
+        }
+    }
+
+    @Override
+    public void onException(ExceptionEvent event) {
+        try {
+            ExceptionUtils.reportException(
+                "Exception while handling JDA event:", event.getCause());
+        }
+        catch (Exception e) {
+            System.err.println("Failed to report exception:");
+            e.printStackTrace();
         }
     }
 }
