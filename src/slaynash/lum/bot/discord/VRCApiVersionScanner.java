@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRCApiVersionScanner {
     
@@ -27,7 +28,7 @@ public class VRCApiVersionScanner {
                 
                 HttpRequest request = HttpRequest.newBuilder()
                     .GET()
-                    .uri(URI.create("https://vrchat.com/api/1/config"))
+                    .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
                     .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0")
                     .build();
                 
@@ -55,7 +56,7 @@ public class VRCApiVersionScanner {
                     }
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);
                 }
 
                 try { Thread.sleep(60 * 1000); } catch (Exception e) {}
