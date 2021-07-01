@@ -135,7 +135,7 @@ public class Main extends ListenerAdapter {
                 String[] parts = line.split(" ");
                 if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
-                } else System.err.println("loadScreeningRolesList is formated badly");
+                } System.out.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
         } catch (IOException e) {
@@ -328,11 +328,15 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event) {
         if (event.getGuild() == null) {
-            System.err.println("!onGuildMemberUpdatePending received, but guild is null!");
+            System.out.println("!onGuildMemberUpdatePending received, but guild is null!");
+            return;
+        }
+        if (CommandManager.autoScreeningRoles == null){
+            System.out.println("!autoScreeningRoles is Null!");
             return;
         }
         if (CommandManager.autoScreeningRoles.isEmpty()){
-            System.err.println("!autoScreeningRoles is Empty!");
+            System.out.println("!autoScreeningRoles is Empty!");
             return;
         }
         long targetRoleId = CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong());
@@ -399,7 +403,7 @@ public class Main extends ListenerAdapter {
                 "Exception while handling JDA event:", event.getCause());
         }
         catch (Exception e) {
-            System.err.println("Failed to report exception:");
+            System.out.println("Failed to report exception:");
             e.printStackTrace();
         }
     }
