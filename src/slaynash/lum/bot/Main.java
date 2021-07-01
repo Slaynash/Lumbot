@@ -135,7 +135,8 @@ public class Main extends ListenerAdapter {
                 String[] parts = line.split(" ");
                 if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
-                } System.out.println("loadScreeningRolesList is formated badly");
+                }
+                else System.out.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
         } catch (IOException e) {
