@@ -417,9 +417,9 @@ public class ServerMessagesHandler {
         suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 2 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
-        suspiciousValue += message.contains("test") ? 1 : 0;
         suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;
+        suspiciousValue += message.contains("made a game") ? 2 : 0;
         if (suspiciousValue > 0){
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
