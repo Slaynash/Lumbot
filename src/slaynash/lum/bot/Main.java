@@ -132,10 +132,10 @@ public class Main extends ListenerAdapter {
             reader = new BufferedReader(new FileReader("rolescreening.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" ", 4);
+                String[] parts = line.split(" ");
                 if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
-                }
+                } else System.err.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
         } catch (IOException e) {
