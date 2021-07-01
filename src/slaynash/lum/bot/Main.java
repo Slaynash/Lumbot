@@ -328,20 +328,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event) {
-        if (event.getGuild() == null) {
-            System.out.println("!onGuildMemberUpdatePending received, but guild is null!");
-            return;
-        }
-        if (CommandManager.autoScreeningRoles == null){
-            System.out.println("!autoScreeningRoles is Null!");
-            return;
-        }
-        if (CommandManager.autoScreeningRoles.isEmpty()){
-            System.out.println("!autoScreeningRoles is Empty!");
-            return;
-        }
-        long targetRoleId = CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong());
-        if (targetRoleId > 0) {
+        long targetRoleId = CommandManager.autoScreeningRoles.containsKey(event.getGuild().getIdLong()) ? CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong()) : 0L;
+        if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null)
                 event.getGuild().addRoleToMember(event.getMember(), role).queue();
