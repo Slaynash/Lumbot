@@ -22,12 +22,12 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
-import slaynash.lum.bot.discord.ArrayUtils;
+import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.MLHashPair;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.utils.ArrayUtils;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class MelonScanner {
 
@@ -122,7 +122,7 @@ public final class MelonScanner {
                     context.embedColor = melonPink;
 
                 if(!context.unidentifiedErrors)
-                    ServerMessagesHandler.addNewHelpedRecently(messageReceivedEvent);
+                    ChattyLum.addNewHelpedRecently(messageReceivedEvent);
             }
             else if (context.mlVersion != null || context.modifiedML) {
                 if (context.hasErrors) {
@@ -132,7 +132,7 @@ public final class MelonScanner {
                 else {
                     context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang) , false);
                     context.embedColor = Color.LIGHT_GRAY;
-                    ServerMessagesHandler.addNewHelpedRecently(messageReceivedEvent);
+                    ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
             }
             

@@ -11,8 +11,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.MessageFinder;
 import slaynash.lum.bot.discord.ReactionListener;
+import slaynash.lum.bot.discord.utils.MessageFinder;
 
 public class AddReactionHandlerCommand extends Command {
     

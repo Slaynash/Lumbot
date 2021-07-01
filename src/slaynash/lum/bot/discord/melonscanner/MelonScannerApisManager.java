@@ -39,8 +39,8 @@ import org.luaj.vm2.lib.jse.JseMathLib;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
 

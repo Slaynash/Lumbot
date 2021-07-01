@@ -7,103 +7,23 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.Random;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.TimeManager;
 
 public class ServerMessagesHandler {
-    private static final String[] alreadyHelpedSentences = new String[] {
-        "I already answered you <:konataCry:553690186022649858>",
-        "Why won't you read my answer <:angry:835647632843866122>",
-        "There's already the answer up here!! <:cirHappy:829458722634858496>",
-        "I've already given you a response! <:MeguminEyes:852057834686119946>"
-    };
 
-    private static final String[] alreadyHelpedSentencesRare = new String[] {
-        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
-        "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
-        "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>",
-        "<https://lmgtfy.app/?q=How+do+I+read>"
-    };
-    
-    private static final String[] thankedSentences = new String[] {
-        "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>",
-        "<:cirHappy:829458722634858496>",
-        "Anytime <:Neko_cat_kiss_heart:851934821080367134>",
-        "Always happy to help!",
-        "Mhm of course!",
-        "No problem!",
-        "Glad I could help!"
-    };
 
-    private static final String[] thankedSentencesRare = new String[] {
-        "Notices you senpai <:cirHappy:829458722634858496>",
-        "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858"
-    };
-
-    private static final String[] helloLum = new String[] {
-        "<:Neko_cat_owo:851938214105186304>",
-        "<:Neko_cat_shrug:851938033724817428>",
-        "<:Neko_cat_uwu:851938142810275852>",
-        "<:Neko_cat_uwu:851938142810275852>",
-        "<:Neko_cat_wave:851938087353188372>"
-    };
-
-    private static final String[] niceLum = new String[] {
-        "<:Neko_cat_donut:851936309718024203>",
-        "<:Neko_cat_okay:851938634327916566>",
-        "<:Neko_cat_pizza:851935753826205736>",
-        "<:Neko_cat_royal:851935888178544660>",
-        "<:Neko_cat_woah:851935805874110504>",
-        "<a:Neko_cat_HeadPat:851934772959510578>",
-        "<a:HeartCat:828087151232286749>"
-    };
-
-    private static final String[] badLum = new String[] {
-        "<:Neko_cat_drool_stupid:851936505516785715>",
-        "<:Neko_cat_fear:851936400819486720>",
-        "<:Neko_cat_prison:851936449548255264>"
-    };
-
-    private static final String[] gunLum = new String[] {
-        "<:Neko_cat_Gun:851934721914175498>",
-        "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497",
-        "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746"
-    };
-
-    private static final int helpDuration = 6 * 60; //in seconds
-
-    private static Random random = new Random();
     private static String fileExt;
     
-    private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
-
-    private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
-
-    private static ScheduledFuture<?> ssQueued;
 
     private static final HttpRequest request = HttpRequest.newBuilder()
         .GET()
@@ -150,7 +70,7 @@ public class ServerMessagesHandler {
                 }).start();
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && checkForFishing(event))
+            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
@@ -165,9 +85,8 @@ public class ServerMessagesHandler {
                     event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
             }
 
-            if (event.getAuthor().getIdLong() == 381571564098813964L) { // Miku Hatsune#6969
+            if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
-            }
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
                 System.out.println("Partial Log was printed");
@@ -186,78 +105,8 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if(guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-                    message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
-                    message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
-                    message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")) {
-                    System.out.println("Thanks was detected");
-                    if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                        String sentence;
-                        boolean rare = random.nextInt(100) == 69;
-                        if (rare)
-                            sentence = "You're Welcome, but thank <@145556654241349632> and <@240701606977470464> instead for making me. <a:HoloPet:829485119664160828>";
-                        else {
-                            rare = random.nextInt(10) == 9;
-                            sentence = rare
-                            ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
-                            : thankedSentences    [random.nextInt(thankedSentences.length)];
-                        }
-                    event.getChannel().sendMessage(sentence).queue();
+            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
                 return;
-                    }
-                }
-
-                else if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
-                    System.out.println("Help was detected");
-                    if (wasHelpedRecently(event) && (event.getMessage().getReferencedMessage()==null || event.getMessage().getReferencedMessage().getAuthor().getIdLong() == 275759980752273418L/*LUM*/)) {
-                        String sentence;
-                        boolean rare = random.nextInt(1000) == 420;
-                        if (rare)
-                            sentence = "Shut the fuck up, I literally answered your dumb ass!";
-                        else {
-                            rare = random.nextInt(10) == 9;
-                            sentence = rare
-                            ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
-                            : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
-                        }
-                        event.getChannel().sendMessage(sentence).queue();
-                        return;
-                    }
-                }
-            }
-
-            if(hasLum && guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()]){
-                if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|(head)?p(e|a)t)\\b.*")) {
-                    System.out.println("Nice Lum was detected");
-                    event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
-                    return;
-                }
-
-                if (message.matches(".*\\b(off|you|stfu|kill|gun)\\b.*")) {
-                    System.out.println("F off Lum was detected");
-                    event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
-                    return;
-                }
-
-                if (message.matches(".*\\b(bad|shush|up|smh)\\b.*")) {
-                    System.out.println("Bad Lum was detected");
-                    event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
-                    return;
-                }
-
-                if (message.matches(".*\\b(hello|hi)\\b.*")) {
-                    System.out.println("Hello Lum was detected");
-                    event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
-                    return;
-                }
-
-                if (message.matches(".*\\b(credit|stole)\\b.*")) {
-                    System.out.println("Lum stole Credit");
-                    event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
-                    return;
-                }
-            }
 
             Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
             if (GuildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
@@ -306,7 +155,8 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage(response.body()).queue();
                 return;
             }
-        }catch(Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());
         }
     }
@@ -346,25 +196,6 @@ public class ServerMessagesHandler {
         return true; // No attachement, or no DLL
     }
 
-    public static void addNewHelpedRecently(MessageReceivedEvent event) {
-        for (int i = helpedRecently.size() - 1; i >= 0; --i)
-            if (helpedRecently.get(i).time + helpDuration < Instant.now().getEpochSecond())
-                helpedRecently.remove(i);
-
-        helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
-        System.out.println("Helped recently added");
-    }
-
-    public static boolean wasHelpedRecently(MessageReceivedEvent event) {
-        for (int i = 0; i < helpedRecently.size(); ++i) {
-            HelpedRecentlyData hrd = helpedRecently.get(i);
-            if (hrd.channelid == event.getChannel().getIdLong() && hrd.userid == event.getMember().getIdLong() && hrd.time + helpDuration > Instant.now().getEpochSecond()) {
-                helpedRecently.remove(i); // trigger only one message per log
-                return true;
-            }
-        }
-        return false;
-    }
     /**
      * Check if sender is part of Guild Staff/Trusted
      * @param event
@@ -390,105 +221,5 @@ public class ServerMessagesHandler {
         return false;
     }
 
-    private static boolean checkForFishing(MessageReceivedEvent event) {
-
-        Long GuildID = event.getGuild().getIdLong();
-
-        if(checkIfStaff(event))
-            return false;
-
-        // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
-        //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
-        String message = event.getMessage().getContentRaw().toLowerCase();
-        int suspiciousValue = 0;
-        suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
-        suspiciousValue += message.contains("@everyone") ? 2 : 0;
-        suspiciousValue += message.contains("money") ? 1 : 0;
-        suspiciousValue += message.contains("loot") ? 2 : 0;
-        suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
-        suspiciousValue += message.contains("trade") ? 2 : 0;
-        suspiciousValue += message.contains("skin") ? 1 : 0;
-        suspiciousValue += message.contains("knife") ? 2 : 0;
-        suspiciousValue += message.contains("offer") ? 1 : 0;
-        suspiciousValue += message.contains("btc") ? 1 : 0;
-        suspiciousValue += message.contains("free") ? 1 : 0;
-        suspiciousValue += message.contains("case") ? 1 : 0;
-        suspiciousValue += message.contains("!!!!") ? 1 : 0;
-        suspiciousValue += message.contains("code:") ? 2 : 0;
-        suspiciousValue += message.contains("booster") ? 2 : 0;
-        suspiciousValue += message.contains("dollar") ? 1 : 0;
-        suspiciousValue += message.contains("download") ? 1 : 0;
-        suspiciousValue += message.contains("100%") ? 1 : 0;
-        suspiciousValue += message.contains("made a game") ? 2 : 0;
-        if (suspiciousValue > 0){
-            suspiciousValue += message.contains("http") ? 1 : 0;
-            suspiciousValue += message.contains(".ru/") ? 1 : 0;
-            suspiciousValue += message.contains("bit.ly") ? 2 : 0;
-            suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
-            suspiciousValue += message.contains("mega.nz") ? 2 : 0;
-            suspiciousValue += message.contains("hour") ? 1 : 0;
-        }
-
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
-            handledMessages.remove(); //remove all saved messages that is older then 60 seconds
-
-        if (suspiciousValue < 2)
-            suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
-            suspiciousValue = 3;
-        if (suspiciousValue > 0)
-            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, GuildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
-
-        List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == GuildID)
-            .collect(Collectors.toList());
-
-        int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
-
-        if (suspiciousCount > 4) {
-            String usernameWithTag = event.getAuthor().getAsTag();
-            String userId = event.getAuthor().getId();
-            String reportChannel = CommandManager.mlReportChannels.get(GuildID);
-            EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
-                .setTimestamp(Instant.now())
-                .setFooter("Received " + suspiciousCount + " naughty points.");
-
-            if(event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)){
-                event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
-                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
-                LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
-            }
-            else {
-                if(event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
-                    List<Message> messagelist = new ArrayList<>();
-                    sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
-                    if(messagelist.size() == 1)
-                        event.getMessage().delete().queue();
-                    else if (messagelist.size() > 1)
-                        event.getTextChannel().deleteMessages(messagelist).queue();
-                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have ban perms but did remove messages.");
-                }
-                else
-                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
-            }
-
-            MessageEmbed builtEmbed = embedBuilder.build();
-            if(builtEmbed.isEmpty()){
-                ExceptionUtils.reportException("Scam Shield report Embed is empty", "Guild: " + GuildID);
-                return true;
-            }
-            if (reportChannel != null){
-                if (ssQueued != null)
-                    ssQueued.cancel(/*mayInterruptIfRunning*/ true);
-                ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(builtEmbed).queueAfter(10, TimeUnit.SECONDS);
-            }
-            else
-                event.getTextChannel().sendMessageEmbeds(builtEmbed).queue();
-
-            return true;
-        }
-        return false;
-    }
+    
 }

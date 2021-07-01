@@ -7,8 +7,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
-import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Purge extends Command {
 

@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.discord.melonscanner;
 
 public class MLHashPair {
     public String x86;

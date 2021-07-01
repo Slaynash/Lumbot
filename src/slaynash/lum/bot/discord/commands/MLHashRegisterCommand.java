@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.MLHashPair;
+import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 
 public class MLHashRegisterCommand extends Command {
     

@@ -1,6 +1,7 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.discord.utils;
 
 import net.dv8tion.jda.api.entities.Member;
+import slaynash.lum.bot.discord.JDAManager;
 
 public final class CrossServerUtils {
     

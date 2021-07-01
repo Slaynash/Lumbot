@@ -12,13 +12,14 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import slaynash.lum.bot.Main;
 
 public class JDAManager {
 
     private static JDA jda;
     private static boolean init = false;
 
-    protected static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
+    public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
         if(!init) init = true; else return;
         jda = JDABuilder.createDefault(token)
                 .addEventListeners(new Main())

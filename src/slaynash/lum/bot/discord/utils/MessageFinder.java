@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.discord.utils;
 
 import java.util.function.Consumer;
 

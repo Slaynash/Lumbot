@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.utils;
 
 public final class ArrayUtils {
 

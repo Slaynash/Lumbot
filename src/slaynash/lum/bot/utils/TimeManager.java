@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.utils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

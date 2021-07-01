@@ -29,6 +29,7 @@ import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
+import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 
 public class CommandManager {
     private static List<Command> commands = new ArrayList<Command>();
@@ -78,7 +79,7 @@ public class CommandManager {
         }
     }
 
-    protected static void init() {
+    public static void init() {
         if (init)
             return;
         

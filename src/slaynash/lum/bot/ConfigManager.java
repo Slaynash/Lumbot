@@ -20,6 +20,8 @@ public final class ConfigManager {
 	public static String dbLogin;
 	public static String dbPassword;
 
+    public static String discordPrefix;
+
     public static void init() {
         if(initialized)
 			return;
@@ -43,6 +45,8 @@ public final class ConfigManager {
 			dbDatabase = properties.getProperty("DB_DATABASE");
 			dbLogin = properties.getProperty("DB_LOGIN");
 			dbPassword = properties.getProperty("DB_PASSWORD");
+
+            discordPrefix = properties.getProperty("DISCORD_PREFIX");
 
         } catch (IOException e) {
 			e.printStackTrace();

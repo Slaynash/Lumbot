@@ -8,8 +8,8 @@ import java.util.Date;
 
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class LogCounter {
 

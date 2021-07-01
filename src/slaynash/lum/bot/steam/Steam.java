@@ -22,8 +22,8 @@ import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.Main;
 
 public class Steam {
 

@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot.utils;
 
 import java.awt.Color;
 import java.io.PrintWriter;
@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import slaynash.lum.bot.discord.JDAManager;
 
 public final class ExceptionUtils {
     

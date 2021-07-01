@@ -1,4 +1,4 @@
-package slaynash.lum.bot.discord;
+package slaynash.lum.bot;
 
 import java.awt.Color;
 import java.io.BufferedReader;
@@ -30,12 +30,20 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Type;
-import slaynash.lum.bot.ConfigManager;
-import slaynash.lum.bot.DBConnectionManagerShortUrls;
-import slaynash.lum.bot.Localization;
+import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.GuildConfigurations;
+import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.Moderation;
+import slaynash.lum.bot.discord.PrivateMessagesHandler;
+import slaynash.lum.bot.discord.ReactionListener;
+import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.discord.VRCApiVersionScanner;
+import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.Slash;
+import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.steam.Steam;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 
 public class Main extends ListenerAdapter {

@@ -5,9 +5,9 @@ import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.ExceptionUtils;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Slash {
     public static void slashRun(SlashCommandEvent event){
