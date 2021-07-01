@@ -107,7 +107,6 @@ public final class MelonScanner {
             issueFound |= missingModsCheck(context);
             issueFound |= incompatibleModsCheck(context);
             issueFound |= corruptedModsCheck(context);
-            //issueFound |= incompatibleModsCheck(context);
             issueFound |= brokenModsCheck(context);
             issueFound |= oldModsCheck(context);
             issueFound |= unknownModsCheck(context);
@@ -545,23 +544,6 @@ public final class MelonScanner {
         }
         return false;
     }
-
-    /*
-    private static boolean incompatibleModsCheck(MelonScanContext context) {
-        if (context.incompatibleMods.size() > 0) {
-            String error = "";
-            for (int i = 0; i < context.incompatibleMods.size() && i < 10; ++i)
-                error += "- " + sanitizeInputString(context.incompatibleMods.get(i) + "\n");
-            if (context.incompatibleMods.size() > 10)
-                error += "- and " + (context.incompatibleMods.size() - 10) + " more...";
-            
-            context.embedBuilder.addField("Incompatible Mods:", error , false);
-            context.embedColor = Color.RED;
-            return true;
-        }
-        return false;
-    }
-    */
 
     private static boolean brokenModsCheck(MelonScanContext context) {
         if (context.brokenMods.size() > 0) {
