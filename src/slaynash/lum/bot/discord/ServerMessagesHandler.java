@@ -41,9 +41,10 @@ public class ServerMessagesHandler {
         try{
             if(event.getAuthor().isBot()) return;
             CommandManager.runAsServer(event);
-            Long GuildID = event.getGuild().getIdLong();
+            long guildID = event.getGuild().getIdLong();
+            String guildIDstr = event.getGuild().getId();
             boolean guildConfig[];
-            guildConfig = GuildConfigurations.configurations.get(GuildID) == null ? new boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(GuildID);
+            guildConfig = GuildConfigurations.configurations.get(guildID) == null ? new boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
             boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
@@ -56,7 +57,28 @@ public class ServerMessagesHandler {
                     event.getMessage().getContentRaw() );
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size()>0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)){
-                event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please reupload this log to #help-and-support or #log-scanner channel instead.").queue();
+                String mess = "<@!" + event.getMessage().getMember().getId() + "> ";
+                switch (guildIDstr) {
+                    case "600298024425619456": //emmVRC
+                        mess.concat("Please reupload this log to <#600661924010786816> instead.");
+                        break;
+                    case "439093693769711616": //VRCMG
+                        mess.concat("Please reupload this log to <#440088207799877634> instead.");
+                        break;
+                    case "663449315876012052": //MelonLoader
+                        mess.concat("Please reupload this log to <#733305093264375849> instead.");
+                        break;
+                    case "563139253542846474": //BoneWorks
+                        mess.concat("Please reupload this log to <#675024565277032449> instead.");
+                        break;
+                    case "322211727192358914": //TLDModding
+                        mess.concat("Please reupload this log to <#827601339672035408> instead.");
+                        break;
+                    default:
+                        mess.concat("Please reupload this log to #help-and-support or #log-scanner channel instead.");
+                        break;
+                }
+                event.getChannel().sendMessage(mess).queue();
                 event.getMessage().delete().queue();
             }
             else {
@@ -79,7 +101,7 @@ public class ServerMessagesHandler {
                 return;
             }
 
-            if (GuildID == 663449315876012052L /* MelonLoader */) {
+            if (guildID == 663449315876012052L /* MelonLoader */) {
                 String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
                 if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
                     event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
@@ -92,9 +114,8 @@ public class ServerMessagesHandler {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;
-                long guildId = GuildID;
                 for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
-                    if (whitelistedGuildId == guildId) {
+                    if (whitelistedGuildId == guildID) {
                         postedInWhitelistedServer = true;
                         break;
                     }
@@ -109,12 +130,12 @@ public class ServerMessagesHandler {
                 return;
 
             Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-            if (GuildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
+            if (guildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
                 System.out.println("Forgot pin asked");
                 event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
                 return;
             }
-            if (GuildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
+            if (guildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
                 System.out.println("Stealth mode asked");
                 event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
                 return;
@@ -129,7 +150,7 @@ public class ServerMessagesHandler {
             if (message.startsWith("!log")) {
                 System.out.println("logs printed");
                 String sendMessage;
-                if (GuildID == 835185040752246835L || GuildID == 322211727192358914L) /*TLD*/
+                if (guildID == 835185040752246835L || guildID == 322211727192358914L) /*TLD*/
                     sendMessage = "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Epic Games (or EGS)**: `C:\\Program Files\\Epic Games\\(game)`\n**GOG**: `C:\\GOG Games\\(game)`\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
                 else
                     sendMessage = "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`. Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
