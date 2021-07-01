@@ -45,7 +45,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            python3 ~/lumbot/downloadAndRestart.py ${{ env.buildname }} \
+            python3 ~/downloadAndRestart.py ${{ env.buildname }} \
             melonscannererrors.json \
             localization.json \
             apiscripts/vrcmg.lua \
