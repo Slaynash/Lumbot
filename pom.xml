@@ -37,7 +37,7 @@
           <appendAssemblyId>false</appendAssemblyId>
           <archive>
             <manifest>
-              <mainClass>slaynash.lum.bot.discord.Main</mainClass>
+              <mainClass>slaynash.lum.bot.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
