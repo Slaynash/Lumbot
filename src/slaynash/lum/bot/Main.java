@@ -80,7 +80,6 @@ public class Main extends ListenerAdapter {
             loadMLHashes();
             loadMLVRCHash();
             loadMLReportChannels();
-            //loadBrokenVRCMods();
             loadVRCBuild();
             loadGuildConfigs();
 
@@ -176,22 +175,7 @@ public class Main extends ListenerAdapter {
             e.printStackTrace();
         }
     }
-    /*
-    private static void loadBrokenVRCMods() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("brokenvrcmods.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.trim().equals(""))
-                    CommandManager.brokenVrchatMods.add(line.trim());
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    */
+
     private static void loadVRCBuild() {
         BufferedReader reader;
         try {

@@ -21,10 +21,6 @@ public final class LogCounter {
         try{
             String directoryPath = workingPath.concat("/logs/");
 
-            // File directory = new File(directoryPath);
-            // if (!directory.exists())
-            //     directory.mkdirs(); // in case log folder is missing
-
             attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + attachment.getFileName())
                 .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
         }
@@ -39,10 +35,6 @@ public final class LogCounter {
     public static void AddSSCounter(String bannedUser, String message, String guildID) {
         try{
             String directoryPath = workingPath.concat("/SSlogs/");
-
-            // File directory = new File(directoryPath);
-            // if (!directory.exists())
-            //     directory.mkdirs(); // in case log folder is missing
 
             Files.writeString(Path.of(directoryPath, bannedUser + guildID + ".txt"), message);
         }

@@ -178,7 +178,6 @@ public class ChattyLum {
         return false;
     }
 
-    
 
     public static void addNewHelpedRecently(MessageReceivedEvent event) {
         for (int i = helpedRecently.size() - 1; i >= 0; --i)

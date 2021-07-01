@@ -94,9 +94,7 @@ public class MelonScanContext {
     public List<String> oldMods = new ArrayList<String>();
     /*
     public List<String> universalMods = new ArrayList<String>();
-    public List<String> incompatibleMods = new ArrayList<String>();
     public Map<String, String> modAuthors = new HashMap<String, String>();
-    public List<String> missingMods = new ArrayList<>();
     */
 
     public EmbedBuilder embedBuilder;

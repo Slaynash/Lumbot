@@ -34,7 +34,7 @@ public class JDAManager {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(color);
         //char limit is 2048
-        eb.setDescription(message);
+        eb.setDescription(message.substring(0, 2048));
         return eb.build();
     }
     
