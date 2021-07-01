@@ -116,7 +116,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 3 && parts[0].matches("\\b\\d+\\b") && parts[2].matches("\\b\\d+\\b")) {
+                if(parts.length == 3 && parts[0].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
                     CommandManager.reactionListeners.add(new ReactionListener(parts[0], parts[1], parts[2]));
                 }
             }
@@ -133,7 +133,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if(parts.length == 2 && parts[0].matches("\\b\\d+\\b") && parts[1].matches("\\b\\d+\\b")) {
+                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
                 } System.out.println("loadScreeningRolesList is formated badly");
             }
@@ -199,7 +199,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 2 && parts[0].matches("\\b\\d+\\b") && parts[1].matches("\\b\\d+\\b")) {
+                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.mlReportChannels.put(Long.parseLong(parts[0]), parts[1]);
                 }
             }
@@ -216,7 +216,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 2 && parts[0].matches("\\b\\d+\\b") && parts[1].matches("\\b\\d+\\b")) {
+                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.logChannels.put(Long.parseLong(parts[0]), parts[1]);
                 }
             }
@@ -233,7 +233,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 5);
-                if(parts.length == 3 && parts[0].matches("\\b\\d+\\b") && parts[1].matches("\\b\\d+\\b") && parts[2].matches("\\b\\d+\\b")) {
+                if(parts.length == 3 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
                     CommandManager.verifyChannels.put(Long.parseLong(parts[0]), new VerifyPair(parts[1], parts[2]));
                 }
             }
