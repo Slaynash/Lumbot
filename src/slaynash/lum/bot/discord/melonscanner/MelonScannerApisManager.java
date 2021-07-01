@@ -104,7 +104,7 @@ public class MelonScannerApisManager {
                             server_globals.set("base64toLowerHexString", new base64toLowerHexString());
 
                             LoadState.install(server_globals);
-		                    LuaC.install(server_globals);
+                            LuaC.install(server_globals);
                         }
 
                         Globals user_globals = new Globals();

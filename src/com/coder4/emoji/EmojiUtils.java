@@ -466,7 +466,7 @@ public class EmojiUtils {
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
         if(cpCnt != 1)
-        	return false;
+            return false;
         
         int codepoint = str.codePointAt(0);
         return EMOJI_HASH_SET.contains(toHexStr(codepoint));

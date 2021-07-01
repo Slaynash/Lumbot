@@ -14,7 +14,7 @@
 
 //     @Override
 //     protected boolean matchPattern(String paramString) {
-// 		return paramString.split(" ", 2)[0].equals("l!reportbug");
+//         return paramString.split(" ", 2)[0].equals("l!reportbug");
 //     }
 
 //     @Override
