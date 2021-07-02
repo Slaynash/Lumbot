@@ -37,7 +37,7 @@ public class Steam {
     private int previousChangeNumber;
     private SteamAppDetails vrchatAppDetails;
 
-    private int gameId = 438100;
+    private int gameId = 438100; //VRChat
 
     /*
     private final static HttpClient httpClient = HttpClient.newBuilder()
@@ -104,7 +104,7 @@ public class Steam {
             previousChangeNumber = callback.getCurrentChangeNumber();
 
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
-                System.out.println(changeDataPair.getKey() + ": " + changeDataPair.getValue().getId());
+                System.out.println("[Steam] " + changeDataPair.getKey() + ": " + changeDataPair.getValue().getId());
                 if (changeDataPair.getKey() == gameId) {
                     
                     EmbedBuilder eb = new EmbedBuilder();
