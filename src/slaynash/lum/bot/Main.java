@@ -54,6 +54,11 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
 
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
+            try {
+                JDAManager.getJDA().awaitReady(); //wait until connected to report Exception
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
         });
 
