@@ -1,6 +1,5 @@
 package slaynash.lum.bot.discord.melonscanner;
 
-import java.awt.Color;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -37,9 +36,6 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
@@ -221,44 +217,18 @@ public class MelonScannerApisManager {
                     catch (HttpTimeoutException exception) {
                         System.err.println("Fetching " + api.endpoint + " timedout:");
 
-                        try {
-                            EmbedBuilder embedBuilder = new EmbedBuilder();
-                            embedBuilder.setColor(Color.orange);
-                            embedBuilder.setTitle("MelonScanner API Timed Out for " + api.endpoint);
-                            MessageEmbed embed = embedBuilder.build();
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
-                        }
-                        catch (Exception e2) { e2.printStackTrace(); }
+                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.endpoint);
                     }
                     catch (IOException exception) {
                         System.err.println("Fetching " + api.endpoint + " timedout:");
 
-                        try {
-                            EmbedBuilder embedBuilder = new EmbedBuilder();
-                            embedBuilder.setColor(Color.orange);
-                            embedBuilder.setTitle("MelonScanner API Connection Closed for " + api.endpoint);
-                            MessageEmbed embed = embedBuilder.build();
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
-                        }
-                        catch (Exception e2) { e2.printStackTrace(); }
+                        ExceptionUtils.reportException("MelonScanner API Connection Closed for " + api.endpoint, exception);
                     }
                     catch (Exception exception) {
                         System.err.println("Exception while fetching " + api.endpoint + ":");
                         exception.printStackTrace();
 
-                        try {
-                            EmbedBuilder embedBuilder = new EmbedBuilder();
-                            embedBuilder.setColor(Color.red);
-                            embedBuilder.setTitle("MelonScanner API Exception for " + api.endpoint);
-                            String exceptionString = exception.getMessage() + "\n" + ExceptionUtils.getStackTrace(exception);
-                            if (exceptionString.length() > 2048)
-                                exceptionString = exceptionString.substring(0, 2044) + " ...";
-                            embedBuilder.setDescription(exceptionString);
-                            MessageEmbed embed = embedBuilder.build();
-
-                            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
-                        }
-                        catch (Exception e2) { e2.printStackTrace(); }
+                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.endpoint, exception);
                     }
                 }
 

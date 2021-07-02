@@ -44,8 +44,8 @@ public final class ExceptionUtils {
             if(exception != null){
                 exception.printStackTrace();
                 exceptionString.concat(ExceptionUtils.getStackTrace(exception));
-                if (exceptionString.length() > 2048)
-                    exceptionString = exceptionString.substring(0, 2044) + " ...";
+                if (exceptionString.length() > MessageEmbed.TEXT_MAX_LENGTH)
+                    exceptionString = exceptionString.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...";
                 embedBuilder.setDescription(exceptionString);
             }
             MessageEmbed embed = embedBuilder.build();
