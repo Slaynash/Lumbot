@@ -35,6 +35,10 @@ public class VRCApiVersionScanner {
                 try {
                     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+                    if (response.body() == null || response.body().isEmpty()){
+                        throw new Exception("VRChat API provided empty response");
+                    }
+
                     VRCAPIConfig config = gson.fromJson(response.body(), VRCAPIConfig.class);
 
                     if (lastBVT == null) {
