@@ -103,7 +103,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(off|you|stfu|kill|gun)\\b.*")) {
+        if (message.matches(".*\\b(off|fuck|stfu|kill|gun)\\b.*")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
             return true;
