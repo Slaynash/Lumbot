@@ -29,6 +29,7 @@ public final class ExceptionUtils {
         String exceptionString = "";
 
         try {
+            JDAManager.getJDA().awaitReady(); //wait until connected to report early Exceptions
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.red);
             if(textChannel == null){
