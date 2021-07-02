@@ -136,7 +136,7 @@ public class Main extends ListenerAdapter {
                 if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
                 }
-                else System.out.println("loadScreeningRolesList is formated badly");
+                else System.err.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
         } catch (IOException e) {
@@ -376,7 +376,7 @@ public class Main extends ListenerAdapter {
                     Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
                 } catch (Exception e) {
-                    System.out.println("Failed to register slash command for: " + loopGuild.getName());
+                    System.err.println("Failed to register slash command for: " + loopGuild.getName());
                 }
             }
         } catch (Exception e) {
@@ -392,7 +392,7 @@ public class Main extends ListenerAdapter {
                 "Exception while handling JDA event:", event.getCause());
         }
         catch (Exception e) {
-            System.out.println("Failed to report exception:");
+            System.err.println("Failed to report exception:");
             e.printStackTrace();
         }
     }
