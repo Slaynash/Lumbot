@@ -1,10 +1,10 @@
 package slaynash.lum.bot.discord;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,10 +16,9 @@ import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
-import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ScamShield {
 
@@ -86,7 +85,7 @@ public class ScamShield {
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-            String reportChannel = CommandManager.mlReportChannels.get(GuildID);
+            String reportChannelID = CommandManager.mlReportChannels.get(GuildID);
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
@@ -111,22 +110,24 @@ public class ScamShield {
                     embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
             }
 
-            MessageEmbed builtEmbed = embedBuilder.build();
-            if(builtEmbed.isEmpty()){
-                ExceptionUtils.reportException("Scam Shield report Embed is empty", "Guild: " + GuildID);
-                return true;
-            }
-            if (reportChannel != null){
+            if (reportChannelID != null){
+                TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
-                ssQueued = event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(builtEmbed).queueAfter(10, TimeUnit.SECONDS);
+                if(event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
+                    ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
+                else 
+                    ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).queueAfter(10, TimeUnit.SECONDS);
             }
-            else
-                event.getTextChannel().sendMessageEmbeds(builtEmbed).queue();
-
+            else{
+                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setlogchannel` to set the report channel.");
+                if(event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
+                    event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                else 
+                    event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
+            }
             return true;
         }
         return false;
     }
-
 }
