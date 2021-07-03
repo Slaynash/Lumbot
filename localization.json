@@ -47,7 +47,7 @@
         "melonscanner.brokenmods.fieldname": "Currently Broken Mods:",
         "melonscanner.brokenmods.more": "- and %s more...",
 
-        "melonscanner.oldmods.fieldname": "Old and Outdated Mods:",
+        "melonscanner.oldmods.fieldname": "Old or Invaild Mods:",
         "melonscanner.oldmods.more": "- and %s more...",
 
         "melonscanner.unknownmods.fieldname": "Unverified/Unknown Mods:",
@@ -130,7 +130,7 @@
         "melonscanner.brokenmods.fieldname": "Mods actuellement cassés:",
         "melonscanner.brokenmods.more": "- et %s autres...",
 
-        "melonscanner.oldmods.fieldname": "Mods anciens et obsolètes:",
+        "melonscanner.oldmods.fieldname": "Mods anciens ou invalides:",
         "melonscanner.oldmods.more": "- et %s autres...",
 
         "melonscanner.unknownmods.fieldname": "Mods inconnus/non-vérifiés:",
@@ -141,7 +141,7 @@
         "melonscanner.misplacedmods.warning": "Veuillez déplacer les mods suivant de votre dossier Plugins à votre dossier Mods.",
         "melonscanner.misplacedmods.more": "- et %s autres...",
 
-        "melonscanner.misplacedplugins.fieldname": "Misplaced Plugins:",
+        "melonscanner.misplacedplugins.fieldname": "Plugins égarés:",
         "melonscanner.misplacedplugins.warning": "Veuillez déplacer les plugs suivant de votre dossier Mods à votre dossier Plugins.",
         "melonscanner.misplacedplugins.more": "- et %s autres...",
 
