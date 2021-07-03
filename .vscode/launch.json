@@ -8,7 +8,7 @@
             "type": "java",
             "name": "Launch",
             "request": "launch",
-            "mainClass": "slaynash.lum.bot.discord.Main",
+            "mainClass": "slaynash.lum.bot.Main",
             "projectName": "Lumbot"
         }
     ]

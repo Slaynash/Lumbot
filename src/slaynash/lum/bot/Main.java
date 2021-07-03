@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Type;
+import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.JDAManager;
@@ -51,7 +52,7 @@ public class Main extends ListenerAdapter {
     public static JDA jda;
     public static boolean isShuttingDown = false;
 
-    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
+    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException {
         System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
@@ -87,6 +88,8 @@ public class Main extends ListenerAdapter {
         loadMLReportChannels();
         loadVRCBuild();
         loadGuildConfigs();
+
+        API.start();
 
         MelonScanner.init();
 
