@@ -42,7 +42,6 @@ public class MelonScanContext {
     // VRChat / emmVRC
     public String emmVRCVRChatBuild;
     public String emmVRCVersion;
-    public String emmVRCHash;
 
     // Mod listing - temp
     public boolean preListingMods = false;

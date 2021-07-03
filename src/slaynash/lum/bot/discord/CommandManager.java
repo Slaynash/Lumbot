@@ -22,7 +22,6 @@ import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
-import slaynash.lum.bot.discord.commands.SetEmmHash;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
@@ -50,7 +49,6 @@ public class CommandManager {
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
     
     public static String vrchatBuild = "1";
-    public static String emmVRCHash  = "1";
 
     protected static void registerCommand(Command command) {
         List<Command> list = commands;
@@ -107,7 +105,6 @@ public class CommandManager {
         CommandManager.registerCommand(new MLBrokenModsCommand());
         
         CommandManager.registerCommand(new SetVRCBuild());
-        CommandManager.registerCommand(new SetEmmHash());
 
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new ThawServer());
