@@ -3,7 +3,6 @@ package slaynash.lum.bot.api;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -21,7 +20,6 @@ public class APIClient {
 	private BufferedOutputStream outputStream;
 	
 	private Thread listenThread;
-	private static PrintWriter fileOut;
 
     public APIClient(Socket socket, int id) {
         this.id = id;
@@ -71,12 +69,6 @@ public class APIClient {
 			else {
 				try {
 					System.out.println("[Connection " + id + " (" + socket.getPort() + ")] [Request] " + ln);
-					
-
-					synchronized(fileOut) {
-						fileOut.println(ln);
-						fileOut.flush();
-					}
 					
 					String[] parts = ln.split(" ", 3);
 					if(parts.length < 3 || !parts[2].startsWith("HTTP/")) {
@@ -129,10 +121,6 @@ public class APIClient {
 								if(requestUrl[0].matches(entry.getKey())) {
 									WebResponse response = entry.getValue().handle(request);
 									System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Response: " + new String(response.data, StandardCharsets.UTF_8));
-									synchronized(fileOut) {
-										fileOut.println(new String(response.data, StandardCharsets.UTF_8));
-										fileOut.flush();
-									}
 									sendResponse(response, request.method != RequestMethod.HEAD);
 									return true;
 								}
