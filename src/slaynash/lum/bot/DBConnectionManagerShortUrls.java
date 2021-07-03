@@ -20,7 +20,6 @@ public final class DBConnectionManagerShortUrls {
     public static void init() {
         try {
             System.out.println("[DB] Connecting to Database...");
-            Class.forName("com.mysql.jdbc.Driver").getDeclaredConstructor().newInstance();
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
             connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabase, ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("[DB] Connection to Database initialised");

@@ -52,7 +52,7 @@ public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-
+        System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
         });
