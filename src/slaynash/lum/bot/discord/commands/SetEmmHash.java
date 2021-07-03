@@ -51,7 +51,7 @@ public class SetEmmHash extends Command {
     
     
     private boolean checkPerms(MessageReceivedEvent event) {
-        Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
+        long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         if (category == 600914209303298058L)
             return true;
         else
