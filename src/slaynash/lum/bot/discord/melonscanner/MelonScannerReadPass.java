@@ -367,6 +367,11 @@ public final class MelonScannerReadPass {
             System.out.println("EmmVRC " + context.emmVRCVersion);
             return true;
         }
+        else if (line.matches("\\[[0-9.:]+\\] \\[emmVRCLoader\\] emmVRC module: .*")) {
+            context.emmVRCHash = line.split("module:", 2)[1].trim().toLowerCase();
+            System.out.println("EmmVRC Hash" + context.emmVRCVersion);
+            return true;
+        }
         return false;
     }
 

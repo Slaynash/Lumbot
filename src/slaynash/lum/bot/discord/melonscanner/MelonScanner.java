@@ -94,6 +94,7 @@ public final class MelonScanner {
             }
 
             unofficialMLCheck(context);
+            unofficialEmmCheck(context);
             prepareEmbed(context);
             fileAgeCheck(context);
             fillEmbedDescription(context);
@@ -313,6 +314,20 @@ public final class MelonScanner {
         context.modifiedML = true;
         System.out.println("unknown hash");
         reportUserModifiedML(context.messageReceivedEvent);
+    }
+
+    private static void unofficialEmmCheck(MelonScanContext context) {
+        if (context.emmVRCHash == null)
+            return;
+        
+        if (ServerMessagesHandler.checkIfStaff(context.messageReceivedEvent))
+            return;
+        
+        if (context.emmVRCHash == CommandManager.emmVRCHash)
+            return;
+
+        System.out.println("Modified emmVRC");
+        reportUserModifiedEmm(context.messageReceivedEvent);
     }
 
     private static void prepareEmbed(MelonScanContext context) {
@@ -783,7 +798,18 @@ public final class MelonScanner {
                             Color.orange)).queue();
         }
     }
-    
+
+    private static void reportUserModifiedEmm(MessageReceivedEvent event) {
+        long guildID = event.getGuild().getIdLong();
+        String reportChannel = CommandManager.mlReportChannels.get(guildID); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
+        if (reportChannel != null && (guildID == 600298024425619456L || guildID == 439093693769711616L || guildID == 663449315876012052L)) {
+            event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
+                    JDAManager.wrapMessageInEmbed(
+                            "User <@" + event.getMember().getId() + "> is using a modified or old emmVRC.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                            Color.orange)).queue();
+        }
+    }
+
     private static String sanitizeInputString(String input) {
         if(input == null) input = "";
 

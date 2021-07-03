@@ -85,6 +85,7 @@ public class Slash {
             }
             if (guild != null){
                 if (event.getUser().getId().equals(guild.getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
+                    System.out.println("sent config for " + guild.getName());
                     event.reply("Server Config for " + guild.getName() + ": " + guildID)
                         .addActionRow(
                             config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),

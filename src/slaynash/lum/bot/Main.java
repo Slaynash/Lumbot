@@ -86,6 +86,7 @@ public class Main extends ListenerAdapter {
         loadMLVRCHash();
         loadMLReportChannels();
         loadVRCBuild();
+        loadEmmHash();
         loadGuildConfigs();
 
         MelonScanner.init();
@@ -187,6 +188,21 @@ public class Main extends ListenerAdapter {
                 CommandManager.vrchatBuild = line.trim();
             else
                 CommandManager.vrchatBuild = "1";
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void loadEmmHash() {
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("emmvrchash.txt"));
+            String line = reader.readLine();
+            if (line != null)
+                CommandManager.emmVRCHash = line.trim();
+            else
+                CommandManager.emmVRCHash = "1";
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();

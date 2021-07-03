@@ -49,6 +49,7 @@ public class CommandManager {
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
     
     public static String vrchatBuild = "1";
+    public static String emmVRCHash  = "1";
 
     protected static void registerCommand(Command command) {
         List<Command> list = commands;
