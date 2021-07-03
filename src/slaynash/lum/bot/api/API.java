@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import slaynash.lum.bot.api.endpoints.ReloadMelonscannererrorsEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadTranslationsEndpoint;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -43,6 +44,7 @@ public class API {
 			.create();
         
         endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
+        endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonscannererrorsEndpoint());
 
         socket = new ServerSocket(28644);
         
@@ -50,7 +52,8 @@ public class API {
             while (true) {
                 try {
                     Socket clientSocket = socket.accept();
-                    APIClient client = new APIClient(clientSocket, totalConnectionCount++);
+                    new APIClient(clientSocket, totalConnectionCount++);
+                    // APIClient client = new APIClient(clientSocket, totalConnectionCount++);
                     // if (client.valid)
                     //     clients.add(client);
                 } catch (IOException e) {

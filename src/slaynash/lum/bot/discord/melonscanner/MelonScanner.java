@@ -255,7 +255,7 @@ public final class MelonScanner {
             final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.GetVersion(logsModDetails.version) : null;
             //String modHash = logsModDetails.hash;
                 
-            for (MelonLoaderError modSpecificError : MelonLoaderError.modSpecificErrors) {
+            for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
                 if (modSpecificError.regex.equals(modName)) {
                     context.errors.add(modSpecificError);
                     break;

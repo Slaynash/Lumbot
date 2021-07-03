@@ -1,11 +1,11 @@
-name: Localization CD
+name: Melon Scanner Errors CD
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'localization.json'
+      - 'melonscannererrors.json'
       - '!src/**'
       - '!pom.xml'
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            python3 ~/downloadLocalization.py localization.json
+            python3 ~/downloadMelonscannererrors.py melonscannererrors.json
 
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}

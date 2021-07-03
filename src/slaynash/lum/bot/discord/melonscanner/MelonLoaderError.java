@@ -15,12 +15,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import slaynash.lum.bot.utils.ExceptionUtils;
+
 public class MelonLoaderError {
     
-    public static final List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<>();
-    public static final List<MelonLoaderError> knownErrors = new ArrayList<>();
-    public static final Map<String, List<MelonLoaderError>> gameSpecificErrors = new HashMap<>();
-    public static final List<MelonLoaderError> modSpecificErrors = new ArrayList<>();
+    private static final List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<>();
+    private static final List<MelonLoaderError> knownErrors = new ArrayList<>();
+    private static final Map<String, List<MelonLoaderError>> gameSpecificErrors = new HashMap<>();
+    private static final List<MelonLoaderError> modSpecificErrors = new ArrayList<>();
     
     public static final MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
     public static final MelonLoaderError mlMissing = new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exeption list and reinstall MelonLoader.");
@@ -39,7 +41,7 @@ public class MelonLoaderError {
     }
     
 
-    public static void init() {
+    public static boolean init() {
 
         Gson gson = new Gson();
 
@@ -47,16 +49,59 @@ public class MelonLoaderError {
             String data = lines.collect(Collectors.joining("\n"));
 
             HashMap<String, JsonElement> filedata = gson.fromJson(data, new TypeToken<HashMap<String, JsonElement>>() {}.getType());
-            knownUnhollowerErrors.addAll(gson.fromJson(filedata.get("unhollowerErrors"), new TypeToken<ArrayList<MelonLoaderError>>() {}.getType()));
-            knownErrors.addAll(gson.fromJson(filedata.get("knownErrors"), new TypeToken<ArrayList<MelonLoaderError>>() {}.getType()));
-            gameSpecificErrors.putAll(gson.fromJson(filedata.get("gameSpecificErrors"), new TypeToken<HashMap<String, List<MelonLoaderError>>>() {}.getType()));
-
-            HashMap<String, String> modSpecificErrorsTemp = gson.fromJson(filedata.get("modSpecificErrors"), new TypeToken<HashMap<String, String>>() {}.getType());
-            for (Entry<String, String> modSpecificError : modSpecificErrorsTemp.entrySet())
-                modSpecificErrors.add(new MelonLoaderError(modSpecificError.getKey(), modSpecificError.getValue()));
+            synchronized (knownUnhollowerErrors) {
+                knownUnhollowerErrors.clear();
+                knownUnhollowerErrors.addAll(gson.fromJson(filedata.get("unhollowerErrors"), new TypeToken<ArrayList<MelonLoaderError>>() {}.getType()));
+            }
+            synchronized (knownErrors) {
+                knownErrors.clear();
+                knownErrors.addAll(gson.fromJson(filedata.get("knownErrors"), new TypeToken<ArrayList<MelonLoaderError>>() {}.getType()));
+            }
+            synchronized (gameSpecificErrors) {
+                gameSpecificErrors.clear();
+                gameSpecificErrors.putAll(gson.fromJson(filedata.get("gameSpecificErrors"), new TypeToken<HashMap<String, List<MelonLoaderError>>>() {}.getType()));
+            }
+            synchronized (modSpecificErrors) {
+                modSpecificErrors.clear();
+                HashMap<String, String> modSpecificErrorsTemp = gson.fromJson(filedata.get("modSpecificErrors"), new TypeToken<HashMap<String, String>>() {}.getType());
+                for (Entry<String, String> modSpecificError : modSpecificErrorsTemp.entrySet())
+                    modSpecificErrors.add(new MelonLoaderError(modSpecificError.getKey(), modSpecificError.getValue()));
+            }
         }
         catch (IOException exception) {
-            exception.printStackTrace();
+            ExceptionUtils.reportException("Failed to load MelonLoader Errors", exception);
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean reload() {
+        return init();
+    }
+
+
+    public static List<MelonLoaderError> getKnownUnhollowerErrors() {
+        synchronized (knownUnhollowerErrors) {
+            return new ArrayList<>(knownUnhollowerErrors);
+        }
+    }
+
+    public static List<MelonLoaderError> getKnownErrors() {
+        synchronized (knownErrors) {
+            return new ArrayList<>(knownErrors);
+        }
+    }
+
+    public static Map<String, List<MelonLoaderError>> getGameSpecificErrors() {
+        synchronized (gameSpecificErrors) {
+            return new HashMap<>(gameSpecificErrors);
+        }
+    }
+
+    public static List<MelonLoaderError> getModSpecificErrors() {
+        synchronized (modSpecificErrors) {
+            return new ArrayList<>(modSpecificErrors);
         }
     }
 

@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 public final class MelonScannerReadPass {
@@ -427,7 +429,7 @@ public final class MelonScannerReadPass {
 
 
     private static boolean unhollowerErrorCheck(String line, MelonScanContext context) {
-        for (MelonLoaderError knownError : MelonLoaderError.knownUnhollowerErrors) {
+        for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
             if (line.matches(knownError.regex)) {
                 if (!context.assemblyGenerationFailed && !context.errors.contains(knownError))
                     context.errors.add(knownError);
@@ -441,7 +443,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean knownErrorCheck(String line, MelonScanContext context) {
-        for (MelonLoaderError knownError : MelonLoaderError.knownErrors) {
+        for (MelonLoaderError knownError : MelonLoaderError.getKnownErrors()) {
             if (line.matches(knownError.regex)) {
                 if (!context.errors.contains(knownError))
                     context.errors.add(knownError);
@@ -450,8 +452,9 @@ public final class MelonScannerReadPass {
                 return true;
             }
         }
-        if (context.game != null && MelonLoaderError.gameSpecificErrors.containsKey(context.game)) {
-            for (MelonLoaderError knownGameError : MelonLoaderError.gameSpecificErrors.get(context.game)) {
+        Map<String, List<MelonLoaderError>> gameSpecificErrors = MelonLoaderError.getGameSpecificErrors();
+        if (context.game != null && gameSpecificErrors.containsKey(context.game)) {
+            for (MelonLoaderError knownGameError : gameSpecificErrors.get(context.game)) {
                 if (line.matches(knownGameError.regex)) {
                     if (!context.errors.contains(knownGameError))
                         context.errors.add(knownGameError);
