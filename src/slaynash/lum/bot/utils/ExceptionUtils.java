@@ -103,6 +103,7 @@ public final class ExceptionUtils {
                 exceptionString.concat(ExceptionUtils.getStackTrace(exception));
                 if (exceptionString.length() > MessageEmbed.TEXT_MAX_LENGTH)
                     exceptionString = exceptionString.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...";
+                System.out.println("exceptionString: " + exceptionString);
                 embedBuilder.setDescription(exceptionString);
             }
             MessageEmbed embed = embedBuilder.build();
