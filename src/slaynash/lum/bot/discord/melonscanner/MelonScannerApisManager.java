@@ -150,8 +150,8 @@ public class MelonScannerApisManager {
 
                                 String name = mod.get("name").checkjstring();
                                 System.out.println("[API] Processing mod " + name);
-                                String approvalStatus = "";
-                                if (mod.get("approvalStatus").checkjstring().isEmpty())
+                                String approvalStatus = "0";
+                                if (mod.get("approvalStatus") != null)
                                     approvalStatus = mod.get("approvalStatus").checkjstring();
                                 String version = mod.get("version").checkjstring();
                                 String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
