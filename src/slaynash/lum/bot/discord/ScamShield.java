@@ -25,12 +25,12 @@ public class ScamShield {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     private static ScheduledFuture<?> ssQueued;
-    
+
     public static boolean checkForFishing(MessageReceivedEvent event) {
 
-        Long GuildID = event.getGuild().getIdLong();
+        Long guildID = event.getGuild().getIdLong();
 
-        if(ServerMessagesHandler.checkIfStaff(event))
+        if (ServerMessagesHandler.checkIfStaff(event))
             return false;
 
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
@@ -56,7 +56,7 @@ public class ScamShield {
         suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;
         suspiciousValue += message.contains("made a game") ? 2 : 0;
-        if (suspiciousValue > 0){
+        if (suspiciousValue > 0) {
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
             suspiciousValue += message.contains("bit.ly") ? 2 : 0;
@@ -74,10 +74,10 @@ public class ScamShield {
         if (suspiciousValue > 3 && suspiciousValue < 7) //if one message gets 7+ then it is a instant ban on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
-            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, GuildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
+            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == GuildID)
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
 
         int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
@@ -85,24 +85,24 @@ public class ScamShield {
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-            String reportChannelID = CommandManager.mlReportChannels.get(GuildID);
+            String reportChannelID = CommandManager.mlReportChannels.get(guildID);
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
-            if(event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)){
+            if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
-                " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */+" We highly recommend that you change your password immediately.")).complete();
+                " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
                 event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
-                LogCounter.AddSSCounter(userId, message, event.getGuild().getId()); // add to status counter
+                LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else {
-                if(event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)){
+                if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                     List<Message> messagelist = new ArrayList<>();
                     sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
-                    if(messagelist.size() == 1)
+                    if (messagelist.size() == 1)
                         event.getMessage().delete().queue();
                     else if (messagelist.size() > 1)
                         event.getTextChannel().deleteMessages(messagelist).queue();
@@ -112,20 +112,20 @@ public class ScamShield {
                     embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
             }
 
-            if (reportChannelID != null){
+            if (reportChannelID != null) {
                 TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
-                if(event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
+                if (event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
                     ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
-                else 
+                else
                     ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).queueAfter(10, TimeUnit.SECONDS);
             }
-            else{
+            else {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setlogchannel` to set the report channel.");
-                if(event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
+                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-                else 
+                else
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
             return true;

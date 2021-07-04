@@ -13,7 +13,7 @@ import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.LuaPackages;
 
 public class CommandLaunchCommand extends Command {
-    
+
     @Override
     protected void onServer(String command, MessageReceivedEvent event) {
         System.out.println("loading lua file commands/" + event.getMessage().getContentRaw().split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_"));
@@ -35,10 +35,10 @@ public class CommandLaunchCommand extends Command {
         }
         return false;
     }
-    
+
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
         return false;
     }
-    
+
 }

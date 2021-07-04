@@ -1,7 +1,7 @@
 package slaynash.lum.bot.discord;
 
 public class ReactionListener {
-    
+
     public String messageId;
     public String emoteId;
     public String roleId;
@@ -11,5 +11,5 @@ public class ReactionListener {
         this.emoteId = emoteId;
         this.roleId = roleId;
     }
-    
+
 }

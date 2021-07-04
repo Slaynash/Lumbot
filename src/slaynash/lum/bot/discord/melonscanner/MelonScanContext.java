@@ -17,13 +17,13 @@ public class MelonScanContext {
     public final Attachment attachment;
     public final MessageReceivedEvent messageReceivedEvent;
     public final String lang;
-    
+
     // Read pass
 
     public BufferedReader bufferedReader;
 
     public int omittedLineCount = 0;
-    
+
     public boolean pirate = false;
     public boolean consoleCopyPaste = false;
     public boolean modifiedML = false;
@@ -103,7 +103,7 @@ public class MelonScanContext {
 
     public boolean isMLOutdated;
     public boolean unidentifiedErrors;
-    
+
     public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent, String lang) {
         this.attachment = attachment;
         this.messageReceivedEvent = messageReceivedEvent;

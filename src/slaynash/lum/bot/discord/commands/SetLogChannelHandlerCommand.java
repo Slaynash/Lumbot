@@ -6,10 +6,10 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
 public class SetLogChannelHandlerCommand extends Command {
-    
+
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if(!paramMessageReceivedEvent.getMember().hasPermission(Permission.VIEW_AUDIT_LOGS)) {
+        if (!paramMessageReceivedEvent.getMember().hasPermission(Permission.VIEW_AUDIT_LOGS)) {
             paramMessageReceivedEvent.getChannel().sendMessage("Error: You need to have the View Audit Logs permission").queue();
             return;
         }
@@ -17,20 +17,20 @@ public class SetLogChannelHandlerCommand extends Command {
         paramMessageReceivedEvent.getChannel().sendMessage("Successfully set log channel").queue();
         CommandManager.saveLogChannels();
     }
-    
+
     @Override
     protected boolean matchPattern(String paramString) {
         return paramString.split(" ", 2)[0].equals("l!setlogchannel");
     }
-    
+
     @Override
     public String getHelpName() {
         return "l!setlogchannel";
     }
-    
+
     @Override
     public String getHelpDescription() {
         return "Set the log channel to the current one.";
     }
-    
+
 }

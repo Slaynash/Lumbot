@@ -8,14 +8,14 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 
 public class MLSetMinForVRC extends Command {
-    
+
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (paramMessageReceivedEvent.getMember().getIdLong() != 145556654241349632L && ( // Slaynash
+        if (paramMessageReceivedEvent.getMember().getIdLong() != 145556654241349632L && (// Slaynash
             paramMessageReceivedEvent.getGuild().getIdLong() != 439093693769711616L || // VRChat Modding Group
             paramMessageReceivedEvent.getChannel().getIdLong() != 729855750561595405L)) // #staff-bot-commands
             return;
-        
+
         String[] parts = paramString.split(" ", 3);
 
         if (parts.length != 3) {
@@ -25,10 +25,10 @@ public class MLSetMinForVRC extends Command {
 
         String hash = parts[1];
         System.out.println("[MLSetMinForVRC] hash: " + paramString);
-        
-        if(!hash.matches("^[0-9]{5,}$"))
+
+        if (!hash.matches("^[0-9]{5,}$"))
             paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: l!setvrcmlversion <ml hash> <ml release time>\nExample: l!setvrcmlversion 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
-        
+
         CommandManager.melonLoaderVRCHash = hash;
         CommandManager.melonLoaderVRCMinDate = parts[2];
         CommandManager.saveMLVRCHash();
@@ -39,19 +39,19 @@ public class MLSetMinForVRC extends Command {
     protected boolean matchPattern(String paramString) {
         return paramString.split(" ", 2)[0].equals("l!setvrcmlversion");
     }
-    
+
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return event.getMember().getIdLong() == 145556654241349632L || ( // Slaynash
+        return event.getMember().getIdLong() == 145556654241349632L || (// Slaynash
             event.getGuild().getIdLong() != 439093693769711616L && // VRChat Modding Group
             event.getChannel().getIdLong() != 729855750561595405L); // #staff-bot-commands
     }
-    
+
     @Override
     public String getHelpDescription() {
         return "Set the minimal required version of MelonLoader for VRChat";
     }
-    
+
     @Override
     public String getHelpName() {
         return "l!setvrcmlversion";

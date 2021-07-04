@@ -6,7 +6,7 @@ import java.util.List;
 public class MelonDuplicateMod {
 
     public final List<String> names = new ArrayList<>();
-    
+
     public MelonDuplicateMod(String name1, String name2) {
         names.add(name1);
         if (!name1.equals(name2))

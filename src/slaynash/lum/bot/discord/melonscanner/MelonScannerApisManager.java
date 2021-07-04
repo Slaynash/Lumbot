@@ -41,16 +41,15 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class MelonScannerApisManager {
 
     private static List<MelonScannerApi> apis = new ArrayList<>();
-    
-    private final static HttpClient httpClient = HttpClient.newBuilder()
+
+    private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(Redirect.ALWAYS)
             .build();
 
     private static Gson gson = new Gson();
     private static Globals server_globals;
-    
-    
+
     private static Thread fetchThread;
     private static Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
@@ -61,7 +60,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json", false /* Check using hashes? */));
     }
-    
+
     public static void startFetchingThread() {
         fetchThread = new Thread(() -> {
             while (true) {
@@ -85,7 +84,7 @@ public class MelonScannerApisManager {
                         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                         if (response.statusCode() < 200 || response.statusCode() >= 400)
                             throw new Exception("Failed to fetch remote API data (server returned code " + response.statusCode() + ")");
-                        
+
                         String apiDataRaw = response.body();
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
@@ -96,8 +95,8 @@ public class MelonScannerApisManager {
                             server_globals.load(new JseBaseLib());
                             server_globals.load(new PackageLib());
                             server_globals.load(new JseMathLib());
-                            
-                            server_globals.set("base64toLowerHexString", new base64toLowerHexString());
+
+                            server_globals.set("base64toLowerHexString", new Base64toLowerHexString());
 
                             LoadState.install(server_globals);
                             LuaC.install(server_globals);
@@ -109,8 +108,8 @@ public class MelonScannerApisManager {
                         user_globals.load(new Bit32Lib());
                         user_globals.load(new TableLib());
                         user_globals.load(new JseMathLib());
-                            
-                        user_globals.set("base64toLowerHexString", new base64toLowerHexString());
+
+                        user_globals.set("base64toLowerHexString", new Base64toLowerHexString());
 
                         user_globals.set("data", CoerceJavaToLua.coerce(data));
 
@@ -119,7 +118,7 @@ public class MelonScannerApisManager {
                         fis.close();
 
                         // Parse data returned by script
-                        
+
                         List<MelonApiMod> apiMods = new ArrayList<>();
 
                         if (modsLuaRaw == LuaValue.FALSE)
@@ -131,12 +130,14 @@ public class MelonScannerApisManager {
                             Varargs n;
                             while (!(k = (n = mods.next(k)).arg1()).isnil()) {
                                 LuaValue v = n.arg(2);
-                                try { k.checkint(); }
+                                try {
+                                    k.checkint();
+                                }
                                 catch (LuaError e) {
                                     System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
                                     continue;
                                 }
-                                
+
                                 LuaTable mod = null;
                                 try {
                                     mod = v.checktable();
@@ -185,18 +186,18 @@ public class MelonScannerApisManager {
                                         break;
                                     }
                                 }
-                                
+
                                 if (currentMod == null)
                                     currentMods.add(newMod);
                                 else {
                                     // TODO compare using aliases too
-                                    if (VersionUtils.CompareVersion(newMod.versions[0].version, currentMod.versions[0].version) > 0) {
+                                    if (VersionUtils.compareVersion(newMod.versions[0].version, currentMod.versions[0].version) > 0) {
                                         // TODO merge rather than replace
                                         currentMods.remove(currentMod);
                                         currentMods.add(newMod);
                                     }
                                 }
-                                
+
                             }
                         }
 
@@ -228,9 +229,12 @@ public class MelonScannerApisManager {
                 for (Entry<String, List<MelonApiMod>> entry : gamesTemp.entrySet())
                     games.put(entry.getKey(), entry.getValue());
 
-                    try {
-                        Thread.sleep(6 * 60 * 1000); // 10 times / hour (every 6 minutes)
-                    } catch (InterruptedException e) { e.printStackTrace(); }
+                try {
+                    Thread.sleep(6 * 60 * 1000); // 10 times / hour (every 6 minutes)
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
             }
         }, "MelonScannerApisManagerThread");
@@ -238,11 +242,10 @@ public class MelonScannerApisManager {
         fetchThread.start();
     }
 
-    
+
     // Additional classes
 
-    private static class base64toLowerHexString extends OneArgFunction
-    {
+    private static class Base64toLowerHexString extends OneArgFunction {
         @Override
         public LuaValue call(LuaValue arg) {
             return LuaValue.valueOf(bytesToHex(Base64.getDecoder().decode(arg.checkjstring())).toLowerCase());
@@ -281,7 +284,7 @@ public class MelonScannerApisManager {
     public static String getDownloadLinkForMod(String game, String missingModName) {
         if (game == null)
             return null;
-        
+
         List<MelonApiMod> mods = games.get(game);
         if (mods == null)
             return null;

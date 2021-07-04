@@ -35,12 +35,12 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class CommandManager {
     private static List<Command> commands = new ArrayList<Command>();
     private static boolean init = false;
-    
+
     public static List<ReactionListener> reactionListeners = new ArrayList<>();
     public static Map<Long, String> logChannels = new HashMap<>();
     public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
     public static Map<Long, Long> autoScreeningRoles = new HashMap<>();
-    
+
     public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static Map<Long, String> mlReportChannels = new HashMap<>();
@@ -48,7 +48,7 @@ public class CommandManager {
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
-    
+
     public static String vrchatBuild = "1";
 
     protected static void registerCommand(Command command) {
@@ -83,7 +83,7 @@ public class CommandManager {
     public static void init() {
         if (init)
             return;
-        
+
         init = true;
         CommandManager.registerCommand(new HelpCommand());
         CommandManager.registerCommand(new RankColorCommand());
@@ -102,9 +102,9 @@ public class CommandManager {
         CommandManager.registerCommand(new MLHashRegisterCommand());
         CommandManager.registerCommand(new SetMLReportChannelCommand());
         CommandManager.registerCommand(new MLSetMinForVRC());
-        
+
         CommandManager.registerCommand(new MLBrokenModsCommand());
-        
+
         CommandManager.registerCommand(new SetVRCBuild());
 
         CommandManager.registerCommand(new LockDown());
@@ -114,88 +114,89 @@ public class CommandManager {
 
 
     public static void saveReactions() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolereactions.txt")))
-        {
-            for(ReactionListener rl : reactionListeners) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolereactions.txt"))) {
+            for (ReactionListener rl : reactionListeners) {
                 writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed save ReactionRoles", e);
         }
     }
 
     public static void saveScreenings() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolescreening.txt")))
-        {
-            for(Entry<Long, Long> pair : autoScreeningRoles.entrySet()) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolescreening.txt"))) {
+            for (Entry<Long, Long> pair : autoScreeningRoles.entrySet()) {
                 writer.write(pair.getKey() + " " + pair.getValue() + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save ScreeningRoles", e);
         }
     }
-    
+
     public static void saveLogChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("logchannels.txt")))
-        {
-            for(Entry<Long, String> logchannel : logChannels.entrySet()) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("logchannels.txt"))) {
+            for (Entry<Long, String> logchannel : logChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Log Channels", e);
         }
     }
-    
+
     public static void saveMLReportChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt")))
-        {
-            for(Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt"))) {
+            for (Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
         }
     }
-    
+
     public static void saveMLHashes() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt")))
-        {
-            for(MLHashPair s : melonLoaderHashes)
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt"))) {
+            for (MLHashPair s : melonLoaderHashes)
                 writer.write("r " + s.x86 + " " + s.x64 + "\n");
-            
-            for(MLHashPair s : melonLoaderAlphaHashes)
+
+            for (MLHashPair s : melonLoaderAlphaHashes)
                 writer.write("a " + s.x86 + " " + s.x64 + "\n");
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
         }
     }
 
     public static void saveMLVRCHash() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlvrchash.txt")))
-        {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlvrchash.txt"))) {
             writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save VRChat Hash", e);
         }
     }
-    
+
     public static void saveVerifyChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("verifychannels.txt")))
-        {
-            for(Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("verifychannels.txt"))) {
+            for (Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
                 writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Verify Channels", e);
         }
     }
 
     public static void saveBrokenVRChatMods() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("brokenvrcmods.txt"))) {
-            for(String s : brokenVrchatMods)
+            for (String s : brokenVrchatMods)
                 writer.write(s + "\n");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Broken VRChat Mods", e);
         }
     }
@@ -209,7 +210,8 @@ public class CommandManager {
                 }
                 writer.write("\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Guild Configs", e);
         }
     }

@@ -17,8 +17,8 @@ public final class LogCounter {
     private static int previousLogCount = 0;
     private static int previousSSCount = 0;
 
-    public static void AddtoCounter(Attachment attachment) {
-        try{
+    public static void addtoCounter(Attachment attachment) {
+        try {
             String directoryPath = workingPath.concat("/logs/");
 
             attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + attachment.getFileName())
@@ -32,8 +32,8 @@ public final class LogCounter {
         }
     }
 
-    public static void AddSSCounter(String bannedUser, String message, String guildID) {
-        try{
+    public static void addSSCounter(String bannedUser, String message, String guildID) {
+        try {
             String directoryPath = workingPath.concat("/SSlogs/");
 
             Files.writeString(Path.of(directoryPath, bannedUser + guildID + ".txt"), message);
@@ -46,14 +46,14 @@ public final class LogCounter {
         }
     }
 
-    public static void UpdateCounter() {
-        try{
+    public static void updateCounter() {
+        try {
             Date date = new Date();
             String directoryPath = workingPath.concat("/logs/");
             File directory = new File(directoryPath);
 
             int logCount = directory.listFiles().length;
-            if(logCount > 0){
+            if (logCount > 0) {
                 // remove folders that is older then 24 hours
                 for (File fileEntry : directory.listFiles()) {
                     if ((date.getTime() - fileEntry.lastModified()) > 24 * 60 * 60 * 1000) {
@@ -66,7 +66,7 @@ public final class LogCounter {
             directoryPath = workingPath.concat("/SSlogs/");
             directory = new File(directoryPath);
             int sslogCount = directory.listFiles().length;
-            if(sslogCount > 0){
+            if (sslogCount > 0) {
                 // remove folders that is older then 24 hours
                 for (File fileEntry : directory.listFiles()) {
                     if ((date.getTime() - fileEntry.lastModified()) > 24 * 60 * 60 * 1000) {
@@ -76,7 +76,7 @@ public final class LogCounter {
             }
             sslogCount = directory.listFiles().length;
 
-            if(logCount != previousLogCount || sslogCount != previousSSCount)
+            if (logCount != previousLogCount || sslogCount != previousSSCount)
                 JDAManager.getJDA().getPresence().setActivity(Activity.watching(logCount + " melons squashed and removed " + sslogCount + " scammers in 24 hours"));
             previousLogCount = logCount;
             previousSSCount = sslogCount;

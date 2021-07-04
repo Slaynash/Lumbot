@@ -8,14 +8,14 @@ import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 
 public class ThawServer extends Command {
-    
+
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) && !ServerMessagesHandler.checkIfStaff(event))
             return;
 
         Long lockedDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
-        if(lockedDownRole == null)
+        if (lockedDownRole == null)
             return;
 
         event.getGuild().getRoleById(lockedDownRole).getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
@@ -30,17 +30,17 @@ public class ThawServer extends Command {
     protected boolean matchPattern(String paramString) {
         return paramString.startsWith("l!thaw");
     }
-    
+
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
         return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || ServerMessagesHandler.checkIfStaff(event));
     }
-    
+
     @Override
     public String getHelpDescription() {
         return "Allow Members to send messages again after lockdown - Staff Only";
     }
-    
+
     @Override
     public String getHelpName() {
         return "l!thaw";

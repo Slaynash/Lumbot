@@ -11,22 +11,22 @@ public class MessageFinder {
     public boolean found = false;
     public Message message = null;
     public Throwable error = null;
-    
+
     public void findMessageAsync(Guild guild, String messageId, Consumer<Message> success, Consumer<Throwable> failure) {
         new Thread(() -> {
-            
+
             findMessage(guild, messageId);
-            if(error != null)
+            if (error != null)
                 failure.accept(error);
             else
                 success.accept(message);
-            
+
         }, "MessageFindThread " + guild.getId()).start();
     }
-    
+
     public void findMessage(Guild guild, String messageId) {
-        
-        for(TextChannel tc : guild.getTextChannels()) {
+
+        for (TextChannel tc : guild.getTextChannels()) {
             System.out.println("tc: " + tc);
             waiting = true;
             try {
@@ -35,24 +35,26 @@ public class MessageFinder {
                     found = true;
                     waiting = false;
                 }, failure -> {
-                    //System.err.println("F: " + failure.getMessage());
-                    if(!failure.getMessage().startsWith("10008")) {
-                        error = failure;
-                        found = true;
-                    }
-                    waiting = false;
-                });
+                        //System.err.println("F: " + failure.getMessage());
+                        if (!failure.getMessage().startsWith("10008")) {
+                            error = failure;
+                            found = true;
+                        }
+                        waiting = false;
+                    });
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 waiting = false;
                 System.out.println("Failed to read channel " + tc + ": " + e.getMessage());
             }
-            
-            while(waiting) {
-                try{Thread.sleep(1);}catch(Exception e){}
+
+            while (waiting) {
+                try {
+                    Thread.sleep(1);
+                }
+                catch (Exception e) { }
             }
-            if(found)
+            if (found)
                 break;
         }
     }

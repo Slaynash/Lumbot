@@ -6,7 +6,7 @@ public class MelonOutdatedMod {
     String currentVersion;
     String latestVersion;
     String downloadUrl;
-    
+
     public MelonOutdatedMod(String name, String newName, String currentVersion, String latestVersion, String downloadUrl) {
         this.name = name;
         this.newName = newName;

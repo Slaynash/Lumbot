@@ -8,7 +8,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public final class UrlShortener {
     private UrlShortener() {}
 
-    public static String GetShortenedUrl(String baseUrl) {
+    public static String getShortenedUrl(String baseUrl) {
         String result = "";
 
         // Check if already exists
@@ -19,7 +19,8 @@ public final class UrlShortener {
                 DBConnectionManagerShortUrls.closeRequest(rs);
                 return "https://s.slaynash.fr/" + result;
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to fetch shorten url from database", e);
             return "";
         }
@@ -40,7 +41,8 @@ public final class UrlShortener {
 
             return "https://s.slaynash.fr/" + result;
 
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to save shorten url in database", e);
             return "";
         }

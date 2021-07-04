@@ -3,7 +3,7 @@
 // import net.dv8tion.jda.api.entities.Member;
 // import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 // import slaynash.lum.bot.discord.Command;
-// import slaynash.lum.bot.discord.CrossServerUtils;
+// import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 // public class ReportBugCommand extends Command {
 

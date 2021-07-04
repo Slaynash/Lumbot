@@ -19,7 +19,7 @@ public final class ExceptionUtils {
         public String comment;
         public Throwable exception;
         public TextChannel textChannel;
-        
+
         public QueuedException(String title, String comment, Throwable exception, TextChannel textChannel) {
             this.title = title;
             this.comment = comment;
@@ -36,9 +36,9 @@ public final class ExceptionUtils {
             reportDiscord(exception.title, exception.comment, exception.exception, exception.textChannel);
         }
     }
-    
+
     /**
-    Returns a String representation of the exception's stack trace
+    Returns a String representation of the exception's stack trace.
     @param exception The target exception
     */
     public static String getStackTrace(Throwable exception) {
@@ -49,16 +49,34 @@ public final class ExceptionUtils {
 
         return sw.toString();
     }
-    
+
+    public static void reportException(String title) {
+        reportException(title, null, null, null);
+    }
+
+    public static void reportException(String title, String comment) {
+        reportException(title, comment, null, null);
+    }
+
+    public static void reportException(String title, Throwable exception) {
+        reportException(title, null, exception, null);
+    }
+    public static void reportException(String title, String comment, Throwable exception) {
+        reportException(title, comment, exception, null);
+    }
+    public static void reportException(String title, Throwable exception, TextChannel textChannel) {
+        reportException(title, null, exception, textChannel);
+    }
+
     public static void reportException(String title, String comment, Throwable exception, TextChannel textChannel) {
         if (comment != null)
             System.err.println(title + ": " + comment + ":");
         else
             System.err.println(title + ":");
-        
+
         if (exception != null)
             exception.printStackTrace();
-        
+
         if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
             queuedExceptions.add(new QueuedException(title, comment, exception, textChannel));
         else
@@ -81,17 +99,17 @@ public final class ExceptionUtils {
             if (comment != null) {
                 exceptionString.concat(comment + "\n");
             }
-            if(exception != null) {
+            if (exception != null) {
                 exceptionString.concat(ExceptionUtils.getStackTrace(exception));
                 if (exceptionString.length() > MessageEmbed.TEXT_MAX_LENGTH)
                     exceptionString = exceptionString.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...";
                 embedBuilder.setDescription(exceptionString);
             }
             MessageEmbed embed = embedBuilder.build();
-            if(!embed.isEmpty())
+            if (!embed.isEmpty())
                 JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
 
-            if(textChannel != null){
+            if (textChannel != null) {
                 EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
                 sorryEmbedBuilder.setColor(Color.red);
                 sorryEmbedBuilder.setTitle(title);
@@ -101,24 +119,8 @@ public final class ExceptionUtils {
                     textChannel.sendMessageEmbeds(sorryEmbed).queue();
             }
         }
-        catch (Exception e2) { e2.printStackTrace(); }
-    }
-
-    public static void reportException(String title, Throwable exception) {
-        reportException(title, null, exception, null);
-    }
-    public static void reportException(String title, String comment, Throwable exception) {
-        reportException(title, comment, exception, null);
-    }
-    public static void reportException(String title, Throwable exception, TextChannel textChannel) {
-        reportException(title, null, exception, textChannel);
-    }
-
-    public static void reportException(String title, String comment) {
-        reportException(title, comment, null, null);
-    }
-
-    public static void reportException(String title) {
-        reportException(title, null, null, null);
+        catch (Exception e2) {
+            e2.printStackTrace();
+        }
     }
 }

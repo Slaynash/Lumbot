@@ -9,7 +9,7 @@ public final class ArrayUtils {
         for (T alias : aliases)
             if ((alias == null && value == null) || alias.equals(value))
                 return true;
-        
+
         return false;
     }
 
@@ -20,8 +20,8 @@ public final class ArrayUtils {
         for (long alias : aliases)
             if (alias == value)
                 return true;
-        
+
         return false;
     }
-    
+
 }

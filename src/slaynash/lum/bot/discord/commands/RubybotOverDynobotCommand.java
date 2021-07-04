@@ -9,15 +9,15 @@ public class RubybotOverDynobotCommand extends Command {
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
         paramMessageReceivedEvent.getChannel().sendMessage("<:SmugSip:743484784415866950>").queue();
     }
-    
+
     @Override
     protected boolean matchPattern(String paramString) {
         return paramString.trim().toLowerCase().replace(" ", "").equals("rubybot>dynobot");
     }
-    
+
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
         return false;
     }
-    
+
 }

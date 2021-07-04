@@ -25,19 +25,19 @@ public final class ConfigManager {
     public static String discordPrefix;
 
     public static void init() {
-        if(initialized)
+        if (initialized)
             return;
         initialized = true;
-        
+
         File settingsFile = new File(SETTINGS_FILE);
-        
-        if(!settingsFile.exists()) {
+
+        if (!settingsFile.exists()) {
             System.err.println(SETTINGS_FILE + " missing");
             System.exit(-1);
         }
 
         try (FileInputStream fis = new FileInputStream(SETTINGS_FILE)) {
-            
+
             properties.load(fis);
 
             discordToken = properties.getProperty("DISCORD_TOKEN");
@@ -50,7 +50,8 @@ public final class ConfigManager {
 
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load config", e);
         }
     }

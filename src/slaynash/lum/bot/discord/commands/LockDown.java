@@ -8,14 +8,14 @@ import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 
 public class LockDown extends Command {
-    
+
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) && !ServerMessagesHandler.checkIfStaff(event))
             return;
-        
+
         Long lockDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
-        if(lockDownRole == null)
+        if (lockDownRole == null)
             return;
 
         event.getGuild().getRoleById(lockDownRole).getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
@@ -30,17 +30,17 @@ public class LockDown extends Command {
     protected boolean matchPattern(String paramString) {
         return paramString.startsWith("l!lockdown");
     }
-    
+
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
         return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || ServerMessagesHandler.checkIfStaff(event));
     }
-    
+
     @Override
     public String getHelpDescription() {
         return "Prevent Members from sending messages in all channels for emergencies - Staff only";
     }
-    
+
     @Override
     public String getHelpName() {
         return "l!lockdown";

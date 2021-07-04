@@ -5,7 +5,7 @@ public class LogsModDetails {
     public String version;
     public String author;
     public String hash;
-    
+
     public LogsModDetails(String name, String version, String author, String hash) {
         this.name = name;
         this.version = version;

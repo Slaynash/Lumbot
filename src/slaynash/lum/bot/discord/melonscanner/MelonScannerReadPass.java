@@ -11,7 +11,7 @@ import java.util.concurrent.ExecutionException;
 
 public final class MelonScannerReadPass {
 
-    public static boolean DoPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
+    public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";
@@ -46,7 +46,6 @@ public final class MelonScannerReadPass {
                     if (processIncompatibilityListing(line, context))
                         continue;
 
-                
                 if (line.isBlank()) continue;
 
                 if (
@@ -114,7 +113,7 @@ public final class MelonScannerReadPass {
     private static boolean processML03ModListing(String line, MelonScanContext context) throws IOException {
         if (line.isBlank())
             return true;
-        
+
         else if (context.preListingMods && line.matches("\\[[0-9.:]+\\] ------------------------------"));
         else if (context.preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Plugins Loaded!") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} No Mods Loaded!"))) {
             context.remainingModCount = 0;
@@ -124,9 +123,9 @@ public final class MelonScannerReadPass {
                 context.noPlugins = true;
             else
                 context.noMods = true;
-            
+
             System.out.println("No mod/plugins loaded for this pass");
-            
+
             return true;
         }
         else if (context.preListingMods && (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Plugins? Loaded") || line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} [0-9]+ Mods? Loaded"))) {
@@ -135,7 +134,7 @@ public final class MelonScannerReadPass {
             context.listingMods = true;
             System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");
             context.bufferedReader.readLine(); // Skip line separator
-            
+
             return true;
         }
         else if (context.listingMods && context.tmpModName == null) {
@@ -150,9 +149,9 @@ public final class MelonScannerReadPass {
         }
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
             String[] temp = line.split(" ");
-            if(temp.length>2)
+            if (temp.length > 2)
                 context.tmpModAuthor = line.split(" ")[2];
-            else 
+            else
                 context.tmpModAuthor = "Broken Author";
             return true;
         }
@@ -162,28 +161,28 @@ public final class MelonScannerReadPass {
         }
         // TODO handle incompatible mods
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ------------------------------")) {
-            
+
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
-            
+
             if (context.loadedMods.containsKey(context.tmpModName) && !context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
-                
+
             context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
             //if (tmpModAuthor != null)
             //    modAuthors.put(tmpModName.trim(), tmpModAuthor.trim());
-            
+
             context.tmpModName = null;
             context.tmpModVersion = null;
             context.tmpModAuthor = null;
             context.tmpModHash = null;
-            
+
             --context.remainingModCount;
-            
+
             if (context.remainingModCount == 0) {
                 context.preListingMods = false;
                 context.listingMods = false;
                 System.out.println("Done scanning mods");
-                
+
                 return true;
             }
         }
@@ -210,23 +209,23 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean oldModCheck(String line, MelonScanContext context) {
-        if(line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")){
-            if(line.contains("Could not load file or assembly '")){
+        if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Resolve Melons for.*")) {
+            if (line.contains("Could not load file or assembly '")) {
                 String missingName = line.split("Could not load file or assembly '")[1].split(",")[0];
                 if (!context.missingMods.contains(missingName))
                     context.missingMods.add(missingName);
                 return true;
             }
-            else if(line.contains("exception")){
+            else if (line.contains("exception")) {
                 String[] split = line.split("\\\\");
-                String erroringName = split[split.length-1].split("\\.")[0];
+                String erroringName = split[split.length - 1].split("\\.")[0];
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
                 return true;
             }
             else {
                 String[] split = line.split("\\\\");
-                String oldName = split[split.length-1].split("\\.")[0];
+                String oldName = split[split.length - 1].split("\\.")[0];
                 if (!context.oldMods.contains(oldName))
                     context.oldMods.add(oldName);
                 return true;
@@ -235,7 +234,7 @@ public final class MelonScannerReadPass {
 
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Invalid Author given to MelonInfoAttribute.*")) {
             String[] split = line.split("\\\\");
-            String oldName = split[split.length-1].split("\\.")[0];
+            String oldName = split[split.length - 1].split("\\.")[0];
             if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
             return true;
@@ -249,7 +248,7 @@ public final class MelonScannerReadPass {
             if (!context.missingMods.contains(missingModName)) {
                 if ("NKHook6".contains(missingModName) && !context.errors.contains(MelonLoaderError.nkh6))
                     context.errors.add(MelonLoaderError.nkh6);
-                else 
+                else
                     context.missingMods.add(missingModName);
             }
             return true;
@@ -337,12 +336,12 @@ public final class MelonScannerReadPass {
             String version = split3.length > 1 ? split3[1] : null;
 
             context.loadedMods.put(name.trim(), new LogsModDetails(name, version, author, null));
-            
+
             String compatibility = line.split("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} Game Compatibility: ", 2)[1];
             // TODO incompatible mod check
             //if (!compatibility.equals("Compatible") && !compatibility.equals("Universal"))
             //    context.incompatibleMods.add(name);
-            
+
             System.out.println("Found mod " + name.trim() + ", version is " + version + ", compatibility is " + compatibility);
             return true;
         }
@@ -419,7 +418,7 @@ public final class MelonScannerReadPass {
 
     private static boolean missingMLFileCheck(String line, MelonScanContext context) {
         if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
-            if(context.missingMods.size() == 0 && !context.readingMissingDependencies && !context.pre3)
+            if (context.missingMods.size() == 0 && !context.readingMissingDependencies && !context.pre3)
                 if (!context.errors.contains(MelonLoaderError.mlMissing))
                     context.errors.add(MelonLoaderError.mlMissing); //Mod missing ML files
             return true;

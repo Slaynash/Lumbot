@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 */
+
 package com.coder4.emoji;
 
 import java.util.Arrays;
@@ -457,13 +458,13 @@ public class EmojiUtils {
         }
         return sb.toString();
     }
-    
+
     public static boolean isOneEmoji(String str) {
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
-        if(cpCnt != 1)
+        if (cpCnt != 1)
             return false;
-        
+
         int codepoint = str.codePointAt(0);
         return EMOJI_HASH_SET.contains(toHexStr(codepoint));
     }

@@ -16,7 +16,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public final class Localization {
 
     public static Map<String, Map<String, String>> localizations = new HashMap<>();
-    
+
     public static boolean init() {
         Gson gson = new Gson();
 
@@ -56,7 +56,7 @@ public final class Localization {
                     return key;
                 return get(key, "en");
             }
-            
+
             locale = langMap.get(key);
             if (locale == null) {
                 if (lang.equals("en"))

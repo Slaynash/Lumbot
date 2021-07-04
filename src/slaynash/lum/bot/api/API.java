@@ -16,38 +16,38 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class API {
 
     public static Map<String, Endpoint> endpoints = new HashMap<>();
-    
+
     public static Gson gson;
-    
+
     private static ServerSocket socket;
     private static int totalConnectionCount;
 
-    
+
     public static void start() throws IOException {
-        
+
         gson = new GsonBuilder()
-			//.serializeNulls()
-			.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
+            //.serializeNulls()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
             /*
-			.registerTypeAdapter(WorldInstanceInfos.class, new JsonSerializer<WorldInstanceInfos>() {
-				@Override
-				public JsonElement serialize(WorldInstanceInfos src, Type typeOfSrc, JsonSerializationContext context) {
-					JsonArray serialized = new JsonArray();
-	
-					serialized.add(src.id);
-					serialized.add(src.users);
-	
-			        return serialized;
-				}
-			})
+            .registerTypeAdapter(WorldInstanceInfos.class, new JsonSerializer<WorldInstanceInfos>() {
+                @Override
+                public JsonElement serialize(WorldInstanceInfos src, Type typeOfSrc, JsonSerializationContext context) {
+                    JsonArray serialized = new JsonArray();
+
+                    serialized.add(src.id);
+                    serialized.add(src.users);
+
+                    return serialized;
+                }
+            })
             */
-			.create();
-        
+            .create();
+
         endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
         endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonscannererrorsEndpoint());
 
         socket = new ServerSocket(28644);
-        
+
         Thread thread = new Thread(() -> {
             while (true) {
                 try {
@@ -56,7 +56,8 @@ public class API {
                     // APIClient client = new APIClient(clientSocket, totalConnectionCount++);
                     // if (client.valid)
                     //     clients.add(client);
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     ExceptionUtils.reportException("Failed to handle API request", e);
                 }
             }

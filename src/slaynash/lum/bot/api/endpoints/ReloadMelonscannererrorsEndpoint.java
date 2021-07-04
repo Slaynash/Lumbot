@@ -10,19 +10,19 @@ public class ReloadMelonscannererrorsEndpoint extends Endpoint {
     @Override
     public WebResponse handle(WebRequest request) {
         System.out.println("Reloading Melon Scanner Errors");
-        
+
         WebResponse r = new WebResponse();
-		r.AddHeader("Content-Type", "application/json");
+        r.addHeader("Content-Type", "application/json");
 
         if (MelonLoaderError.reload()) {
             r.setData("{\"result\":\"OK\"}");
         }
         else {
             r.returnCode = 500;
-		    r.setData("{\"result\":\"Failed\"}");
+            r.setData("{\"result\":\"Failed\"}");
         }
-        
-		return r;
+
+        return r;
     }
 
 }

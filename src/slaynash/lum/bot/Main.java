@@ -62,7 +62,7 @@ public class Main extends ListenerAdapter {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
             MelonScanner.shutdown();
-            
+
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
             jda
@@ -120,12 +120,13 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 3 && parts[0].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
+                if (parts.length == 3 && parts[0].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
                     CommandManager.reactionListeners.add(new ReactionListener(parts[0], parts[1], parts[2]));
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load RoleReactions", e);
         }
     }
@@ -137,17 +138,18 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
-                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
+                if (parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.autoScreeningRoles.put(Long.parseLong(parts[0]), Long.parseLong(parts[1]));
                 }
                 else System.err.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load ScreeningRoles", e);
         }
     }
-    
+
     private static void loadMLHashes() {
         BufferedReader reader;
         try {
@@ -165,7 +167,8 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Hashes", e);
         }
     }
@@ -177,7 +180,8 @@ public class Main extends ListenerAdapter {
             CommandManager.melonLoaderVRCHash = reader.readLine();
             CommandManager.melonLoaderVRCMinDate = reader.readLine();
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load VRChat Hash", e);
         }
     }
@@ -192,11 +196,12 @@ public class Main extends ListenerAdapter {
             else
                 CommandManager.vrchatBuild = "1";
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load VRChat Build infos", e);
         }
     }
-    
+
     private static void loadMLReportChannels() {
         BufferedReader reader;
         try {
@@ -204,16 +209,17 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
+                if (parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.mlReportChannels.put(Long.parseLong(parts[0]), parts[1]);
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Report Channels", e);
         }
     }
-    
+
     private static void loadLogchannelList() {
         BufferedReader reader;
         try {
@@ -221,16 +227,17 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
-                if(parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
+                if (parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
                     CommandManager.logChannels.put(Long.parseLong(parts[0]), parts[1]);
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Log Channels", e);
         }
     }
-    
+
     private static void loadVerifychannelList() {
         BufferedReader reader;
         try {
@@ -238,16 +245,17 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 5);
-                if(parts.length == 3 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
+                if (parts.length == 3 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$") && parts[2].matches("^\\d+$")) {
                     CommandManager.verifyChannels.put(Long.parseLong(parts[0]), new VerifyPair(parts[1], parts[2]));
                 }
             }
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Verify Channels", e);
         }
     }
-    
+
     private static void loadMelonLoaderVersions() {
         BufferedReader reader;
         try {
@@ -255,7 +263,8 @@ public class Main extends ListenerAdapter {
             MelonScanner.latestMLVersionRelease = reader.readLine().trim();
             MelonScanner.latestMLVersionBeta = reader.readLine().trim();
             reader.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
         }
     }
@@ -275,7 +284,8 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
             GuildConfigurations.configurations = tempMap;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Guild Configs", e);
         }
     }
@@ -284,7 +294,8 @@ public class Main extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) {
             PrivateMessagesHandler.handle(event);
-        } else {
+        }
+        else {
             ServerMessagesHandler.handle(event);
         }
     }
@@ -293,22 +304,22 @@ public class Main extends ListenerAdapter {
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
         //System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + " (isEmote: " + event.getReactionEmote().isEmote() + ", is Emoji: " + EmojiUtils.containsEmoji(event.getReactionEmote().getName()) + ")");
         for (ReactionListener rl : CommandManager.reactionListeners) {
-            if(event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
+            if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
-                if(role != null) {
+                if (role != null) {
                     event.getGuild().addRoleToMember(event.getMember(), role).queue();
-                    WriteLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to <@" + event.getUser().getId() + ">");
+                    writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to <@" + event.getUser().getId() + ">");
                 }
                 return;
             }
         }
     }
-    
-    private void WriteLogMessage(Guild guild, String message) {
+
+    private void writeLogMessage(Guild guild, String message) {
         String channelId = null;
-        if((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
-            for(TextChannel c : guild.getTextChannels()) {
-                if(c.getId().equals(channelId)) {
+        if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
+            for (TextChannel c : guild.getTextChannels()) {
+                if (c.getId().equals(channelId)) {
                     ((TextChannel)c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
@@ -318,12 +329,12 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-        for(ReactionListener rl : CommandManager.reactionListeners) {
-            if(event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
+        for (ReactionListener rl : CommandManager.reactionListeners) {
+            if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
-                if(role != null) {
+                if (role != null) {
                     event.getGuild().removeRoleFromMember(event.getUserId(), role).queue();
-                    WriteLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from <@" + event.getUserId() + ">");
+                    writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from <@" + event.getUserId() + ">");
                 }
                 return;
             }
@@ -341,20 +352,20 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event){
+    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         Moderation.voiceJoin(event);
     }
 
     @Override
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event){
+    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
         Moderation.voiceLeave(event);
     }
 
     @Override
-    public void onGuildJoin(GuildJoinEvent event){
+    public void onGuildJoin(GuildJoinEvent event) {
         event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
-            "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n" +
-            "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+            "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
+            + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
         event.getGuild().upsertCommand("config", "send server config buttons for this guild").queue(); // register Guild command for newly joined server
     }
 
@@ -373,22 +384,24 @@ public class Main extends ListenerAdapter {
         ExceptionUtils.processExceptionQueue();
     }
 
-    private static void registerCommands(){
+    private static void registerCommands() {
         Guild loopGuild = null;
         try {
             JDAManager.getJDA().setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
             JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
                 .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
-            for(Guild tempGuild : JDAManager.getJDA().getGuilds()){
+            for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
                 loopGuild = tempGuild;
                 try {
                     Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     System.err.println("Failed to register slash command for: " + loopGuild.getName());
                 }
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException(
                 "Error registering command for " + loopGuild.getName() + " :", e);
         }

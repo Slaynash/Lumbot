@@ -12,7 +12,7 @@ public class MelonApiMod {
         this.downloadLink = downloadLink;
         this.aliases = aliases;
     }
-    
+
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases, String hash) {
         this(name, new ModVersion[] {new ModVersion(version, hash)}, downloadLink, aliases);
     }
@@ -20,7 +20,7 @@ public class MelonApiMod {
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases) {
         this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases);
     }
-    
+
     public MelonApiMod(String name, String version, String downloadLink) {
         this(name, version, downloadLink, new String[0], null);
     }

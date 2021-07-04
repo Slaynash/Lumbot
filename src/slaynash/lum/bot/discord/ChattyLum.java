@@ -1,26 +1,26 @@
 package slaynash.lum.bot.discord;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.time.Instant;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ChattyLum {
-    
+
     private static class HelpedRecentlyData {
         public long time;
         public long userid;
         public long channelid;
-    
+
         public HelpedRecentlyData(long userid, long channelid) {
             time = Instant.now().getEpochSecond();
             this.userid = userid;
             this.channelid = channelid;
         }
     }
-    
+
     private static final String[] alreadyHelpedSentences = new String[] {
         "I already answered you <:konataCry:553690186022649858>",
         "Why won't you read my answer <:angry:835647632843866122>",
@@ -34,7 +34,7 @@ public class ChattyLum {
         "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>",
         "<https://lmgtfy.app/?q=How+do+I+read>"
     };
-    
+
     private static final String[] thankedSentences = new String[] {
         "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>",
         "<:cirHappy:829458722634858496>",
@@ -80,17 +80,17 @@ public class ChattyLum {
         "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746"
     };
 
-    
+
     private static Random random = new Random();
-    
+
     private static final int helpDuration = 6 * 60; //in seconds
     private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
-    
+
 
     public static boolean handle(String message, MessageReceivedEvent event) {
         boolean hasLum = message.matches(".*\\blum\\b.*");
         if (
-            handleThanks(message, event) || 
+            handleThanks(message, event) ||
             handleHelp(message, event))
             return true;
 
@@ -158,7 +158,7 @@ public class ChattyLum {
 
     private static boolean handleHelp(String message, MessageReceivedEvent event) {
         if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
-            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage()==null) {
+            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null) {
                 System.out.println("Help was detected");
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;

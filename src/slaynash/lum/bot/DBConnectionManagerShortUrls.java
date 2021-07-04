@@ -14,7 +14,7 @@ public final class DBConnectionManagerShortUrls {
     private DBConnectionManagerShortUrls() {}
 
     private static final int DATABASE_TIMEOUT = 10; // in seconds
-    
+
     private static Connection connection;
     private static Map<ResultSet, PreparedStatement> requests = new HashMap<>();
     private static volatile int requestCount, updateCount, requestClosedCount, updateClosedCount;
@@ -33,31 +33,32 @@ public final class DBConnectionManagerShortUrls {
 
     private static Connection getConnection() {
         try {
-            if(connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
-                if(connection != null && !connection.isClosed()) connection.close();
+            if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
+                if (connection != null && !connection.isClosed()) connection.close();
                 init();
             }
             return connection;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to get database connection", e);
         }
         return null;
     }
-    
+
     public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
         requestCount++;
         PreparedStatement ps = getConnection().prepareStatement(statement);
-        for(int i=0;i<args.length;i++) {
-            if(args[i] == null)
+        for (int i = 0;i < args.length;i++) {
+            if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
-            else if(args[i].getClass() == String.class)
-                ps.setString(i+1, (String)args[i]);
-            else if(args[i].getClass() == Integer.class)
-                ps.setInt(i+1, (int)args[i]);
-            else if(args[i].getClass() == Boolean.class)
-                ps.setBoolean(i+1, (boolean)args[i]);
-            else if(args[i].getClass() == Long.class)
-                ps.setLong(i+1, (long)args[i]);
+            else if (args[i].getClass() == String.class)
+                ps.setString(i + 1, (String)args[i]);
+            else if (args[i].getClass() == Integer.class)
+                ps.setInt(i + 1, (int)args[i]);
+            else if (args[i].getClass() == Boolean.class)
+                ps.setBoolean(i + 1, (boolean)args[i]);
+            else if (args[i].getClass() == Long.class)
+                ps.setLong(i + 1, (long)args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[0].getClass() + "(arg number " + i + ")");
         }
         ResultSet rs = ps.executeQuery();
@@ -66,21 +67,21 @@ public final class DBConnectionManagerShortUrls {
         }
         return rs;
     }
-    
+
     public static int sendUpdate(String statement, Object... args) throws SQLException {
         updateCount++;
         PreparedStatement ps = getConnection().prepareStatement(statement);
-        for(int i=0;i<args.length;i++) {
-            if(args[i] == null)
+        for (int i = 0;i < args.length;i++) {
+            if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
-            else if(args[i].getClass() == String.class)
-                ps.setString(i+1, (String)args[i]);
-            else if(args[i].getClass() == Integer.class)
-                ps.setInt(i+1, (int)args[i]);
-            else if(args[i].getClass() == Boolean.class)
-                ps.setBoolean(i+1, (boolean)args[i]);
-            else if(args[i].getClass() == Long.class)
-                ps.setLong(i+1, (long)args[i]);
+            else if (args[i].getClass() == String.class)
+                ps.setString(i + 1, (String)args[i]);
+            else if (args[i].getClass() == Integer.class)
+                ps.setInt(i + 1, (int)args[i]);
+            else if (args[i].getClass() == Boolean.class)
+                ps.setBoolean(i + 1, (boolean)args[i]);
+            else if (args[i].getClass() == Long.class)
+                ps.setLong(i + 1, (long)args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
         int r = ps.executeUpdate();
@@ -88,14 +89,14 @@ public final class DBConnectionManagerShortUrls {
         updateClosedCount++;
         return r;
     }
-    
+
     public static void closeRequest(ResultSet resultSet) throws SQLException {
         PreparedStatement ps;
         synchronized (requests) {
             ps = requests.remove(resultSet);
         }
         resultSet.close();
-        if(ps != null) {
+        if (ps != null) {
             ps.close();
             requestClosedCount++;
         }

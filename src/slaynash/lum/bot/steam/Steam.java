@@ -2,8 +2,8 @@ package slaynash.lum.bot.steam;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Random;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import in.dragonbra.javasteam.enums.EResult;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSChangeData;
@@ -67,8 +67,12 @@ public class Steam {
 
             System.out.println("[Steam] Disconnected from Steam. Retrying in 5s...");
 
-            try { Thread.sleep(5 * 1000); }
-            catch (Exception e) { e.printStackTrace(); }
+            try {
+                Thread.sleep(5 * 1000);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
 
             client.connect();
         });
@@ -98,7 +102,7 @@ public class Steam {
         callbackManager.subscribe(PICSChangesCallback.class, callback -> {
             if (previousChangeNumber == callback.getCurrentChangeNumber())
                 return;
-            
+
             System.out.println("[Steam] Changelist " + previousChangeNumber + " -> " + callback.getCurrentChangeNumber() + " (" + callback.getAppChanges().size() + " apps, " + callback.getPackageChanges().size() + " packages)");
 
             previousChangeNumber = callback.getCurrentChangeNumber();
@@ -106,13 +110,13 @@ public class Steam {
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 System.out.println("[Steam] " + changeDataPair.getKey() + ": " + changeDataPair.getValue().getId());
                 if (changeDataPair.getKey() == gameId) {
-                    
+
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist available (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameId + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
                     MessageEmbed embed = eb.build();
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
-                    
+
                     apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
                 }
             }
@@ -124,8 +128,8 @@ public class Steam {
                 System.out.println("[Steam] [PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
                 if (app.getKey() != gameId)
                     return;
-                
-                PrintKeyValue(app.getValue().getKeyValues(), 1);
+
+                printKeyValue(app.getValue().getKeyValues(), 1);
                 /*
                 System.out.println("[Steam] [PICSProductInfoCallback]  > " + app.getValue().getHttpUri());
                 System.out.println("[Steam] [PICSProductInfoCallback]  > " + bytesToHex(app.getValue().getShaHash()));
@@ -142,7 +146,6 @@ public class Steam {
                     System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1).manifests.get("public"));
                     */
 
-                    
 
                     /*
                     System.out.println("Branches:");
@@ -156,7 +159,7 @@ public class Steam {
                     */
                     return;
                 }
-                
+
                 SteamAppDetails newAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
                 SteamAppDetails appChanges = SteamAppDetails.compare(vrchatAppDetails, newAppDetails);
 
@@ -171,24 +174,21 @@ public class Steam {
                     String description = "";
                     boolean isPublicBranchUpdate = false;
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
-                        if (!oldBranches.containsKey(changedBranch.getKey()))
-                        {
+                        if (!oldBranches.containsKey(changedBranch.getKey())) {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch created (`#" + branchDetails.buildid + "`)\n";
-                            if(branchDetails.description != null)
+                            if (branchDetails.description != null)
                                 description += " - Description: " + branchDetails.description + "\n";
                         }
-                        else if (!newBranches.containsKey(changedBranch.getKey()))
-                        {
+                        else if (!newBranches.containsKey(changedBranch.getKey())) {
                             //SteamAppDetails.SteamAppBranch branchDetails = oldBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch deleted\n";
                         }
-                        else
-                        {
+                        else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
-                            if(newBranchDetails.description != null)
+                            if (newBranchDetails.description != null)
                                 description += " - Description: " + newBranchDetails.description + "\n";
 
                             if (changedBranch.getKey().equals("public"))
@@ -210,14 +210,13 @@ public class Steam {
         });
     }
 
-    private static void PrintKeyValue(KeyValue keyvalue, int depth)
-    {
+    private static void printKeyValue(KeyValue keyvalue, int depth) {
         if (keyvalue.getChildren().size() == 0)
             System.out.println("[Steam] [PICSProductInfoCallback] " + " ".repeat(depth * 4) + " " + keyvalue.getName() + ": " + keyvalue.getValue());
         else {
             System.out.println("[Steam] [PICSProductInfoCallback] " + " ".repeat(depth * 4) + " " + keyvalue.getName() + ":");
             for (KeyValue child : keyvalue.getChildren())
-                PrintKeyValue(child, depth + 1);
+                printKeyValue(child, depth + 1);
         }
 
     }
@@ -245,8 +244,12 @@ public class Steam {
             while (currentHash == tickerHash) {
                 apps.picsGetChangesSince(previousChangeNumber, true, true);
 
-                try { Thread.sleep(random.nextInt(3210)); }
-                catch (Exception e) { e.printStackTrace(); }
+                try {
+                    Thread.sleep(random.nextInt(3210));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             System.out.println("[Steam] PICS ticker stopped #" + currentHash);
@@ -256,6 +259,7 @@ public class Steam {
     }
 
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+
     public static String bytesToHex(byte[] bytes) {
         byte[] hexChars = new byte[bytes.length * 2];
         for (int j = 0; j < bytes.length; j++) {
@@ -265,5 +269,5 @@ public class Steam {
         }
         return new String(hexChars, StandardCharsets.UTF_8);
     }
-    
+
 }

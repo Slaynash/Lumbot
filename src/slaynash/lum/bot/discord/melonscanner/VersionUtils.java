@@ -14,7 +14,7 @@ public final class VersionUtils {
     // left more recent: 1
     // identicals: 0
     // right more recent: -1
-    public static int CompareVersion(VersionData left, VersionData right) {
+    public static int compareVersion(VersionData left, VersionData right) {
         if (left.getIsValidSemver() != right.getIsValidSemver())
             return left.getIsValidSemver() ? 1 : -1;
 
@@ -35,11 +35,11 @@ public final class VersionUtils {
     // left more recent: 1
     // identicals: 0
     // right more recent: -1
-    public static int CompareVersion(String left, String right) {
-        return CompareVersion(GetVersion(left), GetVersion(right));
+    public static int compareVersion(String left, String right) {
+        return compareVersion(getVersion(left), getVersion(right));
     }
 
-    public static VersionData GetVersion(String versionString) {
+    public static VersionData getVersion(String versionString) {
         versionString = versionString != null ? versionString.trim() : null;
 
         if (versionString == null || versionString.equals(""))
@@ -53,8 +53,7 @@ public final class VersionUtils {
     }
 
 
-    public static class VersionData
-    {
+    public static class VersionData {
         private String raw;
         private List<Integer> numbers;
 

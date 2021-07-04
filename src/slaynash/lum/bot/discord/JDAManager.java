@@ -20,7 +20,8 @@ public class JDAManager {
     private static boolean init = false;
 
     public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
-        if(!init) init = true; else return;
+        if (!init) init = true;
+        else return;
         jda = JDABuilder.createDefault(token)
                 .addEventListeners(new Main())
                 .setChunkingFilter(ChunkingFilter.ALL)
@@ -29,17 +30,17 @@ public class JDAManager {
                 .build();
         jda.awaitReady();
     }
-    
+
     public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(color);
         if (message.length() > MessageEmbed.TEXT_MAX_LENGTH)
             eb.setDescription(message.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...");
-        else 
+        else
             eb.setDescription(message);
         return eb.build();
     }
-    
+
     public static JDA getJDA() {
         return jda;
     }

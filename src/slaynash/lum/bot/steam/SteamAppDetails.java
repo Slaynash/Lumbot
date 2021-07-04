@@ -17,13 +17,13 @@ public class SteamAppDetails {
     public SteamAppDetails(KeyValue keyValues) {
         appId = keyValues.get("appid").asString();
         System.out.println("appid: " + appId);
-        
+
         KeyValue common = keyValues.get("common");
         if (common != KeyValue.INVALID)
             this.common = new SteamAppDetailsCommon(common);
         else
             System.out.println("key \"common\" not found in " + keyValues.getName());
-        
+
         KeyValue depots = keyValues.get("depots");
         if (depots != KeyValue.INVALID)
             this.depots = new SteamAppDepots(depots);
@@ -66,7 +66,7 @@ public class SteamAppDetails {
                     Integer key = Integer.parseInt(element.getName());
                     elements.put(key, new SteamAppDepot(element));
                 }
-                catch(Exception e) {}
+                catch (Exception e) { }
             }
             KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())

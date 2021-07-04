@@ -33,9 +33,9 @@ public final class MelonScanner {
 
     public static String latestMLVersionRelease = "0.4.0"; // Is this really still hard coded?
     public static String latestMLVersionBeta = "0.4.0";
-    
-    private static Color melonPink = new Color(255, 59, 106); 
-    
+
+    private static Color melonPink = new Color(255, 59, 106);
+
     private static ScheduledExecutorService sheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public static void init() {
@@ -43,7 +43,7 @@ public final class MelonScanner {
         MelonScannerApisManager.startFetchingThread();
 
         sheduledExecutor.scheduleWithFixedDelay(() -> {
-            LogCounter.UpdateCounter();
+            LogCounter.updateCounter();
         }, 30, 30, TimeUnit.SECONDS);
     }
 
@@ -53,11 +53,11 @@ public final class MelonScanner {
 
 
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
-        
+
         try {
             String lang = "en";
 
-            if(messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
+            if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
                 lang = "fr";
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
@@ -74,7 +74,7 @@ public final class MelonScanner {
             Attachment attachment = attachments.stream().filter(a -> isValidFileFormat(a)).findFirst().orElse(null);
             if (attachment == null)
                 return;
-            
+
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
 
             if ("message.txt".equals(attachment.getFileName()))
@@ -83,14 +83,14 @@ public final class MelonScanner {
             if (oldEmmVRCLogCheck(context))
                 return;
 
-            if (!MelonScannerReadPass.DoPass(context))
+            if (!MelonScannerReadPass.doPass(context))
                 return;
 
-            VRCHashCheck(context);
+            vrcHashCheck(context);
 
-            if (GetModsFromApi(context)) {
-                CleanupDuplicateMods(context);
-                ProcessFoundMods(context);
+            if (getModsFromApi(context)) {
+                cleanupDuplicateMods(context);
+                processFoundMods(context);
             }
 
             unofficialMLCheck(context);
@@ -120,23 +120,23 @@ public final class MelonScanner {
                 if (context.isMLOutdatedVRC || context.isMLOutdated)
                     context.embedColor = melonPink;
 
-                if(!context.unidentifiedErrors)
+                if (!context.unidentifiedErrors)
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
             }
             else if (context.mlVersion != null || context.modifiedML) {
                 if (context.hasErrors) {
-                    context.embedBuilder.addField(Localization.get("melonscanner.unidentifiederrors.fieldname", lang), Localization.get("melonscanner.unidentifiederrors.field", lang) , false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.unidentifiederrors.fieldname", lang), Localization.get("melonscanner.unidentifiederrors.field", lang), false);
                     context.embedColor = Color.RED;
                 }
                 else {
-                    context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang) , false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang), false);
                     context.embedColor = Color.LIGHT_GRAY;
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
             }
-            
+
             if (issueFound || context.mlVersion != null) {
-                LogCounter.AddtoCounter(attachment);
+                LogCounter.addtoCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
@@ -183,12 +183,12 @@ public final class MelonScanner {
 
     // Logs thinkering
 
-    private static void VRCHashCheck(MelonScanContext context) {
+    private static void vrcHashCheck(MelonScanContext context) {
         if ("VRChat".equals(context.game)) {
             context.isMLOutdatedVRC = true;
             if (context.mlHashCode != null && "VRChat".equals(context.game)) {
                 System.out.println("game is vrc, checking hash");
-                
+
                 boolean hasVRChat1043ReadyML = false;
                 //boolean hasNotBrokenDeobfMap = false;
                 for (MLHashPair mlHashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
@@ -197,7 +197,7 @@ public final class MelonScanner {
                     //    hasNotBrokenDeobfMap = true;
                     if (mlHashes.x64.equals(CommandManager.melonLoaderVRCHash))
                         hasVRChat1043ReadyML = true;
-                    
+
                     if (mlHashes.x64.equals(context.mlHashCode)) {
                         System.out.println("matching hash found");
                         if (hasVRChat1043ReadyML)
@@ -211,11 +211,11 @@ public final class MelonScanner {
         }
     }
 
-    private static boolean GetModsFromApi(MelonScanContext context) {
+    private static boolean getModsFromApi(MelonScanContext context) {
         return (context.modDetails = MelonScannerApisManager.getMods(context.game)) != null;
     }
 
-    private static void CleanupDuplicateMods(MelonScanContext context) {
+    private static void cleanupDuplicateMods(MelonScanContext context) {
         Map<String, LogsModDetails> loadedMods = new HashMap<>();
         List<MelonDuplicateMod> duplicatedMods = new ArrayList<>(context.duplicatedMods);
 
@@ -248,13 +248,13 @@ public final class MelonScanner {
         context.duplicatedMods = duplicatedMods;
     }
 
-    private static void ProcessFoundMods(MelonScanContext context) {
+    private static void processFoundMods(MelonScanContext context) {
         for (Entry<String, LogsModDetails> entry : context.loadedMods.entrySet()) {
             final String modName = entry.getKey();
             final LogsModDetails logsModDetails = entry.getValue();
-            final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.GetVersion(logsModDetails.version) : null;
+            final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.getVersion(logsModDetails.version) : null;
             //String modHash = logsModDetails.hash;
-                
+
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
                 if (modSpecificError.regex.equals(modName)) {
                     context.errors.add(modSpecificError);
@@ -279,7 +279,7 @@ public final class MelonScanner {
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
                     latestModHash = modDetail.versions[0].hash;
-                    if(latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
+                    if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
                 }
             }
@@ -290,7 +290,7 @@ public final class MelonScanner {
             else if (CommandManager.brokenVrchatMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || VersionUtils.CompareVersion(latestModVersion, modVersion) > 0) {
+            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
                 context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
@@ -300,10 +300,10 @@ public final class MelonScanner {
     private static void unofficialMLCheck(MelonScanContext context) {
         if (context.mlHashCode == null)
             return;
-        
+
         if (ServerMessagesHandler.checkIfStaff(context.messageReceivedEvent))
             return;
-        
+
         for (MLHashPair hashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
             if (context.mlHashCode.equals(hashes.x64) || context.mlHashCode.equals(hashes.x86)) {
                 System.out.println("hash found in known hashes: ");
@@ -321,7 +321,7 @@ public final class MelonScanner {
         context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))
                             .setTimestamp(Instant.now())
                             .setFooter("Lum Log Scanner");
-        
+
         if (context.game != null) {
             switch (context.game) {
                 case "Among Us":
@@ -331,7 +331,7 @@ public final class MelonScanner {
                     context.embedBuilder.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                     break;
                 case "BloonsTD6":
-                    if(context.pirate)
+                    if (context.pirate)
                         context.embedBuilder.setThumbnail("https://i.redd.it/76et0pfu87e31.png"); //sad monkey
                     else
                         context.embedBuilder.setThumbnail("https://i.imgur.com/BSXtkvW.png");
@@ -354,6 +354,7 @@ public final class MelonScanner {
                 case "VRChat":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
                     break;
+                default:
             }
         }
     }
@@ -370,7 +371,7 @@ public final class MelonScanner {
             catch (Exception e) {
                 ExceptionUtils.reportException("Exception while reading log age", "File age: " + fileDateString, e);
             }
-            
+
             if (ageDays > 1) {
                 if (context.pre3)
                     context.reportMessage.append(Localization.getFormat("melonscanner.reportmessage.logdayolds", context.lang, ageDays) + "\n");
@@ -383,7 +384,7 @@ public final class MelonScanner {
     private static void fillEmbedDescription(MelonScanContext context) {
         //if (omittedLines > 0)
         //    message += "*Omitted " + omittedLines + " lines of length > 1000.*\n";
-                
+
         if (context.consoleCopyPaste)
             context.reportMessage.append("*" + Localization.get("melonscanner.reportmessage.copy", context.lang) + "*\n");
 
@@ -408,8 +409,8 @@ public final class MelonScanner {
         context.isMLOutdated = context.mlVersion != null && !(sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || sanitizeInputString(context.mlVersion).equals(latestMLVersionBeta));
 
         if (context.isMLOutdatedVRC) {
-            int result = VersionUtils.CompareVersion(latestMLVersionRelease, context.mlVersion);
-            switch(result){
+            int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
+            switch (result) {
                 case 1: //left more recent
                     context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
                     break;
@@ -434,12 +435,12 @@ public final class MelonScanner {
         if ((context.gameBuild != null) && "VRChat".equals(context.game)) {
             String[] tempString = context.gameBuild.split("-", 3);
             context.gameBuild = tempString.length > 1 ? tempString[1] : "0"; //VRChat build number
-            if(Integer.parseInt(context.gameBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+            if (Integer.parseInt(context.gameBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
             }
-            else if(Integer.parseInt(context.gameBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+            else if (Integer.parseInt(context.gameBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
@@ -447,12 +448,12 @@ public final class MelonScanner {
         }
         //for pre0.4.0 VRChat version checking with emmVRC
         else if (context.emmVRCVRChatBuild != null) {
-            if(Integer.parseInt(context.emmVRCVRChatBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+            if (Integer.parseInt(context.emmVRCVRChatBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
             }
-            else if(Integer.parseInt(context.emmVRCVRChatBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+            else if (Integer.parseInt(context.emmVRCVRChatBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
@@ -481,7 +482,7 @@ public final class MelonScanner {
                 error += "- " + sanitizeInputString(context.duplicatedMods.get(i) + "\n");
             if (context.duplicatedMods.size() > 10)
                 error += Localization.getFormat("melonscanner.duplicatemods.more", context.lang, context.duplicatedMods.size() - 10);
-           
+
             error += Localization.get("melonscanner.duplicatemods.warning", context.lang);
             context.embedBuilder.addField(Localization.get("melonscanner.duplicatemods.fieldname", context.lang), error, false);
             context.embedColor = Color.RED;
@@ -497,13 +498,13 @@ public final class MelonScanner {
                 String missingModName = context.missingMods.get(i);
                 String missingModDownloadLink = MelonScannerApisManager.getDownloadLinkForMod(context.game, missingModName);
                 if (missingModDownloadLink != null)
-                    error += "- [" + sanitizeInputString(missingModName) + "]("+ missingModDownloadLink +")\n";
+                    error += "- [" + sanitizeInputString(missingModName) + "](" + missingModDownloadLink + ")\n";
                 else
                     error += "- " + sanitizeInputString(missingModName) + "\n";
             }
             if (context.missingMods.size() > 10)
                 error += Localization.getFormat("melonscanner.missingmods.more", context.lang, context.missingMods.size() - 10);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
             return true;
@@ -520,7 +521,7 @@ public final class MelonScanner {
             }
             if (context.incompatibleMods.size() > 10)
                 error += Localization.getFormat("melonscanner.incompatibleMods.more", context.lang, context.incompatibleMods.size() - 10);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.incompatibleMods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
             return true;
@@ -532,13 +533,13 @@ public final class MelonScanner {
         if (context.corruptedMods.size() > 0) {
             String error = "";
             for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
-                if(context.corruptedMods.get(i).downloadLink != null)
+                if (context.corruptedMods.get(i).downloadLink != null)
                     error += "- [" + sanitizeInputString(context.corruptedMods.get(i).name) + "](" + context.corruptedMods.get(i).downloadLink + ")\n";
                 else
                     error += "- " + sanitizeInputString(context.corruptedMods.get(i).name + "\n");
             if (context.corruptedMods.size() > 10)
                 error += Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10);
-           
+
             error += Localization.get("melonscanner.corruptedmods.warning", context.lang);
             context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error, false);
             context.embedColor = Color.RED;
@@ -554,7 +555,7 @@ public final class MelonScanner {
                 error += "- " + sanitizeInputString(context.brokenMods.get(i) + "\n");
             if (context.brokenMods.size() > 20)
                 error += Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.brokenMods.size() - 20);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.brokenmods.fieldname", context.lang), error, false);
             context.embedColor = Color.RED;
             return true;
@@ -569,14 +570,14 @@ public final class MelonScanner {
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
                 boolean found = false;
                 String modName = context.oldMods.get(i);
-                if (context.modDetails != null){ //null check for games without an API
+                if (context.modDetails != null) { //null check for games without an API
                     for (MelonApiMod modDetail : context.modDetails) {
                         if (modDetail.name.equals(modName)) { //I not sure if all all APIs contain the recent name in aliases like for TLD so I just do a check
                             context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
                             found = true;
                             break;
                         }
-                        for(String alias : modDetail.aliases){
+                        for (String alias : modDetail.aliases) {
                             if (alias.equals(modName)) {
                                 context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
                                 found = true;
@@ -615,7 +616,7 @@ public final class MelonScanner {
             }
             if (context.unknownMods.size() > 10)
                 error += Localization.getFormat("melonscanner.unknownmods.more", context.lang, context.unknownMods.size() - 10);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.unknownmods.fieldname", context.lang), error, false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
@@ -633,8 +634,8 @@ public final class MelonScanner {
             }
             if (context.misplacedMods.size() > 10)
                 error += Localization.getFormat("melonscanner.misplacedmods.more", context.lang, context.misplacedMods.size() - 10);
-            
-            context.embedBuilder.addField(Localization.get("melonscanner.misplacedmods.fieldname", context.lang), error , false);
+
+            context.embedBuilder.addField(Localization.get("melonscanner.misplacedmods.fieldname", context.lang), error, false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
             return true;
@@ -651,7 +652,7 @@ public final class MelonScanner {
             }
             if (context.misplacedPlugins.size() > 10)
                 error += Localization.getFormat("melonscanner.misplacedplugins.more", context.lang, context.misplacedPlugins.size() - 10);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.misplacedplugins.fieldname", context.lang), error, false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
@@ -679,20 +680,20 @@ public final class MelonScanner {
             String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0), context);
             for (int i = 0; i < context.outdatedMods.size() && i < 20; ++i) {
                 error += nextModLine;
-                
+
                 if (i + 1 < context.outdatedMods.size())
                     nextModLine = computeOutdatedModLine(context.outdatedMods.get(i + 1), context);
-                else 
+                else
                     break; // no next outdated Mod
-                
-                if (error.length() + nextModLine.length() + muMessage.length() + 18 > 1024){
+
+                if (error.length() + nextModLine.length() + muMessage.length() + 18 > 1024) {
                     error += Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.outdatedMods.size() - i) + "\n"; //length is about 17 char
                     break;
                 }
             }
             if (context.outdatedMods.size() >= 3)
                 error += muMessage;
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error, false);
             context.embedColor = Color.ORANGE;
             return true;
@@ -701,7 +702,7 @@ public final class MelonScanner {
     }
 
     private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod, MelonScanContext context) {
-        String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.GetShortenedUrl(outdatedMod.downloadUrl) + ")");
+        String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.getShortenedUrl(outdatedMod.downloadUrl) + ")");
         String line = "- " + namePart + ": `" + sanitizeInputString(outdatedMod.currentVersion) + "` -> `" + outdatedMod.latestVersion + "`";
         if (!outdatedMod.name.equals(outdatedMod.newName))
             line += " (" + outdatedMod.newName + ")";
@@ -716,7 +717,7 @@ public final class MelonScanner {
                 error += "- " + sanitizeInputString(context.modsThrowingErrors.get(i)) + "\n";
             if (context.modsThrowingErrors.size() > 10)
                 error += Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.modsThrowingErrors.size() - 10);
-            
+
             context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error, false);
             context.embedColor = Color.RED;
             return true;
@@ -729,14 +730,14 @@ public final class MelonScanner {
             String error = "";
             if (context.noMods && context.missingMods.size() == 0 && context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
-                
-            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError)){
+
+            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError)) {
                 Long guildID = context.messageReceivedEvent.getGuild().getIdLong();
-                if(guildID == 600298024425619456L)
+                if (guildID == 600298024425619456L)
                     error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
-                else if(guildID == 439093693769711616L)
+                else if (guildID == 439093693769711616L)
                     error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
-                else if(guildID == 322211727192358914L || guildID == 835185040752246835L){
+                else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
                     error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
                     context.embedBuilder.setThumbnail("https://pbs.twimg.com/media/EU5rcX4WsAMcc-y?format=jpg");
                 }
@@ -747,9 +748,9 @@ public final class MelonScanner {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
                 context.unidentifiedErrors = true;
             }
-            
+
             if (error.length() > 0) {
-                context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error , false);
+                context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
             }
             else if (context.mlVersion != null && context.loadedMods.size() == 0) {
@@ -758,7 +759,7 @@ public final class MelonScanner {
             }
             else
                 return false;
-            
+
             return true;
         }
         return false;
@@ -787,18 +788,18 @@ public final class MelonScanner {
     }
 
     private static String sanitizeInputString(String input) {
-        if(input == null) input = "";
+        if (input == null) input = "";
 
         input = input
         .replace("](", " ")
         .replace("@", "@ ")
         .replace("*", "\\*")
         .replace("`", "\\`");
-        
+
         input = Pattern.compile("(nigg(er|a)|porn|penis)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
-        
+
         input = input.substring(0, input.length() > 50 ? 50 : input.length()); // limit inputs to 50 chars
-        
+
         return input;
     }
 
