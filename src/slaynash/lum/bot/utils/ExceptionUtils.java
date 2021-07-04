@@ -3,13 +3,42 @@ package slaynash.lum.bot.utils;
 import java.awt.Color;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import slaynash.lum.bot.discord.JDAManager;
 
 public final class ExceptionUtils {
+
+    private static class QueuedException {
+        public String title;
+        public String comment;
+        public Throwable exception;
+        public TextChannel textChannel;
+        
+        public QueuedException(String title, String comment, Throwable exception, TextChannel textChannel) {
+            this.title = title;
+            this.comment = comment;
+            this.exception = exception;
+            this.textChannel = textChannel;
+        }
+    }
+
+    private static final Queue<QueuedException> queuedExceptions = new LinkedList<>();
+
+    public static void processExceptionQueue() {
+        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
+            return;
+
+        while (queuedExceptions.peek() != null) {
+            QueuedException exception = queuedExceptions.remove();
+            reportDiscord(exception.title, exception.comment, exception.exception, exception.textChannel);
+        }
+    }
     
     /**
     Returns a String representation of the exception's stack trace
@@ -26,15 +55,25 @@ public final class ExceptionUtils {
     
     public static void reportException(String title, String comment, Throwable exception, TextChannel textChannel) {
         System.err.println(title);
-        String exceptionString = "";
 
+        if (exception != null)
+            exception.printStackTrace();
+        
+        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
+            queuedExceptions.add(new QueuedException(title, comment, exception, textChannel));
+        else
+            reportDiscord(title, comment, exception, textChannel);
+    }
+
+    private static void reportDiscord(String title, String comment, Throwable exception, TextChannel textChannel) {
+        String exceptionString = "";
         try {
-            JDAManager.getJDA().awaitReady(); //wait until connected to report early Exceptions
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.red);
-            if(textChannel == null){
+            if (textChannel == null) {
                 embedBuilder.setTitle(title);
-            } else{
+            }
+            else {
                 String channelName = textChannel.getGuild().getName() + " #" + textChannel.getName() + " > " + textChannel.getId();
                 String channelLink = "https://canary.discord.com/channels/" + textChannel.getGuild().getId() + "/" + textChannel.getId() + "/" + textChannel.getLatestMessageId();
                 embedBuilder.setTitle(title + " In " + channelName, channelLink);
@@ -42,8 +81,7 @@ public final class ExceptionUtils {
             if (comment != null) {
                 exceptionString.concat(comment + "\n");
             }
-            if(exception != null){
-                exception.printStackTrace();
+            if(exception != null) {
                 exceptionString.concat(ExceptionUtils.getStackTrace(exception));
                 if (exceptionString.length() > MessageEmbed.TEXT_MAX_LENGTH)
                     exceptionString = exceptionString.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...";

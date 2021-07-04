@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -365,6 +366,11 @@ public class Main extends ListenerAdapter {
     @Override
     public void onButtonClick(ButtonClickEvent event) {
         Slash.buttonUpdate(event);
+    }
+
+    @Override
+    public void onReady(ReadyEvent event) {
+        ExceptionUtils.processExceptionQueue();
     }
 
     private static void registerCommands(){
