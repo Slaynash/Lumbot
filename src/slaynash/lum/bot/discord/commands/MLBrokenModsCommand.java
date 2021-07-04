@@ -74,6 +74,15 @@ public class MLBrokenModsCommand extends Command {
 
         Member member = event.getMember();
 
+        if (event.getGuild().getIdLong() != 439093693769711616L) { // VRChat Modding Group
+            System.out.println("[vrcbrokenmod] Command not run on the VRCMG");
+            member = event.getJDA().getGuildById(439093693769711616L).getMember(event.getAuthor());
+            System.out.println("[vrcbrokenmod] VRCMG member is " + member);
+
+            if (member == null)
+                return false;
+        }
+
         List<Role> roles = member.getRoles();
 
         boolean hasPermissions = false;
