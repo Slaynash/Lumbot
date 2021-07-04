@@ -287,7 +287,7 @@ public final class MelonScanner {
             if (latestModVersion == null && latestModHash == null) {
                 context.unknownMods.add(logsModDetails);
             }
-            else if (CommandManager.brokenVrchatMods.contains(modName)) {
+            else if (CommandManager.brokenMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
             else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {

@@ -48,12 +48,13 @@ public class ServerMessagesHandler {
             boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
-            System.out.printf("[%s] [%s][%s] %s: %s\n",
+            System.out.printf("[%s] [%s][%s] %s: %s%s\n",
                     TimeManager.getTimeForLog(),
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
                     event.getAuthor().getName(),
-                    event.getMessage().getContentRaw());
+                    event.getMessage().getContentRaw(),
+                    event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
                 String mess = "<@!" + event.getMessage().getMember().getId() + "> ";

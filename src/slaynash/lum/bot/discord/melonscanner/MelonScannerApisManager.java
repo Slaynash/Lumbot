@@ -36,6 +36,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 
+import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
@@ -149,6 +150,7 @@ public class MelonScannerApisManager {
 
                                 String name = mod.get("name").checkjstring();
                                 System.out.println("[API] Processing mod " + name);
+                                String approvalStatus = mod.get("approvalStatus").checkjstring();
                                 String version = mod.get("version").checkjstring();
                                 String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
                                 String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
@@ -165,6 +167,8 @@ public class MelonScannerApisManager {
                                     }
                                 }
 
+                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2)
+                                    CommandManager.brokenMods.add(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
                             }
 

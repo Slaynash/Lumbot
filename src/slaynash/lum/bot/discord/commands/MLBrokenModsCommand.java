@@ -1,6 +1,5 @@
 package slaynash.lum.bot.discord.commands;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -10,7 +9,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.melonscanner.MelonApiMod;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 
@@ -20,146 +18,49 @@ public class MLBrokenModsCommand extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!checkPerms(event))
             return;
-
-        String[] parts = paramString.split(" ", 3);
-
-        if (parts.length == 2 && parts[1].equals("list")) {
-
-            String message = "**Broken mods:**\n";
-
-            List<String> brokenMods = null;
-
-            synchronized (CommandManager.brokenVrchatMods) {
-                brokenMods = new ArrayList<>(CommandManager.brokenVrchatMods);
-            }
-
-            brokenMods.sort(Comparator.comparing(String::toString));
-
-            for (String s : brokenMods)
-                message += s + "\n";
-
-            List<MelonApiMod> knownMods = MelonScannerApisManager.getMods("VRChat");
-
-            if (knownMods != null) {
-                knownMods.sort(Comparator.comparing(MelonApiMod::getName));
-
-                message += "\n**Non-broken mods:**\n";
-
-                for (MelonApiMod md : knownMods) {
-                    String modname = md.name;
-
-                    boolean found = false;
-                    for (String s : brokenMods) {
-                        if (s.equals(modname)) {
-                            found = true;
-                            break;
-                        }
+        String message = "**Broken mods:**\n";
+        List<String> brokenMods = null;
+        synchronized (CommandManager.brokenMods) {
+            brokenMods = new ArrayList<>(CommandManager.brokenMods);
+        }
+        brokenMods.sort(Comparator.comparing(String::toString));
+        for (String s : brokenMods)
+            message += s + "\n";
+        List<MelonApiMod> knownMods = MelonScannerApisManager.getMods("VRChat");
+        if (knownMods != null) {
+            knownMods.sort(Comparator.comparing(MelonApiMod::getName));
+            message += "\n**Non-broken mods:**\n";
+            for (MelonApiMod md : knownMods) {
+                String modname = md.name;
+                boolean found = false;
+                for (String s : brokenMods) {
+                    if (s.equals(modname)) {
+                        found = true;
+                        break;
                     }
-
-                    if (!found)
-                        message += modname + "\n";
                 }
+                if (!found)
+                    message += modname + "\n";
             }
-
-            if (message.length() >= 2000) {
-                String[] lines = message.split("\n");
-                String toSend = "";
-                int i = 0;
-                while (i < lines.length) {
-                    if ((toSend + lines[i] + 1).length() > 2000) {
-                        event.getChannel().sendMessage(toSend).queue();
-                        toSend = lines[i];
-                    }
-                    else
-                        toSend += "\n" + lines[i];
-
-                    ++i;
-                }
-                if (toSend.length() > 0)
+        }
+        if (message.length() >= 2000) {
+            String[] lines = message.split("\n");
+            String toSend = "";
+            int i = 0;
+            while (i < lines.length) {
+                if ((toSend + lines[i] + 1).length() > 2000) {
                     event.getChannel().sendMessage(toSend).queue();
-            }
-            else
-                event.getChannel().sendMessage(message).queue();
-        }
-        /*
-        else if (parts.length == 2 && parts[1].equals("addall")) {
-            List<ModDetails> knownMods = null;
-
-            synchronized (MelonLoaderScanner.mods) {
-                knownMods = MelonLoaderScanner.mods.get("VRChat");
-
-                if (knownMods == null) {
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Failed to get list of mods from API", Color.RED)).queue();
-                    return;
+                    toSend = lines[i];
                 }
-
-                knownMods = new ArrayList<>(knownMods);
+                else
+                    toSend += "\n" + lines[i];
+                ++i;
             }
-
-            synchronized (CommandManager.brokenVrchatMods) {
-                CommandManager.brokenVrchatMods.clear();
-                CommandManager.brokenVrchatMods.addAll( knownMods.stream().map(ModDetails::getName).collect(Collectors.toList()) );
-                CommandManager.saveBrokenVRChatMods();
-            }
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Tagged all mods as broken", Color.GREEN)).queue();
-
+            if (toSend.length() > 0)
+                event.getChannel().sendMessage(toSend).queue();
         }
-        else if (parts.length == 3 && parts[1].equals("add")) {
-            if (CommandManager.brokenVrchatMods.contains(parts[2])) {
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("This mod is already marked as broken", Color.RED)).queue();
-                return;
-            }
-
-            List<ModDetails> knownMods = null;
-
-            synchronized (MelonLoaderScanner.mods) {
-                knownMods = MelonLoaderScanner.mods.get("VRChat");
-
-                if (knownMods == null) {
-                    event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Failed to get list of mods from API", Color.RED)).queue();
-                    return;
-                }
-
-                knownMods = new ArrayList<>(knownMods);
-            }
-
-            boolean found = false;
-            for (ModDetails md : knownMods) {
-                if (md.name.equals(parts[2])) {
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Unable to tag unknown mod as broken", Color.RED)).queue();
-                return;
-            }
-
-            synchronized (CommandManager.brokenVrchatMods) {
-                CommandManager.brokenVrchatMods.add(parts[2]);
-                CommandManager.saveBrokenVRChatMods();
-            }
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Tagged mod \"" + parts[2] + "\" as broken", Color.GREEN)).queue();
-        }
-        else if (parts.length == 3 && parts[1].equals("remove")) {
-            if (!CommandManager.brokenVrchatMods.contains(parts[2])) {
-                event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("This mod is not marked as broken", Color.RED)).queue();
-                return;
-            }
-
-            synchronized (CommandManager.brokenVrchatMods) {
-                CommandManager.brokenVrchatMods.remove(parts[2]);
-                CommandManager.saveBrokenVRChatMods();
-            }
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("Untagged mod \"" + parts[2] + "\" from broken", Color.GREEN)).queue();
-        }
-        else {
-            event.getChannel().sendMessage(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [add|remove|list|addall] <mod>", Color.RED)).queue();
-        }
-        */
         else
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbrokenmod [list]", Color.RED)).queue();
+            event.getChannel().sendMessage(message).queue();
     }
 
     @Override
@@ -172,15 +73,6 @@ public class MLBrokenModsCommand extends Command {
         //    return true;
 
         Member member = event.getMember();
-
-        if (event.getGuild().getIdLong() != 439093693769711616L) { // VRChat Modding Group
-            System.out.println("[vrcbrokenmod] Command not run on the VRCMG");
-            member = event.getJDA().getGuildById(439093693769711616L).getMember(event.getAuthor());
-            System.out.println("[vrcbrokenmod] VRCMG member is " + member);
-
-            if (member == null)
-                return false;
-        }
 
         List<Role> roles = member.getRoles();
 
@@ -203,7 +95,7 @@ public class MLBrokenModsCommand extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Manage mods marked as broken for the Log Scanner";
+        return "List mods marked as broken for the Log Scanner";
     }
 
     @Override

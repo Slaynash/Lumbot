@@ -44,7 +44,7 @@ public class CommandManager {
     public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static Map<Long, String> mlReportChannels = new HashMap<>();
-    public static List<String> brokenVrchatMods = new ArrayList<>();
+    public static List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
@@ -188,16 +188,6 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Verify Channels", e);
-        }
-    }
-
-    public static void saveBrokenVRChatMods() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("brokenvrcmods.txt"))) {
-            for (String s : brokenVrchatMods)
-                writer.write(s + "\n");
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save Broken VRChat Mods", e);
         }
     }
 

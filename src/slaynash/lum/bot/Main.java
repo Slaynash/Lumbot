@@ -83,7 +83,7 @@ public class Main extends ListenerAdapter {
         loadVerifychannelList();
         loadReactionsList();
         loadScreeningRolesList();
-        loadMelonLoaderVersions();
+        //loadMelonLoaderVersions();
         loadMLHashes();
         loadMLVRCHash();
         loadMLReportChannels();
@@ -256,18 +256,18 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    private static void loadMelonLoaderVersions() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("melonloaderversions.txt"));
-            MelonScanner.latestMLVersionRelease = reader.readLine().trim();
-            MelonScanner.latestMLVersionBeta = reader.readLine().trim();
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
-        }
-    }
+    // private static void loadMelonLoaderVersions() {
+    //     BufferedReader reader;
+    //     try {
+    //         reader = new BufferedReader(new FileReader("melonloaderversions.txt"));
+    //         MelonScanner.latestMLVersionRelease = reader.readLine().trim();
+    //         MelonScanner.latestMLVersionBeta = reader.readLine().trim();
+    //         reader.close();
+    //     }
+    //     catch (IOException e) {
+    //         ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
+    //     }
+    // }
 
     private static void loadGuildConfigs() {
         BufferedReader reader;
