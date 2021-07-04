@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class SetVRCBuild extends Command {
     
@@ -36,7 +37,7 @@ public class SetVRCBuild extends Command {
             try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("vrchatbuild.txt"))) {
                 writer.write(parts[1]);
             } catch (IOException e) {
-                e.printStackTrace();
+                ExceptionUtils.reportException("Failed to save VRChat Build", e);
             }
             
             event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();

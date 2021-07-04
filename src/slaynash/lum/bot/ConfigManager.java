@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
+import slaynash.lum.bot.utils.ExceptionUtils;
+
 public final class ConfigManager {
     private ConfigManager() {}
 
@@ -49,7 +51,7 @@ public final class ConfigManager {
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load config", e);
         }
     }
 }

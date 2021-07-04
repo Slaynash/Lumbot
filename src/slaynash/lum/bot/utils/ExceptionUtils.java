@@ -56,6 +56,10 @@ public final class ExceptionUtils {
     public static void reportException(String title, String comment, Throwable exception, TextChannel textChannel) {
         System.err.println(title);
 
+        if (comment != null)
+            System.err.println(title + ": " + comment + ":");
+        else
+            System.err.println(title + ":");
         if (exception != null)
             exception.printStackTrace();
         

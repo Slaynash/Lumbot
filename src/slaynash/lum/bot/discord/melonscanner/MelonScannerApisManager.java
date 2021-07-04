@@ -215,19 +215,12 @@ public class MelonScannerApisManager {
                         Thread.sleep(1000); // sleep for a sec so all requests don't come at the same time.
                     }
                     catch (HttpTimeoutException exception) {
-                        System.err.println("Fetching " + api.endpoint + " timedout:");
-
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.endpoint);
                     }
                     catch (IOException exception) {
-                        System.err.println("Fetching " + api.endpoint + " timedout:");
-
-                        ExceptionUtils.reportException("MelonScanner API Connection Closed for " + api.endpoint, exception);
+                        ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.endpoint, exception);
                     }
                     catch (Exception exception) {
-                        System.err.println("Exception while fetching " + api.endpoint + ":");
-                        exception.printStackTrace();
-
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.endpoint, exception);
                     }
                 }

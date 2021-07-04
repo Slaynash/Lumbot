@@ -3,6 +3,8 @@ package slaynash.lum.bot;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import slaynash.lum.bot.utils.ExceptionUtils;
+
 public final class UrlShortener {
     private UrlShortener() {}
 
@@ -18,8 +20,7 @@ public final class UrlShortener {
                 return "https://s.slaynash.fr/" + result;
             }
         } catch (SQLException e) {
-            System.err.println("Failed to fetch shorten url from database");
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to fetch shorten url from database", e);
             return "";
         }
 
@@ -40,8 +41,7 @@ public final class UrlShortener {
             return "https://s.slaynash.fr/" + result;
 
         } catch (SQLException e) {
-            System.err.println("Failed to save shorten url in database");
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save shorten url in database", e);
             return "";
         }
     }

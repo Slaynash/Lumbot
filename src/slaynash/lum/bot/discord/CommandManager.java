@@ -30,6 +30,7 @@ import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
     private static List<Command> commands = new ArrayList<Command>();
@@ -119,7 +120,7 @@ public class CommandManager {
                 writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed save ReactionRoles", e);
         }
     }
 
@@ -130,7 +131,7 @@ public class CommandManager {
                 writer.write(pair.getKey() + " " + pair.getValue() + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save ScreeningRoles", e);
         }
     }
     
@@ -141,7 +142,7 @@ public class CommandManager {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save Log Channels", e);
         }
     }
     
@@ -152,7 +153,7 @@ public class CommandManager {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
         }
     }
     
@@ -166,7 +167,7 @@ public class CommandManager {
                 writer.write("a " + s.x86 + " " + s.x64 + "\n");
 
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
         }
     }
 
@@ -175,7 +176,7 @@ public class CommandManager {
         {
             writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save VRChat Hash", e);
         }
     }
     
@@ -186,7 +187,7 @@ public class CommandManager {
                 writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save Verify Channels", e);
         }
     }
 
@@ -195,7 +196,7 @@ public class CommandManager {
             for(String s : brokenVrchatMods)
                 writer.write(s + "\n");
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save Broken VRChat Mods", e);
         }
     }
 
@@ -209,7 +210,7 @@ public class CommandManager {
                 writer.write("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to save Guild Configs", e);
         }
     }
 

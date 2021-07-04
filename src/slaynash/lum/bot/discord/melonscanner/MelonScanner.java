@@ -367,7 +367,9 @@ public final class MelonScanner {
                 LocalDate now = LocalDate.now();
                 ageDays = ChronoUnit.DAYS.between(fileDate, now);
             }
-            catch (Exception e) { e.printStackTrace(); }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Exception while reading log age", "File age: " + fileDateString, e);
+            }
             
             if (ageDays > 1) {
                 if (context.pre3)

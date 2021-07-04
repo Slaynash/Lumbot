@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import slaynash.lum.bot.utils.ExceptionUtils;
+
 public final class DBConnectionManagerShortUrls {
     private DBConnectionManagerShortUrls() {}
 
@@ -24,7 +26,9 @@ public final class DBConnectionManagerShortUrls {
             connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabase, ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("[DB] Connection to Database initialised");
         }
-        catch (Exception e1) { e1.printStackTrace(System.err); }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to contact database", e);
+        }
     }
 
     private static Connection getConnection() {
@@ -35,7 +39,7 @@ public final class DBConnectionManagerShortUrls {
             }
             return connection;
         } catch (SQLException e) {
-            e.printStackTrace(System.err);
+            ExceptionUtils.reportException("Failed to get database connection", e);
         }
         return null;
     }

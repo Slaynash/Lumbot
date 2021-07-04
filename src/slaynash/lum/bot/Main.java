@@ -126,7 +126,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load RoleReactions", e);
         }
     }
 
@@ -144,7 +144,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load ScreeningRoles", e);
         }
     }
     
@@ -166,7 +166,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load MelonLoader Hashes", e);
         }
     }
 
@@ -178,7 +178,7 @@ public class Main extends ListenerAdapter {
             CommandManager.melonLoaderVRCMinDate = reader.readLine();
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load VRChat Hash", e);
         }
     }
 
@@ -193,7 +193,7 @@ public class Main extends ListenerAdapter {
                 CommandManager.vrchatBuild = "1";
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load VRChat Build infos", e);
         }
     }
     
@@ -210,7 +210,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load MelonLoader Report Channels", e);
         }
     }
     
@@ -227,7 +227,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load Log Channels", e);
         }
     }
     
@@ -244,7 +244,7 @@ public class Main extends ListenerAdapter {
             }
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load Verify Channels", e);
         }
     }
     
@@ -256,7 +256,7 @@ public class Main extends ListenerAdapter {
             MelonScanner.latestMLVersionBeta = reader.readLine().trim();
             reader.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
         }
     }
 
@@ -276,7 +276,7 @@ public class Main extends ListenerAdapter {
             reader.close();
             GuildConfigurations.configurations = tempMap;
         } catch (IOException e) {
-            e.printStackTrace();
+            ExceptionUtils.reportException("Failed to load Guild Configs", e);
         }
     }
 
