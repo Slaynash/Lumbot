@@ -104,9 +104,8 @@ public final class ExceptionUtils {
                 if (exceptionString.length() > MessageEmbed.TEXT_MAX_LENGTH)
                     exceptionString = exceptionString.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...";
                 System.out.println("exceptionString: " + exceptionString);
-                embedBuilder.setDescription(exceptionString);
             }
-            MessageEmbed embed = embedBuilder.build();
+            MessageEmbed embed = embedBuilder.setDescription(exceptionString).build();
             if (!embed.isEmpty())
                 JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
 
