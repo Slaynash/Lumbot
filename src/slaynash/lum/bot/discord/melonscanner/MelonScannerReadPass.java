@@ -148,7 +148,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
-            String[] temp = line.split(" ");
+            String[] temp = line.split(" ", 3);
             if (temp.length > 2)
                 context.tmpModAuthor = line.split(" ")[2];
             else
@@ -159,7 +159,6 @@ public final class MelonScannerReadPass {
             context.tmpModHash = line.split(" ")[3];
             return true;
         }
-        // TODO handle incompatible mods
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} ------------------------------")) {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);

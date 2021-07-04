@@ -163,7 +163,7 @@
             },
             {
                 "regex": "  at emmVRC.Menus.VRHUD+.*",
-                "error": "emmVRC VRHud error is caused by `Show quick menu hud in desktop` or `HUD` being enabled when VRChat is started. The only issue it causes is the right emmVRC panel getting stuck in the initial conditions."
+                "error": "emmVRC VRHud error has been fixed in Version **2.11.0**. Please make sure you are using the latest emmVRC."
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
