@@ -150,7 +150,7 @@ public final class MelonScannerReadPass {
         else if (line.matches("\\[[0-9.:]+\\]( \\[MelonLoader\\]){0,1} by .*")) { // Skip author
             String[] temp = line.split(" ", 3);
             if (temp.length > 2)
-                context.tmpModAuthor = line.split(" ")[2];
+                context.tmpModAuthor = temp[2];
             else
                 context.tmpModAuthor = "Broken Author";
             return true;
