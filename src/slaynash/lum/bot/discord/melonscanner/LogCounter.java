@@ -19,7 +19,7 @@ public final class LogCounter {
 
     public static void addtoCounter(Attachment attachment) {
         try {
-            String directoryPath = workingPath.concat("/logs/");
+            String directoryPath = workingPath + ("/logs/");
 
             attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + attachment.getFileName())
                 .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
@@ -34,7 +34,7 @@ public final class LogCounter {
 
     public static void addSSCounter(String bannedUser, String message, String guildID) {
         try {
-            String directoryPath = workingPath.concat("/SSlogs/");
+            String directoryPath = workingPath + "/SSlogs/";
 
             Files.writeString(Path.of(directoryPath, bannedUser + guildID + ".txt"), message);
         }
@@ -49,7 +49,7 @@ public final class LogCounter {
     public static void updateCounter() {
         try {
             Date date = new Date();
-            String directoryPath = workingPath.concat("/logs/");
+            String directoryPath = workingPath + "/logs/";
             File directory = new File(directoryPath);
 
             int logCount = directory.listFiles().length;
@@ -63,7 +63,7 @@ public final class LogCounter {
             }
             logCount = directory.listFiles().length;
 
-            directoryPath = workingPath.concat("/SSlogs/");
+            directoryPath = workingPath + "/SSlogs/";
             directory = new File(directoryPath);
             int sslogCount = directory.listFiles().length;
             if (sslogCount > 0) {

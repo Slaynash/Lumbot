@@ -61,22 +61,22 @@ public class ServerMessagesHandler {
                 String mess = "<@!" + event.getMessage().getMember().getId() + "> ";
                 switch (guildIDstr) {
                     case "600298024425619456": //emmVRC
-                        mess.concat("Please reupload this log to <#600661924010786816> instead.");
+                        mess = mess + "Please reupload this log to <#600661924010786816> instead.";
                         break;
                     case "439093693769711616": //VRCMG
-                        mess.concat("Please reupload this log to <#440088207799877634> instead.");
+                        mess = mess + "Please reupload this log to <#440088207799877634> instead.";
                         break;
                     case "663449315876012052": //MelonLoader
-                        mess.concat("Please reupload this log to <#733305093264375849> instead.");
+                        mess = mess + "Please reupload this log to <#733305093264375849> instead.";
                         break;
                     case "563139253542846474": //BoneWorks
-                        mess.concat("Please reupload this log to <#675024565277032449> instead.");
+                        mess = mess + "Please reupload this log to <#675024565277032449> instead.";
                         break;
                     case "322211727192358914": //TLDModding
-                        mess.concat("Please reupload this log to <#827601339672035408> instead.");
+                        mess = mess + "Please reupload this log to <#827601339672035408> instead.";
                         break;
                     default:
-                        mess.concat("Please reupload this log to #help-and-support or #log-scanner channel instead.");
+                        mess = mess + "Please reupload this log to #help-and-support or #log-scanner channel instead.";
                         break;
                 }
                 event.getChannel().sendMessage(mess).queue();
@@ -153,14 +153,14 @@ public class ServerMessagesHandler {
                 String sendMessage = "";
                 Message replied = event.getMessage().getReferencedMessage();
                 if (replied != null) {
-                    sendMessage.concat(replied.getAuthor().getName() + "\n");
+                    sendMessage = sendMessage + replied.getAuthor().getName() + "\n";
                 }
                 if (guildID == 835185040752246835L || guildID == 322211727192358914L) /*TLD*/
-                    sendMessage.concat("How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
-                        "\nFor **MelonLoader v0.2.7.4** and lower:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `Logs` folder\n- it will have a bunch of log files inside\n- drag and drop the newest one into Discord");
+                    sendMessage = sendMessage + "How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
+                        "\nFor **MelonLoader v0.2.7.4** and lower:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `Logs` folder\n- it will have a bunch of log files inside\n- drag and drop the newest one into Discord";
                 else
-                    sendMessage.concat("To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`." +
-                        " Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.");
+                    sendMessage = sendMessage + "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`." +
+                        " Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
                 event.getChannel().sendMessage(sendMessage).queue();
                 return;
             }
