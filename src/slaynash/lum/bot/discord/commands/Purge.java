@@ -3,11 +3,11 @@ package slaynash.lum.bot.discord.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
-import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Purge extends Command {
@@ -15,7 +15,7 @@ public class Purge extends Command {
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         try {
-            if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) && !ServerMessagesHandler.checkIfStaff(event)) {
+            if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                 event.getMessage().reply("You do not have perms to use this command.").queue();
                 return;
             }
@@ -51,12 +51,12 @@ public class Purge extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || ServerMessagesHandler.checkIfStaff(event));
+        return (event.getMember().hasPermission(Permission.MESSAGE_MANAGE));
     }
 
     @Override
     public String getHelpDescription() {
-        return "Purge messages `l!purge #` or reply to the top message - Staff Only";
+        return "Purge messages `l!purge #` or reply to the top message - Moderators Only";
     }
 
     @Override
