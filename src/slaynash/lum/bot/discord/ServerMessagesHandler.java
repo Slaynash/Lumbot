@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -149,13 +150,17 @@ public class ServerMessagesHandler {
 
             if (message.startsWith("!log")) {
                 System.out.println("logs printed");
-                String sendMessage;
+                String sendMessage = "";
+                Message replied = event.getMessage().getReferencedMessage();
+                if (replied != null) {
+                    sendMessage.concat(replied.getAuthor().getName() + "\n");
+                }
                 if (guildID == 835185040752246835L || guildID == 322211727192358914L) /*TLD*/
-                    sendMessage = "How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
-                        "\nFor **MelonLoader v0.2.7.4** and lower:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `Logs` folder\n- it will have a bunch of log files inside\n- drag and drop the newest one into Discord";
+                    sendMessage.concat("How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
+                        "\nFor **MelonLoader v0.2.7.4** and lower:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `Logs` folder\n- it will have a bunch of log files inside\n- drag and drop the newest one into Discord");
                 else
-                    sendMessage = "To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`." +
-                        " Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.";
+                    sendMessage.concat("To find your Log file, navigate to your game's root directory. The path should be something like this:\n**Steam**: `C:\\Program Files (x86)\\Steam\\steamapps\\common\\(game)`\n**Oculus**: `C:\\Oculus Apps\\Software\\(game)-(game)`\n\nAlternatively, you could find it through the launcher you are using:\n**Steam**: `Steam Library > right-click (game) > Manage > Browse local files`\n**Oculus**: `Oculus Library > ••• > Details > Copy location to Clipboard`." +
+                        " Open File Explorer and paste it into the directory bar (or manually navigate to it).\n\nFor MelonLoader v0.3.0 and above, navigate to the `MelonLoader` folder, then drag and drop `Latest.log` into Discord.\nFor MelonLoader v0.2.7.4 and lower, open the `Logs` folder, then drag and drop the latest MelonLoader log file into Discord.");
                 event.getChannel().sendMessage(sendMessage).queue();
                 return;
             }

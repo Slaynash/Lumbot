@@ -116,7 +116,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
-            "error": "Mod config has been corrupted. Please delete UserData/MelonPreferences.cfg"
+            "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
         },
         {
             "regex": ".*Tomlet.Exceptions.TomlEOFException: Found unexpected EOF on line \\d+ when parsing TOML file",
