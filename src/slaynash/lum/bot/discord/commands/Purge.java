@@ -27,6 +27,7 @@ public class Purge extends Command {
                 MessageHistory messages = event.getChannel().getHistoryAfter(replied, 100).complete(); //100 is max you can get
                 List<Message> messagelist = new ArrayList<>(messages.getRetrievedHistory());
                 messagelist.add(replied);
+                System.out.println("Reply purging " + messagelist.size() + " messages");
                 event.getTextChannel().deleteMessages(messagelist).queue();
             }
             else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
@@ -34,6 +35,7 @@ public class Purge extends Command {
                 MessageHistory messages = event.getChannel().getHistoryBefore(event.getMessage(), count).complete();
                 List<Message> messagelist = new ArrayList<>(messages.getRetrievedHistory());
                 messagelist.add(event.getMessage());
+                System.out.println("Mass purging " + messagelist.size() + " messages");
                 event.getTextChannel().deleteMessages(messagelist).queue();
             }
             else
