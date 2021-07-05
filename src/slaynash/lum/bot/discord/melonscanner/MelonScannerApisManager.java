@@ -11,6 +11,7 @@ import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -296,6 +297,11 @@ public class MelonScannerApisManager {
             return null;
 
         MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
+
+        if (mod == null) {
+            mod = mods.stream().filter(modtmp -> Arrays.stream(modtmp.aliases).anyMatch(missingModName::equals)).findFirst().orElse(null);
+        }
+
         return mod != null ? mod.downloadLink : null;
     }
 
