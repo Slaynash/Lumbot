@@ -167,11 +167,15 @@
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
-                "error": "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."
+                "error": "emmVRC failed to connect to emmVRC network. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task \\((PopulateList|SearchAvatars)\\)\\} failed with exception.*",
-                "error": "emmVRC Network is currently down. Staff are aware of this and working to bring it back online. Your favorites are safe and will return when the Network comes back online."
+                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task \\(PopulateList\\)\\} failed with exception.*",
+                "error": "emmVRC failed to load your emmVRC favorites. Please make sure that emmvrc.com is not blocked or try a VPN."
+            },
+            {
+                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task \\(SearchAvatars\\)\\} failed with exception.*",
+                "error": "emmVRC failed to search for avatars. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
@@ -243,7 +247,6 @@
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
         "DiscordRichPresence-ML": "DiscordRichPresence-ML has been added into VRChat and also no longer works and can be removed.",
         "DownloadFix": "DownloadFix is no longer needed as this bug is now fixed in VRChat.",
-        "Final IK Sanity": "Final IK Sanity has been added into VRChat and should be removed. Please remove `FinalIKSanity.dll` from your Mods folder.",
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "MultiplayerDynamicBones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "NoSteamP2P": "NoSteamP2P has been added into VRChat and should be removed from your Mods folder.",
