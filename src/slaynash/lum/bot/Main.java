@@ -320,7 +320,7 @@ public class Main extends ListenerAdapter {
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
                 if (c.getId().equals(channelId)) {
-                    ((TextChannel)c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    ((TextChannel) c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }
@@ -394,7 +394,7 @@ public class Main extends ListenerAdapter {
                 loopGuild = tempGuild;
                 try {
                     Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
-                    loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/),new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
+                    loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/), new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
                 }
                 catch (Exception e) {
                     System.err.println("Failed to register slash command for: " + loopGuild.getName());

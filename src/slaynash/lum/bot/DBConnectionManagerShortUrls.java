@@ -48,17 +48,17 @@ public final class DBConnectionManagerShortUrls {
     public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
         requestCount++;
         PreparedStatement ps = getConnection().prepareStatement(statement);
-        for (int i = 0;i < args.length;i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
             else if (args[i].getClass() == String.class)
-                ps.setString(i + 1, (String)args[i]);
+                ps.setString(i + 1, (String) args[i]);
             else if (args[i].getClass() == Integer.class)
-                ps.setInt(i + 1, (int)args[i]);
+                ps.setInt(i + 1, (int) args[i]);
             else if (args[i].getClass() == Boolean.class)
-                ps.setBoolean(i + 1, (boolean)args[i]);
+                ps.setBoolean(i + 1, (boolean) args[i]);
             else if (args[i].getClass() == Long.class)
-                ps.setLong(i + 1, (long)args[i]);
+                ps.setLong(i + 1, (long) args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[0].getClass() + "(arg number " + i + ")");
         }
         ResultSet rs = ps.executeQuery();
@@ -71,17 +71,17 @@ public final class DBConnectionManagerShortUrls {
     public static int sendUpdate(String statement, Object... args) throws SQLException {
         updateCount++;
         PreparedStatement ps = getConnection().prepareStatement(statement);
-        for (int i = 0;i < args.length;i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
             else if (args[i].getClass() == String.class)
-                ps.setString(i + 1, (String)args[i]);
+                ps.setString(i + 1, (String) args[i]);
             else if (args[i].getClass() == Integer.class)
-                ps.setInt(i + 1, (int)args[i]);
+                ps.setInt(i + 1, (int) args[i]);
             else if (args[i].getClass() == Boolean.class)
-                ps.setBoolean(i + 1, (boolean)args[i]);
+                ps.setBoolean(i + 1, (boolean) args[i]);
             else if (args[i].getClass() == Long.class)
-                ps.setLong(i + 1, (long)args[i]);
+                ps.setLong(i + 1, (long) args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
         int r = ps.executeUpdate();

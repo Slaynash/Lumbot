@@ -10,7 +10,7 @@ public class Moderation {
     public static void voiceJoin(GuildVoiceJoinEvent event) {
         Long guildID = (event.getGuild().getIdLong());
         if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
-            event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().putPermissionOverride(event.getMember(),EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE), null).queue();
+            event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().putPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE), null).queue();
         }
     }
 

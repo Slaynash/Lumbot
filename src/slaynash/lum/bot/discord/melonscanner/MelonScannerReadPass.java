@@ -273,7 +273,7 @@ public final class MelonScannerReadPass {
     private static boolean processIncompatibilityListing(String line, MelonScanContext context) throws IOException {
         if (line.matches("    - '.*'.*")) {
             String incompatibleModName = line.split("'", 3)[1];
-            context.incompatibleMods.add(new MelonIncompatibleMod(incompatibleModName,context.currentIncompatibleMods));
+            context.incompatibleMods.add(new MelonIncompatibleMod(incompatibleModName, context.currentIncompatibleMods));
             return true;
         }
         else if (line.matches("- '.*' is incompatible with the following Melons:")) {

@@ -80,7 +80,7 @@ public class ScamShield {
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
 
-        int suspiciousCount = (int)sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
+        int suspiciousCount = (int) sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
         if (suspiciousCount > 4) {
             String usernameWithTag = event.getAuthor().getAsTag();

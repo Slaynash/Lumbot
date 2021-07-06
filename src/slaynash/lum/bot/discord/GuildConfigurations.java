@@ -39,14 +39,14 @@ public class GuildConfigurations {
             put(439093693769711616L /* VRCMG */,        548534015108448256L /* Member */);
             put(600298024425619456L /* emmVRC */,       600304115972702209L /* Members */);
             put(663449315876012052L /* MelonLoader */,  663462327022256150L /* Member */);
-            put(716536783621587004L /* Totally Wholesome */,716541223145308170L /* Member */);
+            put(716536783621587004L /* Totally Wholesome */, 716541223145308170L /* Member */);
         }};
 
     public static final HashMap<Long, Long> noMicChannels = new HashMap<>() {{
             put(439093693769711616L /* VRCMG */,        673955689298788376L /* no-mic */);
             put(600298024425619456L /* emmVRC */,       682379676106096678L /* no-mic */);
             put(663449315876012052L /* MelonLoader */,  701494833495408640L /* voice-chat */);
-            put(716536783621587004L /* Totally Wholesome */,725076119623303380L /* mute-voice */);
+            put(716536783621587004L /* Totally Wholesome */, 725076119623303380L /* mute-voice */);
         }};
 
     public enum ConfigurationMap {

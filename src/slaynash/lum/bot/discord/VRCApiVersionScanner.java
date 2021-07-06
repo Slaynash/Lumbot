@@ -24,16 +24,16 @@ public class VRCApiVersionScanner {
     public static void init() {
         Thread t = new Thread(() -> {
 
+            HttpResponse<String> response = null;
+            HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
+                .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0")
+                .build();
+
             while (true) {
-
-                HttpRequest request = HttpRequest.newBuilder()
-                    .GET()
-                    .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
-                    .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0")
-                    .build();
-
                 try {
-                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                    response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                     if (response.body() == null || response.body().isEmpty()) {
                         throw new Exception("VRChat API provided empty response");
@@ -60,7 +60,8 @@ public class VRCApiVersionScanner {
                     }
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);
+                    ExceptionUtils.reportException("Failed to fetch VRCAPI:", response.body(), e);
+                    System.out.println(response.body());
                 }
 
                 try {

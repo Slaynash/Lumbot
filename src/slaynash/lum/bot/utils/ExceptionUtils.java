@@ -97,6 +97,8 @@ public final class ExceptionUtils {
                 embedBuilder.setTitle(title + " In " + channelName, channelLink);
             }
             if (comment != null) {
+                if (comment.length() > 1000) // allows space for exception
+                    comment = comment.substring(0, 1000);
                 exceptionString = exceptionString + comment + "\n";
             }
             if (exception != null) {
