@@ -35,6 +35,9 @@ public class VRCApiVersionScanner {
                 try {
                     response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+                    if (response.statusCode() < 200 || response.statusCode() >= 400)
+                        throw new Exception("Failed to fetch VRChat API data (server returned code " + response.statusCode() + ")");
+
                     if (response.body() == null || response.body().isEmpty()) {
                         throw new Exception("VRChat API provided empty response");
                     }
