@@ -416,7 +416,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean missingMLFileCheck(String line, MelonScanContext context) {
-        if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly")) {
+        if (line.contains("System.IO.FileNotFoundException: Could not load file or assembly") && !line.contains("IPA/Loader")) {
             if (context.missingMods.size() == 0 && !context.readingMissingDependencies && !context.pre3)
                 if (!context.errors.contains(MelonLoaderError.mlMissing))
                     context.errors.add(MelonLoaderError.mlMissing); //Mod missing ML files

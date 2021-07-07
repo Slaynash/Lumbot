@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -33,10 +34,15 @@ public class ScamShield {
         if (ServerMessagesHandler.checkIfStaff(event))
             return false;
 
+        int suspiciousValue = 0;
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
-        String message = event.getMessage().getContentRaw().toLowerCase();
-        int suspiciousValue = 0;
+        String message = event.getMessage().getContentDisplay().toLowerCase();
+        if (event.getMessage().getEmbeds().size() > 0) {
+            MessageEmbed embed = event.getMessage().getEmbeds().get(0);
+            message = message + " " + embed.getTitle() + " " + embed.getDescription();
+        }
+
         suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
