@@ -133,7 +133,7 @@ public class ServerMessagesHandler {
             Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
             if (guildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forgot|forget|reset|lost).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forgot|forget|reset|lost).*)")) {
                 System.out.println("Forgot pin asked");
-                event.getMessage().reply("Please create a new ticket in <#765785673088499752>. Thank you!").queue();
+                event.getMessage().reply(event.getMember().getEffectiveName() + ", please create a new ticket in <#765785673088499752>. Thank you!").queue();
                 return;
             }
             if (guildID == 600298024425619456L/*emmVRC*/ && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
@@ -153,7 +153,7 @@ public class ServerMessagesHandler {
                 String sendMessage = "";
                 Message replied = event.getMessage().getReferencedMessage();
                 if (replied != null) {
-                    sendMessage = sendMessage + replied.getAuthor().getName() + "\n";
+                    sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n";
                 }
                 if (guildID == 835185040752246835L || guildID == 322211727192358914L) /*TLD*/
                     sendMessage = sendMessage + "How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
