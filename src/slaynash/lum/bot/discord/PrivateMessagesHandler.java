@@ -9,7 +9,7 @@ import slaynash.lum.bot.utils.TimeManager;
 public class PrivateMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
         System.out.printf("[%s] [PM] %s: %s\n", new Object[] { TimeManager.getTimeForLog(), event.getAuthor().getName(),
-                event.getMessage().getContentRaw() });
+                event.getMessage().getContentRaw().replace("\n", "\n\t\t") });
         List<Attachment> attachments = event.getMessage().getAttachments();
         System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
         for (Attachment a : attachments)

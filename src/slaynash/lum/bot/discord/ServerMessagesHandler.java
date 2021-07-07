@@ -54,7 +54,7 @@ public class ServerMessagesHandler {
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
                     event.getAuthor().getName(),
-                    event.getMessage().getContentRaw(),
+                    event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
@@ -168,6 +168,18 @@ public class ServerMessagesHandler {
             if (message.startsWith("!uix")) {
                 System.out.println("UIX printed");
                 event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/55/UIExpansionKit.dll and put it in your Mods folder.").queue();
+                return;
+            }
+
+            if (message.startsWith("!amapi") || message.startsWith("!vrcama")) {
+                System.out.println("actionmenuapi printed");
+                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/201/ActionMenuApi.dll and put it in your Mods folder.").queue();
+                return;
+            }
+
+            if (message.startsWith("!ovras")) {
+                System.out.println("OVR:AS printed");
+                event.getChannel().sendMessage("https://youtu.be/E4ZByfPWTuM").queue();
                 return;
             }
 
