@@ -61,7 +61,6 @@ public class Main extends ListenerAdapter {
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
-            MelonScanner.shutdown();
 
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
@@ -70,6 +69,8 @@ public class Main extends ListenerAdapter {
                 .getTextChannelById(808076226064941086L)
                 .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                 .complete();
+
+            MelonScanner.shutdown();
         }));
 
         ConfigManager.init();

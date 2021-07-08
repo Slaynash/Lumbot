@@ -124,7 +124,7 @@
         },
         {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
-            "error": "Unexpected comma in ML settings. This issue has been fixed for the next update of ML but you can fix it temporarly by changing the decimal symbol to `.` in Window's settings."
+            "error": "Unexpected comma in ML settings. This issue has been fixed for the next update of ML but you can fix it temporarly by winkey+r `intl.cpl` -> additional settings -> set decimal point to `.`"
         },
         {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",
