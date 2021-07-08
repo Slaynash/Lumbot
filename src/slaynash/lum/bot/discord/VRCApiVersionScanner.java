@@ -63,8 +63,7 @@ public class VRCApiVersionScanner {
                     }
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to fetch VRCAPI:", response.body(), e);
-                    System.out.println(response.body());
+                    ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);
                 }
 
                 try {
