@@ -76,7 +76,7 @@ public class MelonScannerApisManager {
                         .GET()
                         .uri(URI.create(api.endpoint))
                         .setHeader("User-Agent", "LUM Bot")
-                        .timeout(Duration.ofSeconds(20))
+                        .timeout(Duration.ofSeconds(30))
                         .build();
 
                     try {
