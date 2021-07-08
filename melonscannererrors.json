@@ -38,11 +38,11 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
-            "error": "The storage space is full. Please free some space and try your game again. You need atleast 500MB free."
+            "error": "The storage space is full. Please free some space and try your game again. You need at least 500MB free."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: There is not enough space on the disk.",
-            "error": "The storage space is full. Please free some space and try your game again. You need atleast 450MB free."
+            "error": "The storage space is full. Please free some space and try your game again. You need at least 450MB free."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
@@ -94,7 +94,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
-            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or complile the source yourself."
+            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
         },
         {
             "regex": ".*due to: Could not load file or assembly '.*",
@@ -214,7 +214,7 @@
                 "error": "emmVRC's Emoji Favorites is currently not working. We are working on fixing this issue."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[emmVRCLoader\\] Error occured while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
+                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[emmVRCLoader\\] Error occurred while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
                 "error": "Please make sure that the launch options is cleared."
             },
             {
