@@ -577,11 +577,13 @@ public final class MelonScanner {
                             found = true;
                             break;
                         }
-                        for (String alias : modDetail.aliases) {
-                            if (alias.equals(modName)) {
-                                context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                                found = true;
-                                break;
+                        if (modDetail.aliases != null) { //null check for mods without an aliases
+                            for (String alias : modDetail.aliases) {
+                                if (alias.equals(modName)) {
+                                    context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
                     }
