@@ -137,6 +137,10 @@
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*VRCModUpdater.Core.dll.*",
             "error": "Please do not move VRCModUpdater.Core.dll out of your `VRChat\\UserData` folder."
+        },
+        {
+            "regex": ".*\\\\MelonLoader(.x64||.x32).zip/.*",
+            "error": "Please do not move the MelonLoader zip into your Mods/Plugins folder! Follow the provided tutorial on how to install MelonLoader or ask for help."
         }
     ],
     "gameSpecificErrors": {
