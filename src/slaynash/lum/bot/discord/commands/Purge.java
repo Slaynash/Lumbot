@@ -38,7 +38,7 @@ public class Purge extends Command {
                 while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
                 System.out.println("Reply purging " + messagelist.size() + " messages");
             }
-            // else if author ID
+            // else if author ID #messages
             else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
                 int count = Integer.parseInt(params[1]);
                 messagelist.add(message);
@@ -63,7 +63,7 @@ public class Purge extends Command {
                         try {
                             int i = 0;
                             while (i < messagelist.size() - 1) {
-                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 99 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 99)).queue();
+                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 100 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 100)).queue();
                                 i = i + 100;
                                 Thread.sleep(2000); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
                             }

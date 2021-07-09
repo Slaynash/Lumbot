@@ -11,7 +11,8 @@ public class PrivateMessagesHandler {
         System.out.printf("[%s] [PM] %s: %s\n", new Object[] { TimeManager.getTimeForLog(), event.getAuthor().getName(),
                 event.getMessage().getContentRaw().replace("\n", "\n\t\t") });
         List<Attachment> attachments = event.getMessage().getAttachments();
-        System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
+        if (attachments.size() > 0)
+            System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
         for (Attachment a : attachments)
             System.out.println("[" + TimeManager.getTimeForLog() + "] - " + a.getUrl());
 
