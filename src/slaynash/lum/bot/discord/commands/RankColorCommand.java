@@ -78,7 +78,7 @@ public class RankColorCommand extends Command {
             }
         }
         catch (Exception e) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("An error has occured:\n" + e.toString() + "\n at " + e.getStackTrace()[0], Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("An error has occurred:\n" + e.toString() + "\n at " + e.getStackTrace()[0], Color.RED)).queue();
         }
     }
 

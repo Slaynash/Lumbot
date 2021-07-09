@@ -15,34 +15,70 @@ public class Purge extends Command {
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         try {
+            Message message = event.getMessage();
             if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                event.getMessage().reply("You do not have perms to use this command.").queue();
+                message.reply("You do not have permissions to remove messages.").queue();
                 return;
             }
 
             String[] params = paramString.split(" ", 2);
 
-            Message replied = event.getMessage().getReferencedMessage();
+            Message replied = message.getReferencedMessage();
+            MessageHistory messages;
+            List<Message> messagelist = new ArrayList<>();
+            List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
             if (replied != null) {
-                MessageHistory messages = event.getChannel().getHistoryAfter(replied, 100).complete(); //100 is max you can get
-                List<Message> messagelist = new ArrayList<>(messages.getRetrievedHistory());
                 messagelist.add(replied);
+                retrievedHistory.add(replied);
+                do {
+                    messages = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete(); //100 is max you can get
+                    retrievedHistory = messages.getRetrievedHistory();
+                    messagelist.addAll(retrievedHistory);
+                }
+                while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
                 System.out.println("Reply purging " + messagelist.size() + " messages");
-                event.getTextChannel().deleteMessages(messagelist).queue();
             }
+            // else if author ID
             else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
                 int count = Integer.parseInt(params[1]);
-                MessageHistory messages = event.getChannel().getHistoryBefore(event.getMessage(), count).complete();
-                List<Message> messagelist = new ArrayList<>(messages.getRetrievedHistory());
-                messagelist.add(event.getMessage());
+                messagelist.add(message);
+                while (count > 0) {
+                    messages = event.getChannel().getHistoryBefore(messagelist.get(messagelist.size() - 1), count > 100 ? 100 : count).complete();
+                    retrievedHistory = messages.getRetrievedHistory();
+                    messagelist.addAll(retrievedHistory);
+                    count = count - retrievedHistory.size();
+                }
                 System.out.println("Mass purging " + messagelist.size() + " messages");
-                event.getTextChannel().deleteMessages(messagelist).queue();
             }
             else
-                event.getMessage().reply("Command is `l!purge #` or reply to the top message.").queue();
+                message.reply("Command is `l!purge #` or reply to the top message.").queue();
+
+            // removing the messages
+            if (messagelist.size() > 0) {
+                if (messagelist.size() <= 100) {
+                    event.getTextChannel().deleteMessages(messagelist).queue();
+                }
+                else { // greater than 100 messages
+                    new Thread(() -> {
+                        try {
+                            int i = 0;
+                            while (i < messagelist.size() - 1) {
+                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 99 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 99)).queue();
+                                i = i + 100;
+                                Thread.sleep(2000); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
+                            }
+                            if (i == messagelist.size() - 1) // on the very rare chance that there is only one message left
+                                messagelist.get(messagelist.size() - 1).delete().queue();
+                        }
+                        catch (Exception e) {
+                            ExceptionUtils.reportException("An error has occurred while purging messages:", e, event.getTextChannel());
+                        }
+                    }).start();
+                }
+            }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occured while running purge:", e, event.getTextChannel());
+            ExceptionUtils.reportException("An error has occurred while running purge:", e, event.getTextChannel());
         }
     }
 

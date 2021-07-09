@@ -73,7 +73,7 @@ public class Slash {
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occured while updating buttons:", e);
+            ExceptionUtils.reportException("An error has occurred while updating buttons:", e);
         }
     }
 
@@ -107,7 +107,7 @@ public class Slash {
             else event.reply("Guild not found.");
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occured while sending Slash Reply:", e);
+            ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);
         }
     }
 }

@@ -88,7 +88,7 @@ public class ServerMessagesHandler {
                         MelonScanner.scanMessage(event);
                     }
                     catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occured while reading logs:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
                     }
                 }).start();
             }
@@ -200,7 +200,7 @@ public class ServerMessagesHandler {
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occured processing message:", e, event.getTextChannel());
+            ExceptionUtils.reportException("An error has occurred processing message:", e, event.getTextChannel());
         }
     }
 
