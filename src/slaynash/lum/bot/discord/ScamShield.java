@@ -71,6 +71,8 @@ public class ScamShield {
             suspiciousValue += message.contains("hour") ? 1 : 0;
         }
 
+        System.out.println("Scam Shield points for this message: " + suspiciousValue);
+
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
             handledMessages.remove(); //remove all saved messages that is older then 60 seconds
