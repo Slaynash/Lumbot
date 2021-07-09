@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.io.File;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -103,9 +104,10 @@ public class ServerMessagesHandler {
             }
 
             if (guildID == 663449315876012052L /* MelonLoader */) {
-                String messageLowercase = event.getMessage().getContentRaw().toLowerCase();
-                if (messageLowercase.contains("melonclient") || messageLowercase.contains("melon client") || messageLowercase.contains("tlauncher"))
+                if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher"))
                     event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
+                if (message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|for|mod|play)(s)?\\b.*") && !checkIfStaff(event))
+                    event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease follow the instructions in this image to remove MelonLoader:").addFile(new File("images/MLPhasmo.png")).queue();
             }
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
