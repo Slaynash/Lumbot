@@ -162,8 +162,12 @@ public class ServerMessagesHandler {
                 System.out.println("logs printed");
                 String sendMessage = "";
                 Message replied = event.getMessage().getReferencedMessage();
-                if (replied != null) {
-                    sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n";
+                if (replied != null && replied.getMember() != null) {
+                    sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n\n";
+                }
+                else if (replied != null /*and member is null*/) {
+                    event.getMessage().reply("That user has left the server.").queue();
+                    return;
                 }
                 if (guildID == 835185040752246835L || guildID == 322211727192358914L) /*TLD*/
                     sendMessage = sendMessage + "How to find your Log file\n\nFor **MelonLoader v0.3.0** and above:\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n" +
