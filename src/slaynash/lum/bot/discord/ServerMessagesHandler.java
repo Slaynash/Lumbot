@@ -205,7 +205,7 @@ public class ServerMessagesHandler {
 
             if (message.startsWith("!proxy")) {
                 System.out.println("Proxy printed");
-                event.getMessage().reply("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
+                event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
                 return;
             }
 

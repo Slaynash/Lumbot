@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Purge extends Command {
         try {
             Message message = event.getMessage();
             if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                message.reply("You do not have permissions to remove messages.").queue();
+                message.reply("You do not have permissions to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
                 return;
             }
 
