@@ -203,6 +203,12 @@ public class ServerMessagesHandler {
                 return;
             }
 
+            if (message.startsWith("!proxy")) {
+                System.out.println("Proxy printed");
+                event.getMessage().reply("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
+                return;
+            }
+
             if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && message.contains("joke")) {
                 System.out.println("Requested a joke");
                 HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
