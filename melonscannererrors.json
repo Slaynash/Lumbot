@@ -132,7 +132,7 @@
         },
         {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
-            "error": "Please Make sure you are using the latest MelonLoader."
+            "error": "Please either delete `UserData\\MelonPreferences.cfg` or manually to replace all commas (`,`) in numbers with periods (`.`)"
         },
         {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",
