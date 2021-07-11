@@ -30,6 +30,7 @@ import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
+import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
@@ -165,6 +166,16 @@ public class CommandManager {
             for (MLHashPair s : melonLoaderAlphaHashes)
                 writer.write("a " + s.x86 + " " + s.x64 + "\n");
 
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
+        }
+    }
+
+    public static void saveMelonLoaderVersions() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("melonloaderversions.txt"))) {
+            writer.write(MelonScanner.latestMLVersionRelease + "\n");
+            writer.write(MelonScanner.latestMLVersionBeta + "\n");
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);

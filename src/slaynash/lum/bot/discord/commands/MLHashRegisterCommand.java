@@ -7,53 +7,53 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
+import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 
 public class MLHashRegisterCommand extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (paramMessageReceivedEvent.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
-            return;
-
-        List<Role> memberRoles = paramMessageReceivedEvent.getMember().getRoles();
-        boolean isLavaGang = false;
-        for (Role memberRole : memberRoles) {
-            if (memberRole.getIdLong() == 663450403194798140L) { // Lava Gang
-                isLavaGang = true;
-                break;
-            }
-        }
-
-        if (!isLavaGang)
+        if (!includeInHelp(paramMessageReceivedEvent))
             return;
 
         String[] split = paramString.split(" ");
-        if (split.length != 4) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
+        if (split.length != 5) {
+            paramMessageReceivedEvent.getChannel().sendMessage(printUsage()).queue();
             return;
         }
 
         String branch = split[1].trim();
-        String hash86 = split[2].trim();
-        String hash64 = split[3].trim();
-        System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString);
+        String version = split[2].trim();
+        String hash86 = split[3].trim();
+        String hash64 = split[4].trim();
+        System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString + " for ML version " + version);
 
         if (!branch.equals("alpha") && !branch.equals("release")) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid branch " + printUsage()).queue();
+            return;
+        }
+
+        if (!version.matches("^\\d+\\.\\d+\\.\\d+(\\.\\d+)?$")) {
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid version " + printUsage()).queue();
             return;
         }
 
         if (!(hash64.matches("^[0-9]{5,}$") && hash86.matches("^[0-9]{5,}$"))) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!registermlhash <release|alpha> <ml hash x86> <ml hash x64>").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + printUsage()).queue();
             return;
         }
 
-        if (branch.equals("alpha"))
+        if (branch.equals("alpha")) {
+            MelonScanner.latestMLVersionBeta = version;
             CommandManager.melonLoaderAlphaHashes.add(new MLHashPair(hash86, hash64));
-        else
+        }
+        else {
+            MelonScanner.latestMLVersionRelease = version;
             CommandManager.melonLoaderHashes.add(new MLHashPair(hash86, hash64));
+        }
 
         CommandManager.saveMLHashes();
+        CommandManager.saveMelonLoaderVersions();
         paramMessageReceivedEvent.getChannel().sendMessage("Added hashes " + hash86 + " (x86) and " + hash64 + " (x64) to branch " + branch).queue();
     }
 
@@ -87,4 +87,7 @@ public class MLHashRegisterCommand extends Command {
         return "l!registermlhash";
     }
 
+    public String printUsage() {
+        return "Usage: l!registermlhash <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
+    }
 }

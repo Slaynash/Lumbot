@@ -348,6 +348,9 @@ public final class MelonScanner {
                 case "Job Simulator":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/0kmohjK.png");
                     break;
+                case "Muse Dash":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
+                    break;
                 case "Pistol Whip":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
                     break;
