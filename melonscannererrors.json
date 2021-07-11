@@ -106,7 +106,7 @@
         },
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
-            "error": "Failed to contact MelonLoaderAPI server. This issue has been fixed in the latest alpha build of MelonLoader which you can get here [x64](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.zip) or [x86](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x86.CI.zip)"
+            "error": "Please make sure you are using the latest MelonLoader."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
@@ -132,7 +132,7 @@
         },
         {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
-            "error": "Unexpected comma in ML settings. This issue has been fixed for the next update of ML but you can fix it temporarily by winkey+r `intl.cpl` -> additional settings -> set decimal point to `.`"
+            "error": "Please Make sure you are using the latest MelonLoader."
         },
         {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",

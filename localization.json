@@ -14,7 +14,7 @@
         "melonscanner.reportmessage.logdayoldsreupload": "this log is %s days old. Reupload your log from MelonLoader/Latest.log",
         "melonscanner.reportmessage.copy": "You sent a copy of the console logs. Please type `!logs` to know where to find the complete game logs.",
         "melonscanner.reportmessage.alpha": "You are running an alpha version of MelonLoader.",
-        "melonscanner.reportmessage.notsupported": "%s isn't officially supported by the autochecker. Mod versions will not be verified.",
+        "melonscanner.reportmessage.notsupported": "%s isn't officially supported by the autochecker or doesn't have a mod version api. Mod versions will not be verified.",
 
         "melonscanner.readerror.fieldname": "Log Format:",
         "melonscanner.readerror.field": "Error reading Log. Please do not edit the log and reupload the original log.",

@@ -339,6 +339,9 @@ public final class MelonScanner {
                 case "BONEWORKS":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
                     break;
+                case "Demeo":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
+                    break;
                 case "guigubahuang":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                     break;
