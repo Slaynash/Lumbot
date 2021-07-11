@@ -45,7 +45,9 @@ public class MelonLoaderError {
         Gson gson = new Gson();
 
         try (Stream<String> lines = Files.lines(new File("melonscannererrors.json").toPath())) {
-            String data = lines.collect(Collectors.joining("\n"));
+            String data = lines.collect(Collectors.joining("\n"))
+                .replace("$MLRelease$", MelonScanner.latestMLVersionRelease)
+                .replace("$MLBeta$", MelonScanner.latestMLVersionBeta);
 
             HashMap<String, JsonElement> filedata = gson.fromJson(data, new TypeToken<HashMap<String, JsonElement>>() {}.getType());
             synchronized (knownUnhollowerErrors) {
