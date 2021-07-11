@@ -107,6 +107,14 @@
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
             "error": "Failed to contact MelonLoaderAPI server. This issue has been fixed in the latest alpha build of MelonLoader which you can get here [x64](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.zip) or [x86](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x86.CI.zip)"
+        },
+        {
+            "regex": ".*Exception initializing LibCpp2IL.*",
+            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the MelonLoader discord."
+        },
+        {
+            "regex": ".*[Program] Execution Failed.*",
+            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the MelonLoader discord."
         }
     ],
     "knownErrors": [

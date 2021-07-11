@@ -18,7 +18,8 @@ public class Purge extends Command {
         try {
             Message message = event.getMessage();
             if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                message.reply("You do not have permissions to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                message.reply(event.getMember().getEffectiveName() + ", You do not have permissions to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                message.delete().queue();
                 return;
             }
 
