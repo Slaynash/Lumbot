@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
+import slaynash.lum.bot.discord.melonscanner.MelonLoaderError;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 
 public class MLHashRegisterCommand extends Command {
@@ -54,6 +55,7 @@ public class MLHashRegisterCommand extends Command {
 
         CommandManager.saveMLHashes();
         CommandManager.saveMelonLoaderVersions();
+        MelonLoaderError.reload(); // reload errors to import new ML version
         paramMessageReceivedEvent.getChannel().sendMessage("Added hashes " + hash86 + " (x86) and " + hash64 + " (x64) to " + version + " " + branch + " branch").queue();
     }
 
