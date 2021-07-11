@@ -31,8 +31,8 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class MelonScanner {
 
-    public static String latestMLVersionRelease = "0.4.0"; // Is this really still hard coded?
-    public static String latestMLVersionBeta = "0.4.0";
+    public static String latestMLVersionRelease = "0.4.1"; // Is this really still hard coded?
+    public static String latestMLVersionBeta = "0.4.1";
 
     private static Color melonPink = new Color(255, 59, 106);
 
