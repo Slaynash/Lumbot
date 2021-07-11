@@ -54,7 +54,7 @@ public class MLHashRegisterCommand extends Command {
 
         CommandManager.saveMLHashes();
         CommandManager.saveMelonLoaderVersions();
-        paramMessageReceivedEvent.getChannel().sendMessage("Added hashes " + hash86 + " (x86) and " + hash64 + " (x64) to branch " + branch).queue();
+        paramMessageReceivedEvent.getChannel().sendMessage("Added hashes " + hash86 + " (x86) and " + hash64 + " (x64) to " + version + " " + branch + " branch").queue();
     }
 
     @Override

@@ -37,7 +37,8 @@ public class VRCApiVersionScanner {
                 try {
                     response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-                    if (response.statusCode() == 502) {
+                    if (response.statusCode() < 200 || response.statusCode() >= 400) {
+                        System.out.println("Lum gotten status code: " + response.statusCode() + " from VRCAPI and is retrying");
                         Thread.sleep(1000 * 30); // Sleep for half a minute
                         response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()); //attempt to retry connection
                     }

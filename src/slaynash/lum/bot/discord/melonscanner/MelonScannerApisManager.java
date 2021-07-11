@@ -84,6 +84,13 @@ public class MelonScannerApisManager {
                         // API request
 
                         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                        if (response.statusCode() < 200 || response.statusCode() >= 400) {
+                            System.out.println("Lum gotten status code: " + response.statusCode() + " from " + api.name + " and is retrying");
+                            Thread.sleep(1000 * 30); // Sleep for half a minute
+                            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()); //attempt to retry connection
+                        }
+
                         if (response.statusCode() < 200 || response.statusCode() >= 400)
                             throw new Exception("Failed to fetch remote API data (server returned code " + response.statusCode() + ")");
 
@@ -226,7 +233,11 @@ public class MelonScannerApisManager {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.endpoint);
                     }
                     catch (IOException exception) {
-                        ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.endpoint, exception);
+                        if (exception.getMessage().contains("GOAWAY")) {
+                            ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
+                        }
+                        else
+                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.endpoint, exception);
                     }
                     catch (Exception exception) {
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.endpoint, exception);
