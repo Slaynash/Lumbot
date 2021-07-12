@@ -138,7 +138,7 @@ public class ServerMessagesHandler {
                 return;
 
             Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|remember).*)")) {
+            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|t remember).*)")) {
                 System.out.println("Forgot pin asked");
                 if (guildID == 600298024425619456L/*emmVRC*/)
                     event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getEffectiveName() + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
