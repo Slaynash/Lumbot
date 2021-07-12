@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
+import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -29,8 +30,9 @@ public class Slash {
                 return;
             }
             Long guildID = Long.valueOf(message[message.length - 1]);
+            Guild guild = event.getJDA().getGuildById(guildID);
             boolean[] config = GuildConfigurations.configurations.get(guildID);
-            if (event.getUser().getId().equals(event.getJDA().getGuildById(guildID).getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
+            if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 switch (event.getComponentId()) {
                     case ("ss") :
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
@@ -87,7 +89,7 @@ public class Slash {
                 CommandManager.saveGuildConfigs();
             }
             if (guild != null) {
-                if (event.getUser().getId().equals(guild.getOwnerId()) || event.getUser().getId().equals("145556654241349632" /*Slaynash*/) || event.getUser().getId().equals("240701606977470464" /*rakosi2*/)) {
+                if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                     System.out.println("sent config for " + guild.getName());
                     event.reply("Server Config for " + guild.getName() + ": " + guildID)
                         .addActionRow(

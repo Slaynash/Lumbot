@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +30,6 @@ import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
-import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Type;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -401,7 +398,7 @@ public class Main extends ListenerAdapter {
                 loopGuild = tempGuild;
                 try {
                     Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
-                    loopGuild.updateCommandPrivilegesById(cmdID, Arrays.asList(new CommandPrivilege(Type.USER, true, loopGuild.getOwnerIdLong()), new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/), new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/))).queue();
+                    loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
                 }
                 catch (Exception e) {
                     System.err.println("Failed to register slash command for: " + loopGuild.getName());

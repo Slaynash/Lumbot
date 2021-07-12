@@ -1,10 +1,17 @@
 package slaynash.lum.bot.discord;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
+import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Type;
 
 public class Moderation {
     public static void voiceJoin(GuildVoiceJoinEvent event) {
@@ -19,5 +26,25 @@ public class Moderation {
         if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
             event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().removePermissionOverride(event.getMember()).queue();
         }
+    }
+
+    public static List<Long> getAdmins(Guild guild) {
+        List<Long> adminList = new ArrayList<Long>();
+        adminList.add(145556654241349632L/*Slay*/);
+        adminList.add(240701606977470464L/*rakosi2*/);
+        for (Member member : guild.getMembers()) {
+            if (member.hasPermission(Permission.ADMINISTRATOR))
+                adminList.add(member.getIdLong());
+        }
+        return adminList;
+    }
+
+    public static Collection<? extends CommandPrivilege> getAdminsPrivileges(Guild guild) {
+        List<Long> admins = getAdmins(guild);
+        List<CommandPrivilege> adminPrivList = new ArrayList<CommandPrivilege>();
+        for (Long id : admins) {
+            adminPrivList.add(new CommandPrivilege(Type.USER, true, id));
+        }
+        return adminPrivList;
     }
 }

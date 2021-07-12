@@ -5,18 +5,17 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
+import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 
 public class LockDown extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
-        if (!event.getAuthor().getId().equals(event.getGuild().getOwnerId()) && !ServerMessagesHandler.checkIfStaff(event))
+        if (!includeInHelp(event))
             return;
 
         Long lockDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
-        if (lockDownRole == null)
-            return;
 
         event.getGuild().getRoleById(lockDownRole).getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
@@ -33,7 +32,7 @@ public class LockDown extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (event.getAuthor().getId().equals(event.getGuild().getOwnerId()) || ServerMessagesHandler.checkIfStaff(event));
+        return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (Moderation.getAdmins(event.getGuild()).contains(event.getAuthor().getIdLong()) || ServerMessagesHandler.checkIfStaff(event));
     }
 
     @Override
