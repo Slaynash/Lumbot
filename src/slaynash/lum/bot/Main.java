@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 
@@ -364,10 +365,15 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
-            "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
-            + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
-        event.getGuild().upsertCommand("config", "send server config buttons for this guild").queue(); // register Guild command for newly joined server
+        try {
+            event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
+                "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
+                + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+            event.getGuild().upsertCommand("config", "send server config buttons for this guild").queueAfter(10, TimeUnit.SECONDS); // register Guild command for newly joined server
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("An error has occurred on guild join:", e);
+        }
     }
 
     @Override
