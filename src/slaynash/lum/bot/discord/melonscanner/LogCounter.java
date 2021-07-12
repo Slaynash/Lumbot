@@ -21,7 +21,7 @@ public final class LogCounter {
         try {
             String directoryPath = workingPath + ("/logs/");
 
-            attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + attachment.getFileName())
+            attachment.downloadToFile(directoryPath + Instant.now().toString().replaceAll(":", "_") + "-" + attachment.getFileName())
                 .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
         }
         catch (Exception exception) {

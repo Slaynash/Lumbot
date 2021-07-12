@@ -50,11 +50,11 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
-            "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader."
+            "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Find Mono Directory!",
-            "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader."
+            "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] MelonLoader.dll Does Not Exist!",
