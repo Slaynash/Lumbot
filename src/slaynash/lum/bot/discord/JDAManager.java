@@ -35,8 +35,8 @@ public class JDAManager {
         EmbedBuilder eb = new EmbedBuilder();
         if (color != null)
             eb.setColor(color);
-        if (message.length() > MessageEmbed.TEXT_MAX_LENGTH)
-            eb.setDescription(message.substring(0, MessageEmbed.TEXT_MAX_LENGTH - 4) + " ...");
+        if (message.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH)
+            eb.setDescription(message.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 4) + " ...");
         else
             eb.setDescription(message);
         return eb.build();
