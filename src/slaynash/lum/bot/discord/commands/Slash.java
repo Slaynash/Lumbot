@@ -63,12 +63,12 @@ public class Slash {
                         event.editButton(config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
                         break;
                     case ("log") :
-                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] = !config[ConfigurationMap.GENERALLOGREMOVER.ordinal()];
-                        event.editButton(config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
+                        config[ConfigurationMap.LOGSCAN.ordinal()] = !config[ConfigurationMap.LOGSCAN.ordinal()];
+                        event.editButton(config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner")).queue();
                         break;
                     case ("mlr") :
-                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] = !config[ConfigurationMap.GENERALLOGREMOVER.ordinal()];
-                        event.editButton(config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
+                        config[ConfigurationMap.MLREPLIES.ordinal()] = !config[ConfigurationMap.MLREPLIES.ordinal()];
+                        event.editButton(config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
                         break;
                     case ("delete") :
                         event.getMessage().delete().queue();
@@ -93,6 +93,7 @@ public class Slash {
             boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
             if (config == null) {
                 config = new boolean[GuildConfigurations.ConfigurationMap.values().length];
+                config[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
                 GuildConfigurations.configurations.put(Long.valueOf(guildID), config);
                 CommandManager.saveGuildConfigs();
             }
