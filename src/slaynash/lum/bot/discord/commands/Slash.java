@@ -75,7 +75,7 @@ public class Slash {
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occurred while updating buttons:", e);
+            ExceptionUtils.reportException("An error has occurred while updating buttons:", event.getChannel().getName(), e);
         }
     }
 
