@@ -121,7 +121,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(credit|stole)\\b.*")) {
+        if (message.matches(".*\\b(credit|stole|steal(ing)?)\\b.*")) {
             System.out.println("Lum stole Credit");
             event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
             return true;
