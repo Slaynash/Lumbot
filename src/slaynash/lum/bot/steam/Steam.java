@@ -205,7 +205,7 @@ public class Steam {
                     Message message = mb.build();
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(message).queue();
-                    JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864293452741083146L /* #test */).sendMessage(message).queue();
+                    JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessage(message).queue();
                 }
 
                 vrchatAppDetails = newAppDetails;
