@@ -49,13 +49,15 @@ public class GuildConfigurations {
             put(716536783621587004L /* Totally Wholesome */, 725076119623303380L /* mute-voice */);
         }};
 
-    public enum ConfigurationMap {
+    public enum ConfigurationMap { //only append to the end
         SCAMSHIELD(),
         DLLREMOVER(),
         LOGREACTION(),
         LUMREPLIES(),
         PARTIALLOGREMOVER(),
         GENERALLOGREMOVER(),
-        DADJOKES();
+        DADJOKES(),
+        LOGSCAN(),
+        MLREPLIES();
     }
 }

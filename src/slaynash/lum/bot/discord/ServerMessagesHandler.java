@@ -44,8 +44,10 @@ public class ServerMessagesHandler {
             CommandManager.runAsServer(event);
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
+            boolean[] defaultConfig = new boolean[GuildConfigurations.ConfigurationMap.values().length];
+            defaultConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
             boolean[] guildConfig;
-            guildConfig = GuildConfigurations.configurations.get(guildID) == null ? new boolean[GuildConfigurations.ConfigurationMap.values().length] : GuildConfigurations.configurations.get(guildID);
+            guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
             boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
@@ -83,7 +85,7 @@ public class ServerMessagesHandler {
                 event.getChannel().sendMessage(mess).queue();
                 event.getMessage().delete().queue();
             }
-            else {
+            else if (guildConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()]) {
                 new Thread(() -> {
                     try {
                         MelonScanner.scanMessage(event);
@@ -101,17 +103,6 @@ public class ServerMessagesHandler {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
-            }
-
-            if (guildID == 663449315876012052L /* MelonLoader */) {
-                if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher")) {
-                    event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
-                    return;
-                }
-                if (message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack)(s)?\\b.*") && !checkIfStaff(event)) {
-                    event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease follow the instructions in this image to remove MelonLoader:").addFile(new File("images/MLPhasmo.png")).queue();
-                    return;
-                }
             }
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
@@ -137,71 +128,85 @@ public class ServerMessagesHandler {
             if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
                 return;
 
-            Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|t remember).*)")) {
-                System.out.println("Forgot pin asked");
-                if (guildID == 600298024425619456L/*emmVRC*/)
-                    event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getEffectiveName() + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
-                else
-                    event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null)).queue();
-                return;
-            }
-            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
-                System.out.println("Stealth mode asked");
-                event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
-                return;
-            }
+            if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
+                Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
 
-            if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
-                System.out.println("VRChatUtilityKit print");
-                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll and put it in your Mods folder.").queue();
-                return;
-            }
-
-            if (message.startsWith("!log")) {
-                System.out.println("logs printed");
-                String sendMessage = "";
-                Message replied = event.getMessage().getReferencedMessage();
-                if (replied != null && replied.getMember() != null) {
-                    sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n\n";
+                if (guildID == 663449315876012052L /* MelonLoader */) {
+                    if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher")) {
+                        event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
+                        return;
+                    }
+                    if (message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|crash(e)?)(s)?\\b.*") && !checkIfStaff(event)) {
+                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease follow the instructions in this image to remove MelonLoader:").addFile(new File("images/MLPhasmo.png")).queue();
+                        return;
+                    }
                 }
-                else if (replied != null /*and member is null*/) {
-                    event.getMessage().reply("That user is no longer in this server.").queue();
+
+                if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|t remember).*)")) {
+                    System.out.println("Forgot pin asked");
+                    if (guildID == 600298024425619456L/*emmVRC*/)
+                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getEffectiveName() + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
+                    else
+                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null)).queue();
                     return;
                 }
-                sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n\nIf you see `MelonLoader.ModHandler.dll` instead of `Latest.log`, Please update MelonLoader to " + MelonScanner.latestMLVersionRelease;
-                event.getChannel().sendMessage(sendMessage).queue();
-                return;
-            }
+                if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(disable|off|out)\\b.*) (.*\\bstealth\\b.*)|(.*\\bstealth\\b.*) (.*\\b(disable|off|out)\\b.*)")) {
+                    System.out.println("Stealth mode asked");
+                    event.getMessage().reply("To disable Stealth Mode, click the Report World button in your quick menu. From there, you can access emmVRC Functions. You'll find the Stealth Mode toggle on the 4th page.").queue();
+                    return;
+                }
 
-            if (message.startsWith("!uix")) {
-                System.out.println("UIX printed");
-                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/55/UIExpansionKit.dll and put it in your Mods folder.").queue();
-                return;
-            }
+                if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
+                    System.out.println("VRChatUtilityKit print");
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/231/VRChatUtilityKit.dll and put it in your Mods folder.").queue();
+                    return;
+                }
 
-            if (message.startsWith("!amapi") || message.startsWith("!vrcama")) {
-                System.out.println("actionmenuapi printed");
-                event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/201/ActionMenuApi.dll and put it in your Mods folder.").queue();
-                return;
-            }
+                if (message.startsWith("!log")) {
+                    System.out.println("logs printed");
+                    String sendMessage = "";
+                    Message replied = event.getMessage().getReferencedMessage();
+                    if (replied != null && replied.getMember() != null) {
+                        sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n\n";
+                    }
+                    else if (replied != null /*and member is null*/) {
+                        event.getMessage().reply("That user is no longer in this server.").queue();
+                        return;
+                    }
+                    sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n\nIf you see `MelonLoader.ModHandler.dll` instead of `Latest.log`, Please update MelonLoader to " + MelonScanner.latestMLVersionRelease;
+                    event.getChannel().sendMessage(sendMessage).queue();
+                    return;
+                }
 
-            if (message.startsWith("!ovras")) {
-                System.out.println("OVR:AS printed");
-                event.getChannel().sendMessage("https://youtu.be/E4ZByfPWTuM").queue();
-                return;
-            }
+                if (message.startsWith("!uix")) {
+                    System.out.println("UIX printed");
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/55/UIExpansionKit.dll and put it in your Mods folder.").queue();
+                    return;
+                }
 
-            if (message.startsWith("!vrcx")) {
-                System.out.println("VRCX printed");
-                event.getChannel().sendMessage("VRCX is not a mod and you can find it here: <https://github.com/Natsumi-sama/VRCX>").queue();
-                return;
-            }
+                if (message.startsWith("!amapi") || message.startsWith("!vrcama")) {
+                    System.out.println("actionmenuapi printed");
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v0/mods/201/ActionMenuApi.dll and put it in your Mods folder.").queue();
+                    return;
+                }
 
-            if (message.startsWith("!proxy")) {
-                System.out.println("Proxy printed");
-                event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
-                return;
+                if (message.startsWith("!ovras")) {
+                    System.out.println("OVR:AS printed");
+                    event.getChannel().sendMessage("https://youtu.be/E4ZByfPWTuM").queue();
+                    return;
+                }
+
+                if (message.startsWith("!vrcx")) {
+                    System.out.println("VRCX printed");
+                    event.getChannel().sendMessage("VRCX is not a mod and you can find it here: <https://github.com/Natsumi-sama/VRCX>").queue();
+                    return;
+                }
+
+                if (message.startsWith("!proxy")) {
+                    System.out.println("Proxy printed");
+                    event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
+                    return;
+                }
             }
 
             if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && message.contains("joke")) {
