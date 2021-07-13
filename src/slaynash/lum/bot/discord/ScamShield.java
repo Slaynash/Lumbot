@@ -101,8 +101,13 @@ public class ScamShield {
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
-                " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
+                try {
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
+                    " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to open dms with scammer");
+                }
                 event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
