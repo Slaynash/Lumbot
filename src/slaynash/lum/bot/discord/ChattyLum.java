@@ -22,62 +22,104 @@ public class ChattyLum {
     }
 
     private static final String[] alreadyHelpedSentences = new String[] {
+        "<:Neko_devil:865328473974374420>",
         "I already answered you <:konataCry:553690186022649858>",
-        "Why won't you read my answer <:angry:835647632843866122>",
+        "I've already given you a response! <:MeguminEyes:852057834686119946>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
-        "I've already given you a response! <:MeguminEyes:852057834686119946>"
+        "Why won't you read my answer <:angry:835647632843866122>"
     };
 
     private static final String[] alreadyHelpedSentencesRare = new String[] {
-        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
+        "<https://lmgtfy.app/?q=How+do+I+read>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
-        "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>",
-        "<https://lmgtfy.app/?q=How+do+I+read>"
+        "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
+        "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>"
     };
 
     private static final String[] thankedSentences = new String[] {
-        "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>",
         "<:cirHappy:829458722634858496>",
-        "Anytime <:Neko_cat_kiss_heart:851934821080367134>",
+        "<:Neko_lick:865328473646825513>",
+        "<:Neko_think:865328471058939947>",
         "Always happy to help!",
+        "Anytime <:Neko_cat_kiss_heart:851934821080367134>",
+        "Anytime <:Neko_love:865328470699147274>",
+        "Glad I could help!",
         "Mhm of course!",
         "No problem!",
-        "Glad I could help!"
+        "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>"
     };
 
     private static final String[] thankedSentencesRare = new String[] {
-        "Notices you senpai <:cirHappy:829458722634858496>",
-        "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858"
+        "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858",
+        "Notices you senpai <:cirHappy:829458722634858496>"
     };
 
     private static final String[] helloLum = new String[] {
         "<:Neko_cat_owo:851938214105186304>",
         "<:Neko_cat_shrug:851938033724817428>",
         "<:Neko_cat_uwu:851938142810275852>",
-        "<:Neko_cat_uwu:851938142810275852>",
-        "<:Neko_cat_wave:851938087353188372>"
+        "<:Neko_cat_wave:851938087353188372>",
+        "<:Neko_hi:865328473667797012>"
     };
 
     private static final String[] niceLum = new String[] {
+        "<:anime_okay:828069077875556382>",
+        "<:Neko_angel:865328472539791370>",
+        "<:Neko_blush:865328474326695946>",
+        "<:Neko_cash:865328474130350111>",
         "<:Neko_cat_donut:851936309718024203>",
         "<:Neko_cat_okay:851938634327916566>",
         "<:Neko_cat_pizza:851935753826205736>",
         "<:Neko_cat_royal:851935888178544660>",
         "<:Neko_cat_woah:851935805874110504>",
-        "<a:Neko_cat_HeadPat:851934772959510578>",
-        "<a:HeartCat:828087151232286749>"
+        "<:Neko_dab:865328473719439381>",
+        "<:Neko_lick:865328473646825513>",
+        "<:Neko_love:865328470699147274>",
+        "<:Neko_shy:865328471294083152>",
+        "<:Neko_smug:865328473751814174>",
+        "<:Neko_snuggle:865328474095878158>",
+        "<:Neko_TeHe:865328470685909033>",
+        "<:Neko_yay:865328469458288661>",
+        "<:SagiriHeadEmpty:828070253337509918>",
+        "<:Sagiri_Shy:828073525214183437>",
+        "<a:HeartCat:828087151232286749>",
+        "<a:Neko_cat_HeadPat:851934772959510578>"
     };
 
     private static final String[] badLum = new String[] {
+        "<:baka:828070018935685130>",
+        "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_drool_stupid:851936505516785715>",
         "<:Neko_cat_fear:851936400819486720>",
-        "<:Neko_cat_prison:851936449548255264>"
+        "<:Neko_cat_prison:851936449548255264>",
+        "<:Neko_cool:865328469734719539>",
+        "<:Neko_everythings_fine:865328471143088158>",
+        "<:Neko_hug_me:865328470367141909>",
+        "<:Neko_ohno:865328474192216064>",
+        "<:Neko_pout:865328471102324778>",
+        "<:Neko_rear:865327612771565619>",
+        "<:Neko_reee:865328473659539467>",
+        "<:Neko_sad:865328470652485633>",
+        "<:Neko_sip:865328472560500786>",
+        "<:Neko_sweat:865328470702817306>",
+        "<:Neko_what:865328474238353418>",
+        "<:Neko_wondering:865328471492001833>"
     };
 
     private static final String[] gunLum = new String[] {
+        "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_Gun:851934721914175498>",
-        "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497",
-        "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746"
+        "<:Neko_cop:865328472540971058>",
+        "<:Neko_dead:865328473760595999>",
+        "<:Neko_knife:865328473858113536>",
+        "<:Neko_L:865328469557379116>",
+        "<:Neko_LOL:865328469335867392>",
+        "<:Neko_P:865328473786941461>",
+        "<:PaimonShock:828067937646018561>",
+        "<:Sayori_yes:828068735369478188>",
+        "<:WhatAreYouDoingMan:828068981117943848>",
+        "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746",
+        "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497"
     };
 
 
