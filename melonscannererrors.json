@@ -14,11 +14,11 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] System.IO.IOException: The process cannot access the file.*",
-            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstalling MelonLoader."
+            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
-            "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the official MelonLoader installer."
+            "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
         {
             "regex": "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
@@ -30,7 +30,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] Il2CppDumper.exe does not exist!",
-            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader again (failed to download Il2CppDumper)"
+            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
@@ -61,6 +61,10 @@
             "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."
         },
         {
+            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Open Preload Assembly!",
+            "error": "Missing or currupt `MelonLoader/Dependencies/SupportModules/Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
+        },
+        {
             "regex": ".*\\\\Phasmophobia.*",
             "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
         },
@@ -86,7 +90,7 @@
         },
         {
             "regex": ".*The system cannot find the file specified.",
-            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader."
+            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+\\] Can't download Unity Dependencies, Unstripping will NOT be done!",
@@ -106,7 +110,7 @@
         },
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
-            "error": "Please make sure you are using the latest MelonLoader."
+            "error": "Please make sure you are using MelonLoader $MLRelease$."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
