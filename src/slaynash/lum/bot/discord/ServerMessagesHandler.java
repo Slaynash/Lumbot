@@ -209,8 +209,14 @@ public class ServerMessagesHandler {
                 }
 
                 if (message.startsWith("!vrcmu")) {
-                    System.out.println("Proxy printed");
+                    System.out.println("VRCModUpdater printed");
                     event.getChannel().sendMessage("Please download the VRChat Mod Updater and move it into your Plugins folder: https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll").queue();
+                    return;
+                }
+
+                if (message.startsWith("!vrcma")) {
+                    System.out.println("VRCMelonAssistant printed");
+                    event.getChannel().sendMessage("Download the VRChat Mod Assistant and double click it to easily install mods: <https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe>").queue();
                     return;
                 }
             }
