@@ -61,6 +61,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json", false /* Check using hashes? */));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json", false /* Check using hashes? */));
+        // apis.add(new MelonScannerApi("Domeo", "domeo", "", false /* Check using hashes? */));
     }
 
     public static void startFetchingThread() {
