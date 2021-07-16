@@ -173,7 +173,20 @@ public class ServerMessagesHandler {
                         event.getMessage().reply("That user is no longer in this server.").queue();
                         return;
                     }
-                    sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file into Discord\n\nIf you see `MelonLoader.ModHandler.dll` instead of `Latest.log`, Please update MelonLoader to " + MelonScanner.latestMLVersionRelease;
+                    String temp;
+                    if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general")) {
+                        if (guildID == 600298024425619456L /*emmVRC*/)
+                            temp = "into <#600661924010786816>";
+                        else if (guildID == 439093693769711616L /*VRCMG*/)
+                            temp = "into <#440088207799877634>";
+                        else if (guildID == 663449315876012052L /*MelonLoader*/)
+                            temp = "into <#733305093264375849>";
+                        else
+                            temp = "into help-and-support";
+                    }
+                    else
+                        temp = "here";
+                    sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file " + temp + ".\n\nIf you see `MelonLoader.ModHandler.dll` instead of `Latest.log`, Please update MelonLoader to " + MelonScanner.latestMLVersionRelease;
                     event.getChannel().sendMessage(sendMessage).queue();
                     return;
                 }
@@ -217,6 +230,18 @@ public class ServerMessagesHandler {
                 if (message.startsWith("!vrcma")) {
                     System.out.println("VRCMelonAssistant printed");
                     event.getChannel().sendMessage("Download the VRChat Mod Assistant and double click it to easily install mods: <https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe>").queue();
+                    return;
+                }
+
+                if (message.startsWith("!vrcticket")) {
+                    System.out.println("VRChat Ticket printed");
+                    event.getChannel().sendMessage("Please open a new VRChat ticket as there is not much we can do about that <https://help.vrchat.com/hc/requests/new>").queue();
+                    return;
+                }
+
+                if (message.startsWith("!vrcanny")) {
+                    System.out.println("VRChat Canny printed");
+                    event.getChannel().sendMessage("Please make your voice heard over at VRChat's Canny <https://vrchat.canny.io/feature-requests>").queue();
                     return;
                 }
             }
