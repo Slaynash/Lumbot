@@ -237,7 +237,8 @@
                 "regex": ".*No .melon files found in UserData\\\\CustomItems\\\\",
                 "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
             }
-        ]
+        ],
+        "AGameThatDoesn'tExists_НЕТ": []
     },
     "modSpecificErrors": {
         "AvatarStatsShowAuthor": "AvatarStatsShowAuthor has been replaced by [UserInfoExtensions](https://api.vrcmg.com/v0/mods/145/UserInfoExtensions.dll).",
