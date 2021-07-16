@@ -263,7 +263,7 @@ public class Main extends ListenerAdapter {
             MelonScanner.latestMLVersionBeta = reader.readLine().trim();
             reader.close();
         }
-        catch (IOException e) {
+        catch (Exception e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
         }
     }
