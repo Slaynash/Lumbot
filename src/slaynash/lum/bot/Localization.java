@@ -47,6 +47,10 @@ public final class Localization {
     }
 
     public static String get(String key, String lang) {
+
+        if ("en".equals("sga"))
+            return toStandardGalacticAlphabet(get(key, lang));
+
         String locale;
 
         synchronized (localizations) {
@@ -73,6 +77,20 @@ public final class Localization {
         if (!ret.equals(key))
             ret = String.format(ret, args);
         return ret;
+    }
+
+    final static String STANDARD_GALACTIC_ALPHABET = "ᔑʖᓵ↸ᒷ⎓⊣⍑╎⋮ꖌꖎᒲリ𝙹!¡ᑑ∷ᓭℸ ̣ ⚍⍊∴ ̇/||⨅";
+    public static String toStandardGalacticAlphabet(String original) {
+        StringBuilder ret = new StringBuilder(original.length());
+
+        original.toLowerCase().chars().forEach(c -> {
+            if (c < 'a' || c > 'z')
+                ret.append(c);
+            else
+                ret.append(STANDARD_GALACTIC_ALPHABET.charAt((int)('a' - c)));
+        });
+
+        return ret.toString();
     }
 
 }
