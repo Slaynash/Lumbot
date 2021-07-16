@@ -22,7 +22,7 @@ jobs:
         uses: wei/curl@v1.1.1
         with:
           args: |
-            -F 'localization=@localization.json' \
+            -F 'melonscannererrors=@melonscannererrors.json' \
             https://srv1.slaynash.fr/uploadlum.php
       
       - name: Running remote script
