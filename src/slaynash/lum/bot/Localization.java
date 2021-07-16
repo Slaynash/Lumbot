@@ -49,7 +49,7 @@ public final class Localization {
     public static String get(String key, String lang) {
 
         if ("sga".equals(lang))
-            return toStandardGalacticAlphabet(get(key, lang));
+            return toStandardGalacticAlphabet(get(key, "en"));
 
         String locale;
 
