@@ -1,7 +1,6 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -62,6 +61,10 @@ public final class MelonScannerReadPass {
                     oldModCheck(line, context)
                 ) continue;
 
+                if (compromisedMLCheck(line, context)) {
+                    context.messageReceivedEvent.getMessage().delete().queue();
+                    return true;
+                }
 
                 if (!(unhollowerErrorCheck(line, context) || knownErrorCheck(line, context) || incompatibleAssemblyErrorCheck(line, context)))
                     unknownErrorCheck(line, context);
@@ -425,6 +428,14 @@ public final class MelonScannerReadPass {
         return false;
     }
 
+    private static boolean compromisedMLCheck(String line, MelonScanContext context) {
+        if (line.contains("<Transmtn.Get GET api/1/auth/user>") || line.startsWith("authcookie_")) {
+            if (!context.errors.contains(MelonLoaderError.mlCompromised))
+                context.errors.add(MelonLoaderError.mlCompromised);
+            return true;
+        }
+        return false;
+    }
 
     private static boolean unhollowerErrorCheck(String line, MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {

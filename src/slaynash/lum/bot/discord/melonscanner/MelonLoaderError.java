@@ -26,6 +26,7 @@ public class MelonLoaderError {
 
     public static final MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
     public static final MelonLoaderError mlMissing = new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exception list and reinstall MelonLoader.");
+    public static final MelonLoaderError mlCompromised = new MelonLoaderError("", "MelonLoader is in a compromised state and is displaying sensitive information. Please reinstall MelonLoader.");
 
     public static final MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",

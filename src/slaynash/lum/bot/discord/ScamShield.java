@@ -43,7 +43,9 @@ public class ScamShield {
             message = message + " " + embed.getTitle() + " " + embed.getDescription();
         }
 
-        suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
+        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
+
+        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
@@ -61,6 +63,7 @@ public class ScamShield {
         suspiciousValue += message.contains("dollar") ? 1 : 0;
         suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;
+        suspiciousValue += message.contains("bro") ? 1 : 0;
         suspiciousValue += message.contains("made a game") ? 2 : 0;
         if (suspiciousValue > 0) {
             suspiciousValue += message.contains("http") ? 1 : 0;
@@ -71,8 +74,13 @@ public class ScamShield {
             suspiciousValue += message.contains("hour") ? 1 : 0;
         }
 
-        if (suspiciousValue > 0)
-            System.out.println("Scam Shield points for this message: " + suspiciousValue);
+        if (suspiciousValue > 0) {
+            System.out.print("Scam Shield points for this message: " + suspiciousValue);
+            if (newAccount)
+                System.out.println(" New account");
+            else
+                System.out.println();
+        }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
@@ -101,8 +109,13 @@ public class ScamShield {
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
-                " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
+                try {
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
+                    " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to open dms with scammer");
+                }
                 event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter

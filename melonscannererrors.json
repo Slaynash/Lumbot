@@ -14,11 +14,11 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] System.IO.IOException: The process cannot access the file.*",
-            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstalling MelonLoader."
+            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
-            "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the official MelonLoader installer."
+            "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
         {
             "regex": "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
@@ -30,7 +30,7 @@
         },
         {
             "regex": "\\[[0-9.:]+\\] Il2CppDumper.exe does not exist!",
-            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader again (failed to download Il2CppDumper)"
+            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
@@ -61,44 +61,16 @@
             "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."
         },
         {
-            "regex": ".*\\\\Phasmophobia.*",
-            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
-        },
-        {
-            "regex": ".*Unexpected escape character.*",
-            "error": "Please use forward slashes (`/`) in MelonPreferences.cfg"
-        },
-        {
-            "regex": ".*Invalid Version given to MelonInfoAttribute.*",
-            "error": "An invalid/broken mod attempted to load."
+            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Open Preload Assembly!",
+            "error": "Missing or currupt `MelonLoader/Dependencies/SupportModules/Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
             "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
-            "error": "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
-            "error": "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": ".*The system cannot find the file specified.",
-            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader."
-        },
-        {
             "regex": "\\[[0-9.:]+\\] Can't download Unity Dependencies, Unstripping will NOT be done!",
             "error": "MelonLoader failed to download Unity Dependencies. There may be an issue with your firewall or your ISP is blocking the download."
-        },
-        {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
-            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
-        },
-        {
-            "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         },
         {
             "regex": ".*AssemblyGenerator.dll Does Not Exist!",
@@ -106,21 +78,21 @@
         },
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
-            "error": "Please make sure you are using the latest MelonLoader."
+            "error": "Please make sure you are using MelonLoader $MLRelease$."
         },
         {
-            "regex": ".*Exception initializing LibCpp2IL.*",
-            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the MelonLoader discord."
+            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
+            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
         },
         {
-            "regex": ".*[Program] Execution Failed.*",
-            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the MelonLoader discord."
+            "regex": ".*due to: Could not load file or assembly '.*",
+            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         }
     ],
     "knownErrors": [
         {
             "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
-            "error": "MelonLoader failed to read your Unity version and game name. Try re-installing MelonLoader or delete UnityCrashHandler64.exe."
+            "error": "MelonLoader failed to read your Unity version and game name. Please update MelonLoader to $MLRelease$ or delete UnityCrashHandler64.exe."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
@@ -149,6 +121,34 @@
         {
             "regex": ".*\\\\MelonLoader(.x64||.x32).zip/.*",
             "error": "Please do not move the MelonLoader zip into your Mods/Plugins folder! Follow the provided tutorial on how to install MelonLoader or ask for help."
+        },
+        {
+            "regex": ".*\\\\Phasmophobia.*",
+            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
+        },
+        {
+            "regex": ".*Unexpected escape character.*",
+            "error": "Please use forward slashes (`/`) in MelonPreferences.cfg"
+        },
+        {
+            "regex": ".*Invalid Version given to MelonInfoAttribute.*",
+            "error": "An invalid/broken mod attempted to load."
+        },
+        {
+            "regex": ".*The system cannot find the file specified.",
+            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
+            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
+        },
+        {
+            "regex": ".*Exception initializing LibCpp2IL.*",
+            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+        },
+        {
+            "regex": ".*[Program] Execution Failed.*",
+            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         }
     ],
     "gameSpecificErrors": {
@@ -170,14 +170,6 @@
                 "error": "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."
             },
             {
-                "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles."
-            },
-            {
-                "regex": "  at emmVRC.Menus.VRHUD+.*",
-                "error": "emmVRC VRHud error has been fixed in Version **2.11.0**. Please make sure you are using the latest emmVRC."
-            },
-            {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
                 "error": "emmVRC failed to connect to emmVRC network. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
@@ -195,7 +187,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."
+                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection. Type `!proxy` if you need more help."
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
@@ -212,10 +204,6 @@
             {
                 "regex": "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
                 "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader $MLRelease$"
-            },
-            {
-                "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.TypeLoadException: Could not resolve type with token 0100017c.*",
-                "error": "Errors detected are due to VRChat update 1102 changing the obfuscation for the Oculus build. We are working on fixing this issue."
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Exception in coroutine of type emmVRC.Hacks.EmojiFavourites.*",

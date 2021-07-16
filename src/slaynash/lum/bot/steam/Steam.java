@@ -117,6 +117,7 @@ public class Steam {
                     MessageEmbed embed = eb.build();
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
+                    JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessageEmbeds(embed).queue();
 
                     apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
                 }
