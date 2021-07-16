@@ -74,12 +74,13 @@ public class ScamShield {
             suspiciousValue += message.contains("hour") ? 1 : 0;
         }
 
-        if (suspiciousValue > 0)
+        if (suspiciousValue > 0) {
             System.out.print("Scam Shield points for this message: " + suspiciousValue);
-        if (newAccount)
-            System.out.println(" New account");
-        else
-            System.out.println();
+            if (newAccount)
+                System.out.println(" New account");
+            else
+                System.out.println();
+        }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
