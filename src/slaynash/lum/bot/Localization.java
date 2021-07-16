@@ -48,7 +48,7 @@ public final class Localization {
 
     public static String get(String key, String lang) {
 
-        if ("en".equals("sga"))
+        if ("sga".equals(lang))
             return toStandardGalacticAlphabet(get(key, lang));
 
         String locale;
