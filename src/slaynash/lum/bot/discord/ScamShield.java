@@ -43,7 +43,9 @@ public class ScamShield {
             message = message + " " + embed.getTitle() + " " + embed.getDescription();
         }
 
-        suspiciousValue += event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? 1 : 0; //add sus points if account is less then 7 days old
+        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
+
+        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
@@ -73,7 +75,11 @@ public class ScamShield {
         }
 
         if (suspiciousValue > 0)
-            System.out.println("Scam Shield points for this message: " + suspiciousValue);
+            System.out.print("Scam Shield points for this message: " + suspiciousValue);
+        if (newAccount)
+            System.out.println(" New account");
+        else
+            System.out.println();
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60)
