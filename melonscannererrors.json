@@ -65,48 +65,12 @@
             "error": "Missing or currupt `MelonLoader/Dependencies/SupportModules/Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
         },
         {
-            "regex": ".*\\\\Phasmophobia.*",
-            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
-        },
-        {
-            "regex": ".*Unexpected escape character.*",
-            "error": "Please use forward slashes (`/`) in MelonPreferences.cfg"
-        },
-        {
-            "regex": ".*Invalid Version given to MelonInfoAttribute.*",
-            "error": "An invalid/broken mod attempted to load."
-        },
-        {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
             "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
-            "error": "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
-            "error": "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
-            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
-        },
-        {
-            "regex": ".*The system cannot find the file specified.",
-            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
-        },
-        {
             "regex": "\\[[0-9.:]+\\] Can't download Unity Dependencies, Unstripping will NOT be done!",
             "error": "MelonLoader failed to download Unity Dependencies. There may be an issue with your firewall or your ISP is blocking the download."
-        },
-        {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
-            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
-        },
-        {
-            "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         },
         {
             "regex": ".*AssemblyGenerator.dll Does Not Exist!",
@@ -115,14 +79,6 @@
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
             "error": "Please make sure you are using MelonLoader $MLRelease$."
-        },
-        {
-            "regex": ".*Exception initializing LibCpp2IL.*",
-            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
-        },
-        {
-            "regex": ".*[Program] Execution Failed.*",
-            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         }
     ],
     "knownErrors": [
@@ -157,6 +113,50 @@
         {
             "regex": ".*\\\\MelonLoader(.x64||.x32).zip/.*",
             "error": "Please do not move the MelonLoader zip into your Mods/Plugins folder! Follow the provided tutorial on how to install MelonLoader or ask for help."
+        },
+        {
+            "regex": ".*\\\\Phasmophobia.*",
+            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
+        },
+        {
+            "regex": ".*Unexpected escape character.*",
+            "error": "Please use forward slashes (`/`) in MelonPreferences.cfg"
+        },
+        {
+            "regex": ".*Invalid Version given to MelonInfoAttribute.*",
+            "error": "An invalid/broken mod attempted to load."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
+            "error": "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
+            "error": "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
+        },
+        {
+            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
+            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
+        },
+        {
+            "regex": ".*The system cannot find the file specified.",
+            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
+            "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
+        },
+        {
+            "regex": ".*due to: Could not load file or assembly '.*",
+            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
+        },
+        {
+            "regex": ".*Exception initializing LibCpp2IL.*",
+            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+        },
+        {
+            "regex": ".*[Program] Execution Failed.*",
+            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         }
     ],
     "gameSpecificErrors": {
