@@ -54,6 +54,17 @@ public final class Localization {
         return ret;
     }
 
+    public static String getFormat(String key, String lang, Object... args) {
+        String ret = getInternal(key, lang);
+        if (!ret.equals(key))
+            ret = String.format(ret, args);
+
+        if ("sga".equals(lang))
+            return toStandardGalacticAlphabet(ret);
+
+        return ret;
+    }
+
     private static String getInternal(String key, String lang) {
         String locale;
 
@@ -74,13 +85,6 @@ public final class Localization {
         }
 
         return locale;
-    }
-
-    public static String getFormat(String key, String lang, Object... args) {
-        String ret = getInternal(key, lang);
-        if (!ret.equals(key))
-            ret = String.format(ret, args);
-        return toStandardGalacticAlphabet(ret);
     }
 
     static final String[] STANDARD_GALACTIC_ALPHABET = {
