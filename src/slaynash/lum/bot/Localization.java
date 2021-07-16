@@ -84,7 +84,7 @@ public final class Localization {
         StringBuilder ret = new StringBuilder(original.length());
 
         original.toLowerCase().chars().forEach(c -> {
-            if (c < 'a' || c > 'z')
+            if (c <= 'z' && c >= 'a')
                 ret.append(c);
             else
                 ret.append(STANDARD_GALACTIC_ALPHABET.charAt((int)('a' - c)));
