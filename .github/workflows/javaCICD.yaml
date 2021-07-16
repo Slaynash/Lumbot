@@ -36,7 +36,6 @@ jobs:
           args: |
             -F 'buildfile=@target/${{ env.buildname }}' \
             -F 'melonscannererrors=@melonscannererrors.json' \
-            -F 'localization=@localization.json' \
             -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
             -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
             -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
@@ -50,7 +49,6 @@ jobs:
           command: |
             python3 ~/downloadAndRestart.py ${{ env.buildname }} \
             melonscannererrors.json \
-            localization.json \
             apiscripts/vrcmg.lua \
             apiscripts/btd6_inferno.lua \
             apiscripts/btd6_gurrenm4.lua \
