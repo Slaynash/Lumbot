@@ -79,6 +79,14 @@
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
             "error": "Please make sure you are using MelonLoader $MLRelease$."
+        },
+        {
+            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
+            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
+        },
+        {
+            "regex": ".*due to: Could not load file or assembly '.*",
+            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         }
     ],
     "knownErrors": [
@@ -127,28 +135,12 @@
             "error": "An invalid/broken mod attempted to load."
         },
         {
-            "regex": "\\[[0-9.:]+\\] System.Net.WebException: The remote name could not be resolved: 'github.com'",
-            "error": "Was unable to connect to GitHub. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.Net.WebException: The operation has timed out",
-            "error": "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
-        },
-        {
-            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
-            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
-        },
-        {
             "regex": ".*The system cannot find the file specified.",
             "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
-        },
-        {
-            "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
