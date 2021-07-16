@@ -79,13 +79,18 @@ public final class Localization {
         return ret;
     }
 
-    static final String STANDARD_GALACTIC_ALPHABET = "ᔑʖᓵ↸ᒷ⎓⊣⍑╎⋮ꖌꖎᒲリ𝙹!¡ᑑ∷ᓭℸ ̣ ⚍⍊∴ ̇/||⨅";
+    final static String[] STANDARD_GALACTIC_ALPHABET = {
+        "ᔑ", "ʖ", "ᓵ", "↸", "ᒷ", "⎓",
+        "⊣", "⍑", "╎", "⋮", "ꖌ", "ꖎ",
+        "ᒲ", "リ", "𝙹", "!¡", "ᑑ", "∷",
+        "ᓭ", "ℸ", "⚍", "⍊", "∴" , "̇/", "||", "⨅"
+    };
     public static String toStandardGalacticAlphabet(String original) {
         StringBuilder ret = new StringBuilder(original.length());
 
         original.toLowerCase().chars().forEach(c -> {
             if (c <= 'z' && c >= 'a')
-                ret.append(STANDARD_GALACTIC_ALPHABET.charAt((int) (c - 'a')));
+                ret.append(STANDARD_GALACTIC_ALPHABET[(int) (c - 'a')]);
             else
                 ret.append(c);
         });
