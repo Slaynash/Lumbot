@@ -89,6 +89,10 @@
             "error": "Connection was timed out. Make sure Proxy is disabled and DNS set properly. Maybe try [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers DNS servers."
         },
         {
+            "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
+            "error": "Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
+        },
+        {
             "regex": ".*The system cannot find the file specified.",
             "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
         },
@@ -174,10 +178,6 @@
                 "error": "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."
             },
             {
-                "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles."
-            },
-            {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
                 "error": "emmVRC failed to connect to emmVRC network. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
@@ -195,7 +195,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection."
+                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection. Type `!proxy` if you need more help."
             },
             {
                 "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
