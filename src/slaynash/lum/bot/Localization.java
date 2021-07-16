@@ -83,7 +83,7 @@ public final class Localization {
         "ᔑ", "ʖ", "ᓵ", "↸", "ᒷ", "⎓",
         "⊣", "⍑", "╎", "⋮", "ꖌ", "ꖎ",
         "ᒲ", "リ", "𝙹", "!¡", "ᑑ", "∷",
-        "ᓭ", "ℸ", "⚍", "⍊", "∴" , "̇/", "\\|\\|", "⨅"
+        "ᓭ", "ℸ", "⚍", "⍊", "∴" , "̇/", "||", "⨅"
     };
     public static String toStandardGalacticAlphabet(String original) {
         StringBuilder ret = new StringBuilder(original.length());
