@@ -3,8 +3,6 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.io.File;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -18,6 +16,7 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.TimeManager;
 
@@ -32,10 +31,6 @@ public class ServerMessagesHandler {
         .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
         .setHeader("Accept", "text/plain")
         .timeout(Duration.ofSeconds(20))
-        .build();
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-        .version(HttpClient.Version.HTTP_2)
-        .followRedirects(Redirect.ALWAYS)
         .build();
 
     public static void handle(MessageReceivedEvent event) {
@@ -248,7 +243,7 @@ public class ServerMessagesHandler {
 
             if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && message.contains("joke")) {
                 System.out.println("Requested a joke");
-                HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                HttpResponse<String> response = MelonScannerApisManager.downloadRequest(request, "DADJOKE");
                 event.getChannel().sendMessage(response.body()).queue();
                 return;
             }

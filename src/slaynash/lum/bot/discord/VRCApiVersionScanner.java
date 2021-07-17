@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRCApiVersionScanner {
@@ -25,7 +26,6 @@ public class VRCApiVersionScanner {
     public static void init() {
         Thread t = new Thread(() -> {
 
-            HttpResponse<String> response = null;
             HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
@@ -35,20 +35,7 @@ public class VRCApiVersionScanner {
 
             while (true) {
                 try {
-                    response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                    if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                        System.out.println("Lum gotten status code: " + response.statusCode() + " from VRCAPI and is retrying");
-                        Thread.sleep(1000 * 30); // Sleep for half a minute
-                        response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()); //attempt to retry connection
-                    }
-
-                    if (response.statusCode() < 200 || response.statusCode() >= 400)
-                        throw new Exception("Failed to fetch VRChat API data (server returned code " + response.statusCode() + ")");
-
-                    if (response.body() == null || response.body().isEmpty()) {
-                        throw new Exception("VRChat API provided empty response");
-                    }
+                    HttpResponse<String> response = MelonScannerApisManager.downloadRequest(httpClient, request, "VRChat API");
 
                     VRCAPIConfig config = gson.fromJson(response.body(), VRCAPIConfig.class);
 

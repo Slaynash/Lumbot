@@ -309,7 +309,7 @@ public class Main extends ListenerAdapter {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null) {
                     event.getGuild().addRoleToMember(event.getMember(), role).queue();
-                    writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to <@" + event.getUser().getId() + ">");
+                    writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to " + event.getUser().getAsMention());
                 }
                 return;
             }
@@ -335,7 +335,7 @@ public class Main extends ListenerAdapter {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null) {
                     event.getGuild().removeRoleFromMember(event.getUserId(), role).queue();
-                    writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from <@" + event.getUserId() + ">");
+                    writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
                 return;
             }

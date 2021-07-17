@@ -84,16 +84,7 @@ public class MelonScannerApisManager {
 
                         // API request
 
-                        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-                        if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                            System.out.println("Lum gotten status code: " + response.statusCode() + " from " + api.name + " and is retrying");
-                            Thread.sleep(1000 * 30); // Sleep for half a minute
-                            response = httpClient.send(request, HttpResponse.BodyHandlers.ofString()); //attempt to retry connection
-                        }
-
-                        if (response.statusCode() < 200 || response.statusCode() >= 400)
-                            throw new Exception("Failed to fetch remote API data (server returned code " + response.statusCode() + ")");
+                        HttpResponse<String> response = downloadRequest(request, api.name);
 
                         String apiDataRaw = response.body();
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
@@ -326,5 +317,35 @@ public class MelonScannerApisManager {
             hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars, StandardCharsets.UTF_8);
+    }
+
+    public static HttpResponse<String> downloadRequest(HttpRequest request, String source) throws Exception {
+        return downloadRequest(httpClient, request, source);
+    }
+    public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
+        HttpResponse<String> response = null;
+        Exception exception = null;
+        int attempts = 3;
+        for (int i = 0; i < attempts; i++) {
+            try {
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+                if (response.statusCode() < 200 || response.statusCode() >= 400) {
+                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
+                    throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
+                }
+                if (response.body() == null || response.body().isBlank()) {
+                    System.out.println(source + " provided empty response");
+                    throw new Exception("Lum gotten an empty responce: " + response.statusCode() + " from " + source);
+                }
+            }
+            catch (Exception e) {
+                exception = e;
+                Thread.sleep(1000 * 30); // Sleep for half a minute
+                continue;
+            }
+            return response;
+        }
+        throw new Exception(exception);
     }
 }
