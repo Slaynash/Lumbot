@@ -148,7 +148,7 @@ public final class MelonScanner {
                 LogCounter.addtoCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
-                messageBuilder.append("<@" + context.messageReceivedEvent.getAuthor().getId() + ">");
+                messageBuilder.append(context.messageReceivedEvent.getAuthor().getAsMention());
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
             }
         }
@@ -799,7 +799,7 @@ public final class MelonScanner {
         if (reportChannel != null) {
             event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
                     JDAManager.wrapMessageInEmbed(
-                            "User <@" + event.getMember().getId() + "> is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                            "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.orange)).queue();
         }
     }

@@ -61,7 +61,7 @@ public class ServerMessagesHandler {
                     event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
-                String mess = "<@!" + event.getMessage().getMember().getId() + "> ";
+                String mess = event.getMessage().getMember().getAsMention() + " ";
                 switch (guildIDstr) {
                     case "600298024425619456": //emmVRC
                         mess = mess + "Please reupload this log to <#600661924010786816> instead.";
@@ -101,7 +101,7 @@ public class ServerMessagesHandler {
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
                 event.getMessage().delete().queue();
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("<@!" + event.getMessage().getMember().getId() + "> tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMessage().getMember().getAsMention() + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
             }
 
@@ -119,7 +119,7 @@ public class ServerMessagesHandler {
                     }
                 }
                 if (postedInWhitelistedServer && !checkIfStaff(event)) {
-                    event.getChannel().sendMessage("<@!" + event.getMessage().getMember().getId() + "> Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
+                    event.getChannel().sendMessage(event.getMessage().getMember().getAsMention() + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
                     event.getMessage().delete().queue();
                     return;
                 }
