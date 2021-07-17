@@ -147,8 +147,12 @@
             "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
-            "regex": ".*[Program] Execution Failed.*",
+            "regex": ".*\\[Program\\] Execution Failed.*",
             "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+        },
+        {
+            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Fatal Exception writing DLL.*",
+            "error": "Cpp2IL failed to save generated dll, please make sure that a virus scanner is not blocking MelonLoader and that MelonLoader has write permissions."
         }
     ],
     "gameSpecificErrors": {
