@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -59,6 +60,14 @@ public final class MelonScanner {
 
             if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
                 lang = "fr";
+
+            if (messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
+                Random random = new Random();
+                if (random.nextInt(1000) == 420)
+                    lang = "sga";
+                if (LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1)
+                    lang = "sga";
+            }
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
             for (String messagePart : messageParts) {
