@@ -436,7 +436,7 @@ public class Main extends ListenerAdapter {
         if (reportChannelID != null && !event.getNewValue().isEmpty()) {
             String message = event.getNewValue().get(0).getName();
             if (message != null) {
-                if (message.toLowerCase().matches(".*(hitler|nazi|nigger|boycottknah|7uakcnhqpn|unchained).*")) {
+                if (message.toLowerCase().matches(".*(nigger|boycottknah|7uakcnhqpn|unchained).*")) {
                     System.out.println("sussy baka detected in " + event.getGuild().getName());
                     event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getAsMention() + " set a suspicious status\n" + message, Color.MAGENTA)).queue();
                 }

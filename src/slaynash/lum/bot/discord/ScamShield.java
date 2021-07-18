@@ -112,6 +112,9 @@ public class ScamShield {
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
+            if (event.getGuild().getSelfMember().canInteract(event.getMember()))
+                return false;
+
             if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 try {
                     event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically kicked from " + event.getGuild().getName() +
@@ -129,7 +132,11 @@ public class ScamShield {
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                 List<Message> messagelist = new ArrayList<>();
-                sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
+                sameauthormessages.forEach(m -> {
+                    if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
+                        messagelist.add(m.messageReceivedEvent.getMessage());
+                    }
+                });
                 if (messagelist.size() == 1)
                     event.getMessage().delete().queue();
                 else if (messagelist.size() > 1)

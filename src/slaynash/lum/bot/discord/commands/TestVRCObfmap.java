@@ -30,5 +30,5 @@ public class TestVRCObfmap extends Command {
     protected boolean matchPattern(String paramString) {
         return paramString.split(" ", 2)[0].equals("l!testvrcobfmap");
     }
-    
+
 }

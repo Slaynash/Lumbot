@@ -112,7 +112,7 @@ public class CommandManager {
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new ThawServer());
         CommandManager.registerCommand(new Purge());
-        
+
         CommandManager.registerCommand(new TestVRCObfmap());
     }
 
@@ -228,4 +228,3 @@ public class CommandManager {
         return new Color(Integer.valueOf(colorStr.substring(1, 3), 16), Integer.valueOf(colorStr.substring(3, 5), 16), Integer.valueOf(colorStr.substring(5, 7), 16));
     }
 }
-

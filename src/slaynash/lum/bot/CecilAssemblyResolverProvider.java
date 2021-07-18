@@ -23,7 +23,6 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
         return new AssemblyResolver();
     }
 
-    
 
     public static class AssemblyResolver implements IAssemblyResolver {
 
@@ -76,25 +75,23 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
         }
 
 
-        protected AssemblyDefinition searchDirectory(AssemblyNameReference name, Iterable<File> directories, ReaderParameters parameters)
-		{
-			for (File directory : directories) {
+        protected AssemblyDefinition searchDirectory(AssemblyNameReference name, Iterable<File> directories, ReaderParameters parameters) {
+            for (File directory : directories) {
                 File file = Path.of(directory.getAbsolutePath(), name.getName() + ".dll").toFile();
                 if (!file.exists())
                     continue;
-                
+
                 return getAssembly(file.getAbsolutePath(), parameters);
-			}
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-        AssemblyDefinition getAssembly(String file, ReaderParameters parameters)
-		{
-			if (parameters.getAssemblyResolver() == null)
-				parameters.setAssemblyResolver(this);
+        AssemblyDefinition getAssembly(String file, ReaderParameters parameters) {
+            if (parameters.getAssemblyResolver() == null)
+                parameters.setAssemblyResolver(this);
 
-			return ModuleDefinition.readModule(file, parameters).getAssembly();
-		}
+            return ModuleDefinition.readModule(file, parameters).getAssembly();
+        }
     }
 }
