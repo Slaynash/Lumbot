@@ -82,7 +82,7 @@ public class VRChatVersionComparer {
 
         System.out.println("Extracting Unity dependencies");
         try {
-            Process p = Runtime.getRuntime().exec("unzip vrcdecomp/unitydeps.zip -d vrcdecomp/unitydeps");
+            Process p = Runtime.getRuntime().exec("unzip -o vrcdecomp/unitydeps.zip -d vrcdecomp/unitydeps");
             int returncode = p.waitFor();
             if (returncode != 0) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "unzip returned " + returncode);
