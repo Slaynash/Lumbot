@@ -429,6 +429,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onUserUpdateActivities(UserUpdateActivitiesEvent event) {
+        /* status reporter
         Long guildID = event.getGuild().getIdLong();
         if (!(guildID == 600298024425619456L || guildID == 439093693769711616L || guildID == 663449315876012052L))
             return;
@@ -442,5 +443,6 @@ public class Main extends ListenerAdapter {
                 }
             }
         }
+        */
     }
 }
