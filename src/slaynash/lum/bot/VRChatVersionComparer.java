@@ -102,7 +102,7 @@ public class VRChatVersionComparer {
 
         ByteArrayOutputStream mapStream = new ByteArrayOutputStream();
         try (BufferedInputStream in = new BufferedInputStream(new URL(obfMapUrl).openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/obfmap.csv.gz")
+            FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/deobfmap.csv.gz")
         ) {
             int bytesRead;
             while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
