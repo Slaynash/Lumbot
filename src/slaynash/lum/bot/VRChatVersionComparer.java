@@ -187,7 +187,7 @@ public class VRChatVersionComparer {
 
                 String fullname = "";
 
-                String[] nameparts = entry.getKey().split(".");
+                String[] nameparts = obfname.split("\\.");
                 for (int i = 0; i < nameparts.length - 1; ++i) {
                     String obfParentName = "";
                     for (int j = 0; j <= i; ++j) {
@@ -200,7 +200,7 @@ public class VRChatVersionComparer {
                     if ((deobfParentName = obf2deobf.get(obfParentName)) != null)
                         fullname += deobfParentName;
                     else
-                        fullname += nameparts[i - 1];
+                        fullname += nameparts[i];
 
                     fullname += ".";
                 }
