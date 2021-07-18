@@ -10,7 +10,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
 import mono.cecil.AssemblyDefinition;
@@ -162,18 +165,42 @@ public class VRChatVersionComparer {
 
         List<String> missingTypes = new ArrayList<>();
 
+        Map<String, String> obf2deobf = new HashMap<>();
+        Map<String, String> deobf2obf = new HashMap<>();
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mapData)))) {
             String line;
-
-            for (TypeDefinition typedef : mainModule.getAllTypes())
-                System.out.println(" > " + typedef.getFullName());
-
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(";");
+                obf2deobf.put(parts[0], parts[1]);
+                deobf2obf.put(parts[1], parts[0]);
+            }
 
-                if (mainModule.getType(parts[0].startsWith(".") ? parts[0].substring(1) : parts[0]) == null)
-                    missingTypes.add(parts[1]);
+            // for (TypeDefinition typedef : mainModule.getAllTypes())
+            //     System.out.println(" > " + typedef.getFullName());
+
+            for (Entry<String, String> entry : obf2deobf.entrySet()) {
+                String deobfname = entry.getValue();
+
+                if (deobfname.contains("::")) {
+                    // String[] memberParts = deobfname.split("::");
+                    // String deobfClassname = obf2deobf.get(memberParts[0]);
+                    // deobfname = memberParts[1];
+
+                    // TypeDefinition typedef;
+                    // if ((typedef = mainModule.getType(deobfClassname)) == null)
+                    //     // missingTypes.add(deobfClassname);
+                    //     continue;
+
+                    // if (typedef.getFields())
+                    //     // TODO
+                }
+                else {
+                    if (mainModule.getType(deobfname) == null)
+                        missingTypes.add(deobfname);
+                }
+
             }
         }
         catch (Exception e) {
