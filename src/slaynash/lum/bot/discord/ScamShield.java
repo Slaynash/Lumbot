@@ -112,7 +112,7 @@ public class ScamShield {
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
-            if (event.getGuild().getSelfMember().canInteract(event.getMember()))
+            if (!event.getGuild().getSelfMember().canInteract(event.getMember()))
                 return false;
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
