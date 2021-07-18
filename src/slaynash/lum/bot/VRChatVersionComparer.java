@@ -29,7 +29,7 @@ public class VRChatVersionComparer {
 
     public static void run(String manifestId, String branch, MessageReceivedEvent event) {
         String unityVersion = null;
-        
+
         System.out.println("Downloading VRChat from Steam");
         try {
             Process p = Runtime.getRuntime().exec("dotnet vrcdecomp/depotdownloader/DepotDownloader.dll -app 438100 -depot 438101 -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat_" + branch);
@@ -39,7 +39,8 @@ public class VRChatVersionComparer {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "DepotDownloader returned " + returncode);
                 return;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "DepotDownloader failed to run", e);
             return;
         }
@@ -63,7 +64,8 @@ public class VRChatVersionComparer {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Cpp2IL returned " + returncode);
                 return;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "Cpp2IL failed to run", e);
             return;
         }
@@ -73,16 +75,17 @@ public class VRChatVersionComparer {
             return;
         }
 
-        
+
         System.out.println("Downloading Unity dependencies");
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://github.com/LavaGang/Unity-Runtime-Libraries/raw/master/" + unityVersion + ".zip").openStream());
             FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/unitydeps.zip")
         ) {
-            byte dataBuffer[] = new byte[1024];
+            byte[] dataBuffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1)
                 fileOutputStream.write(dataBuffer, 0, bytesRead);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to download dependencies for Unity " + unityVersion, e);
             return;
         }
@@ -96,11 +99,12 @@ public class VRChatVersionComparer {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "unzip returned " + returncode);
                 return;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "unzip failed to run", e);
             return;
         }
-        
+
 
         System.out.println("Downloading the latest obfuscation map");
 
@@ -115,11 +119,12 @@ public class VRChatVersionComparer {
                 fileOutputStream.write(buffer, 0, bytesRead);
                 mapStream.write(buffer, 0, bytesRead);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to download current deobfuscation map", e);
             return;
         }
-        
+
         System.out.println("Decompressing the obfuscation map");
 
         ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
@@ -139,20 +144,21 @@ public class VRChatVersionComparer {
         System.out.println("Running Unhollower");
         try {
             Process p = Runtime.getRuntime().exec("mono vrcdecomp/unhollower/AssemblyUnhollower.exe " +
-            "--input=vrcdecomp/cpp2il_out " +
-            "--output=vrcdecomp/unhollower_out " +
-            "--mscorlib=vrcdecomp/mscorlib.dll " + 
-            "--unity=vrcdecomp/unitydeps " + 
-            "--gameassembly=vrcdecomp/VRChat_" + branch + "/GameAssembly.dll " +
-            "--rename-map=vrcdecomp/deobfmap.csv.gz " +
-            "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
+                "--input=vrcdecomp/cpp2il_out " +
+                "--output=vrcdecomp/unhollower_out " +
+                "--mscorlib=vrcdecomp/mscorlib.dll " +
+                "--unity=vrcdecomp/unitydeps " +
+                "--gameassembly=vrcdecomp/VRChat_" + branch + "/GameAssembly.dll " +
+                "--rename-map=vrcdecomp/deobfmap.csv.gz " +
+                "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
             logAppOutput(p, "Il2CppAssemblyUnhollower");
             int returncode = p.waitFor();
             if (returncode != 0) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Il2CppAssemblyUnhollower returned " + returncode);
                 return;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("VRChat deobf map check failed", "Il2CppAssemblyUnhollower failed to run", e);
             return;
         }
@@ -166,7 +172,6 @@ public class VRChatVersionComparer {
         List<String> missingTypes = new ArrayList<>();
 
         Map<String, String> obf2deobf = new HashMap<>();
-        Map<String, String> deobf2obf = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mapData)))) {
             String line;
