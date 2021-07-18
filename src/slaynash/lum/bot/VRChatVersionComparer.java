@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -37,7 +38,9 @@ public class VRChatVersionComparer {
 
         System.out.println("Running Cpp2IL");
         try {
-            Process p = Runtime.getRuntime().exec("cd vrcdecomp; ./Cpp2IL-2021.1.2-Linux --game-path VRChat_" + branch + " --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
+            ProcessBuilder pb = new ProcessBuilder("vrcdecomp/Cpp2IL-2021.1.2-Linux --game-path VRChat_" + branch + " --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
+            pb.directory(new File("vrcdecomp"));
+            Process p = pb.start();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line = "";
                 while ((line = br.readLine()) != null) {
