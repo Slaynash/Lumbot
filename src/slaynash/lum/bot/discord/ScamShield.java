@@ -103,7 +103,7 @@ public class ScamShield {
 
         int suspiciousCount = (int) sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (suspiciousCount > 4) {
+        if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
             String reportChannelID = CommandManager.mlReportChannels.get(guildID);
