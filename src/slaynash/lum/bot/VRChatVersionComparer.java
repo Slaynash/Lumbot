@@ -44,8 +44,8 @@ public class VRChatVersionComparer {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line = "";
                 while ((line = br.readLine()) != null) {
-                    if (line.contains("unity version of be ")) {
-                        unityVersion = line.split("unity version of be ")[1];
+                    if (line.contains("unity version to be ")) {
+                        unityVersion = line.split("unity version to be ")[1];
                         break;
                     }
                 }
