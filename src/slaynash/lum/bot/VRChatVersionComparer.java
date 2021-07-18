@@ -15,6 +15,8 @@ import java.util.zip.GZIPInputStream;
 
 import mono.cecil.AssemblyDefinition;
 import mono.cecil.ModuleDefinition;
+import mono.cecil.ReaderParameters;
+import mono.cecil.ReadingMode;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRChatVersionComparer {
@@ -154,7 +156,7 @@ public class VRChatVersionComparer {
 
         System.out.println("Checking assembly");
 
-        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/unhollower_out/Assembly-CSharp.dll");
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/unhollower_out/Assembly-CSharp.dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
         ModuleDefinition mainModule = ad.getMainModule();
 
         List<String> missingTypes = new ArrayList<>();
