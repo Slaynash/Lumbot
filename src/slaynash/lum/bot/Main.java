@@ -110,7 +110,7 @@ public class Main extends ListenerAdapter {
 
         registerCommands();
 
-        System.out.println("Connected to " + jda.getGuilds().size() + " Guilds!");
+        System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
     }
 
