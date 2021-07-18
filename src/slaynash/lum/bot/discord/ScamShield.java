@@ -48,7 +48,6 @@ public class ScamShield {
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
-        suspiciousValue += message.contains("$") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
         suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
         suspiciousValue += message.contains("trade") ? 2 : 0;
@@ -67,7 +66,7 @@ public class ScamShield {
         suspiciousValue += message.contains("bro") ? 1 : 0;
         suspiciousValue += message.contains("check this") ? 1 : 0;
         suspiciousValue += message.contains("made a game") ? 2 : 0;
-        if (suspiciousValue > 0) {
+        if (suspiciousValue > 1) {
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
             suspiciousValue += message.contains("bit.ly") ? 2 : 0;
@@ -76,6 +75,7 @@ public class ScamShield {
             suspiciousValue += message.contains("hour") ? 1 : 0;
             suspiciousValue += message.contains("steampowered.com") ? -1 : 0;
             suspiciousValue += message.contains("steamcommunity.com") ? -1 : 0;
+            suspiciousValue += message.contains("$") ? 1 : 0;
         }
 
         if (suspiciousValue > 0) {
@@ -87,10 +87,10 @@ public class ScamShield {
         }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60 * 10)
-            handledMessages.remove(); //remove all saved messages that is older then 10 minutes
+        while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60 * 3)
+            handledMessages.remove(); //remove all saved messages that is older then 3 minutes
 
-        if (suspiciousValue < 2)
+        if (suspiciousValue < 3)
             suspiciousValue = 0;
         if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is a instant kick on first message
             suspiciousValue = 3;
