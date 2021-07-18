@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
 import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -109,6 +110,7 @@ public class Main extends ListenerAdapter {
 
         registerCommands();
 
+        System.out.println("Connected to " + jda.getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
     }
 
@@ -422,6 +424,23 @@ public class Main extends ListenerAdapter {
         catch (Exception e) {
             System.err.println("Failed to report exception:");
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onUserUpdateActivities(UserUpdateActivitiesEvent event) {
+        Long guildID = event.getGuild().getIdLong();
+        if (!(guildID == 600298024425619456L || guildID == 439093693769711616L || guildID == 663449315876012052L))
+            return;
+        String reportChannelID = CommandManager.mlReportChannels.get(guildID);
+        if (reportChannelID != null) {
+            String message = event.getNewValue().toString().toLowerCase();
+            if (message != null) {
+                if (message.matches(".*(hitler|nazi|nigger|boycottknah|7uakcnhqpn|unchained).*")) {
+                    System.out.println("sussy baka detected");
+                    event.getGuild().getTextChannelById(reportChannelID).sendMessage(event.getMember().getAsMention() + "set a suspicious status").queue();
+                }
+            }
         }
     }
 }

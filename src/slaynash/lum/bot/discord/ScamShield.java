@@ -58,7 +58,7 @@ public class ScamShield {
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
-        suspiciousValue += message.contains("!!!!") ? 1 : 0;
+        suspiciousValue += message.contains("!!!") ? 1 : 0;
         suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 2 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
@@ -74,6 +74,8 @@ public class ScamShield {
             suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
             suspiciousValue += message.contains("mega.nz") ? 2 : 0;
             suspiciousValue += message.contains("hour") ? 1 : 0;
+            suspiciousValue += message.contains("steampowered.com") ? -1 : 0;
+            suspiciousValue += message.contains("steamcommunity.com") ? -1 : 0;
         }
 
         if (suspiciousValue > 0) {
