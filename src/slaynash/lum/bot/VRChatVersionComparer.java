@@ -174,23 +174,23 @@ public class VRChatVersionComparer {
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(";");
                 obf2deobf.put(parts[0], parts[1]);
-                deobf2obf.put(parts[1], parts[0]);
             }
 
             // for (TypeDefinition typedef : mainModule.getAllTypes())
             //     System.out.println(" > " + typedef.getFullName());
 
             for (Entry<String, String> entry : obf2deobf.entrySet()) {
+                String obfname = entry.getKey();
                 String deobfname = entry.getValue();
-                if (deobfname.startsWith("."))
-                    deobfname = deobfname.substring(1);
+                if (obfname.startsWith("."))
+                    obfname = obfname.substring(1);
 
                 String fullname = "";
 
                 String[] nameparts = entry.getKey().split(".");
-                for (int i = 1; i < nameparts.length - 1; ++i) {
+                for (int i = 0; i < nameparts.length - 1; ++i) {
                     String obfParentName = "";
-                    for (int j = 0; j < i; ++j) {
+                    for (int j = 0; j <= i; ++j) {
                         if (j != 0)
                             obfParentName += ".";
                         obfParentName += nameparts[j];
