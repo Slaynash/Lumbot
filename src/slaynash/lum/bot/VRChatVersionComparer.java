@@ -39,7 +39,7 @@ public class VRChatVersionComparer {
         System.out.println("Running Cpp2IL");
         try {
             ProcessBuilder pb = new ProcessBuilder("./Cpp2IL-2021.1.2-Linux --game-path VRChat_" + branch + " --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
-            pb.directory(new File("vrcdecomp"));
+            pb.directory(new File("/home/lum/vrcdecomp"));
             Process p = pb.start();
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line = "";
