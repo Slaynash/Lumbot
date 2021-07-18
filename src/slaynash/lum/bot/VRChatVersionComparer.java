@@ -17,6 +17,7 @@ import mono.cecil.AssemblyDefinition;
 import mono.cecil.ModuleDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
+import mono.cecil.TypeDefinition;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRChatVersionComparer {
@@ -163,11 +164,15 @@ public class VRChatVersionComparer {
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mapData)))) {
             String line;
+
+            for (TypeDefinition typedef : mainModule.getAllTypes())
+                System.out.println(" > " + typedef.getFullName());
+
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(";");
 
-                if (mainModule.getType(parts[0]) == null)
+                if (mainModule.getType(parts[0].startsWith(".") ? parts[0].substring(1) : parts[0]) == null)
                     missingTypes.add(parts[1]);
             }
         }
