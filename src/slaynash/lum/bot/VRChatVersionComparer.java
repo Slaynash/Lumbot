@@ -132,7 +132,7 @@ public class VRChatVersionComparer {
             "--output=vrcdeobf/unhollower_out " +
             "--mscorlib=vrcdeobf/mscorlib.dll " + 
             "--unity=vrcdeobf/unitydeps " + 
-            "--gameassembly=VRChat_" + branch + "/GameAssembly.dll " +
+            "--gameassembly=vrcdeobf/VRChat_" + branch + "/GameAssembly.dll " +
             "--rename-map=vrcdeobf/deobfmap.csv.gz " +
             "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
             int returncode = p.waitFor();
@@ -148,7 +148,7 @@ public class VRChatVersionComparer {
 
         System.out.println("Checking assembly");
 
-        AssemblyDefinition ad = AssemblyDefinition.readAssembly("cpp2il_out/Assembly-CSharp.dll");
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdeobf/unhollower_out/Assembly-CSharp.dll");
         ModuleDefinition mainModule = ad.getMainModule();
 
         List<String> missingTypes = new ArrayList<>();
