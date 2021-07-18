@@ -20,14 +20,14 @@ import mono.cecil.AssemblyDefinition;
 import mono.cecil.ModuleDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
-import mono.cecil.TypeDefinition;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRChatVersionComparer {
 
     public static String obfMapUrl;
 
-    public static void run(String manifestId, String branch) {
+    public static void run(String manifestId, String branch, MessageReceivedEvent event) {
         String unityVersion = null;
         
         System.out.println("Downloading VRChat from Steam");
@@ -182,6 +182,30 @@ public class VRChatVersionComparer {
 
             for (Entry<String, String> entry : obf2deobf.entrySet()) {
                 String deobfname = entry.getValue();
+                if (deobfname.startsWith("."))
+                    deobfname = deobfname.substring(1);
+
+                String fullname = "";
+
+                String[] nameparts = entry.getKey().split(".");
+                for (int i = 1; i < nameparts.length - 1; ++i) {
+                    String obfParentName = "";
+                    for (int j = 0; j < i; ++j) {
+                        if (j != 0)
+                            obfParentName += ".";
+                        obfParentName += nameparts[j];
+                    }
+
+                    String deobfParentName;
+                    if ((deobfParentName = obf2deobf.get(obfParentName)) != null)
+                        fullname += deobfParentName;
+                    else
+                        fullname += nameparts[i - 1];
+
+                    fullname += ".";
+                }
+
+                fullname += deobfname;
 
                 if (deobfname.contains("::")) {
                     // String[] memberParts = deobfname.split("::");
@@ -197,8 +221,8 @@ public class VRChatVersionComparer {
                     //     // TODO
                 }
                 else {
-                    if (mainModule.getType(deobfname) == null)
-                        missingTypes.add(deobfname);
+                    if (mainModule.getType(fullname) == null)
+                        missingTypes.add(fullname);
                 }
 
             }

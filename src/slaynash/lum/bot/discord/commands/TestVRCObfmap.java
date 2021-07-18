@@ -20,7 +20,7 @@ public class TestVRCObfmap extends Command {
 
         Thread t = new Thread(() -> {
             VRChatVersionComparer.obfMapUrl = parts[3];
-            VRChatVersionComparer.run(parts[1], parts[2]);
+            VRChatVersionComparer.run(parts[1], parts[2], event);
         }, "TestVRCObfMap");
         t.setDaemon(true);
         t.start();
