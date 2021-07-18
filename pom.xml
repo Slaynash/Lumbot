@@ -99,5 +99,11 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.30</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.github.lastrix</groupId>
+      <artifactId>mono.cecil</artifactId>
+      <version>0.10.0.0</version>
+   </dependency>
   </dependencies>
 </project>
