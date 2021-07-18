@@ -132,29 +132,29 @@ public class VRChatVersionComparer {
 
         System.out.println("Running Unhollower");
         try {
-            Process p = Runtime.getRuntime().exec("mono vrcdeobf/unhollower/AssemblyUnhollower.exe " +
-            "--input=vrcdeobf/cpp2il_out " +
-            "--output=vrcdeobf/unhollower_out " +
-            "--mscorlib=vrcdeobf/mscorlib.dll " + 
-            "--unity=vrcdeobf/unitydeps " + 
-            "--gameassembly=vrcdeobf/VRChat_" + branch + "/GameAssembly.dll " +
-            "--rename-map=vrcdeobf/deobfmap.csv.gz " +
+            Process p = Runtime.getRuntime().exec("mono vrcdecomp/unhollower/AssemblyUnhollower.exe " +
+            "--input=vrcdecomp/cpp2il_out " +
+            "--output=vrcdecomp/unhollower_out " +
+            "--mscorlib=vrcdecomp/mscorlib.dll " + 
+            "--unity=vrcdecomp/unitydeps " + 
+            "--gameassembly=vrcdecomp/VRChat_" + branch + "/GameAssembly.dll " +
+            "--rename-map=vrcdecomp/deobfmap.csv.gz " +
             "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
             logAppOutput(p, "Il2CppAssemblyUnhollower");
             int returncode = p.waitFor();
             if (returncode != 0) {
-                ExceptionUtils.reportException("VRChat deobf map check failed", "Cpp2IL returned " + returncode);
+                ExceptionUtils.reportException("VRChat deobf map check failed", "Il2CppAssemblyUnhollower returned " + returncode);
                 return;
             }
         } catch (Exception e) {
-            ExceptionUtils.reportException("VRChat deobf map check failed", "Cpp2IL failed to run", e);
+            ExceptionUtils.reportException("VRChat deobf map check failed", "Il2CppAssemblyUnhollower failed to run", e);
             return;
         }
 
 
         System.out.println("Checking assembly");
 
-        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdeobf/unhollower_out/Assembly-CSharp.dll");
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/unhollower_out/Assembly-CSharp.dll");
         ModuleDefinition mainModule = ad.getMainModule();
 
         List<String> missingTypes = new ArrayList<>();
