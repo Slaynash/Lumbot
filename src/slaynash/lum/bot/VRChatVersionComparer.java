@@ -191,9 +191,7 @@ public class VRChatVersionComparer {
                 for (int i = 0; i < nameparts.length - 1; ++i) {
                     String obfParentName = "";
                     for (int j = 0; j <= i; ++j) {
-                        if (j != 0)
-                            obfParentName += ".";
-                        obfParentName += nameparts[j];
+                        obfParentName += "." + nameparts[j];
                     }
 
                     String deobfParentName;
