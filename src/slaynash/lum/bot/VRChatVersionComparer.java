@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class VRChatVersionComparer {
         System.out.println("Downloading VRChat from Steam");
         try {
             Process p = Runtime.getRuntime().exec("dotnet vrcdecomp/depotdownloader/DepotDownloader.dll -app 438100 -depot 438101 -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat_" + branch);
+            logAppOutput(p, "DepotDownloader");
             int returncode = p.waitFor();
             if (returncode != 0) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "DepotDownloader returned " + returncode);
@@ -44,10 +46,9 @@ public class VRChatVersionComparer {
             try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line = "";
                 while ((line = br.readLine()) != null) {
-                    if (line.contains("unity version to be ")) {
+                    System.out.println("[Cpp2IL] " + line);
+                    if (unityVersion == null && line.contains("unity version to be "))
                         unityVersion = line.split("unity version to be ")[1];
-                        break;
-                    }
                 }
             }
 
@@ -83,6 +84,7 @@ public class VRChatVersionComparer {
         System.out.println("Extracting Unity dependencies");
         try {
             Process p = Runtime.getRuntime().exec("unzip -o vrcdecomp/unitydeps.zip -d vrcdecomp/unitydeps");
+            logAppOutput(p, "unzip");
             int returncode = p.waitFor();
             if (returncode != 0) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "unzip returned " + returncode);
@@ -138,6 +140,7 @@ public class VRChatVersionComparer {
             "--gameassembly=vrcdeobf/VRChat_" + branch + "/GameAssembly.dll " +
             "--rename-map=vrcdeobf/deobfmap.csv.gz " +
             "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
+            logAppOutput(p, "Il2CppAssemblyUnhollower");
             int returncode = p.waitFor();
             if (returncode != 0) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Cpp2IL returned " + returncode);
@@ -181,6 +184,15 @@ public class VRChatVersionComparer {
         System.out.println();
         System.out.println("Done.");
 
+    }
+
+    private static void logAppOutput(Process process, String appname) throws IOException {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                System.out.println("[" + appname + "] " + line);
+            }
+        }
     }
 
 }
