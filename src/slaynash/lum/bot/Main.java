@@ -433,12 +433,12 @@ public class Main extends ListenerAdapter {
         if (!(guildID == 600298024425619456L || guildID == 439093693769711616L || guildID == 663449315876012052L))
             return;
         String reportChannelID = CommandManager.mlReportChannels.get(guildID);
-        if (reportChannelID != null) {
-            String message = event.getNewValue().toString();
+        if (reportChannelID != null && !event.getNewValue().isEmpty()) {
+            String message = event.getNewValue().get(0).getName();
             if (message != null) {
                 if (message.toLowerCase().matches(".*(hitler|nazi|nigger|boycottknah|7uakcnhqpn|unchained).*")) {
-                    System.out.println("sussy baka detected");
-                    event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getAsMention() + "set a suspicious status\n" + message, Color.MAGENTA)).queue();
+                    System.out.println("sussy baka detected in " + event.getGuild().getName());
+                    event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getAsMention() + " set a suspicious status\n" + message, Color.MAGENTA)).queue();
                 }
             }
         }
