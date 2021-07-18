@@ -434,11 +434,11 @@ public class Main extends ListenerAdapter {
             return;
         String reportChannelID = CommandManager.mlReportChannels.get(guildID);
         if (reportChannelID != null) {
-            String message = event.getNewValue().toString().toLowerCase();
+            String message = event.getNewValue().toString();
             if (message != null) {
-                if (message.matches(".*(hitler|nazi|nigger|boycottknah|7uakcnhqpn|unchained).*")) {
+                if (message.toLowerCase().matches(".*(hitler|nazi|nigger|boycottknah|7uakcnhqpn|unchained).*")) {
                     System.out.println("sussy baka detected");
-                    event.getGuild().getTextChannelById(reportChannelID).sendMessage(event.getMember().getAsMention() + "set a suspicious status").queue();
+                    event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getAsMention() + "set a suspicious status\n" + message, Color.MAGENTA)).queue();
                 }
             }
         }

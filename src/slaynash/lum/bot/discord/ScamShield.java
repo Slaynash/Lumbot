@@ -92,7 +92,7 @@ public class ScamShield {
 
         if (suspiciousValue < 2)
             suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is a instant ban on first message
+        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is a instant kick on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
             handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
@@ -108,34 +108,38 @@ public class ScamShield {
             String userId = event.getAuthor().getId();
             String reportChannelID = CommandManager.mlReportChannels.get(guildID);
             EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setAuthor("Ban Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
+                .setAuthor("Kick Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
-            if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 try {
-                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically banned from " + event.getGuild().getName() +
-                    " for phishing."/*If you think that you were falsely banned, you can appeal here (link). */ + " We highly recommend that you change your password immediately.")).complete();
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically kicked from " + event.getGuild().getName() +
+                    " for phishing. We highly recommend that you change your password immediately.")).complete();
                 }
                 catch (Exception e) {
                     System.out.println("Failed to open dms with scammer");
                 }
-                event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
-                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
+                event.getMember().kick("Kicked by Lum's Scam Shield").complete();
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
+            else
+                embedBuilder.setDescription("Lum failed to kick **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have kick perms");
+
+            if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                List<Message> messagelist = new ArrayList<>();
+                sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
+                if (messagelist.size() == 1)
+                    event.getMessage().delete().queue();
+                else if (messagelist.size() > 1)
+                    event.getTextChannel().deleteMessages(messagelist).queue();
+            }
             else {
-                if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                    List<Message> messagelist = new ArrayList<>();
-                    sameauthormessages.forEach(m -> messagelist.add(m.messageReceivedEvent.getMessage()));
-                    if (messagelist.size() == 1)
-                        event.getMessage().delete().queue();
-                    else if (messagelist.size() > 1)
-                        event.getTextChannel().deleteMessages(messagelist).queue();
-                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have ban perms but did remove messages.");
-                }
-                else
-                    embedBuilder.setDescription("Lum failed to ban **" + usernameWithTag + "** (*" + userId + "*) because I don't have ban perms.");
+                String temp = "";
+                if (embedBuilder.getDescriptionBuilder().toString().isBlank())
+                    temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                embedBuilder.setDescription(temp + "Lum failed to kick **" + usernameWithTag + "** (*" + userId + "*) because I don't have kick perms.");
             }
 
             if (reportChannelID != null) {
