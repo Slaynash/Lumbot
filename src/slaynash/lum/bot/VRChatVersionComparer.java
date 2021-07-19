@@ -129,6 +129,15 @@ public class VRChatVersionComparer {
                 return;
             }
         }
+        else {
+            try {
+                unityVersion = Files.readAllLines(new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/unityversion.txt").toPath()).get(0);
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to read unityversion.txt", e);
+                return;
+            }
+        }
 
         if (!new File("unitydeps_" + unityVersion).exists()) {
             System.out.println("Downloading Unity dependencies");
@@ -160,6 +169,14 @@ public class VRChatVersionComparer {
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "unzip failed to run", e);
+                return;
+            }
+
+            try {
+                new File("vrcdecomp/unitydeps.zip").delete();
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to delete unitydeps.zip", e);
                 return;
             }
         }
@@ -231,7 +248,7 @@ public class VRChatVersionComparer {
         if (event != null)
             event.getChannel().sendMessage("Checking assembly").queue();
 
-        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/unhollower_out/Assembly-CSharp.dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/versions/" + branch + "_" + manifestId + "/unhollower_out/Assembly-CSharp.dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
         ModuleDefinition mainModule = ad.getMainModule();
 
         List<String> missingTypes = new ArrayList<>();
