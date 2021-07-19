@@ -53,7 +53,7 @@ public class ServerMessagesHandler {
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
                     event.getAuthor().getAsTag(),
-                    event.getMessage().isEdited() ? "" : " *edited*",
+                    event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
 

@@ -12,7 +12,7 @@ public class PrivateMessagesHandler {
         System.out.printf("[%s] [PM] %s%s: %s\n", new Object[] {
             TimeManager.getTimeForLog(),
             event.getAuthor().getAsTag(),
-            event.getMessage().isEdited() ? "" : " *edited*",
+            event.getMessage().isEdited() ? " *edited*" : "",
             event.getMessage().getContentRaw().replace("\n", "\n\t\t") });
         List<Attachment> attachments = event.getMessage().getAttachments();
         if (attachments.size() > 0)
