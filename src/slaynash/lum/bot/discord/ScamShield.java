@@ -136,6 +136,13 @@ public class ScamShield {
                     if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
                         messagelist.add(m.messageReceivedEvent.getMessage());
                     }
+                    else {
+                        System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
+                        String temp = "";
+                        if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                            temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                        embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
+                    }
                 });
                 if (messagelist.size() == 1)
                     event.getMessage().delete().queue();
@@ -143,10 +150,11 @@ public class ScamShield {
                     event.getTextChannel().deleteMessages(messagelist).queue();
             }
             else {
+                System.out.println("Lum does not have MESSAGE_MANAGE perm");
                 String temp = "";
-                if (embedBuilder.getDescriptionBuilder().toString().isBlank())
+                if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
                     temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
-                embedBuilder.setDescription(temp + "Lum failed to kick **" + usernameWithTag + "** (*" + userId + "*) because I don't have kick perms.");
+                embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
             }
 
             if (reportChannelID != null) {

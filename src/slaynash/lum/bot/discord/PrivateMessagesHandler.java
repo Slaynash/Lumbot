@@ -9,10 +9,11 @@ import slaynash.lum.bot.utils.TimeManager;
 
 public class PrivateMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
-        System.out.printf("[%s] [PM] %s%s: %s\n", new Object[] {
+        System.out.printf("[%s] [PM] %s%s%s: %s\n", new Object[] {
             TimeManager.getTimeForLog(),
             event.getAuthor().getAsTag(),
             event.getMessage().isEdited() ? " *edited*" : "",
+            event.getMessage().getType().isSystem() ? " *system*" : "",
             event.getMessage().getContentRaw().replace("\n", "\n\t\t") });
         List<Attachment> attachments = event.getMessage().getAttachments();
         if (attachments.size() > 0)
