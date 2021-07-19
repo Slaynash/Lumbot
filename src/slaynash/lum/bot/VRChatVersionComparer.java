@@ -17,9 +17,12 @@ import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
 
 import mono.cecil.AssemblyDefinition;
+import mono.cecil.FieldDefinition;
 import mono.cecil.ModuleDefinition;
+import mono.cecil.PropertyDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
+import mono.cecil.TypeDefinition;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -31,6 +34,8 @@ public class VRChatVersionComparer {
         String unityVersion = null;
 
         System.out.println("Downloading VRChat from Steam");
+        if (event != null)
+            event.getChannel().sendMessage("Downloading VRChat from Steam...").queue();
         try {
             Process p = Runtime.getRuntime().exec("dotnet vrcdecomp/depotdownloader/DepotDownloader.dll -app 438100 -depot 438101 -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat_" + branch);
             logAppOutput(p, "DepotDownloader");
@@ -46,6 +51,8 @@ public class VRChatVersionComparer {
         }
 
         System.out.println("Running Cpp2IL");
+        if (event != null)
+            event.getChannel().sendMessage("Running Cpp2IL...").queue();
         try {
             ProcessBuilder pb = new ProcessBuilder("sh", "-c", "./Cpp2IL-2021.1.2-Linux --game-path VRChat_" + branch + " --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
             pb.directory(new File("vrcdecomp"));
@@ -77,6 +84,8 @@ public class VRChatVersionComparer {
 
 
         System.out.println("Downloading Unity dependencies");
+        if (event != null)
+            event.getChannel().sendMessage("Downloading and extracting Unity dependencies...").queue();
         try (BufferedInputStream in = new BufferedInputStream(new URL("https://github.com/LavaGang/Unity-Runtime-Libraries/raw/master/" + unityVersion + ".zip").openStream());
             FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/unitydeps.zip")
         ) {
@@ -106,7 +115,9 @@ public class VRChatVersionComparer {
         }
 
 
-        System.out.println("Downloading the latest obfuscation map");
+        System.out.println("Downloading the latest deobfuscation map");
+        if (event != null)
+            event.getChannel().sendMessage("Downloading and extracting the deobfuscation mapping...").queue();
 
         byte[] buffer = new byte[1024];
 
@@ -142,6 +153,8 @@ public class VRChatVersionComparer {
 
 
         System.out.println("Running Unhollower");
+        if (event != null)
+            event.getChannel().sendMessage("Running Il2CppAssemblyUnhollower...").queue();
         try {
             Process p = Runtime.getRuntime().exec("mono vrcdecomp/unhollower/AssemblyUnhollower.exe " +
                 "--input=vrcdecomp/cpp2il_out " +
@@ -165,6 +178,8 @@ public class VRChatVersionComparer {
 
 
         System.out.println("Checking assembly");
+        if (event != null)
+            event.getChannel().sendMessage("Checking assembly").queue();
 
         AssemblyDefinition ad = AssemblyDefinition.readAssembly("vrcdecomp/unhollower_out/Assembly-CSharp.dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
         ModuleDefinition mainModule = ad.getMainModule();
@@ -172,6 +187,7 @@ public class VRChatVersionComparer {
         List<String> missingTypes = new ArrayList<>();
 
         Map<String, String> obf2deobf = new HashMap<>();
+        Map<String, TypeDefinition> assemblyTypes = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(mapData)))) {
             String line;
@@ -179,6 +195,10 @@ public class VRChatVersionComparer {
                 if (line.trim().isEmpty()) continue;
                 String[] parts = line.split(";");
                 obf2deobf.put(parts[0], parts[1]);
+            }
+
+            for (TypeDefinition typedef : mainModule.getAllTypes()) {
+                assemblyTypes.put(typedef.getFullName().replace('/', '.'), typedef);
             }
 
             // for (TypeDefinition typedef : mainModule.getAllTypes())
@@ -192,12 +212,15 @@ public class VRChatVersionComparer {
 
                 String fullname = "";
 
-                String[] nameparts = obfname.split("\\.");
-                for (int i = 0; i < nameparts.length - 1; ++i) {
+                String[] parts = obfname.split("::");
+                boolean isFieldOrProperty = parts.length > 1;
+
+                String[] nameparts = parts[0].split("\\.");
+                int partsToProcess = isFieldOrProperty ? nameparts.length : nameparts.length - 1;
+                for (int i = 0; i < partsToProcess; ++i) {
                     String obfParentName = "";
-                    for (int j = 0; j <= i; ++j) {
+                    for (int j = 0; j <= i; ++j)
                         obfParentName += "." + nameparts[j];
-                    }
 
                     String deobfParentName;
                     if ((deobfParentName = obf2deobf.get(obfParentName)) != null)
@@ -208,23 +231,49 @@ public class VRChatVersionComparer {
                     fullname += ".";
                 }
 
-                fullname += deobfname;
+                if (isFieldOrProperty)
+                    fullname = fullname.substring(0, fullname.length() - 1);
+                else
+                    fullname += deobfname;
 
-                if (deobfname.contains("::")) {
-                    // String[] memberParts = deobfname.split("::");
-                    // String deobfClassname = obf2deobf.get(memberParts[0]);
-                    // deobfname = memberParts[1];
+                if (isFieldOrProperty) {
+                    // System.out.println(obfname + ":");
+                    // System.out.println(" > fullname: " + fullname);
 
-                    // TypeDefinition typedef;
-                    // if ((typedef = mainModule.getType(deobfClassname)) == null)
-                    //     // missingTypes.add(deobfClassname);
-                    //     continue;
+                    TypeDefinition typedef;
+                    if ((typedef = assemblyTypes.get(fullname)) == null) {
+                        missingTypes.add(fullname + "::" + deobfname);
+                        continue;
+                    }
 
-                    // if (typedef.getFields())
-                    //     // TODO
+                    boolean found = false;
+                    System.out.println(" > enum: " + typedef.isEnum());
+                    if (typedef.isEnum()) {
+                        for (FieldDefinition fielddef : typedef.getFields()) {
+                            // System.out.println(" >>> " + fielddef.getName());
+                            if (fielddef.getName().equals(deobfname)) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found)
+                            continue;
+                    }
+
+                    for (PropertyDefinition propdef : typedef.getProperties()) {
+                        // System.out.println(" >>> " + propdef.getName());
+                        if (propdef.getName().equals(deobfname)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (found)
+                        continue;
+
+                    missingTypes.add(fullname + "::" + deobfname);
                 }
                 else {
-                    if (mainModule.getType(fullname) == null)
+                    if (!assemblyTypes.containsKey(fullname))
                         missingTypes.add(fullname);
                 }
 
@@ -238,13 +287,23 @@ public class VRChatVersionComparer {
         ad.dispose();
 
 
+
+        StringBuilder sb = new StringBuilder();
         System.out.println("Missing types:");
-        for (String missingType : missingTypes)
+        for (String missingType : missingTypes) {
             System.out.println(" - " + missingType);
+            sb.append(missingType + "\n");
+        }
 
         System.out.println();
         System.out.println("Done.");
 
+        if (event != null) {
+            event.getChannel()
+                .sendMessage("The map contains " + missingTypes.size() + " mismatching elements:")
+                .addFile(sb.toString().getBytes(), "missingelements.txt")
+                .queue();
+        }
     }
 
     private static void logAppOutput(Process process, String appname) throws IOException {
