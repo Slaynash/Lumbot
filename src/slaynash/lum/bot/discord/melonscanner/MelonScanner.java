@@ -582,7 +582,7 @@ public final class MelonScanner {
     }
 
     private static boolean oldModsCheck(MelonScanContext context) {
-        if (context.oldMods.size() > 0) {
+        if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated)) {
             String error = "";
             boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {

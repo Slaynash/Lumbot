@@ -120,7 +120,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
+            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && !event.getMessage().getContentDisplay().startsWith(".") && ChattyLum.handle(message, event))
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
@@ -241,7 +241,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && message.contains("joke")) {
+            if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && !event.getMessage().getContentDisplay().startsWith(".") && message.contains("joke")) {
                 System.out.println("Requested a joke");
                 HttpResponse<String> response = MelonScannerApisManager.downloadRequest(request, "DADJOKE");
                 event.getChannel().sendMessage(response.body()).queue();
