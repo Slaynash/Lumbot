@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -102,7 +103,7 @@ public class VRChatVersionComparer {
 
             try {
                 new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/cpp2il_out").mkdirs();
-                Files.move(new File("vrcdecomp/cpp2il_out").toPath(), new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/cpp2il_out").toPath());
+                Files.move(new File("vrcdecomp/cpp2il_out").toPath(), new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/cpp2il_out").toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to move cpp2il_out", e);
@@ -110,7 +111,7 @@ public class VRChatVersionComparer {
             }
 
             try {
-                Files.move(new File("vrcdecomp/VRChat/GameAssembly.dll").toPath(), new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/GameAssembly.dll").toPath());
+                Files.move(new File("vrcdecomp/VRChat/GameAssembly.dll").toPath(), new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/GameAssembly.dll").toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
             catch (IOException e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to move GameAssembly.dll", e);
