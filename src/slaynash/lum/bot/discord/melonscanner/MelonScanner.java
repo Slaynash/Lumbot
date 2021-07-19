@@ -56,6 +56,9 @@ public final class MelonScanner {
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
 
         try {
+            if (messageReceivedEvent.getMessage().getContentDisplay().startsWith("."))
+                return;
+
             String lang = "en";
 
             if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
