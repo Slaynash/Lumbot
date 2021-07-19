@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -47,54 +48,57 @@ public class ServerMessagesHandler {
             boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
-            System.out.printf("[%s] [%s][%s] %s: %s%s\n",
+            System.out.printf("[%s] [%s][%s] %s%s: %s%s\n",
                     TimeManager.getTimeForLog(),
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
-                    event.getAuthor().getName(),
+                    event.getAuthor().getAsTag(),
+                    event.getMessage().isEdited() ? "" : " *edited*",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
-                String mess = event.getMessage().getMember().getAsMention() + " ";
-                switch (guildIDstr) {
-                    case "600298024425619456": //emmVRC
-                        mess = mess + "Please reupload this log to <#600661924010786816> instead.";
-                        break;
-                    case "439093693769711616": //VRCMG
-                        mess = mess + "Please reupload this log to <#440088207799877634> instead.";
-                        break;
-                    case "663449315876012052": //MelonLoader
-                        mess = mess + "Please reupload this log to <#733305093264375849> instead.";
-                        break;
-                    case "563139253542846474": //BoneWorks
-                        mess = mess + "Please reupload this log to <#675024565277032449> instead.";
-                        break;
-                    case "322211727192358914": //TLDModding
-                        mess = mess + "Please reupload this log to <#827601339672035408> instead.";
-                        break;
-                    default:
-                        mess = mess + "Please reupload this log to #help-and-support or #log-scanner channel instead.";
-                        break;
+            if (!event.getMessage().isEdited()) { //log handler
+                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
+                    String mess = event.getMessage().getMember().getAsMention() + " ";
+                    switch (guildIDstr) {
+                        case "600298024425619456": //emmVRC
+                            mess = mess + "Please reupload this log to <#600661924010786816> instead.";
+                            break;
+                        case "439093693769711616": //VRCMG
+                            mess = mess + "Please reupload this log to <#440088207799877634> instead.";
+                            break;
+                        case "663449315876012052": //MelonLoader
+                            mess = mess + "Please reupload this log to <#733305093264375849> instead.";
+                            break;
+                        case "563139253542846474": //BoneWorks
+                            mess = mess + "Please reupload this log to <#675024565277032449> instead.";
+                            break;
+                        case "322211727192358914": //TLDModding
+                            mess = mess + "Please reupload this log to <#827601339672035408> instead.";
+                            break;
+                        default:
+                            mess = mess + "Please reupload this log to #help-and-support or #log-scanner channel instead.";
+                            break;
+                    }
+                    event.getChannel().sendMessage(mess).queue();
+                    event.getMessage().delete().queue();
                 }
-                event.getChannel().sendMessage(mess).queue();
-                event.getMessage().delete().queue();
-            }
-            else if (guildConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()]) {
-                new Thread(() -> {
-                    try {
-                        MelonScanner.scanMessage(event);
-                    }
-                    catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
-                    }
-                }).start();
+                else if (guildConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()]) {
+                    new Thread(() -> {
+                        try {
+                            MelonScanner.scanMessage(event);
+                        }
+                        catch (Exception e) {
+                            ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
+                        }
+                    }).start();
+                }
             }
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
                 return;
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !checkDllPostPermission(event)) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event)) {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMessage().getMember().getAsMention() + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
@@ -251,6 +255,11 @@ public class ServerMessagesHandler {
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e, event.getTextChannel());
         }
+    }
+
+    public static void handle(MessageUpdateEvent event) {
+        handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
+        return;
     }
 
     /**

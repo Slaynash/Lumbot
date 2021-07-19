@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
@@ -295,6 +296,16 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (event.isFromType(ChannelType.PRIVATE)) {
+            PrivateMessagesHandler.handle(event);
+        }
+        else {
+            ServerMessagesHandler.handle(event);
+        }
+    }
+
+    @Override
+    public void onMessageUpdate(MessageUpdateEvent event) {
         if (event.isFromType(ChannelType.PRIVATE)) {
             PrivateMessagesHandler.handle(event);
         }
