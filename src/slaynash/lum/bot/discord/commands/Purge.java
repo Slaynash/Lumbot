@@ -2,7 +2,6 @@ package slaynash.lum.bot.discord.commands;
 
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
@@ -39,7 +38,6 @@ public class Purge extends Command {
                     messagelist.addAll(retrievedHistory);
                 }
                 while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
-                Collections.reverse(retrievedHistory);
                 System.out.println("Reply purging " + messagelist.size() + " messages");
             }
             // else if author ID #messages
@@ -52,7 +50,6 @@ public class Purge extends Command {
                     messagelist.addAll(retrievedHistory);
                     count = count - retrievedHistory.size();
                 }
-                Collections.reverse(retrievedHistory);
                 System.out.println("Mass purging " + messagelist.size() + " messages");
             }
             else
@@ -68,9 +65,9 @@ public class Purge extends Command {
                         try {
                             int i = 0;
                             while (i < messagelist.size() - 1) {
-                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 100 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 100)).queue();
+                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 100 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 100)).complete();
                                 i = i + 100;
-                                Thread.sleep(1500); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
+                                Thread.sleep(1111); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
                             }
                             if (i == messagelist.size() - 1) // on the very rare chance that there is only one message left
                                 messagelist.get(messagelist.size() - 1).delete().queue();

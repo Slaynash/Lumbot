@@ -354,6 +354,9 @@ public final class MelonScanner {
                 case "Demeo":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
                     break;
+                case "Ghost Hunters Corp":
+                    context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
+                    break;
                 case "guigubahuang":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                     break;
@@ -362,6 +365,9 @@ public final class MelonScanner {
                     break;
                 case "Muse Dash":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
+                    break;
+                case "Phasmophobia":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/866926713761431562/Phasmophobia_Logo.png");
                     break;
                 case "Pistol Whip":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
