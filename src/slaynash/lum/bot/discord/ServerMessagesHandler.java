@@ -248,8 +248,16 @@ public class ServerMessagesHandler {
 
             if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && !event.getMessage().getContentDisplay().startsWith(".") && message.contains("joke")) {
                 System.out.println("Requested a joke");
-                HttpResponse<String> response = MelonScannerApisManager.downloadRequest(request, "DADJOKE");
-                event.getChannel().sendMessage(response.body()).queue();
+                new Thread(() -> {
+                    HttpResponse<String> response;
+                    try {
+                        response = MelonScannerApisManager.downloadRequest(request, "DADJOKE");
+                        event.getChannel().sendMessage(response.body()).queue();
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("An error has occurred while while getting dad joke:", e, event.getTextChannel());
+                    }
+                }).start();
                 return;
             }
         }
