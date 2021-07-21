@@ -37,7 +37,6 @@ public class ServerMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
         try {
             if (event.getAuthor().isBot()) return;
-            CommandManager.runAsServer(event);
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
             boolean[] defaultConfig = new boolean[GuildConfigurations.ConfigurationMap.values().length];
@@ -57,6 +56,8 @@ public class ServerMessagesHandler {
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
+
+            CommandManager.runAsServer(event);
 
             if (!event.getMessage().isEdited()) { //log handler
                 if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
