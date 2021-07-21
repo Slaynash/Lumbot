@@ -106,7 +106,7 @@ public class ScamShield {
         if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-            String reportChannelID = CommandManager.logChannels.get(guildID);
+            String reportChannelID = CommandManager.mlReportChannels.get(guildID);
             boolean ssBan;
             if (GuildConfigurations.configurations.get(guildID) != null) {
                 ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
@@ -186,7 +186,7 @@ public class ScamShield {
                     ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).queueAfter(10, TimeUnit.SECONDS);
             }
             else {
-                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setlogchannel` to set the report channel.");
+                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
                 if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else
