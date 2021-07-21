@@ -78,7 +78,7 @@
         },
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
-            "error": "Please make sure you are using MelonLoader $MLRelease$."
+            "error": "Failed to contact MelonLoader API. Please make sure MelonLoader is allowed in your Firewall and that you are using MelonLoader $MLRelease$."
         },
         {
             "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
