@@ -70,6 +70,10 @@ public class Slash {
                         config[ConfigurationMap.MLREPLIES.ordinal()] = !config[ConfigurationMap.MLREPLIES.ordinal()];
                         event.editButton(config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
                         break;
+                    case ("ssban") :
+                        config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
+                        event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
+                        break;
                     case ("delete") :
                         event.getMessage().delete().queue();
                         break;
@@ -103,7 +107,7 @@ public class Slash {
                     event.reply("Server Config for " + guild.getName() + ": " + guildID)
                         .addActionRow(// Buttons can be in a 5x5
                             config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
-                            config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"),
+                            config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
                             config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
                             config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
                         .addActionRow(
@@ -112,7 +116,8 @@ public class Slash {
                             config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
                         .addActionRow(
                             config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner"),
-                            config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"))
+                            config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"),
+                            config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
                         .addActionRow(
                             Button.danger("delete", "Delete this message")).queue();
                 }

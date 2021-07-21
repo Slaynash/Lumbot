@@ -31,4 +31,19 @@ public class TestVRCObfmap extends Command {
         return paramString.split(" ", 2)[0].equals("l!testvrcobfmap");
     }
 
+    @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return (event.getMember().getIdLong() != 145556654241349632L); // Slaynash
+    }
+
+    @Override
+    public String getHelpDescription() {
+        return "Tests the VRChat obfucation map";
+    }
+
+    @Override
+    public String getHelpName() {
+        return "l!testvrcobfmap";
+    }
+
 }

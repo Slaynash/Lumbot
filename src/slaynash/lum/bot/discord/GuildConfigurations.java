@@ -58,6 +58,7 @@ public class GuildConfigurations {
         GENERALLOGREMOVER(),
         DADJOKES(),
         LOGSCAN(),
-        MLREPLIES();
+        MLREPLIES(),
+        SSBAN();
     }
 }

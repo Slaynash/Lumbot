@@ -106,18 +106,37 @@ public class ScamShield {
         if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
-            String reportChannelID = CommandManager.mlReportChannels.get(guildID);
+            String reportChannelID = CommandManager.logChannels.get(guildID);
+            boolean ssBan;
+            if (GuildConfigurations.configurations.get(guildID) != null) {
+                ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
+            }
+            else {
+                ssBan = false;
+            }
             EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setAuthor("Kick Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
+                .setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
             if (!event.getGuild().getSelfMember().canInteract(event.getMember()))
                 return false;
 
-            if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+            if (ssBan && event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 try {
-                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically kicked from " + event.getGuild().getName() +
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Banned from " + event.getGuild().getName() +
+                    " for phishing. We highly recommend that you change your password immediately.")).complete();
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to open dms with scammer");
+                }
+                event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
+                LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
+            }
+            else if (!ssBan && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+                try {
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + event.getGuild().getName() +
                     " for phishing. We highly recommend that you change your password immediately.")).complete();
                 }
                 catch (Exception e) {
@@ -128,9 +147,9 @@ public class ScamShield {
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else
-                embedBuilder.setDescription("Lum failed to kick **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have kick perms");
+                embedBuilder.setDescription("Lum failed to " + (ssBan ? "Ban" : "Kick") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Ban" : "Kick") + " perms");
 
-            if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            if (!ssBan && event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
                 List<Message> messagelist = new ArrayList<>();
                 sameauthormessages.forEach(m -> {
                     if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
@@ -149,7 +168,7 @@ public class ScamShield {
                 else if (messagelist.size() > 1)
                     event.getTextChannel().deleteMessages(messagelist).queue();
             }
-            else {
+            else if (!ssBan) {
                 System.out.println("Lum does not have MESSAGE_MANAGE perm");
                 String temp = "";
                 if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
