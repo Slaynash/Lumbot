@@ -166,10 +166,8 @@ public class ScamShield {
                     }
                 });
                 System.out.println("Removing " + messagelist.size() + " messages");
-                if (messagelist.size() == 1)
-                    event.getMessage().delete().queue();
-                else if (messagelist.size() > 1)
-                    event.getTextChannel().deleteMessages(messagelist).queue();
+                if (messagelist.size() > 0)
+                    messagelist.forEach(m -> m.delete().complete());
             }
             else if (!ssBan) {
                 System.out.println("Lum does not have MESSAGE_MANAGE perm");
