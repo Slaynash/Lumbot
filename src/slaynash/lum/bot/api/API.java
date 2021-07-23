@@ -43,10 +43,15 @@ public class API {
             */
             .create();
 
-        endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
-        endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonscannererrorsEndpoint());
+        try {
+            endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
+            endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonscannererrorsEndpoint());
 
-        socket = new ServerSocket(28644);
+            socket = new ServerSocket(28644);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to start up API", e);
+        }
 
         Thread thread = new Thread(() -> {
             while (true) {
