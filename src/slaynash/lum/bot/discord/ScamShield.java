@@ -96,6 +96,8 @@ public class ScamShield {
             suspiciousValue = 3;
         if (suspiciousValue > 0)
             handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
+        else
+            return false;
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
@@ -163,6 +165,7 @@ public class ScamShield {
                         embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
                     }
                 });
+                System.out.println("Removing " + messagelist.size() + " messages");
                 if (messagelist.size() == 1)
                     event.getMessage().delete().queue();
                 else if (messagelist.size() > 1)
