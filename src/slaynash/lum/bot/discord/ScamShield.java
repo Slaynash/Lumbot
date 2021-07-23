@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ScamShield {
 
@@ -89,6 +90,8 @@ public class ScamShield {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60 * 3)
             handledMessages.remove(); //remove all saved messages that is older then 3 minutes
+
+        handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
@@ -167,7 +170,17 @@ public class ScamShield {
                 });
                 System.out.println("Removing " + messagelist.size() + " messages");
                 if (messagelist.size() > 0)
-                    messagelist.forEach(m -> m.delete().complete());
+                    messagelist.forEach(m -> {
+                        try {
+                            m.delete().queue();
+                        }
+                        catch (Exception e) {
+                            if (e.getMessage().contains("10008")) //Unknown Message
+                                System.out.println("Message already deleted");
+                            else
+                                ExceptionUtils.reportException("Failed to remove SS message", e);
+                        }
+                    });
             }
             else if (!ssBan) {
                 System.out.println("Lum does not have MESSAGE_MANAGE perm");
