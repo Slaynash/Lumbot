@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
-import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ScamShield {
 
@@ -33,6 +32,9 @@ public class ScamShield {
         Long guildID = event.getGuild().getIdLong();
 
         if (ServerMessagesHandler.checkIfStaff(event))
+            return false;
+
+        if (event.getMessage().getType().isSystem())
             return false;
 
         int suspiciousValue = 0;
@@ -127,68 +129,61 @@ public class ScamShield {
             if (!event.getGuild().getSelfMember().canInteract(event.getMember()))
                 return false;
 
-            if (ssBan && event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+            if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 try {
-                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Banned from " + event.getGuild().getName() +
-                    " for phishing. We highly recommend that you change your password immediately.")).complete();
+                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName() +
+                    " for phishing. We highly recommend that you change your password immediately.")).queue();
                 }
                 catch (Exception e) {
                     System.out.println("Failed to open dms with scammer");
                 }
-                event.getMember().ban(1, "Banned by Lum's Scam Shield").complete();
-                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Banned by the Scam Shield");
+                if (ssBan)
+                    event.getMember().ban(1, "Banned by Lum's Scam Shield").queue();
+                else
+                    event.getMember().ban(1, "Kicked by Lum's Scam Shield").queue((s) -> event.getGuild().unban(event.getAuthor()).queue());
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (ssBan ? "Ban" : "Kick") + " by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
-            else if (!ssBan && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+            else if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 try {
                     event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + event.getGuild().getName() +
-                    " for phishing. We highly recommend that you change your password immediately.")).complete();
+                    " for phishing. We highly recommend that you change your password immediately.")).queue();
                 }
                 catch (Exception e) {
                     System.out.println("Failed to open dms with scammer");
                 }
-                event.getMember().kick("Kicked by Lum's Scam Shield").complete();
+                event.getMember().kick("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
+
+                if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+                    List<Message> messagelist = new ArrayList<>();
+                    sameauthormessages.forEach(m -> {
+                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
+                            messagelist.add(m.messageReceivedEvent.getMessage());
+                        }
+                        else {
+                            System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
+                            String temp = "";
+                            if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                                temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                            embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
+                        }
+                    });
+                    System.out.println("Removing " + messagelist.size() + " messages");
+                    if (messagelist.size() > 0)
+                        messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
+                }
+                else {
+                    System.out.println("Lum does not have MESSAGE_MANAGE perm");
+                    String temp = "";
+                    if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                        temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                    embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
+                }
             }
             else
                 embedBuilder.setDescription("Lum failed to " + (ssBan ? "Ban" : "Kick") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Ban" : "Kick") + " perms");
-
-            if (!ssBan && event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                List<Message> messagelist = new ArrayList<>();
-                sameauthormessages.forEach(m -> {
-                    if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
-                        messagelist.add(m.messageReceivedEvent.getMessage());
-                    }
-                    else {
-                        System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
-                        String temp = "";
-                        if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                            temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
-                        embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
-                    }
-                });
-                System.out.println("Removing " + messagelist.size() + " messages");
-                if (messagelist.size() > 0)
-                    messagelist.forEach(m -> {
-                        try {
-                            m.delete().queue();
-                        }
-                        catch (Exception e) {
-                            if (e.getMessage().contains("10008")) //Unknown Message
-                                System.out.println("Message already deleted");
-                            else
-                                ExceptionUtils.reportException("Failed to remove SS message", e);
-                        }
-                    });
-            }
-            else if (!ssBan) {
-                System.out.println("Lum does not have MESSAGE_MANAGE perm");
-                String temp = "";
-                if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                    temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
-                embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
-            }
 
             if (reportChannelID != null) {
                 TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
