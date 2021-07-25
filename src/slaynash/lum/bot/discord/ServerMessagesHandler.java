@@ -2,10 +2,6 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.File;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -17,7 +13,6 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.TimeManager;
 
@@ -25,14 +20,6 @@ public class ServerMessagesHandler {
 
 
     private static String fileExt;
-
-    private static final HttpRequest request = HttpRequest.newBuilder()
-        .GET()
-        .uri(URI.create("https://icanhazdadjoke.com/"))
-        .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
-        .setHeader("Accept", "text/plain")
-        .timeout(Duration.ofSeconds(20))
-        .build();
 
     public static void handle(MessageReceivedEvent event) {
         try {
@@ -44,7 +31,6 @@ public class ServerMessagesHandler {
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
-            boolean hasLum = message.matches(".*\\blum\\b.*");
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s%s%s: %s%s\n",
@@ -126,7 +112,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && !event.getMessage().getContentDisplay().startsWith(".") && ChattyLum.handle(message, event))
+            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && !message.startsWith(".") && ChattyLum.handle(message, event))
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
@@ -247,18 +233,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (hasLum && guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && !event.getMessage().getContentDisplay().startsWith(".") && message.contains("joke")) {
-                System.out.println("Requested a joke");
-                new Thread(() -> {
-                    HttpResponse<String> response;
-                    try {
-                        response = MelonScannerApisManager.downloadRequest(request, "DADJOKE");
-                        event.getChannel().sendMessage(response.body()).queue();
-                    }
-                    catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while while getting dad joke:", e, event.getTextChannel());
-                    }
-                }).start();
+            if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
                 return;
             }
         }
