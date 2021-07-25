@@ -17,7 +17,7 @@ public final class CrossServerUtils {
 
         input = input
         .replace("](", " ")
-        .replace("@", "@ ")
+        .replaceAll("^(?!<)@", "@ ")
         .replace("*", "\\*")
         .replace("`", "\\`");
 

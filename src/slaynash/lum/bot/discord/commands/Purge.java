@@ -32,14 +32,20 @@ public class Purge extends Command {
             List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
             if (replied != null) {
                 messagelist.add(replied);
-                retrievedHistory.add(replied);
+                //retrievedHistory.add(replied);
                 do {
                     messages = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete(); //100 is max you can get
                     retrievedHistory = messages.getRetrievedHistory();
                     messagelist.addAll(retrievedHistory);
                 }
                 while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
-                System.out.println("Reply purging " + messagelist.size() + " messages");
+
+                if (message.getContentRaw().startsWith("l!purgeu")) {
+                    messagelist.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
+                    System.out.println("User Reply purging " + messagelist.size() + " messages");
+                }
+                else
+                    System.out.println("Reply purging " + messagelist.size() + " messages");
             }
             // else if author ID #messages
             else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
