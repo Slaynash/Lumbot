@@ -13,7 +13,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (!paramMessageReceivedEvent.getMember().hasPermission(Permission.MANAGE_ROLES) && !paramMessageReceivedEvent.getMember().getId().equals("145556654241349632")) {
+        if (!includeInHelp(paramMessageReceivedEvent)) {
             paramMessageReceivedEvent.getChannel().sendMessage("Error: You need to have the Manage Role permission").queue();
             return;
         }
@@ -45,6 +45,11 @@ public class SetScreeningRoleHandlerCommand extends Command {
     @Override
     protected boolean matchPattern(String pattern) {
         return pattern.split(" ", 2)[0].equals("l!setscreeningrole");
+    }
+
+    @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || event.getMember().getId().equals("145556654241349632"));
     }
 
     @Override

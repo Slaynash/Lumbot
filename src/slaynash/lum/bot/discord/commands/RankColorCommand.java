@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord.commands;
 import java.awt.Color;
 import java.util.List;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
@@ -90,6 +91,11 @@ public class RankColorCommand extends Command {
     @Override
     protected boolean matchPattern(String pattern) {
         return pattern.split(" ", 2)[0].equals("l!rankcolor");
+    }
+
+    @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return (event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES));
     }
 
     @Override

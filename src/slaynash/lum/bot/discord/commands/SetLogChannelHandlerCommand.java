@@ -24,6 +24,11 @@ public class SetLogChannelHandlerCommand extends Command {
     }
 
     @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return (event.getMember().hasPermission(Permission.VIEW_AUDIT_LOGS));
+    }
+
+    @Override
     public String getHelpName() {
         return "l!setlogchannel";
     }

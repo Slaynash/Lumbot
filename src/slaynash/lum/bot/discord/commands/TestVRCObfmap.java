@@ -33,7 +33,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().getIdLong() != 145556654241349632L); // Slaynash
+        return (event.getMember().getIdLong() == 145556654241349632L); // Slaynash
     }
 
     @Override

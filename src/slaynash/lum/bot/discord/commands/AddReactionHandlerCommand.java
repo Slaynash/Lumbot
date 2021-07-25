@@ -94,6 +94,11 @@ public class AddReactionHandlerCommand extends Command {
     }
 
     @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || event.getMember().getId().equals("145556654241349632"));
+    }
+
+    @Override
     public String getHelpName() {
         return "l!reaction";
     }
