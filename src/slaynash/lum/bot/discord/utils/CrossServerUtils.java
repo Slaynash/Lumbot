@@ -1,5 +1,8 @@
 package slaynash.lum.bot.discord.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.dv8tion.jda.api.entities.Member;
 import slaynash.lum.bot.discord.JDAManager;
 
@@ -9,4 +12,19 @@ public final class CrossServerUtils {
         return JDAManager.getJDA().getGuildById(guildId).getMemberById(userId);
     }
 
+    public static String sanitizeInputString(String input) {
+        if (input == null) input = "";
+
+        input = input
+        .replace("](", " ")
+        .replace("@", "@ ")
+        .replace("*", "\\*")
+        .replace("`", "\\`");
+
+        input = Pattern.compile("(nigg(er|a)|porn|penis)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
+
+        input = input.substring(0, input.length() > 50 ? 50 : input.length()); // limit inputs to 50 chars
+
+        return input;
+    }
 }

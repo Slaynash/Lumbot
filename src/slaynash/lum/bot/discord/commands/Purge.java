@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Purge extends Command {
@@ -18,7 +19,7 @@ public class Purge extends Command {
         try {
             Message message = event.getMessage();
             if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
-                message.reply(event.getMember().getEffectiveName() + ", You do not have permissions to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                message.reply(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", You do not have permissions to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
                 message.delete().queue();
                 return;
             }

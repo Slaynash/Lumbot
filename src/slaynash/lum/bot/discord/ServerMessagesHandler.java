@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.TimeManager;
 
@@ -31,6 +32,7 @@ public class ServerMessagesHandler {
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
+            String memberMention = CrossServerUtils.sanitizeInputString(event.getMessage().getMember().getAsMention());
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s%s%s: %s%s\n",
@@ -47,7 +49,7 @@ public class ServerMessagesHandler {
 
             if (!event.getMessage().isEdited()) { //log handler
                 if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
-                    String mess = event.getMessage().getMember().getAsMention() + " ";
+                    String mess = memberMention + " ";
                     switch (guildIDstr) {
                         case "600298024425619456": //emmVRC
                             mess = mess + "Please reupload this log to <#600661924010786816> instead.";
@@ -88,7 +90,7 @@ public class ServerMessagesHandler {
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event)) {
                 event.getMessage().delete().queue();
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMessage().getMember().getAsMention() + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
             }
 
@@ -106,7 +108,7 @@ public class ServerMessagesHandler {
                     }
                 }
                 if (postedInWhitelistedServer && !checkIfStaff(event)) {
-                    event.getChannel().sendMessage(event.getMessage().getMember().getAsMention() + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
+                    event.getChannel().sendMessage(memberMention + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
                     event.getMessage().delete().queue();
                     return;
                 }
@@ -132,7 +134,7 @@ public class ServerMessagesHandler {
                 if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|t remember).*)")) {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/)
-                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getEffectiveName() + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
+                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
                     else
                         event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null)).queue();
                     return;
@@ -154,7 +156,7 @@ public class ServerMessagesHandler {
                     String sendMessage = "";
                     Message replied = event.getMessage().getReferencedMessage();
                     if (replied != null && replied.getMember() != null) {
-                        sendMessage = sendMessage + replied.getMember().getEffectiveName() + "\n\n";
+                        sendMessage = sendMessage + CrossServerUtils.sanitizeInputString(replied.getMember().getEffectiveName()) + "\n\n";
                     }
                     else if (replied != null /*and member is null*/) {
                         event.getMessage().reply("That user is no longer in this server.").queue();
