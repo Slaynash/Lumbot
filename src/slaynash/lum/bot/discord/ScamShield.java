@@ -31,10 +31,9 @@ public class ScamShield {
 
         Long guildID = event.getGuild().getIdLong();
 
-        if (ServerMessagesHandler.checkIfStaff(event))
-            return false;
-
         if (event.getMessage().getType().isSystem())
+            return false;
+        if (ServerMessagesHandler.checkIfStaff(event))
             return false;
 
         int suspiciousValue = 0;

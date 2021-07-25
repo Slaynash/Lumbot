@@ -11,9 +11,7 @@ public class MLSetMinForVRC extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (paramMessageReceivedEvent.getMember().getIdLong() != 145556654241349632L && (// Slaynash
-            paramMessageReceivedEvent.getGuild().getIdLong() != 439093693769711616L || // VRChat Modding Group
-            paramMessageReceivedEvent.getChannel().getIdLong() != 729855750561595405L)) // #staff-bot-commands
+        if (!includeInHelp(paramMessageReceivedEvent))
             return;
 
         String[] parts = paramString.split(" ", 3);
@@ -42,7 +40,7 @@ public class MLSetMinForVRC extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return event.getMember().getIdLong() == 145556654241349632L || (// Slaynash
+        return event.getGuild().getIdLong() == 673663870136746046L || (// Modders & Chill
             event.getGuild().getIdLong() != 439093693769711616L && // VRChat Modding Group
             event.getChannel().getIdLong() != 729855750561595405L); // #staff-bot-commands
     }

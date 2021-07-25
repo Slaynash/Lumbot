@@ -8,7 +8,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
-        if (event.getMember().getIdLong() != 145556654241349632L) // Slaynash
+        if (!includeInHelp(event))
             return;
 
         String[] parts = paramString.split(" ");

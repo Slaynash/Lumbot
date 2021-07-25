@@ -357,6 +357,9 @@ public final class MelonScanner {
                 case "Ghost Hunters Corp":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                     break;
+                case "gunfirereborn":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/868613876600680558/Gunfire_Reborn_Logo.png");
+                    break;
                 case "guigubahuang":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                     break;
