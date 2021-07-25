@@ -17,7 +17,7 @@ public class LumJokes {
         String message = event.getMessage().getContentStripped().toLowerCase();
         boolean hasLum = message.matches(".*\\blum\\b.*");
 
-        if (!hasLum && message.startsWith(".") && !message.contains("joke")) {
+        if (!hasLum || message.startsWith(".") || !message.contains("joke")) {
             return false;
         }
 
