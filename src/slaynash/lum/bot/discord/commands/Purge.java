@@ -33,8 +33,7 @@ public class Purge extends Command {
             List<Message> messagelist = new ArrayList<>();
             List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
             if (replied != null) {
-                messagelist.add(replied);
-                //retrievedHistory.add(replied);
+                retrievedHistory.add(replied);
                 do {
                     messages = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete(); //100 is max you can get
                     retrievedHistory = messages.getRetrievedHistory();
