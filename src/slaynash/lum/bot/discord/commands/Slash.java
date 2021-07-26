@@ -24,7 +24,7 @@ public class Slash {
     }
 
     public static void buttonUpdate(ButtonClickEvent event) {
-        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_CHANNEL))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
             return;
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
@@ -95,7 +95,7 @@ public class Slash {
     }
 
     private static void sendReply(SlashCommandEvent event, String guildID) {
-        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_CHANNEL))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
             return;
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
