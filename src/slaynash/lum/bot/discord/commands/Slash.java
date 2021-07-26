@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -23,6 +24,8 @@ public class Slash {
     }
 
     public static void buttonUpdate(ButtonClickEvent event) {
+        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_CHANNEL))
+            return;
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
@@ -92,6 +95,8 @@ public class Slash {
     }
 
     private static void sendReply(SlashCommandEvent event, String guildID) {
+        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_CHANNEL))
+            return;
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
             boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));

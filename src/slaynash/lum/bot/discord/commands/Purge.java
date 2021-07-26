@@ -16,6 +16,8 @@ public class Purge extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
+        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_CHANNEL))
+            return;
         try {
             Message message = event.getMessage();
             if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
