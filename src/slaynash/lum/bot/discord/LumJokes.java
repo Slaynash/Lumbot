@@ -8,6 +8,7 @@ import java.time.Duration;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -60,7 +61,14 @@ public class LumJokes {
                     event.getChannel().sendMessage(joke).queue();
                 }
                 else {
-                    event.getChannel().sendMessage(joke + "\n\n||" + punchLine + "||").queue();;
+                    try {
+                        Message sentJoke = event.getChannel().sendMessage(joke).complete();
+                        Thread.sleep(6 * 1000);
+                        sentJoke.editMessage(joke + "\n\n||" + punchLine + "||").queue();
+                    }
+                    catch (InterruptedException e) {
+                        ExceptionUtils.reportException("An error has occurred sending JokeAPI:", e, event.getTextChannel());
+                    }
                 }
             }
             else
