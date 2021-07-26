@@ -43,6 +43,8 @@ public class Purge extends Command {
 
                 if (message.getContentRaw().startsWith("l!purgeu")) {
                     messagelist.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
+                    if (message.getAuthor().getIdLong() != replied.getAuthor().getIdLong())
+                        messagelist.add(message); // add message back to be removed
                     System.out.println("User Reply purging " + messagelist.size() + " messages");
                 }
                 else
