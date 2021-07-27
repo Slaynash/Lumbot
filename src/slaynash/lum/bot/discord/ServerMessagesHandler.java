@@ -32,7 +32,7 @@ public class ServerMessagesHandler {
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
-            String memberMention = CrossServerUtils.sanitizeInputString(event.getMessage().getMember().getAsMention());
+            String memberMention = event.getMessage().getMember().getAsMention();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s%s%s: %s%s\n",

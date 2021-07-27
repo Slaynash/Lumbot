@@ -457,7 +457,7 @@ public class Main extends ListenerAdapter {
             if (message != null) {
                 if (message.toLowerCase().matches(".*(boycottknah|7uakcnhqpn|unchained).*")) {
                     System.out.println("sussy baka detected in " + event.getGuild().getName());
-                    event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getAsMention()) + " set a suspicious status\n" + message, Color.MAGENTA)).queue();
+                    event.getGuild().getTextChannelById(reportChannelID).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(event.getMember().getAsMention() + " set a suspicious status\n" + message, Color.MAGENTA)).queue();
                 }
             }
         }

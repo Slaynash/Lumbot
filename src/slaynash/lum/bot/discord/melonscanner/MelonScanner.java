@@ -150,7 +150,7 @@ public final class MelonScanner {
                 LogCounter.addtoCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
-                messageBuilder.append(CrossServerUtils.sanitizeInputString(context.messageReceivedEvent.getAuthor().getAsMention()));
+                messageBuilder.append(context.messageReceivedEvent.getAuthor().getAsMention());
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
             }
         }
@@ -203,7 +203,7 @@ public final class MelonScanner {
                 boolean hasVRChat1043ReadyML = false;
                 //boolean hasNotBrokenDeobfMap = false;
                 for (MLHashPair mlHashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
-                    System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
+                    //System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
                     //if (mlHashes.x64.equals("25881"))
                     //    hasNotBrokenDeobfMap = true;
                     if (mlHashes.x64.equals(CommandManager.melonLoaderVRCHash))
@@ -293,6 +293,7 @@ public final class MelonScanner {
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
                 }
+                break;
             }
 
             if (latestModVersion == null && latestModHash == null) {
@@ -810,7 +811,7 @@ public final class MelonScanner {
         if (reportChannel != null) {
             event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
                     JDAManager.wrapMessageInEmbed(
-                            "User " + CrossServerUtils.sanitizeInputString(event.getMember().getAsMention()) + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                            "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.orange)).queue();
         }
     }

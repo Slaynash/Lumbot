@@ -54,7 +54,7 @@ public class ScamShield {
         suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
         suspiciousValue += message.contains("trade") ? 2 : 0;
         suspiciousValue += message.contains("skin") ? 1 : 0;
-        suspiciousValue += message.contains("knife") ? 2 : 0;
+        suspiciousValue += message.contains("knife") ? 1 : 0;
         suspiciousValue += message.contains("offer") ? 1 : 0;
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
