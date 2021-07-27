@@ -292,8 +292,8 @@ public final class MelonScanner {
                     latestModHash = modDetail.versions[0].hash;
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
+                    break;
                 }
-                break;
             }
 
             if (latestModVersion == null && latestModHash == null) {
