@@ -129,13 +129,8 @@ public class ScamShield {
                 return false;
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-                try {
-                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName() +
-                    " for phishing. We highly recommend that you change your password immediately.")).queue();
-                }
-                catch (Exception e) {
-                    System.out.println("Failed to open dms with scammer");
-                }
+                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName() +
+                    " for phishing. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
                 if (ssBan)
                     event.getMember().ban(1, "Banned by Lum's Scam Shield").queue();
                 else
@@ -144,13 +139,8 @@ public class ScamShield {
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-                try {
-                    event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + event.getGuild().getName() +
-                    " for phishing. We highly recommend that you change your password immediately.")).queue();
-                }
-                catch (Exception e) {
-                    System.out.println("Failed to open dms with scammer");
-                }
+                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + event.getGuild().getName() +
+                    " for phishing. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
                 event.getMember().kick("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter

@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -377,15 +378,21 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
+        System.out.println("Joined " + event.getGuild().getName() + ", connected to " + JDAManager.getJDA().getGuilds().size() + " guilds");
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
-                + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue();
+                + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue(null, m -> System.out.println("Failed to open dms with guild owner"));
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").queueAfter(10, TimeUnit.SECONDS); // register Guild command for newly joined server
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);
         }
+    }
+
+    @Override
+    public void onGuildLeave(GuildLeaveEvent event) {
+        System.out.println("Left " + event.getGuild().getName() + ", now connected to " + JDAManager.getJDA().getGuilds().size() + " guilds");
     }
 
     @Override

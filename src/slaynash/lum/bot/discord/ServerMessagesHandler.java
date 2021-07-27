@@ -97,7 +97,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]"))) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("System.IO.Error") || message.contains("MelonLoader.Installer.Program"))) {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;
