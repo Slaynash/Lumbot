@@ -47,6 +47,12 @@ public class ScamShield {
 
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
 
+        long crossPost = handledMessages.stream()
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong()
+                && m.guildId == guildID && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong())
+            .count();
+
+        suspiciousValue += crossPost > 0 ? 1 : 0;
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
@@ -56,7 +62,8 @@ public class ScamShield {
         suspiciousValue += message.contains("skin") ? 1 : 0;
         suspiciousValue += message.contains("knife") ? 1 : 0;
         suspiciousValue += message.contains("offer") ? 1 : 0;
-        suspiciousValue += message.contains("btc") ? 1 : 0;
+        suspiciousValue += message.contains("btc") ? 2 : 0;
+        suspiciousValue += message.contains("bitcoin") ? 2 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
@@ -83,9 +90,10 @@ public class ScamShield {
         if (suspiciousValue > 0) {
             System.out.print("Scam Shield points for this message: " + suspiciousValue);
             if (newAccount)
-                System.out.println(" New account");
-            else
-                System.out.println();
+                System.out.print(" New account");
+            if (crossPost > 0)
+                System.out.print(" Crossposted");
+            System.out.println();
         }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
