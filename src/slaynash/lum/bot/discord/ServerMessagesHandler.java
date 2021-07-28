@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -71,7 +72,8 @@ public class ServerMessagesHandler {
                             break;
                     }
                     event.getChannel().sendMessage(mess).queue();
-                    event.getMessage().delete().queue();
+                    if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+                        event.getMessage().delete().queue();
                 }
                 else if (guildConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()]) {
                     new Thread(() -> {

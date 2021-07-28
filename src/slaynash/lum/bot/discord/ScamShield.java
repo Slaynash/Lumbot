@@ -48,11 +48,10 @@ public class ScamShield {
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
 
         long crossPost = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong()
-                && m.guildId == guildID && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong())
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong())
             .count();
 
-        suspiciousValue += crossPost > 0 ? 1 : 0;
+        suspiciousValue += (crossPost > 0) ? 1 : 0;
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;

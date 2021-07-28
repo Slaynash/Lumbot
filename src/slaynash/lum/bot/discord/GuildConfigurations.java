@@ -14,6 +14,8 @@ public class GuildConfigurations {
                 put(600298024425619456L /* emmVRC */, new long[] {
                     748392927365169233L /* Admin */,
                     653722281864069133L /* Helper */ });
+                put(563139253542846474L /* BONEWORKS */, new long[] {
+                    563143742324736001L /* Moderators */});
                 put(663449315876012052L /* MelonLoader */, new long[] {
                     663450403194798140L /* Lava Gang */,
                     663450567015792670L /* Administrator */,
