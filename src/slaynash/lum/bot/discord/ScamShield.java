@@ -23,6 +23,7 @@ import slaynash.lum.bot.discord.melonscanner.LogCounter;
 
 public class ScamShield {
 
+    private static final Queue<HandledServerMessageContext> allMessages = new LinkedList<>();
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     private static ScheduledFuture<?> ssQueued;
@@ -47,8 +48,9 @@ public class ScamShield {
 
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
 
-        long crossPost = handledMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong())
+        long crossPost = allMessages.stream()
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID
+                && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase() == event.getMessage().getContentDisplay().toLowerCase())
             .count();
 
         suspiciousValue += (crossPost > 0) ? 1 : 0;
@@ -96,9 +98,8 @@ public class ScamShield {
         }
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        while (handledMessages.peek() != null && handledMessages.peek().creationTime.until(now, ChronoUnit.SECONDS) > 60 * 3)
-            handledMessages.remove(); //remove all saved messages that is older then 3 minutes
-
+        allMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3);
+        handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
 
         if (suspiciousValue < 3)
@@ -110,6 +111,7 @@ public class ScamShield {
         else
             return false;
 
+        allMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID));
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
