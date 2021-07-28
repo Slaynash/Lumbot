@@ -239,7 +239,8 @@ public final class MelonScannerReadPass {
 
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Invalid Author given to MelonInfoAttribute.*")) {
             String[] split = line.split("\\\\");
-            String oldName = split[split.length - 1].split("\\.")[0];
+            split = split[split.length - 1].split("\\.");
+            String oldName = String.join(" ", Arrays.copyOfRange(split, 0, split.length - 1));
             if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
             return true;
