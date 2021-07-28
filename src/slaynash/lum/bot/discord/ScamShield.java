@@ -50,7 +50,7 @@ public class ScamShield {
 
         long crossPost = allMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID
-                && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase() == event.getMessage().getContentDisplay().toLowerCase())
+                && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
             .count();
 
         suspiciousValue += (crossPost > 0) ? 1 : 0;

@@ -59,8 +59,10 @@ public class LumJokes {
             if (!joke.isEmpty()) {
                 if (punchLine.isEmpty()) {
                     event.getChannel().sendMessage(joke).queue();
+                    System.out.println(joke);
                 }
                 else {
+                    System.out.println(joke + "\n" + punchLine);
                     try {
                         Message sentJoke = event.getChannel().sendMessage(joke).complete();
                         Thread.sleep(6 * 1000);
