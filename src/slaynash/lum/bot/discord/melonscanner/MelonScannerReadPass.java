@@ -243,7 +243,7 @@ public final class MelonScannerReadPass {
     }
 
     private static String splitName(String line) {
-        line = line.split(".dll", 1)[0]; //remove everything to the right
+        line = line.split(".dll", 2)[0]; //remove everything to the right
         String[] split = line.split("\\\\"); //remove everything to the left
         split = split[split.length - 1].split("\\."); //split on dots
         String name = String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces
