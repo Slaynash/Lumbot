@@ -292,6 +292,8 @@ public class ServerMessagesHandler {
      * @return true if sender really was Guild Staff/Trusted
      */
     public static boolean checkIfStaff(MessageReceivedEvent event) {
+        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))
+            return true;
         for (Entry<Long, long[]> whitelistedRolesServer : GuildConfigurations.whitelistedRolesServers.entrySet()) {
             Guild targetGuild;
             Member serverMember;

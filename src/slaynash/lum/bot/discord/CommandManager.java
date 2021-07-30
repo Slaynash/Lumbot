@@ -178,7 +178,7 @@ public class CommandManager {
     public static void saveMelonLoaderVersions() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("melonloaderversions.txt"))) {
             writer.write(MelonScanner.latestMLVersionRelease + "\n");
-            writer.write(MelonScanner.latestMLVersionBeta + "\n");
+            writer.write(MelonScanner.latestMLVersionAlpha + "\n");
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);

@@ -264,7 +264,7 @@ public class Main extends ListenerAdapter {
         try {
             reader = new BufferedReader(new FileReader("melonloaderversions.txt"));
             MelonScanner.latestMLVersionRelease = reader.readLine().trim();
-            MelonScanner.latestMLVersionBeta = reader.readLine().trim();
+            MelonScanner.latestMLVersionAlpha = reader.readLine().trim();
             reader.close();
         }
         catch (Exception e) {

@@ -32,7 +32,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public final class MelonScanner {
 
     public static String latestMLVersionRelease = "0.4.1"; // Is this really still hard coded?
-    public static String latestMLVersionBeta = "0.4.1";
+    public static String latestMLVersionAlpha = "0.3.0";
 
     private static Color melonPink = new Color(255, 59, 106);
 
@@ -415,7 +415,7 @@ public final class MelonScanner {
         if (context.consoleCopyPaste)
             context.reportMessage.append("*" + Localization.get("melonscanner.reportmessage.copy", context.lang) + "*\n");
 
-        if (context.game != null && context.mlVersion != null && !latestMLVersionBeta.equals(latestMLVersionRelease) && context.mlVersion.equals(latestMLVersionBeta))
+        if (context.game != null && context.mlVersion != null && !latestMLVersionAlpha.equals(latestMLVersionRelease) && context.mlVersion.equals(latestMLVersionAlpha))
             context.reportMessage.append("*" + Localization.get("melonscanner.reportmessage.alpha", context.lang) + "*\n");
 
         /* TODO No hash error
@@ -433,7 +433,7 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionBeta));
+        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || (CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionRelease, latestMLVersionAlpha) == 1/* If Beta is more recent */));
 
         if (context.isMLOutdatedVRC) {
             int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
@@ -442,10 +442,10 @@ public final class MelonScanner {
                     context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
                     break;
                 case 0: //identicals
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionBeta, CommandManager.melonLoaderVRCMinDate), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha, CommandManager.melonLoaderVRCMinDate), false);
                     break;
                 case -1: //right more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, latestMLVersionBeta), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, latestMLVersionAlpha), false);
                     break;
                 default:
             }

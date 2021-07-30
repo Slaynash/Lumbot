@@ -44,7 +44,7 @@ public class ScamShield {
                 && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
             .count();
 
-        suspiciousValue += (crossPost > 0) ? 1 : 0;
+        suspiciousValue += crossPost;
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;

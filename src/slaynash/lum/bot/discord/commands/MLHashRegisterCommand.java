@@ -45,7 +45,7 @@ public class MLHashRegisterCommand extends Command {
         }
 
         if (branch.equals("alpha")) {
-            MelonScanner.latestMLVersionBeta = version;
+            MelonScanner.latestMLVersionAlpha = version;
             CommandManager.melonLoaderAlphaHashes.add(new MLHashPair(hash86, hash64));
         }
         else {
