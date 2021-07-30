@@ -189,7 +189,7 @@ public class Steam {
                         else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
-                            description += "[" + changedBranch.getKey() + "] Branch updated (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
+                            description += "[" + changedBranch.getKey() + "] Branch " + (oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded") + " (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
                             if (newBranchDetails.description != null)
                                 description += " - Description: " + newBranchDetails.description + "\n";
 
