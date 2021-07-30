@@ -28,16 +28,9 @@ public class ScamShield {
 
     private static ScheduledFuture<?> ssQueued;
 
-    public static boolean checkForFishing(MessageReceivedEvent event) {
-
-        Long guildID = event.getGuild().getIdLong();
-
-        if (event.getMessage().getType().isSystem())
-            return false;
-        if (ServerMessagesHandler.checkIfStaff(event))
-            return false;
-
+    public static int ssValue(MessageReceivedEvent event) {
         int suspiciousValue = 0;
+        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         String message = event.getMessage().getContentDisplay().toLowerCase();
@@ -46,10 +39,8 @@ public class ScamShield {
             message = message + " " + embed.getTitle() + " " + embed.getDescription();
         }
 
-        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
-
         long crossPost = allMessages.stream()
-            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID
+            .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == event.getGuild().getIdLong()
                 && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
             .count();
 
@@ -97,6 +88,20 @@ public class ScamShield {
             System.out.println();
         }
 
+        return suspiciousValue;
+    }
+
+    public static boolean checkForFishing(MessageReceivedEvent event) {
+        Long guildID = event.getGuild().getIdLong();
+        String message = event.getMessage().getContentDisplay().toLowerCase();
+
+        if (event.getMessage().getType().isSystem())
+            return false;
+        if (ServerMessagesHandler.checkIfStaff(event))
+            return false;
+
+        int suspiciousValue = ssValue(event);
+
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         allMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3);
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
@@ -138,13 +143,13 @@ public class ScamShield {
                 return false;
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName() +
+                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() +
                     " for phishing. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
                 if (ssBan)
                     event.getMember().ban(1, "Banned by Lum's Scam Shield").queue();
                 else
                     event.getMember().ban(1, "Kicked by Lum's Scam Shield").queue((s) -> event.getGuild().unban(event.getAuthor()).queue());
-                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (ssBan ? "Ban" : "Kick") + " by the Scam Shield");
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
@@ -181,7 +186,7 @@ public class ScamShield {
                 }
             }
             else
-                embedBuilder.setDescription("Lum failed to " + (ssBan ? "Ban" : "Kick") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Ban" : "Kick") + " perms");
+                embedBuilder.setDescription("Lum failed to " + (ssBan ? "Banned" : "Kicked") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Banned" : "Kicked") + " perms");
 
             if (reportChannelID != null) {
                 TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
