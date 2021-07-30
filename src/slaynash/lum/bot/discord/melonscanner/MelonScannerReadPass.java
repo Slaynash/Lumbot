@@ -220,17 +220,13 @@ public final class MelonScannerReadPass {
                 return true;
             }
             else if (line.contains("exception")) {
-                String[] split = line.split("\\\\");
-                split = split[split.length - 1].split("\\.");
-                String erroringName = String.join(" ", Arrays.copyOfRange(split, 0, split.length - 1));
+                String erroringName = splitName(line);
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
                 return true;
             }
             else {
-                String[] split = line.split("\\\\");
-                split = split[split.length - 1].split("\\.");
-                String oldName = String.join(" ", Arrays.copyOfRange(split, 0, split.length - 1));
+                String oldName = splitName(line);
                 if (!context.oldMods.contains(oldName))
                     context.oldMods.add(oldName);
                 return true;
@@ -238,14 +234,20 @@ public final class MelonScannerReadPass {
         }
 
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+\\] \\[ERROR\\] Invalid Author given to MelonInfoAttribute.*")) {
-            String[] split = line.split("\\\\");
-            split = split[split.length - 1].split("\\.");
-            String oldName = String.join(" ", Arrays.copyOfRange(split, 0, split.length - 1));
+            String oldName = splitName(line);
             if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
             return true;
         }
         return false;
+    }
+
+    private static String splitName(String line) {
+        line = line.split(".dll", 1)[0]; //remove everything to the right
+        String[] split = line.split("\\\\"); //remove everything to the left
+        split = split[split.length - 1].split("\\."); //split on dots
+        String name = String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces
+        return name;
     }
 
     private static boolean processMissingDependenciesListing(String line, MelonScanContext context) throws IOException {
