@@ -96,6 +96,9 @@ public class ServerMessagesHandler {
                 return;
             }
 
+            if (message.startsWith("."))
+                return;
+
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
 
@@ -116,7 +119,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && !message.startsWith(".") && ChattyLum.handle(message, event))
+            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {

@@ -136,7 +136,7 @@
         },
         {
             "regex": ".*The system cannot find the file specified.",
-            "error": "File not found. Make sure the file path is clear of special characters like ' or try reinstalling MelonLoader $MLRelease$."
+            "error": "File not found. Make sure the file path is clear of special characters like `'` or try reinstalling MelonLoader $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
