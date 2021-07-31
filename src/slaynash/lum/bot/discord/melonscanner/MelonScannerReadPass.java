@@ -219,7 +219,7 @@ public final class MelonScannerReadPass {
                     context.missingMods.add(missingName);
                 return true;
             }
-            else if (line.contains("exception")) {
+            else if (line.toLowerCase().contains("exception")) {
                 String erroringName = splitName(line);
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
