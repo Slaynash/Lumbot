@@ -363,6 +363,9 @@ public final class MelonScanner {
                 case "guigubahuang":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                     break;
+                case "Hot Dogs Horseshoes and Hand Grenades":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/871468287144390698/Hot_Dogs_Horseshoes_and_Hand_Grenades.png");
+                    break;
                 case "Job Simulator":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/0kmohjK.png");
                     break;

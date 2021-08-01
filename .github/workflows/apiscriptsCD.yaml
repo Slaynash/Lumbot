@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -28,7 +32,7 @@ jobs:
             -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
             -F 'apiscripts/tld=@apiscripts/tld.lua' \
             https://srv1.slaynash.fr/uploadlum.php
-      
+
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:

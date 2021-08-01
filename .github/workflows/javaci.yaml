@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up JDK 11
@@ -17,7 +21,7 @@ jobs:
         run: mvn --batch-mode --update-snapshots verify
       - name: Adding file name to path
         run: echo buildname=$(ls /home/runner/work/Lumbot/Lumbot/target | grep bot) >> $GITHUB_ENV
-      
+
       - name: Upload to artifacts
         uses: actions/upload-artifact@v2
         with:

@@ -15,6 +15,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.9.1
+        with:
+          access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -24,7 +28,7 @@ jobs:
           args: |
             -F 'melonscannererrors=@melonscannererrors.json' \
             https://srv1.slaynash.fr/uploadlum.php
-      
+
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
