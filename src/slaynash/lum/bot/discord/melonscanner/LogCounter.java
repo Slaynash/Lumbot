@@ -36,7 +36,7 @@ public final class LogCounter {
         try {
             String directoryPath = workingPath + "/SSlogs/";
 
-            Files.writeString(Path.of(directoryPath, bannedUser + guildID + ".txt"), message);
+            Files.writeString(Path.of(directoryPath, bannedUser + "-" + guildID + ".txt"), message);
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(

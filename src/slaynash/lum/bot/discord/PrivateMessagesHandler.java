@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.utils.TimeManager;
 
 public class PrivateMessagesHandler {
+    private static List<Long> dmSS = new ArrayList<>();
     public static void handle(MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {
@@ -24,8 +26,9 @@ public class PrivateMessagesHandler {
                 for (Attachment a : attachments)
                     System.out.println("[" + TimeManager.getTimeForLog() + "] - " + a.getUrl());
             }
-            if (ScamShield.ssValue(event) > 3) {
+            if (ScamShield.ssValue(event) > 3 && !dmSS.contains(event.getAuthor().getIdLong())) {
                 System.out.println("I was DM'd Scam, sending FitnessGram™");
+                dmSS.add(event.getAuthor().getIdLong());
                 event.getChannel().sendMessage("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues.").delay(Duration.ofSeconds(3))
                     .flatMap(m -> m.getChannel().sendMessage("The 20 meter pacer test will begin in 30 seconds.").delay(Duration.ofSeconds(3))
                     .flatMap(m2 -> m2.getChannel().sendMessage("Line up at the start.").delay(Duration.ofSeconds(3))
