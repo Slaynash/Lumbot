@@ -325,26 +325,27 @@ public class MelonScannerApisManager {
     public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
         HttpResponse<String> response = null;
         Exception exception = null;
-        int attempts = 3;
+        int attempts = 4;
         for (int i = 0; i < attempts; i++) {
             try {
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
+                    // System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
                     throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
                 }
                 if (response.body() == null || response.body().isBlank()) {
-                    System.out.println(source + " provided empty response");
+                    // System.out.println(source + " provided empty response");
                     throw new Exception("Lum gotten an empty responce: " + response.statusCode() + " from " + source);
                 }
             }
             catch (Exception e) {
                 exception = e;
+                System.out.println("Caught Exception " + e.getClass().getName() + " from " + source);
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;
             }
-            return response;
+            return response; //only returns if the above continue did not run
         }
         throw new Exception(exception);
     }
