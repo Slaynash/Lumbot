@@ -104,7 +104,7 @@ public class ScamShield {
         int suspiciousValue = ssValue(event);
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        allMessages.removeIf(m -> m.getMessage().getTimeCreated().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
+        allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
         allMessages.add(event);
