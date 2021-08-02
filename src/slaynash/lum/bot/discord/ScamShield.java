@@ -29,11 +29,10 @@ public class ScamShield {
     private static ScheduledFuture<?> ssQueued;
 
     public static int ssValue(MessageReceivedEvent event) {
-        int suspiciousValue = 0;
-        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         String message = event.getMessage().getContentDisplay().toLowerCase();
+        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         if (event.getMessage().getEmbeds().size() > 0) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             message = message + " " + embed.getTitle() + " " + embed.getDescription();
@@ -44,7 +43,8 @@ public class ScamShield {
                 && m.messageReceivedEvent.getChannel().getIdLong() != event.getChannel().getIdLong() && m.messageReceivedEvent.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
             .count();
 
-        suspiciousValue += crossPost;
+        int suspiciousValue = 0;
+        suspiciousValue += (int) crossPost;
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
@@ -56,6 +56,7 @@ public class ScamShield {
         suspiciousValue += message.contains("offer") ? 1 : 0;
         suspiciousValue += message.contains("btc") ? 2 : 0;
         suspiciousValue += message.contains("bitcoin") ? 2 : 0;
+        suspiciousValue += message.contains("nitro") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
@@ -103,7 +104,7 @@ public class ScamShield {
         int suspiciousValue = ssValue(event);
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        allMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3);
+        allMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
 

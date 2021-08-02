@@ -40,12 +40,6 @@ public class Steam {
 
     private int gameId = 438100; //VRChat
 
-    /*
-    private final static HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .build();
-    */
-
     public Steam() {
 
         client = new SteamClient();

@@ -19,6 +19,7 @@ public class VRCApiVersionScanner {
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
+            .connectTimeout(Duration.ofSeconds(20))
             .build();
 
     private static String lastBVT, lastDG;

@@ -47,6 +47,7 @@ public class MelonScannerApisManager {
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(Redirect.ALWAYS)
+            .connectTimeout(Duration.ofSeconds(20))
             .build();
 
     private static Gson gson = new Gson();
@@ -222,17 +223,17 @@ public class MelonScannerApisManager {
                         Thread.sleep(1000); // sleep for a sec so all requests don't come at the same time.
                     }
                     catch (HttpTimeoutException exception) {
-                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.endpoint);
+                        ExceptionUtils.reportException("MelonScanner API Timed Out for [" + api.name + "](" + api.endpoint + ")");
                     }
                     catch (IOException exception) {
                         if (exception.getMessage().contains("GOAWAY")) {
                             ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
-                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.endpoint, exception);
+                            ExceptionUtils.reportException("MelonScanner API Connection Error for [" + api.name + "](" + api.endpoint + ")", exception);
                     }
                     catch (Exception exception) {
-                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.endpoint, exception);
+                        ExceptionUtils.reportException("MelonScanner API Exception for [" + api.name + "](" + api.endpoint + ")", exception);
                     }
                 }
 
