@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -38,12 +39,15 @@ public class ScamShield {
             message = message + " " + embed.getTitle() + " " + embed.getDescription();
         }
 
-        long crossPost = allMessages.stream()
-            .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong()
-                && m.getChannel().getIdLong() != event.getChannel().getIdLong() && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
-            .count();
-
         int suspiciousValue = 0;
+        long crossPost = 0;
+        if (!event.isFromType(ChannelType.PRIVATE)) {
+            crossPost = allMessages.stream()
+                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong()
+                    && m.getChannel().getIdLong() != event.getChannel().getIdLong() && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
+                .count();
+        }
+
         suspiciousValue += (int) crossPost;
         suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
