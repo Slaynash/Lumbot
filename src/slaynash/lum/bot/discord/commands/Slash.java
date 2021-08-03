@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -24,7 +25,7 @@ public class Slash {
     }
 
     public static void buttonUpdate(ButtonClickEvent event) {
-        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
+        if (event.getChannelType() != ChannelType.PRIVATE && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
             return;
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
@@ -95,7 +96,11 @@ public class Slash {
     }
 
     private static void sendReply(SlashCommandEvent event, String guildID) {
-        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
+        if (!guildID.matches("^\\d{18}$")) {
+            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.");
+            return;
+        }
+        if (event.getChannelType() != ChannelType.PRIVATE && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
             return;
         try {
             Guild guild = event.getJDA().getGuildById(guildID);

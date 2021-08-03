@@ -220,7 +220,7 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
-                        Thread.sleep(1000); // sleep for a sec so all requests don't come at the same time.
+                        Thread.sleep(6 * 60 * 1000 / apis.size()); // sleep for a sec so all requests don't come at the same time.
                     }
                     catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + api.endpoint);
