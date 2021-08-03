@@ -42,9 +42,7 @@ public final class MelonScanner {
         MelonLoaderError.init();
         MelonScannerApisManager.startFetchingThread();
 
-        sheduledExecutor.scheduleWithFixedDelay(() -> {
-            LogCounter.updateCounter();
-        }, 30, 10, TimeUnit.SECONDS);
+        sheduledExecutor.scheduleWithFixedDelay(LogCounter::updateCounter, 30, 10, TimeUnit.SECONDS);
     }
 
     public static void shutdown() {
@@ -82,7 +80,7 @@ public final class MelonScanner {
             if (multipleLogsCheck(attachments, messageReceivedEvent, lang)) // This should not happen, but just in case
                 return;
 
-            Attachment attachment = attachments.stream().filter(a -> isValidFileFormat(a)).findFirst().orElse(null);
+            Attachment attachment = attachments.stream().filter(MelonScanner::isValidFileFormat).findFirst().orElse(null);
             if (attachment == null)
                 return;
 
