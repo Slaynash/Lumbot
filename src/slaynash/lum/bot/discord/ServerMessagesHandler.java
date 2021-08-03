@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -25,6 +26,7 @@ public class ServerMessagesHandler {
 
     public static void handle(MessageReceivedEvent event) {
         try {
+            long inputTime = new Date().getTime();
             if (event.getAuthor().isBot()) return;
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
@@ -242,6 +244,12 @@ public class ServerMessagesHandler {
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
                 return;
+            }
+
+            if (message.equals("l!ping")) {
+                long processing = new Date().getTime() - inputTime;
+                long ping = event.getJDA().getGatewayPing();
+                event.getChannel().sendMessage("Pong: Lum took " + ping + "milliseconds to response.\nIt took " + processing + " milliseconds to parse the command.").queue();
             }
         }
         catch (Exception e) {
