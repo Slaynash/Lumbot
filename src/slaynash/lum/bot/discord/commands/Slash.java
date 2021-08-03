@@ -97,7 +97,7 @@ public class Slash {
 
     private static void sendReply(SlashCommandEvent event, String guildID) {
         if (!guildID.matches("^\\d{18}$")) {
-            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.");
+            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").queue();
             return;
         }
         if (event.getChannelType() != ChannelType.PRIVATE && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))

@@ -220,7 +220,7 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
-                        Thread.sleep(6 * 60 * 1000 / apis.size()); // sleep for a sec so all requests don't come at the same time.
+                        Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
                     }
                     catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + api.endpoint);
@@ -239,13 +239,6 @@ public class MelonScannerApisManager {
 
                 for (Entry<String, List<MelonApiMod>> entry : gamesTemp.entrySet())
                     games.put(entry.getKey(), entry.getValue());
-
-                try {
-                    Thread.sleep(6 * 60 * 1000); // 10 times / hour (every 6 minutes)
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
 
             }
         }, "MelonScannerApisManagerThread");
