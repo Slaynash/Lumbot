@@ -43,8 +43,8 @@ public class ScamShield {
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
             crossPost = allMessages.stream()
-                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong()
-                    && m.getChannel().getIdLong() != event.getChannel().getIdLong() && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()))
+                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && m.getMessage().getAttachments().size() == 0
+                    && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .count();
         }
 

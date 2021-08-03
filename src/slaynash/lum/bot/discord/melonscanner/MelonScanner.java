@@ -44,7 +44,7 @@ public final class MelonScanner {
 
         sheduledExecutor.scheduleWithFixedDelay(() -> {
             LogCounter.updateCounter();
-        }, 30, 30, TimeUnit.SECONDS);
+        }, 30, 10, TimeUnit.SECONDS);
     }
 
     public static void shutdown() {
