@@ -44,7 +44,7 @@ public class ScamShield {
         if (!event.isFromType(ChannelType.PRIVATE)) {
             crossPost = allMessages.stream()
                 .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && m.getMessage().getAttachments().size() == 0
-                    && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
+                    && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .count();
         }
 
@@ -126,7 +126,7 @@ public class ScamShield {
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
 
-        int suspiciousCount = (int) sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
+        int suspiciousCount = sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
         if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();

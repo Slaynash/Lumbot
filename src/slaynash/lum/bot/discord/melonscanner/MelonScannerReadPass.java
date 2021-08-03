@@ -167,7 +167,7 @@ public final class MelonScannerReadPass {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
 
-            if (context.loadedMods.containsKey(context.tmpModName) && !context.duplicatedMods.stream().anyMatch(d -> d.hasName(context.tmpModName)))
+            if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
 
             context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
@@ -246,8 +246,7 @@ public final class MelonScannerReadPass {
         line = line.split(".dll", 2)[0]; //remove everything to the right
         String[] split = line.split("\\\\"); //remove everything to the left
         split = split[split.length - 1].split("\\."); //split on dots
-        String name = String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces
-        return name;
+        return String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces;
     }
 
     private static boolean processMissingDependenciesListing(String line, MelonScanContext context) throws IOException {
@@ -410,14 +409,14 @@ public final class MelonScannerReadPass {
         if (line.matches("\\[[0-9.:]+\\] \\[ERROR\\] An item with the same key has already been added.*")) {
             System.out.println("Duplicate in Mods and Plugins");
             String tmpModName = line.substring(line.lastIndexOf(":") + 2);
-            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(tmpModName)))
+            if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
             return true;
         }
         else if (line.matches("\\[[0-9.:]+\\] \\[(WARNING|ERROR)\\] Duplicate (File|Mod|Plugin).*")) {
             System.out.println("Duplicate in Mods");
             String tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
-            if (!context.duplicatedMods.stream().anyMatch(d -> d.hasName(tmpModName)))
+            if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
             return true;
         }

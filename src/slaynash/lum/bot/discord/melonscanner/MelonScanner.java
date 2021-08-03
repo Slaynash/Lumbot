@@ -185,8 +185,8 @@ public final class MelonScanner {
 
     public static boolean isValidFileFormat(Attachment attachment) {
         return attachment.getFileExtension() != null && (
-            attachment.getFileExtension().toLowerCase().equals("log") ||
-            attachment.getFileExtension().toLowerCase().equals("txt"));
+            attachment.getFileExtension().equalsIgnoreCase("log") ||
+            attachment.getFileExtension().equalsIgnoreCase("txt"));
     }
 
 
@@ -195,7 +195,7 @@ public final class MelonScanner {
     private static void vrcHashCheck(MelonScanContext context) {
         if ("VRChat".equals(context.game)) {
             context.isMLOutdatedVRC = true;
-            if (context.mlHashCode != null && "VRChat".equals(context.game)) {
+            if (context.mlHashCode != null) {
                 System.out.println("game is vrc, checking hash");
 
                 boolean hasVRChat1043ReadyML = false;
@@ -402,9 +402,9 @@ public final class MelonScanner {
 
             if (ageDays > 1) {
                 if (context.pre3)
-                    context.reportMessage.append(Localization.getFormat("melonscanner.reportmessage.logdayolds", context.lang, ageDays) + "\n");
+                    context.reportMessage.append(Localization.getFormat("melonscanner.reportmessage.logdayolds", context.lang, ageDays)).append("\n");
                 else
-                    context.reportMessage.append(Localization.getFormat("melonscanner.reportmessage.logdayoldsreupload", context.lang, ageDays) + "\n");
+                    context.reportMessage.append(Localization.getFormat("melonscanner.reportmessage.logdayoldsreupload", context.lang, ageDays)).append("\n");
             }
         }
     }

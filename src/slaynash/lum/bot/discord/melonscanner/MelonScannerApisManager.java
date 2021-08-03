@@ -282,7 +282,7 @@ public class MelonScannerApisManager {
 
     public static boolean compareUsingHash(String game) {
         MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
-        return api == null ? false : api.compareUsingHashes;
+        return api != null && api.compareUsingHashes;
     }
 
     public static String getDownloadLinkForMod(String game, String missingModName) {

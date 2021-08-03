@@ -89,7 +89,7 @@ public final class VersionUtils {
         }
 
         public String getRaw() {
-            return new String(raw);
+            return raw;
         }
     }
 }

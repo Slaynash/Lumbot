@@ -89,7 +89,7 @@ public class APIClient {
                         String[] requestParametersRaw = requestUrl[1].split("&");
                         for (String rpr : requestParametersRaw) {
                             String[] paramParts = rpr.split("=", 2);
-                            requestParameters.put(URLDecoder.decode(paramParts[0], "UTF-8"), paramParts.length > 1 ? URLDecoder.decode(paramParts[1], "UTF-8") : "");
+                            requestParameters.put(URLDecoder.decode(paramParts[0], StandardCharsets.UTF_8), paramParts.length > 1 ? URLDecoder.decode(paramParts[1], StandardCharsets.UTF_8) : "");
                         }
                     }
 

@@ -3,6 +3,7 @@ package slaynash.lum.bot.steam;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import in.dragonbra.javasteam.types.KeyValue;
 
@@ -202,6 +203,6 @@ public class SteamAppDetails {
     }
 
     private static boolean isStringEquals(String left, String right) {
-        return left == null ? (right == null) : (left.equals(right));
+        return Objects.equals(left, right);
     }
 }

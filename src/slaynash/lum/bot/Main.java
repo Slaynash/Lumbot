@@ -335,7 +335,7 @@ public class Main extends ListenerAdapter {
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
                 if (c.getId().equals(channelId)) {
-                    ((TextChannel) c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    c.sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }

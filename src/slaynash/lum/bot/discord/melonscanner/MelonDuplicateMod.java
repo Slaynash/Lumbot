@@ -18,7 +18,7 @@ public class MelonDuplicateMod {
     }
 
     public void addName(String name) {
-        if (!names.stream().anyMatch(n -> n.equals(name)))
+        if (names.stream().noneMatch(n -> n.equals(name)))
             names.add(name);
     }
 
