@@ -182,7 +182,7 @@ public class MelonScannerApisManager {
 
                         List<MelonApiMod> currentMods = gamesTemp.get(api.game);
                         if (currentMods == null || currentMods.isEmpty())
-                            games.put(api.game, currentMods = new ArrayList<MelonApiMod>(apiMods));
+                            games.put(api.game, currentMods = new ArrayList<>(apiMods));
                         else {
                             for (MelonApiMod newMod : apiMods) {
 
@@ -277,7 +277,7 @@ public class MelonScannerApisManager {
         if (game == null)
             return null;
         List<MelonApiMod> list = games.get(game);
-        return list == null ? null : new ArrayList<MelonApiMod>(games.get(game));
+        return list == null ? null : new ArrayList<>(games.get(game));
     }
 
     public static boolean compareUsingHash(String game) {

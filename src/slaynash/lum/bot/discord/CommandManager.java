@@ -35,7 +35,7 @@ import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
-    private static List<Command> commands = new ArrayList<Command>();
+    private static List<Command> commands = new ArrayList<>();
     private static boolean init = false;
 
     public static List<ReactionListener> reactionListeners = new ArrayList<>();

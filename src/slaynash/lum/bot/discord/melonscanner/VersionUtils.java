@@ -62,13 +62,13 @@ public final class VersionUtils {
         public VersionData() {
             isValidSemver = false;
             raw = "";
-            numbers = new ArrayList<Integer>(0);
+            numbers = new ArrayList<>(0);
         }
 
         public VersionData(String raw, Matcher collection, boolean validSemver) {
             isValidSemver = validSemver;
             this.raw = raw;
-            numbers = new ArrayList<Integer>();
+            numbers = new ArrayList<>();
 
             while (collection.find()) {
                 int parsedNumber = Integer.parseInt(collection.group());

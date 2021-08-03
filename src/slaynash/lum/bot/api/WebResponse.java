@@ -33,7 +33,7 @@ public class WebResponse {
     public void addHeader(String key, String value) {
         List<String> header = headers.get(key);
         if (header == null) {
-            header = new ArrayList<String>();
+            header = new ArrayList<>();
             headers.put(key, header);
         }
         header.add(value);
