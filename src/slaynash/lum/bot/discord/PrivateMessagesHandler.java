@@ -14,12 +14,11 @@ public class PrivateMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {
-            System.out.printf("[%s] [DM] %s%s%s: %s\n", new Object[] {
-                TimeManager.getTimeForLog(),
-                event.getAuthor().getAsTag(),
-                event.getMessage().isEdited() ? " *edited*" : "",
-                event.getMessage().getType().isSystem() ? " *system*" : "",
-                event.getMessage().getContentRaw().replace("\n", "\n\t\t") });
+            System.out.printf("[%s] [DM] %s%s%s: %s\n", TimeManager.getTimeForLog(),
+                    event.getAuthor().getAsTag(),
+                    event.getMessage().isEdited() ? " *edited*" : "",
+                    event.getMessage().getType().isSystem() ? " *system*" : "",
+                    event.getMessage().getContentRaw().replace("\n", "\n\t\t"));
             List<Attachment> attachments = event.getMessage().getAttachments();
             if (attachments.size() > 0) {
                 System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
@@ -52,6 +51,5 @@ public class PrivateMessagesHandler {
 
     public static void handle(MessageUpdateEvent event) {
         handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
-        return;
     }
 }

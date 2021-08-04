@@ -174,7 +174,7 @@ public class ScamShield {
                             System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
                             String temp = "";
                             if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                                temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                                temp = embedBuilder.getDescriptionBuilder() + "\n";
                             embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
                         }
                     });
@@ -186,7 +186,7 @@ public class ScamShield {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
                     String temp = "";
                     if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                        temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                        temp = embedBuilder.getDescriptionBuilder() + "\n";
                     embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
                 }
             }

@@ -18,7 +18,7 @@ public final class VersionUtils {
         if (left.getIsValidSemver() != right.getIsValidSemver())
             return left.getIsValidSemver() ? 1 : -1;
 
-        int compareLength = left.getLength() > right.getLength() ? left.getLength() : right.getLength();
+        int compareLength = Math.max(left.getLength(), right.getLength());
         for (int i = 0; i < compareLength; ++i) {
             int leftNumber = left.getIndex(i);
             int rightNumber = right.getIndex(i);
@@ -72,7 +72,7 @@ public final class VersionUtils {
 
             while (collection.find()) {
                 int parsedNumber = Integer.parseInt(collection.group());
-                numbers.add(parsedNumber > 0 ? parsedNumber : 0);
+                numbers.add(Math.max(parsedNumber, 0));
             }
         }
 

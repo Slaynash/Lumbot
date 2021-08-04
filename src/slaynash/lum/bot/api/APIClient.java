@@ -153,7 +153,7 @@ public class APIClient {
 
     private String readInLine() throws IOException {
         char c = (char) -1;
-        String s = "";
+        StringBuilder s = new StringBuilder();
         do {
             c = (char) inputStream.read();
             //System.out.println("READ " + c + " (" + ((int)c) + ")");
@@ -163,11 +163,11 @@ public class APIClient {
                 continue;
             if (c == '\n')
                 break;
-            s += c + "";
+            s.append(c);
         }
         while (c != -1);
         //System.out.println(s);
-        return s;
+        return s.toString();
     }
 
     private void sendResponse(WebResponse response, boolean sendBody) throws IOException {

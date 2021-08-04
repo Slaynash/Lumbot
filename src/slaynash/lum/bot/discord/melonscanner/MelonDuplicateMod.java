@@ -24,10 +24,10 @@ public class MelonDuplicateMod {
 
     @Override
     public String toString() {
-        String r = names.get(0);
+        StringBuilder r = new StringBuilder(names.get(0));
         for (int i = 1; i < names.size(); ++i)
-            r += "/" + names.get(i);
-        return r;
+            r.append("/").append(names.get(i));
+        return r.toString();
     }
 
     public boolean hasName(String name) {

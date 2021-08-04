@@ -46,7 +46,7 @@ public class CommandManager {
     public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static Map<Long, String> mlReportChannels = new HashMap<>();
-    public static List<String> brokenMods = new ArrayList<>();
+    public static final List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";

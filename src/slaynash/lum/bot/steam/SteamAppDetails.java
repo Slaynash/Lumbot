@@ -153,7 +153,7 @@ public class SteamAppDetails {
                 if (oldManifest == null)
                     changeManifests.put(manifestKey, newManifest);
                 else {
-                    Long compareResult = oldManifest == newManifest ? -1 : newManifest;
+                    long compareResult = oldManifest == newManifest ? -1 : newManifest;
                     if (compareResult != -1)
                         changeManifests.put(manifestKey, compareResult);
                 }

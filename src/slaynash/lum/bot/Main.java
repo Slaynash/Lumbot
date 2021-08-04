@@ -419,7 +419,7 @@ public class Main extends ListenerAdapter {
             for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
                 loopGuild = tempGuild;
                 try {
-                    Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
+                    long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
                 }
                 catch (Exception e) {

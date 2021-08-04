@@ -277,7 +277,7 @@ public class VRChatVersionComparer {
                 if (obfname.startsWith("."))
                     obfname = obfname.substring(1);
 
-                String fullname = "";
+                StringBuilder fullname = new StringBuilder();
 
                 String[] parts = obfname.split("::");
                 boolean isFieldOrProperty = parts.length > 1;
@@ -285,30 +285,30 @@ public class VRChatVersionComparer {
                 String[] nameparts = parts[0].split("\\.");
                 int partsToProcess = isFieldOrProperty ? nameparts.length : nameparts.length - 1;
                 for (int i = 0; i < partsToProcess; ++i) {
-                    String obfParentName = "";
+                    StringBuilder obfParentName = new StringBuilder();
                     for (int j = 0; j <= i; ++j)
-                        obfParentName += "." + nameparts[j];
+                        obfParentName.append(".").append(nameparts[j]);
 
                     String deobfParentName;
-                    if ((deobfParentName = obf2deobf.get(obfParentName)) != null)
-                        fullname += deobfParentName;
+                    if ((deobfParentName = obf2deobf.get(obfParentName.toString())) != null)
+                        fullname.append(deobfParentName);
                     else
-                        fullname += nameparts[i];
+                        fullname.append(nameparts[i]);
 
-                    fullname += ".";
+                    fullname.append(".");
                 }
 
                 if (isFieldOrProperty)
-                    fullname = fullname.substring(0, fullname.length() - 1);
+                    fullname = new StringBuilder(fullname.substring(0, fullname.length() - 1));
                 else
-                    fullname += deobfname;
+                    fullname.append(deobfname);
 
                 if (isFieldOrProperty) {
                     // System.out.println(obfname + ":");
                     // System.out.println(" > fullname: " + fullname);
 
                     TypeDefinition typedef;
-                    if ((typedef = assemblyTypes.get(fullname)) == null) {
+                    if ((typedef = assemblyTypes.get(fullname.toString())) == null) {
                         missingTypes.add(fullname + "::" + deobfname);
                         continue;
                     }
@@ -340,8 +340,8 @@ public class VRChatVersionComparer {
                     missingTypes.add(fullname + "::" + deobfname);
                 }
                 else {
-                    if (!assemblyTypes.containsKey(fullname))
-                        missingTypes.add(fullname);
+                    if (!assemblyTypes.containsKey(fullname.toString()))
+                        missingTypes.add(fullname.toString());
                 }
 
             }
@@ -359,7 +359,7 @@ public class VRChatVersionComparer {
         System.out.println("Missing types:");
         for (String missingType : missingTypes) {
             System.out.println(" - " + missingType);
-            sb.append(missingType + "\n");
+            sb.append(missingType).append("\n");
         }
 
         System.out.println();

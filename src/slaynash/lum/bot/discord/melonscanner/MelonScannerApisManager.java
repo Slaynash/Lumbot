@@ -16,7 +16,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
@@ -237,8 +236,7 @@ public class MelonScannerApisManager {
                     }
                 }
 
-                for (Entry<String, List<MelonApiMod>> entry : gamesTemp.entrySet())
-                    games.put(entry.getKey(), entry.getValue());
+                games.putAll(gamesTemp);
 
             }
         }, "MelonScannerApisManagerThread");
@@ -296,7 +294,7 @@ public class MelonScannerApisManager {
         MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
 
         if (mod == null) {
-            mod = mods.stream().filter(modtmp -> Arrays.stream(modtmp.aliases).anyMatch(missingModName::equals)).findFirst().orElse(null);
+            mod = mods.stream().filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
         }
 
         return mod != null ? mod.downloadLink : null;
