@@ -99,6 +99,10 @@
             "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
         },
         {
+            "regex": ".*Tomlet\\.Exceptions\\.InvalidTomlEscapeException: Found an invalid escape sequence.*",
+            "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
+        },
+        {
             "regex": ".*Tomlet.Exceptions.TomlEOFException: Found unexpected EOF on line \\d+ when parsing TOML file",
             "error": "Mod config has been corrupted or emptied. Please remove UserData/MelonPreferences.cfg"
         },

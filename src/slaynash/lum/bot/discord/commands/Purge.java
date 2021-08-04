@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,60 +33,66 @@ public class Purge extends Command {
 
                 Message replied = message.getReferencedMessage();
                 MessageHistory messages;
-                List<Message> messagelist = new ArrayList<>();
+                List<Message> messageList = new ArrayList<>();
                 List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
                 if (replied != null) {
-                    messagelist.add(replied); //add replied message to be removed
+                    messageList.add(replied); //add replied message to be removed
                     retrievedHistory.add(replied); //add replied message to start looping, this will not be added to be removed
                     do {
                         messages = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete(); //100 is max you can get
                         retrievedHistory = messages.getRetrievedHistory();
-                        messagelist.addAll(retrievedHistory);
+                        messageList.addAll(retrievedHistory);
                     }
                     while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
 
                     if (message.getContentRaw().startsWith("l!purgeu")) {
-                        messagelist.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
+                        messageList.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
                         if (message.getAuthor().getIdLong() != replied.getAuthor().getIdLong())
-                            messagelist.add(message); // add message back to be removed
-                        System.out.println("User Reply purging " + messagelist.size() + " messages");
+                            messageList.add(message); // add message back to be removed
+                        System.out.println("User Reply purging " + messageList.size() + " messages");
                     }
                     else
-                        System.out.println("Reply purging " + messagelist.size() + " messages");
+                        System.out.println("Reply purging " + messageList.size() + " messages");
                 }
                 // else if author ID #messages
                 else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
                     int count = Integer.parseInt(params[1]);
-                    messagelist.add(message);
+                    messageList.add(message);
                     while (count > 0) {
-                        messages = event.getChannel().getHistoryBefore(messagelist.get(messagelist.size() - 1), Math.min(count, 100)).complete();
+                        messages = event.getChannel().getHistoryBefore(messageList.get(messageList.size() - 1), Math.min(count, 100)).complete();
                         retrievedHistory = messages.getRetrievedHistory();
-                        messagelist.addAll(retrievedHistory);
+                        messageList.addAll(retrievedHistory);
                         count = count - retrievedHistory.size();
                     }
-                    System.out.println("Mass purging " + messagelist.size() + " messages");
+                    System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
                     message.reply("Command is `l!purge #` or reply to the top message.").queue();
 
                 //remove if unknown message ie message already removed
-                messagelist.removeIf(m -> m.getType() == MessageType.UNKNOWN);
+                messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
+                for (Message mes : messageList) {
+                    if (mes.getTimeCreated().isAfter(OffsetDateTime.now().minusWeeks(2))) {
+                        messageList.remove(mes);
+                        mes.delete().queue();
+                    }
+                }
 
                 // removing the messages
-                if (messagelist.size() > 0) {
-                    if (messagelist.size() <= 100) {
-                        event.getTextChannel().deleteMessages(messagelist).queue();
+                if (messageList.size() > 0) {
+                    if (messageList.size() <= 100) {
+                        event.getTextChannel().deleteMessages(messageList).queue();
                     }
                     else { // greater than 100 messages
                         try {
                             int i = 0;
-                            while (i < messagelist.size() - 1) {
-                                event.getTextChannel().deleteMessages(messagelist.subList(i, Math.min(i + 100, messagelist.size() - 1))).complete();
+                            while (i < messageList.size() - 1) {
+                                event.getTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size() - 1))).complete();
                                 i = i + 100;
                                 Thread.sleep(1111); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
                             }
-                            if (i == messagelist.size() - 1) // on the very rare chance that there is only one message left
-                                messagelist.get(messagelist.size() - 1).delete().queue();
+                            if (i == messageList.size() - 1) // on the very rare chance that there is only one message left
+                                messageList.get(messageList.size() - 1).delete().queue();
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("An error has occurred while purging messages:", e, event.getTextChannel());
