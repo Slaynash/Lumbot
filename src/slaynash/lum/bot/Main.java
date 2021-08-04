@@ -29,7 +29,6 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -54,7 +53,7 @@ public class Main extends ListenerAdapter {
     public static JDA jda;
     public static boolean isShuttingDown = false;
 
-    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException {
+    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
 

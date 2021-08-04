@@ -54,16 +54,14 @@ public class CommandManager {
     public static String vrchatBuild = "1";
 
     protected static void registerCommand(Command command) {
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             commands.add(command);
         }
     }
 
     protected static void runAsClient(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw();
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
                 rcmd.onClient(command, event);
@@ -73,8 +71,7 @@ public class CommandManager {
 
     protected static void runAsServer(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw();
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
                 rcmd.onServer(command, event);

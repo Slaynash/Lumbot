@@ -61,8 +61,7 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
             if (parameters == null)
                 throw new NullPointerException();
 
-            AssemblyDefinition assembly = searchDirectory(name, directories, parameters);
-            return assembly;
+            return searchDirectory(name, directories, parameters);
         }
 
         @Override

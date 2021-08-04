@@ -67,7 +67,7 @@ public class SteamAppDetails {
                     Integer key = Integer.parseInt(element.getName());
                     elements.put(key, new SteamAppDepot(element));
                 }
-                catch (Exception e) { }
+                catch (Exception ignored) { }
             }
             KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())

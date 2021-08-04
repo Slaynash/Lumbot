@@ -108,7 +108,7 @@ public final class MelonScanner {
             fillEmbedDescription(context);
 
 
-            boolean issueFound = false;
+            boolean issueFound;
             issueFound  = mlOutdatedCheck(context);
             issueFound |= vrchatVersionCheck(context);
             issueFound |= knownErrorsCheck(context);

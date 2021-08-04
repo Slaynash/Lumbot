@@ -23,7 +23,7 @@ public class API {
     private static int totalConnectionCount;
 
 
-    public static void start() throws IOException {
+    public static void start() {
 
         gson = new GsonBuilder()
             //.serializeNulls()

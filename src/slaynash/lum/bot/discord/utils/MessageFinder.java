@@ -52,7 +52,7 @@ public class MessageFinder {
                 try {
                     Thread.sleep(1);
                 }
-                catch (Exception e) { }
+                catch (Exception ignored) { }
             }
             if (found)
                 break;

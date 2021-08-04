@@ -102,7 +102,7 @@ public class Purge extends Command {
             try {
                 Thread.sleep(60 * 1000);
             }
-            catch (InterruptedException e) { }
+            catch (InterruptedException ignored) { }
             if (thread.isAlive()) {
                 thread.interrupt(); //stop purge if taking too long because .complete gotten stuck
             }

@@ -31,11 +31,7 @@ public class WebResponse {
     }
 
     public void addHeader(String key, String value) {
-        List<String> header = headers.get(key);
-        if (header == null) {
-            header = new ArrayList<>();
-            headers.put(key, header);
-        }
+        List<String> header = headers.computeIfAbsent(key, k -> new ArrayList<>());
         header.add(value);
     }
 
