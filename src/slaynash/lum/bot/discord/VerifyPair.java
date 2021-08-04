@@ -2,8 +2,8 @@ package slaynash.lum.bot.discord;
 
 public class VerifyPair {
 
-    public String channelId;
-    public String roleId;
+    public final String channelId;
+    public final String roleId;
 
     public VerifyPair(String channelId, String roleId) {
         this.channelId = channelId;

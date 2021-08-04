@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class ChattyLum {
 
     private static class HelpedRecentlyData {
-        public long time;
-        public long userid;
-        public long channelid;
+        public final long time;
+        public final long userid;
+        public final long channelid;
 
         public HelpedRecentlyData(long userid, long channelid) {
             time = Instant.now().getEpochSecond();
@@ -123,10 +123,10 @@ public class ChattyLum {
     };
 
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static final int helpDuration = 6 * 60; //in seconds
-    private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
+    private static final List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
 
     public static boolean handle(String message, MessageReceivedEvent event) {

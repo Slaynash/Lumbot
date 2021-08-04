@@ -35,17 +35,17 @@ import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
-    private static List<Command> commands = new ArrayList<>();
+    private static final List<Command> commands = new ArrayList<>();
     private static boolean init = false;
 
-    public static List<ReactionListener> reactionListeners = new ArrayList<>();
-    public static Map<Long, String> logChannels = new HashMap<>();
-    public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
-    public static Map<Long, Long> autoScreeningRoles = new HashMap<>();
+    public static final List<ReactionListener> reactionListeners = new ArrayList<>();
+    public static final Map<Long, String> logChannels = new HashMap<>();
+    public static final Map<Long, VerifyPair> verifyChannels = new HashMap<>();
+    public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
 
-    public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
-    public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
-    public static Map<Long, String> mlReportChannels = new HashMap<>();
+    public static final List<MLHashPair> melonLoaderHashes = new ArrayList<>();
+    public static final List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
+    public static final Map<Long, String> mlReportChannels = new HashMap<>();
     public static final List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";

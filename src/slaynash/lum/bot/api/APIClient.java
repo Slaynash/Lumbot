@@ -12,14 +12,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class APIClient {
-    private int id;
+    private final int id;
     public boolean valid = false;
 
-    private Socket socket;
+    private final Socket socket;
     private BufferedInputStream inputStream;
     private BufferedOutputStream outputStream;
-
-    private Thread listenThread;
 
     public APIClient(Socket socket, int id) {
         this.id = id;
@@ -31,7 +29,7 @@ public class APIClient {
 
             System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Connection started");
 
-            listenThread = new Thread(() -> {
+            Thread listenThread = new Thread(() -> {
                 while (valid)
                     valid = listenForRequests();
                 System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Connection closed");

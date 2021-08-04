@@ -63,23 +63,23 @@ public class MelonScanContext {
     public boolean readingMissingDependencies = false;
 
     // Missing dependencies - final
-    public List<String> missingMods = new ArrayList<>();
+    public final List<String> missingMods = new ArrayList<>();
 
     // Incompatibility - temp
     public String currentIncompatibleMods = "";
     public boolean readingIncompatibility = false;
 
     // Incompatibility - final
-    public List<MelonIncompatibleMod> incompatibleMods = new ArrayList<>();
+    public final List<MelonIncompatibleMod> incompatibleMods = new ArrayList<>();
 
     // Error handling
     public boolean hasErrors = false;
     public boolean hasNonModErrors = false;
     public boolean assemblyGenerationFailed = false;
-    public List<MelonLoaderError> errors = new ArrayList<>();
-    public List<String> modsThrowingErrors = new ArrayList<>();
-    public List<String> misplacedMods = new ArrayList<>();
-    public List<String> misplacedPlugins = new ArrayList<>();
+    public final List<MelonLoaderError> errors = new ArrayList<>();
+    public final List<String> modsThrowingErrors = new ArrayList<>();
+    public final List<String> misplacedMods = new ArrayList<>();
+    public final List<String> misplacedPlugins = new ArrayList<>();
 
     // Thinkering pass
 
@@ -87,11 +87,11 @@ public class MelonScanContext {
 
     public List<MelonApiMod> modDetails;
 
-    public List<LogsModDetails> unknownMods = new ArrayList<>();
-    public List<String> brokenMods = new ArrayList<>();
-    public List<MelonOutdatedMod> outdatedMods = new ArrayList<>();
-    public List<MelonApiMod> corruptedMods = new ArrayList<>();
-    public List<String> oldMods = new ArrayList<>();
+    public final List<LogsModDetails> unknownMods = new ArrayList<>();
+    public final List<String> brokenMods = new ArrayList<>();
+    public final List<MelonOutdatedMod> outdatedMods = new ArrayList<>();
+    public final List<MelonApiMod> corruptedMods = new ArrayList<>();
+    public final List<String> oldMods = new ArrayList<>();
     /*
     public List<String> universalMods = new ArrayList<String>();
     public Map<String, String> modAuthors = new HashMap<String, String>();

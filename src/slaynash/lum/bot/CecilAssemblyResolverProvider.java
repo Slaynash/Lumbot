@@ -26,8 +26,8 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
 
     public static class AssemblyResolver implements IAssemblyResolver {
 
-        private List<AssemblyDefinition> assemblydefs = new ArrayList<>();
-        private List<File> directories = new ArrayList<>();
+        private final List<AssemblyDefinition> assemblydefs = new ArrayList<>();
+        private final List<File> directories = new ArrayList<>();
 
         @Override
         public Iterator<AssemblyDefinition> iterator() {
@@ -62,10 +62,7 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
                 throw new NullPointerException();
 
             AssemblyDefinition assembly = searchDirectory(name, directories, parameters);
-            if (assembly != null)
-                return assembly;
-
-            return null;
+            return assembly;
         }
 
         @Override

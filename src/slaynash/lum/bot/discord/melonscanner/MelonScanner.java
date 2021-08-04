@@ -34,9 +34,9 @@ public final class MelonScanner {
     public static String latestMLVersionRelease = "0.4.1"; // Is this really still hard coded?
     public static String latestMLVersionAlpha = "0.3.0";
 
-    private static Color melonPink = new Color(255, 59, 106);
+    private static final Color melonPink = new Color(255, 59, 106);
 
-    private static ScheduledExecutorService sheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService sheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public static void init() {
         MelonLoaderError.init();

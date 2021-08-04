@@ -28,17 +28,17 @@ import slaynash.lum.bot.discord.JDAManager;
 
 public class Steam {
 
-    private CallbackManager callbackManager;
-    private SteamClient client;
-    private SteamUser user;
-    private SteamApps apps;
+    private final CallbackManager callbackManager;
+    private final SteamClient client;
+    private final SteamUser user;
+    private final SteamApps apps;
     private boolean isLoggedOn;
     private int tickerHash;
 
     private int previousChangeNumber;
     private SteamAppDetails vrchatAppDetails;
 
-    private int gameId = 438100; //VRChat
+    private final int gameId = 438100; //VRChat
 
     public Steam() {
 

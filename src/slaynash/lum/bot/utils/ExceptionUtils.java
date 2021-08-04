@@ -15,10 +15,10 @@ import slaynash.lum.bot.discord.JDAManager;
 public final class ExceptionUtils {
 
     private static class QueuedException {
-        public String title;
-        public String comment;
-        public Throwable exception;
-        public TextChannel textChannel;
+        public final String title;
+        public final String comment;
+        public final Throwable exception;
+        public final TextChannel textChannel;
 
         public QueuedException(String title, String comment, Throwable exception, TextChannel textChannel) {
             this.title = title;

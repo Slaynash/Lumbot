@@ -41,7 +41,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
 
-    private static List<MelonScannerApi> apis = new ArrayList<>();
+    private static final List<MelonScannerApi> apis = new ArrayList<>();
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -49,11 +49,10 @@ public class MelonScannerApisManager {
             .connectTimeout(Duration.ofSeconds(20))
             .build();
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
     private static Globals server_globals;
 
-    private static Thread fetchThread;
-    private static Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
+    private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     static {
         apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true /* Check using hashes? */));
@@ -65,7 +64,7 @@ public class MelonScannerApisManager {
     }
 
     public static void startFetchingThread() {
-        fetchThread = new Thread(() -> {
+        Thread fetchThread = new Thread(() -> {
             while (true) {
 
                 // We use a temp Map to avoid clearing the common one
@@ -74,11 +73,11 @@ public class MelonScannerApisManager {
                 for (MelonScannerApi api : apis) {
 
                     HttpRequest request = HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create(api.endpoint))
-                        .setHeader("User-Agent", "LUM Bot")
-                        .timeout(Duration.ofSeconds(30))
-                        .build();
+                            .GET()
+                            .uri(URI.create(api.endpoint))
+                            .setHeader("User-Agent", "LUM Bot")
+                            .timeout(Duration.ofSeconds(30))
+                            .build();
 
                     try {
 

@@ -33,8 +33,8 @@ public class MelonLoaderError {
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
 
 
-    public String regex;
-    public String error;
+    public final String regex;
+    public final String error;
 
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;

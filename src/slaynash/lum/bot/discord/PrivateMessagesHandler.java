@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.utils.TimeManager;
 
 public class PrivateMessagesHandler {
-    private static List<Long> dmSS = new ArrayList<>();
+    private static final List<Long> dmSS = new ArrayList<>();
     public static void handle(MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {

@@ -15,7 +15,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class API {
 
-    public static Map<String, Endpoint> endpoints = new HashMap<>();
+    public static final Map<String, Endpoint> endpoints = new HashMap<>();
 
     public static Gson gson;
 

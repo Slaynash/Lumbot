@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public final class VersionUtils {
 
-    private static Pattern versionPattern = Pattern.compile("\\d+");
+    private static final Pattern versionPattern = Pattern.compile("\\d+");
 
     private VersionUtils() {}
 
@@ -54,10 +54,10 @@ public final class VersionUtils {
 
 
     public static class VersionData {
-        private String raw;
-        private List<Integer> numbers;
+        private final String raw;
+        private final List<Integer> numbers;
 
-        private boolean isValidSemver;
+        private final boolean isValidSemver;
 
         public VersionData() {
             isValidSemver = false;

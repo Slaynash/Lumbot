@@ -43,9 +43,9 @@ public class SteamAppDetails {
 
 
     public static class SteamAppDetailsCommon {
-        public String name;
-        public String type;
-        public String releasestate;
+        public final String name;
+        public final String type;
+        public final String releasestate;
 
         public SteamAppDetailsCommon(KeyValue keyValues) {
             name = keyValues.get("name").asString();
