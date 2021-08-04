@@ -9,8 +9,8 @@ import java.util.Map;
 public class WebResponse {
 
     public int returnCode;
-    public String returnMessage;
-    public Map<String, List<String>> headers = new HashMap<>();
+    public final String returnMessage;
+    public final Map<String, List<String>> headers = new HashMap<>();
     public byte[] data = new byte[0];
 
     public WebResponse() {
@@ -31,11 +31,7 @@ public class WebResponse {
     }
 
     public void addHeader(String key, String value) {
-        List<String> header = headers.get(key);
-        if (header == null) {
-            header = new ArrayList<String>();
-            headers.put(key, header);
-        }
+        List<String> header = headers.computeIfAbsent(key, k -> new ArrayList<>());
         header.add(value);
     }
 

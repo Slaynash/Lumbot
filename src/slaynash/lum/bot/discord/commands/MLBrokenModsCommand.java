@@ -18,18 +18,18 @@ public class MLBrokenModsCommand extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!checkPerms(event))
             return;
-        String message = "**Broken mods:**\n";
-        List<String> brokenMods = null;
+        StringBuilder message = new StringBuilder("**Broken mods:**\n");
+        List<String> brokenMods;
         synchronized (CommandManager.brokenMods) {
             brokenMods = new ArrayList<>(CommandManager.brokenMods);
         }
         brokenMods.sort(Comparator.comparing(String::toString));
         for (String s : brokenMods)
-            message += s + "\n";
+            message.append(s).append("\n");
         List<MelonApiMod> knownMods = MelonScannerApisManager.getMods("VRChat");
         if (knownMods != null) {
             knownMods.sort(Comparator.comparing(MelonApiMod::getName));
-            message += "\n**Non-broken mods:**\n";
+            message.append("\n**Non-broken mods:**\n");
             for (MelonApiMod md : knownMods) {
                 String modname = md.name;
                 boolean found = false;
@@ -40,27 +40,27 @@ public class MLBrokenModsCommand extends Command {
                     }
                 }
                 if (!found)
-                    message += modname + "\n";
+                    message.append(modname).append("\n");
             }
         }
         if (message.length() >= 2000) {
-            String[] lines = message.split("\n");
-            String toSend = "";
+            String[] lines = message.toString().split("\n");
+            StringBuilder toSend = new StringBuilder();
             int i = 0;
             while (i < lines.length) {
                 if ((toSend + lines[i] + 1).length() > 2000) {
-                    event.getChannel().sendMessage(toSend).queue();
-                    toSend = lines[i];
+                    event.getChannel().sendMessage(toSend.toString()).queue();
+                    toSend = new StringBuilder(lines[i]);
                 }
                 else
-                    toSend += "\n" + lines[i];
+                    toSend.append("\n").append(lines[i]);
                 ++i;
             }
             if (toSend.length() > 0)
-                event.getChannel().sendMessage(toSend).queue();
+                event.getChannel().sendMessage(toSend.toString()).queue();
         }
         else
-            event.getChannel().sendMessage(message).queue();
+            event.getChannel().sendMessage(message.toString()).queue();
     }
 
     @Override

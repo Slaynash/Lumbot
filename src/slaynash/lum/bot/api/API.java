@@ -9,13 +9,13 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import slaynash.lum.bot.api.endpoints.ReloadMelonscannererrorsEndpoint;
+import slaynash.lum.bot.api.endpoints.ReloadMelonScannerErrorsEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadTranslationsEndpoint;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class API {
 
-    public static Map<String, Endpoint> endpoints = new HashMap<>();
+    public static final Map<String, Endpoint> endpoints = new HashMap<>();
 
     public static Gson gson;
 
@@ -23,7 +23,7 @@ public class API {
     private static int totalConnectionCount;
 
 
-    public static void start() throws IOException {
+    public static void start() {
 
         gson = new GsonBuilder()
             //.serializeNulls()
@@ -45,7 +45,7 @@ public class API {
 
         try {
             endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
-            endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonscannererrorsEndpoint());
+            endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonScannerErrorsEndpoint());
 
             socket = new ServerSocket(28644);
         }

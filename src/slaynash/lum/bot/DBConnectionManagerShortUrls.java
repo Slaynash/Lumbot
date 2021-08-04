@@ -16,7 +16,7 @@ public final class DBConnectionManagerShortUrls {
     private static final int DATABASE_TIMEOUT = 10; // in seconds
 
     private static Connection connection;
-    private static Map<ResultSet, PreparedStatement> requests = new HashMap<>();
+    private static final Map<ResultSet, PreparedStatement> requests = new HashMap<>();
     private static volatile int requestCount, updateCount, requestClosedCount, updateClosedCount;
 
     public static void init() {

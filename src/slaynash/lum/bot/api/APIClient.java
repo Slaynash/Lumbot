@@ -12,14 +12,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class APIClient {
-    private int id;
+    private final int id;
     public boolean valid = false;
 
-    private Socket socket;
+    private final Socket socket;
     private BufferedInputStream inputStream;
     private BufferedOutputStream outputStream;
-
-    private Thread listenThread;
 
     public APIClient(Socket socket, int id) {
         this.id = id;
@@ -31,7 +29,7 @@ public class APIClient {
 
             System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Connection started");
 
-            listenThread = new Thread(() -> {
+            Thread listenThread = new Thread(() -> {
                 while (valid)
                     valid = listenForRequests();
                 System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Connection closed");
@@ -89,7 +87,7 @@ public class APIClient {
                         String[] requestParametersRaw = requestUrl[1].split("&");
                         for (String rpr : requestParametersRaw) {
                             String[] paramParts = rpr.split("=", 2);
-                            requestParameters.put(URLDecoder.decode(paramParts[0], "UTF-8"), paramParts.length > 1 ? URLDecoder.decode(paramParts[1], "UTF-8") : "");
+                            requestParameters.put(URLDecoder.decode(paramParts[0], StandardCharsets.UTF_8), paramParts.length > 1 ? URLDecoder.decode(paramParts[1], StandardCharsets.UTF_8) : "");
                         }
                     }
 
@@ -153,7 +151,7 @@ public class APIClient {
 
     private String readInLine() throws IOException {
         char c = (char) -1;
-        String s = "";
+        StringBuilder s = new StringBuilder();
         do {
             c = (char) inputStream.read();
             //System.out.println("READ " + c + " (" + ((int)c) + ")");
@@ -163,11 +161,11 @@ public class APIClient {
                 continue;
             if (c == '\n')
                 break;
-            s += c + "";
+            s.append(c);
         }
         while (c != -1);
         //System.out.println(s);
-        return s;
+        return s.toString();
     }
 
     private void sendResponse(WebResponse response, boolean sendBody) throws IOException {

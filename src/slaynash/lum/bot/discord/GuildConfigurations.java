@@ -61,6 +61,6 @@ public class GuildConfigurations {
         DADJOKES(),
         LOGSCAN(),
         MLREPLIES(),
-        SSBAN();
+        SSBAN()
     }
 }

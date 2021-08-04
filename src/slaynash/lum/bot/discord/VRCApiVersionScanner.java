@@ -15,7 +15,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRCApiVersionScanner {
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
@@ -65,7 +65,7 @@ public class VRCApiVersionScanner {
                 try {
                     Thread.sleep(60 * 1000);
                 }
-                catch (Exception e) { }
+                catch (Exception ignored) { }
             }
 
         }, "VRCApiVersionScanner");

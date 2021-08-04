@@ -15,7 +15,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class Localization {
 
-    public static Map<String, Map<String, String>> localizations = new HashMap<>();
+    public static final Map<String, Map<String, String>> localizations = new HashMap<>();
 
     public static boolean init() {
         Gson gson = new Gson();

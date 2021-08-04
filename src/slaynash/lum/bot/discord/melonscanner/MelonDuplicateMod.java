@@ -18,16 +18,16 @@ public class MelonDuplicateMod {
     }
 
     public void addName(String name) {
-        if (!names.stream().anyMatch(n -> n.equals(name)))
+        if (names.stream().noneMatch(n -> n.equals(name)))
             names.add(name);
     }
 
     @Override
     public String toString() {
-        String r = names.get(0);
+        StringBuilder r = new StringBuilder(names.get(0));
         for (int i = 1; i < names.size(); ++i)
-            r += "/" + names.get(i);
-        return r;
+            r.append("/").append(names.get(i));
+        return r.toString();
     }
 
     public boolean hasName(String name) {

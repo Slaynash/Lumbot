@@ -19,21 +19,21 @@ public class HelpCommand extends Command {
         String[] split = command.split(" ", 2);
         String path = split.length > 1 ? command.split(" ", 2)[1].trim() : "";
 
-        String helpMessage = "**__Help " + path + ":__**\n\n";
+        StringBuilder helpMessage = new StringBuilder("**__Help " + path + ":__**\n\n");
 
         boolean empty = true;
         for (Command cmd : CommandManager.getCommands()) {
             if (/*cmd.getHelpPath() != null && cmd.getHelpPath().equals(path) &&*/ cmd.includeInHelp(event)) {
                 empty = false;
-                helpMessage = helpMessage + "**" + cmd.getHelpName() + "**: " + cmd.getHelpDescription() + "\n";
+                helpMessage.append("**").append(cmd.getHelpName()).append("**: ").append(cmd.getHelpDescription()).append("\n");
             }
         }
         if (!empty) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage, Color.CYAN)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage.toString(), Color.CYAN)).queue();
         }
         else {
-            helpMessage = helpMessage + "**Subhelp directory not found**";
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage, Color.RED)).queue();
+            helpMessage.append("**Subhelp directory not found**");
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage.toString(), Color.RED)).queue();
         }
     }
 

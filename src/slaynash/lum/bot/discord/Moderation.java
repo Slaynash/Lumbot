@@ -29,7 +29,7 @@ public class Moderation {
     }
 
     public static List<Long> getAdmins(Guild guild) {
-        List<Long> adminList = new ArrayList<Long>();
+        List<Long> adminList = new ArrayList<>();
         adminList.add(145556654241349632L/*Slay*/);
         adminList.add(240701606977470464L/*rakosi2*/);
         for (Member member : guild.getMembers()) {
@@ -41,7 +41,7 @@ public class Moderation {
 
     public static Collection<? extends CommandPrivilege> getAdminsPrivileges(Guild guild) {
         List<Long> admins = getAdmins(guild);
-        List<CommandPrivilege> adminPrivList = new ArrayList<CommandPrivilege>();
+        List<CommandPrivilege> adminPrivList = new ArrayList<>();
         for (Long id : admins) {
             adminPrivList.add(new CommandPrivilege(Type.USER, true, id));
         }

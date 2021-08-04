@@ -44,12 +44,12 @@ public class ScamShield {
         if (!event.isFromType(ChannelType.PRIVATE)) {
             crossPost = allMessages.stream()
                 .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && m.getMessage().getAttachments().size() == 0
-                    && m.getMessage().getContentDisplay().toLowerCase().equals(event.getMessage().getContentDisplay().toLowerCase()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
+                    && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .count();
         }
 
         suspiciousValue += (int) crossPost;
-        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
+        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less than 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
@@ -109,13 +109,13 @@ public class ScamShield {
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
-        handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
+        handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
         allMessages.add(event);
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is a instant kick on first message
+        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is an instant kick on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
             handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
@@ -126,7 +126,7 @@ public class ScamShield {
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
 
-        int suspiciousCount = (int) sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
+        int suspiciousCount = sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
         if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();
@@ -174,7 +174,7 @@ public class ScamShield {
                             System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
                             String temp = "";
                             if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                                temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                                temp = embedBuilder.getDescriptionBuilder() + "\n";
                             embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
                         }
                     });
@@ -186,7 +186,7 @@ public class ScamShield {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
                     String temp = "";
                     if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                        temp = embedBuilder.getDescriptionBuilder().toString() + "\n";
+                        temp = embedBuilder.getDescriptionBuilder() + "\n";
                     embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
                 }
             }

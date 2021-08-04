@@ -58,7 +58,7 @@ public class Purge extends Command {
                     int count = Integer.parseInt(params[1]);
                     messagelist.add(message);
                     while (count > 0) {
-                        messages = event.getChannel().getHistoryBefore(messagelist.get(messagelist.size() - 1), count > 100 ? 100 : count).complete();
+                        messages = event.getChannel().getHistoryBefore(messagelist.get(messagelist.size() - 1), Math.min(count, 100)).complete();
                         retrievedHistory = messages.getRetrievedHistory();
                         messagelist.addAll(retrievedHistory);
                         count = count - retrievedHistory.size();
@@ -80,7 +80,7 @@ public class Purge extends Command {
                         try {
                             int i = 0;
                             while (i < messagelist.size() - 1) {
-                                event.getTextChannel().deleteMessages(messagelist.subList(i, i + 100 > messagelist.size() - 1 ? messagelist.size() - 1 : i + 100)).complete();
+                                event.getTextChannel().deleteMessages(messagelist.subList(i, Math.min(i + 100, messagelist.size() - 1))).complete();
                                 i = i + 100;
                                 Thread.sleep(1111); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
                             }
@@ -102,7 +102,7 @@ public class Purge extends Command {
             try {
                 Thread.sleep(60 * 1000);
             }
-            catch (InterruptedException e) { }
+            catch (InterruptedException ignored) { }
             if (thread.isAlive()) {
                 thread.interrupt(); //stop purge if taking too long because .complete gotten stuck
             }

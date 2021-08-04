@@ -16,7 +16,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.gson.Gson;
@@ -42,7 +41,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
 
-    private static List<MelonScannerApi> apis = new ArrayList<>();
+    private static final List<MelonScannerApi> apis = new ArrayList<>();
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -50,11 +49,10 @@ public class MelonScannerApisManager {
             .connectTimeout(Duration.ofSeconds(20))
             .build();
 
-    private static Gson gson = new Gson();
+    private static final Gson gson = new Gson();
     private static Globals server_globals;
 
-    private static Thread fetchThread;
-    private static Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
+    private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     static {
         apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true /* Check using hashes? */));
@@ -66,7 +64,7 @@ public class MelonScannerApisManager {
     }
 
     public static void startFetchingThread() {
-        fetchThread = new Thread(() -> {
+        Thread fetchThread = new Thread(() -> {
             while (true) {
 
                 // We use a temp Map to avoid clearing the common one
@@ -75,11 +73,11 @@ public class MelonScannerApisManager {
                 for (MelonScannerApi api : apis) {
 
                     HttpRequest request = HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create(api.endpoint))
-                        .setHeader("User-Agent", "LUM Bot")
-                        .timeout(Duration.ofSeconds(30))
-                        .build();
+                            .GET()
+                            .uri(URI.create(api.endpoint))
+                            .setHeader("User-Agent", "LUM Bot")
+                            .timeout(Duration.ofSeconds(30))
+                            .build();
 
                     try {
 
@@ -140,7 +138,7 @@ public class MelonScannerApisManager {
                                     continue;
                                 }
 
-                                LuaTable mod = null;
+                                LuaTable mod;
                                 try {
                                     mod = v.checktable();
                                 }
@@ -182,7 +180,7 @@ public class MelonScannerApisManager {
 
                         List<MelonApiMod> currentMods = gamesTemp.get(api.game);
                         if (currentMods == null || currentMods.isEmpty())
-                            games.put(api.game, currentMods = new ArrayList<MelonApiMod>(apiMods));
+                            games.put(api.game, currentMods = new ArrayList<>(apiMods));
                         else {
                             for (MelonApiMod newMod : apiMods) {
 
@@ -237,8 +235,7 @@ public class MelonScannerApisManager {
                     }
                 }
 
-                for (Entry<String, List<MelonApiMod>> entry : gamesTemp.entrySet())
-                    games.put(entry.getKey(), entry.getValue());
+                games.putAll(gamesTemp);
 
             }
         }, "MelonScannerApisManagerThread");
@@ -277,12 +274,12 @@ public class MelonScannerApisManager {
         if (game == null)
             return null;
         List<MelonApiMod> list = games.get(game);
-        return list == null ? null : new ArrayList<MelonApiMod>(games.get(game));
+        return list == null ? null : new ArrayList<>(games.get(game));
     }
 
     public static boolean compareUsingHash(String game) {
         MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
-        return api == null ? false : api.compareUsingHashes;
+        return api != null && api.compareUsingHashes;
     }
 
     public static String getDownloadLinkForMod(String game, String missingModName) {
@@ -296,7 +293,7 @@ public class MelonScannerApisManager {
         MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
 
         if (mod == null) {
-            mod = mods.stream().filter(modtmp -> Arrays.stream(modtmp.aliases).anyMatch(missingModName::equals)).findFirst().orElse(null);
+            mod = mods.stream().filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
         }
 
         return mod != null ? mod.downloadLink : null;
@@ -317,7 +314,7 @@ public class MelonScannerApisManager {
         return downloadRequest(httpClient, request, source);
     }
     public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
-        HttpResponse<String> response = null;
+        HttpResponse<String> response;
         Exception exception = null;
         int attempts = 4;
         for (int i = 0; i < attempts; i++) {

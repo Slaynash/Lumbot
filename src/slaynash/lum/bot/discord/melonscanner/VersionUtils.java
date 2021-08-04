@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public final class VersionUtils {
 
-    private static Pattern versionPattern = Pattern.compile("\\d+");
+    private static final Pattern versionPattern = Pattern.compile("\\d+");
 
     private VersionUtils() {}
 
@@ -18,7 +18,7 @@ public final class VersionUtils {
         if (left.getIsValidSemver() != right.getIsValidSemver())
             return left.getIsValidSemver() ? 1 : -1;
 
-        int compareLength = left.getLength() > right.getLength() ? left.getLength() : right.getLength();
+        int compareLength = Math.max(left.getLength(), right.getLength());
         for (int i = 0; i < compareLength; ++i) {
             int leftNumber = left.getIndex(i);
             int rightNumber = right.getIndex(i);
@@ -54,25 +54,25 @@ public final class VersionUtils {
 
 
     public static class VersionData {
-        private String raw;
-        private List<Integer> numbers;
+        private final String raw;
+        private final List<Integer> numbers;
 
-        private boolean isValidSemver;
+        private final boolean isValidSemver;
 
         public VersionData() {
             isValidSemver = false;
             raw = "";
-            numbers = new ArrayList<Integer>(0);
+            numbers = new ArrayList<>(0);
         }
 
         public VersionData(String raw, Matcher collection, boolean validSemver) {
             isValidSemver = validSemver;
             this.raw = raw;
-            numbers = new ArrayList<Integer>();
+            numbers = new ArrayList<>();
 
             while (collection.find()) {
                 int parsedNumber = Integer.parseInt(collection.group());
-                numbers.add(parsedNumber > 0 ? parsedNumber : 0);
+                numbers.add(Math.max(parsedNumber, 0));
             }
         }
 
@@ -89,7 +89,7 @@ public final class VersionUtils {
         }
 
         public String getRaw() {
-            return new String(raw);
+            return raw;
         }
     }
 }

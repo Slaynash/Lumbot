@@ -1,10 +1,10 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 public class MelonApiMod {
-    public String name;
-    public ModVersion[] versions;
-    public String downloadLink;
-    public String[] aliases;
+    public final String name;
+    public final ModVersion[] versions;
+    public final String downloadLink;
+    public final String[] aliases;
 
     public MelonApiMod(String name, ModVersion[] versions, String downloadLink, String[] aliases) {
         this.name = name;

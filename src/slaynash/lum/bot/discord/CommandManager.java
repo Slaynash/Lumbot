@@ -35,18 +35,18 @@ import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
-    private static List<Command> commands = new ArrayList<Command>();
+    private static final List<Command> commands = new ArrayList<>();
     private static boolean init = false;
 
-    public static List<ReactionListener> reactionListeners = new ArrayList<>();
-    public static Map<Long, String> logChannels = new HashMap<>();
-    public static Map<Long, VerifyPair> verifyChannels = new HashMap<>();
-    public static Map<Long, Long> autoScreeningRoles = new HashMap<>();
+    public static final List<ReactionListener> reactionListeners = new ArrayList<>();
+    public static final Map<Long, String> logChannels = new HashMap<>();
+    public static final Map<Long, VerifyPair> verifyChannels = new HashMap<>();
+    public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
 
-    public static List<MLHashPair> melonLoaderHashes = new ArrayList<>();
-    public static List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
-    public static Map<Long, String> mlReportChannels = new HashMap<>();
-    public static List<String> brokenMods = new ArrayList<>();
+    public static final List<MLHashPair> melonLoaderHashes = new ArrayList<>();
+    public static final List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
+    public static final Map<Long, String> mlReportChannels = new HashMap<>();
+    public static final List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
@@ -54,16 +54,14 @@ public class CommandManager {
     public static String vrchatBuild = "1";
 
     protected static void registerCommand(Command command) {
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             commands.add(command);
         }
     }
 
     protected static void runAsClient(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw();
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
                 rcmd.onClient(command, event);
@@ -73,8 +71,7 @@ public class CommandManager {
 
     protected static void runAsServer(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw();
-        List<Command> list = commands;
-        synchronized (list) {
+        synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
                 rcmd.onServer(command, event);

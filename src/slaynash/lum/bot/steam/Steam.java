@@ -28,17 +28,17 @@ import slaynash.lum.bot.discord.JDAManager;
 
 public class Steam {
 
-    private CallbackManager callbackManager;
-    private SteamClient client;
-    private SteamUser user;
-    private SteamApps apps;
+    private final CallbackManager callbackManager;
+    private final SteamClient client;
+    private final SteamUser user;
+    private final SteamApps apps;
     private boolean isLoggedOn;
     private int tickerHash;
 
     private int previousChangeNumber;
     private SteamAppDetails vrchatAppDetails;
 
-    private int gameId = 438100; //VRChat
+    private final int gameId = 438100; //VRChat
 
     public Steam() {
 
@@ -167,31 +167,31 @@ public class Steam {
 
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Depot" + (changeBranches.size() > 0 ? "s" : "") + " updated");
-                    String description = "";
+                    StringBuilder description = new StringBuilder();
                     boolean isPublicBranchUpdate = false;
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
                         if (!oldBranches.containsKey(changedBranch.getKey())) {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
-                            description += "[" + changedBranch.getKey() + "] Branch created (`#" + branchDetails.buildid + "`)\n";
+                            description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
                             if (branchDetails.description != null)
-                                description += " - Description: " + branchDetails.description + "\n";
+                                description.append(" - Description: ").append(branchDetails.description).append("\n");
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
                             //SteamAppDetails.SteamAppBranch branchDetails = oldBranches.get(changedBranch.getKey());
-                            description += "[" + changedBranch.getKey() + "] Branch deleted\n";
+                            description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
                         }
                         else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
-                            description += "[" + changedBranch.getKey() + "] Branch " + (oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded") + " (`" + oldBranchDetails.buildid + "` -> `" + newBranchDetails.buildid + "`)\n";
+                            description.append("[").append(changedBranch.getKey()).append("] Branch ").append(oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded").append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
                             if (newBranchDetails.description != null)
-                                description += " - Description: " + newBranchDetails.description + "\n";
+                                description.append(" - Description: ").append(newBranchDetails.description).append("\n");
 
                             if (changedBranch.getKey().equals("public"))
                                 isPublicBranchUpdate = true;
                         }
                     }
-                    eb.setDescription(description);
+                    eb.setDescription(description.toString());
                     MessageEmbed embed = eb.build();
                     MessageBuilder mb = new MessageBuilder();
                     if (isPublicBranchUpdate)

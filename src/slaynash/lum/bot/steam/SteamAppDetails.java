@@ -3,6 +3,7 @@ package slaynash.lum.bot.steam;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import in.dragonbra.javasteam.types.KeyValue;
 
@@ -42,9 +43,9 @@ public class SteamAppDetails {
 
 
     public static class SteamAppDetailsCommon {
-        public String name;
-        public String type;
-        public String releasestate;
+        public final String name;
+        public final String type;
+        public final String releasestate;
 
         public SteamAppDetailsCommon(KeyValue keyValues) {
             name = keyValues.get("name").asString();
@@ -66,7 +67,7 @@ public class SteamAppDetails {
                     Integer key = Integer.parseInt(element.getName());
                     elements.put(key, new SteamAppDepot(element));
                 }
-                catch (Exception e) { }
+                catch (Exception ignored) { }
             }
             KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())
@@ -152,7 +153,7 @@ public class SteamAppDetails {
                 if (oldManifest == null)
                     changeManifests.put(manifestKey, newManifest);
                 else {
-                    Long compareResult = oldManifest == newManifest ? -1 : newManifest;
+                    long compareResult = oldManifest.equals(newManifest) ? -1 : newManifest;
                     if (compareResult != -1)
                         changeManifests.put(manifestKey, compareResult);
                 }
@@ -202,6 +203,6 @@ public class SteamAppDetails {
     }
 
     private static boolean isStringEquals(String left, String right) {
-        return left == null ? (right == null) : (left.equals(right));
+        return Objects.equals(left, right);
     }
 }

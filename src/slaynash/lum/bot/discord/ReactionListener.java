@@ -2,9 +2,9 @@ package slaynash.lum.bot.discord;
 
 public class ReactionListener {
 
-    public String messageId;
-    public String emoteId;
-    public String roleId;
+    public final String messageId;
+    public final String emoteId;
+    public final String roleId;
 
     public ReactionListener(String messageId, String emoteId, String roleId) {
         this.messageId = messageId;

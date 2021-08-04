@@ -23,7 +23,7 @@ public final class CrossServerUtils {
 
         input = Pattern.compile("(nigg(er|a)|porn|penis)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
 
-        input = input.substring(0, input.length() > 50 ? 50 : input.length()); // limit inputs to 50 chars
+        input = input.substring(0, Math.min(input.length(), 50)); // limit inputs to 50 chars
 
         return input;
     }

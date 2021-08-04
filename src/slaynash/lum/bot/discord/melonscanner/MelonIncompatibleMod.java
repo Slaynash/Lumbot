@@ -1,8 +1,8 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 public class MelonIncompatibleMod {
-    String mod;
-    String incompatible;
+    final String mod;
+    final String incompatible;
 
     public MelonIncompatibleMod(String mod, String incompatible) {
         this.mod = mod;

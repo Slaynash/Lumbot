@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class LuaPackages {
     private static class PrintFunction extends OneArgFunction {
-        private MessageChannel channel;
+        private final MessageChannel channel;
 
         public PrintFunction(MessageChannel channel) {
             this.channel = channel;
@@ -28,7 +28,7 @@ public abstract class LuaPackages {
     }
 
     private static class GetChannelIdFunction extends ZeroArgFunction {
-        private MessageChannel channel;
+        private final MessageChannel channel;
 
         public GetChannelIdFunction(MessageChannel channel) {
             this.channel = channel;
@@ -41,7 +41,7 @@ public abstract class LuaPackages {
     }
 
     private static class GetChannelNameFunction extends ZeroArgFunction {
-        private MessageChannel channel;
+        private final MessageChannel channel;
 
         public GetChannelNameFunction(MessageChannel channel) {
             this.channel = channel;
@@ -54,7 +54,7 @@ public abstract class LuaPackages {
     }
 
     private static class GetAuthorIdFunction extends ZeroArgFunction {
-        private User user;
+        private final User user;
 
         public GetAuthorIdFunction(User user) {
             this.user = user;
@@ -67,7 +67,7 @@ public abstract class LuaPackages {
     }
 
     private static class GetArgumentsFunction extends ZeroArgFunction {
-        private LuaValue args;
+        private final LuaValue args;
 
         public GetArgumentsFunction(String[] args) {
             LuaValue[] argList = new LuaValue[args.length];
@@ -84,7 +84,7 @@ public abstract class LuaPackages {
     }
 
     private static class IsChannelNSFWFunction extends ZeroArgFunction {
-        private TextChannel channel;
+        private final TextChannel channel;
 
         public IsChannelNSFWFunction(TextChannel channel) {
             this.channel = channel;

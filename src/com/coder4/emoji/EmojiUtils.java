@@ -29,7 +29,7 @@ import java.util.Set;
 public class EmojiUtils {
 
     // Generated from http://unicode.org/Public/emoji/12.0/emoji-data.txt
-    private static Set<String> EMOJI_HASH_SET = new HashSet<>(Arrays.asList(
+    private static final Set<String> EMOJI_HASH_SET = new HashSet<>(Arrays.asList(
             "1f000", "1f001", "1f002", "1f003", "1f004", "1f005", "1f006", "1f007", "1f008", "1f009",
             "1f00a", "1f00b", "1f00c", "1f00d", "1f00e", "1f00f", "1f010", "1f011", "1f012", "1f013",
             "1f014", "1f015", "1f016", "1f017", "1f018", "1f019", "1f01a", "1f01b", "1f01c", "1f01d",

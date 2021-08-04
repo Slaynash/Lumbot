@@ -1,11 +1,11 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 public class MelonOutdatedMod {
-    String name;
-    String newName;
-    String currentVersion;
-    String latestVersion;
-    String downloadUrl;
+    final String name;
+    final String newName;
+    final String currentVersion;
+    final String latestVersion;
+    final String downloadUrl;
 
     public MelonOutdatedMod(String name, String newName, String currentVersion, String latestVersion, String downloadUrl) {
         this.name = name;

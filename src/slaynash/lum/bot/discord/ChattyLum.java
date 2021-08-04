@@ -10,9 +10,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class ChattyLum {
 
     private static class HelpedRecentlyData {
-        public long time;
-        public long userid;
-        public long channelid;
+        public final long time;
+        public final long userid;
+        public final long channelid;
 
         public HelpedRecentlyData(long userid, long channelid) {
             time = Instant.now().getEpochSecond();
@@ -123,10 +123,10 @@ public class ChattyLum {
     };
 
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static final int helpDuration = 6 * 60; //in seconds
-    private static List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
+    private static final List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
 
     public static boolean handle(String message, MessageReceivedEvent event) {
@@ -139,7 +139,7 @@ public class ChattyLum {
         if (!hasLum)
             return false;
 
-        if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|(head)?p(e|a)t)\\b.*")) {
+        if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|(head)?p([ea])t)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
@@ -178,7 +178,7 @@ public class ChattyLum {
             message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
             message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")
         ) {
-            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName() == "Lum")) {
+            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum"))) {
                 System.out.println("Thanks was detected");
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;
@@ -200,7 +200,7 @@ public class ChattyLum {
 
     private static boolean handleHelp(String message, MessageReceivedEvent event) {
         if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
-            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName() == "Lum")) {
+            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum"))) {
                 System.out.println("Help was detected");
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;

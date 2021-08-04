@@ -30,10 +30,7 @@ public class CommandLaunchCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        if (pattern.startsWith("l!") && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_")).exists() && !pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_").equals("")) {
-            return true;
-        }
-        return false;
+        return pattern.startsWith("l!") && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_")).exists() && !pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_").equals("");
     }
 
     @Override

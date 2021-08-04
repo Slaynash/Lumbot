@@ -1,7 +1,7 @@
 {
     "unhollowerErrors": [
         {
-            "regex": ".*System\\.IO\\.FileNotFoundException\\: .* ['|\"]System\\.IO\\.Compression.*",
+            "regex": ".*System\\.IO\\.FileNotFoundException: .* ['|\"]System\\.IO\\.Compression.*",
             "error": "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>."
         },
         {
@@ -13,7 +13,7 @@
             "error": "The access to a file has been blocked. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges or your Virus scanner isn't scanning."
         },
         {
-            "regex": "\\[[0-9.:]+\\] System.IO.IOException: The process cannot access the file.*",
+            "regex": "\\[[0-9.:]+] System.IO.IOException: The process cannot access the file.*",
             "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
         },
         {
@@ -21,55 +21,55 @@
             "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
         {
-            "regex": "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
+            "regex": "\\[[0-9.:]+] {4}at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
             "error": "The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to save AssemblyGenerator/config.cfg)"
         },
         {
-            "regex": "\\[[0-9.:]+\\]    at MelonLoader\\.AssemblyGenerator\\.Main\\.SetupDirectory\\(String path\\)",
+            "regex": "\\[[0-9.:]+] {4}at MelonLoader\\.AssemblyGenerator\\.Main\\.SetupDirectory\\(String path\\)",
             "error": "The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to setup directories)"
         },
         {
-            "regex": "\\[[0-9.:]+\\] Il2CppDumper.exe does not exist!",
+            "regex": "\\[[0-9.:]+] Il2CppDumper.exe does not exist!",
             "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Execute Assembly Generator!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Execute Assembly Generator!",
             "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/vrchat) and tell us if it loads."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
             "error": "The storage space is full. Please free some space and try your game again. You need at least 500MB free."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: There is not enough space on the disk.",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: There is not enough space on the disk.",
             "error": "The storage space is full. Please free some space and try your game again. You need at least 450MB free."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
             "error": "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] ERROR: Can't use auto mode to process file, try manual mode.",
+            "regex": "\\[[0-9.:]+] ERROR: Can't use auto mode to process file, try manual mode.",
             "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Find Mono Directory!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Find Mono Directory!",
             "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] MelonLoader.dll Does Not Exist!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] MelonLoader.dll Does Not Exist!",
             "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Open Preload Assembly!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Open Preload Assembly!",
             "error": "Missing or currupt `MelonLoader/Dependencies/SupportModules/Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
         },
         {
-            "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T\\]\\(Int64.*",
+            "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T]\\(Int64.*",
             "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] Can't download Unity Dependencies, Unstripping will NOT be done!",
+            "regex": "\\[[0-9.:]+] Can't download Unity Dependencies, Unstripping will NOT be done!",
             "error": "MelonLoader failed to download Unity Dependencies. There may be an issue with your firewall or your ISP is blocking the download."
         },
         {
@@ -91,11 +91,11 @@
     ],
     "knownErrors": [
         {
-            "regex": "\\[[0-9.:]+\\] \\[INTERNAL FAILURE\\] Failed to Read Unity Version from File Info or globalgamemanagers\\!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Read Unity Version from File Info or globalgamemanagers!",
             "error": "MelonLoader failed to read your Unity version and game name. Please update MelonLoader to $MLRelease$ or delete UnityCrashHandler64.exe."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
             "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
         },
         {
@@ -115,11 +115,11 @@
             "error": "Please redownload the installer from [GitHub](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and try to install ML with it."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Failed to Load Assembly for.*VRCModUpdater.Core.dll.*",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*VRCModUpdater.Core.dll.*",
             "error": "Please do not move VRCModUpdater.Core.dll out of your `VRChat\\UserData` folder."
         },
         {
-            "regex": ".*\\\\MelonLoader(.x64||.x32).zip/.*",
+            "regex": ".*\\\\MelonLoader(.x64|.x32).zip/.*",
             "error": "Please do not move the MelonLoader zip into your Mods/Plugins folder! Follow the provided tutorial on how to install MelonLoader or ask for help."
         },
         {
@@ -139,7 +139,7 @@
             "error": "File not found. Make sure the file path is clear of special characters like `'` or try reinstalling MelonLoader $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Source Code ZIP Detected.*",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Source Code ZIP Detected.*",
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
         },
         {
@@ -147,62 +147,62 @@
             "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
-            "regex": ".*\\[Program\\] Execution Failed.*",
+            "regex": ".*\\[Program] Execution Failed.*",
             "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
-            "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Fatal Exception writing DLL.*",
+            "regex": "\\[[0-9.:]+] \\[ERROR] Fatal Exception writing DLL.*",
             "error": "Cpp2IL failed to save generated dll, please make sure that a virus scanner is not blocking MelonLoader and that MelonLoader has write permissions."
         }
     ],
     "gameSpecificErrors": {
         "VRChat": [
             {
-                "regex": "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\\] \\[OculusPlayspaceMover\\] \\[ERROR\\] OVRCameraRig not found, this mod only work in Oculus for now\\!",
+                "regex": "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}] \\[OculusPlayspaceMover] \\[ERROR] OVRCameraRig not found, this mod only work in Oculus for now!",
                 "error": "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: NameResolutionFailure",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: NameResolutionFailure",
                 "error": "DNS failed to resolve emmVRC servers. Please set your Window's settings to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setting-up-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
                 "error": "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] You have emmVRC's Stealth Mode enabled..*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] You have emmVRC's Stealth Mode enabled.*",
                 "error": "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: SecureChannelFailure.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: SecureChannelFailure.*",
                 "error": "emmVRC failed to connect to emmVRC network. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task \\(PopulateList\\)\\} failed with exception.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(PopulateList\\)} failed with exception.*",
                 "error": "emmVRC failed to load your emmVRC favorites. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Free-floating Task \\(SearchAvatars\\)\\} failed with exception.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(SearchAvatars\\)} failed with exception.*",
                 "error": "emmVRC failed to search for avatars. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: TrustFailure.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: TrustFailure.*",
                 "error": "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
                 "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection. Type `!proxy` if you need more help."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] Your instance history file is invalid. It will be wiped.",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] Your instance history file is invalid. It will be wiped.",
                 "error": "emmVRC instance history became corrupted and has been reset."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] System.Net.WebException: Error: ConnectFailure \\(A connection attempt failed because the connected party did not properly respond after a period of time.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: ConnectFailure \\(A connection attempt failed because the connected party did not properly respond after a period of time.*",
                 "error": "emmVRC servers timed out. There is either heavy load or emmVRC servers is having some issues. Please wait while staff looks into the issue."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[ERROR\\] emmVRC could not be accessed. Loading from disk, if possible...",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] emmVRC could not be accessed. Loading from disk, if possible...",
                 "error": "emmVRC failed to access emmVRC servers and attempted to load cached copy."
             },
             {
@@ -210,21 +210,21 @@
                 "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader $MLRelease$"
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[ERROR\\] Exception in coroutine of type emmVRC.Hacks.EmojiFavourites.*",
+                "regex": "\\[[0-9.:]+] \\[ERROR] Exception in coroutine of type emmVRC.Hacks.EmojiFavourites.*",
                 "error": "emmVRC's Emoji Favorites is currently not working. We are working on fixing this issue."
             },
             {
-                "regex": "\\[[0-9.:]+\\] \\[emmVRCLoader\\] \\[emmVRCLoader\\] Error occurred while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occurred while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
                 "error": "Please make sure that the launch options is cleared."
             },
             {
-                "regex": ".*\\[emmVRCLoader\\] \\[ERROR\\] Unable to find field \"currentPage\" in QuickMenu",
+                "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
                 "error": "Please click on the button UI Elements then try to dismiss the emmVRC notifications."
             }
         ],
         "BloonsTD6": [
             {
-                "regex": "\\[[0-9.:]+\\] \\[ERROR\\] System.ArgumentException: No target method specified for class NKHook6.*",
+                "regex": "\\[[0-9.:]+] \\[ERROR] System.ArgumentException: No target method specified for class NKHook6.*",
                 "error": "NKHook6 is no longer working. Please remove NKHook6 from your Mods folder."
             },
             {
@@ -234,7 +234,7 @@
         ],
         "BONEWORKS": [
             {
-                "regex": "\\[[0-9.:]+\\] \\[Boneworks_Modding_Toolkit\\] \\[ERROR\\] System.ArgumentNullException: Value cannot be null.",
+                "regex": "\\[[0-9.:]+] \\[Boneworks_Modding_Toolkit] \\[ERROR] System.ArgumentNullException: Value cannot be null.",
                 "error": "Please replace Boneworks Modding Toolkit with [ModThatIsNotMod](https://boneworks.thunderstore.io/package/gnonme/ModThatIsNotMod/)."
             },
             {

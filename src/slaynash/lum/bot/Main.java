@@ -29,7 +29,6 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateActivitiesEvent;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -54,11 +53,9 @@ public class Main extends ListenerAdapter {
     public static JDA jda;
     public static boolean isShuttingDown = false;
 
-    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException {
+    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
-        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
-        });
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
@@ -331,11 +328,11 @@ public class Main extends ListenerAdapter {
     }
 
     private void writeLogMessage(Guild guild, String message) {
-        String channelId = null;
+        String channelId;
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
                 if (c.getId().equals(channelId)) {
-                    ((TextChannel) c).sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    c.sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }
@@ -358,7 +355,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event) {
-        long targetRoleId = CommandManager.autoScreeningRoles.containsKey(event.getGuild().getIdLong()) ? CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong()) : 0L;
+        long targetRoleId = CommandManager.autoScreeningRoles.getOrDefault(event.getGuild().getIdLong(), 0L);
         if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null)
@@ -419,7 +416,7 @@ public class Main extends ListenerAdapter {
             for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
                 loopGuild = tempGuild;
                 try {
-                    Long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
+                    long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
                 }
                 catch (Exception e) {

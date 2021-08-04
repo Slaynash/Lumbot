@@ -12,7 +12,7 @@ public final class ConfigManager {
 
     private static final String SETTINGS_FILE = ".settings.conf";
     private static boolean initialized = false;
-    private static Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
     public static String discordToken;
 

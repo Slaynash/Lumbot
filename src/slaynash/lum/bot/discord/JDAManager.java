@@ -8,7 +8,6 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -20,7 +19,7 @@ public class JDAManager {
     private static JDA jda;
     private static boolean init = false;
 
-    public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException {
+    public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException {
         if (!init) init = true;
         else return;
         jda = JDABuilder.createDefault(token)
