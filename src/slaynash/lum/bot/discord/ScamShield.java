@@ -49,7 +49,7 @@ public class ScamShield {
         }
 
         suspiciousValue += (int) crossPost;
-        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less then 7 days old
+        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less than 7 days old
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
@@ -109,13 +109,13 @@ public class ScamShield {
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
-        handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older then 3 minutes
+        handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
         allMessages.add(event);
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is a instant kick on first message
+        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is an instant kick on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
             handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages

@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -35,7 +36,7 @@ public class ServerMessagesHandler {
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
-            String memberMention = event.getMessage().getMember().getAsMention();
+            String memberMention = Objects.requireNonNull(event.getMessage().getMember()).getAsMention();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.printf("[%s] [%s][%s] %s%s%s: %s%s\n",
@@ -104,7 +105,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("System.IO.Error") || message.contains("MelonLoader.Installer.Program"))) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program"))) {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;
@@ -125,7 +126,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
-                Long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
+                long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
 
                 if (guildID == 663449315876012052L /* MelonLoader */) {
                     if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher")) {
@@ -138,7 +139,7 @@ public class ServerMessagesHandler {
                     }
                 }
 
-                if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg(o|e)t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg(o|e)t|reset|lost|t remember).*)")) {
+                if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg([oe])t|reset|lost|t remember).*) (.*\\b(pin|password)\\b.*)|(.*\\b(pin|password)\\b.*) (.*\\b(forg([oe])t|reset|lost|t remember).*)")) {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/)
                         event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
@@ -259,7 +260,6 @@ public class ServerMessagesHandler {
 
     public static void handle(MessageUpdateEvent event) {
         handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
-        return;
     }
 
     /**
@@ -288,10 +288,7 @@ public class ServerMessagesHandler {
             if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") ||
                 fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
 
-                if (checkIfStaff(event))
-                    return true;
-
-                return false; // The sender isn't allowed to send a DLL file
+                return checkIfStaff(event); // The sender isn't allowed to send a DLL file
             }
         }
         return true; // No attachement, or no DLL
