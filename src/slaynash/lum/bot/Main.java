@@ -56,9 +56,7 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException, RateLimitedException, IOException {
         System.out.println("Starting Lum...");
-        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable);
-        });
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
@@ -331,7 +329,7 @@ public class Main extends ListenerAdapter {
     }
 
     private void writeLogMessage(Guild guild, String message) {
-        String channelId = null;
+        String channelId;
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
                 if (c.getId().equals(channelId)) {
@@ -358,7 +356,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdatePending(GuildMemberUpdatePendingEvent event) {
-        long targetRoleId = CommandManager.autoScreeningRoles.containsKey(event.getGuild().getIdLong()) ? CommandManager.autoScreeningRoles.get(event.getGuild().getIdLong()) : 0L;
+        long targetRoleId = CommandManager.autoScreeningRoles.getOrDefault(event.getGuild().getIdLong(), 0L);
         if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null)

@@ -77,7 +77,7 @@ public class VRChatVersionComparer {
                 pb.directory(new File("vrcdecomp"));
                 Process p = pb.start();
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-                    String line = "";
+                    String line;
                     while ((line = br.readLine()) != null) {
                         System.out.println("[Cpp2IL] " + line);
                         if (unityVersion == null && line.contains("unity version to be "))
@@ -375,7 +375,7 @@ public class VRChatVersionComparer {
 
     private static void logAppOutput(Process process, String appname) throws IOException {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null) {
                 System.out.println("[" + appname + "] " + line);
             }

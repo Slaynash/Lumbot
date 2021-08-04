@@ -138,7 +138,7 @@ public class MelonScannerApisManager {
                                     continue;
                                 }
 
-                                LuaTable mod = null;
+                                LuaTable mod;
                                 try {
                                     mod = v.checktable();
                                 }
@@ -314,7 +314,7 @@ public class MelonScannerApisManager {
         return downloadRequest(httpClient, request, source);
     }
     public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
-        HttpResponse<String> response = null;
+        HttpResponse<String> response;
         Exception exception = null;
         int attempts = 4;
         for (int i = 0; i < attempts; i++) {

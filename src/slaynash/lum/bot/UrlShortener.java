@@ -9,7 +9,7 @@ public final class UrlShortener {
     private UrlShortener() {}
 
     public static String getShortenedUrl(String baseUrl) {
-        String result = "";
+        String result;
 
         // Check if already exists
         try {
@@ -28,7 +28,7 @@ public final class UrlShortener {
         // Generate new unique one
         try {
 
-            boolean exists = true;
+            boolean exists;
             do {
                 result = randomAlphaNumeric(8);
                 ResultSet rs = DBConnectionManagerShortUrls.sendRequest("SELECT uid FROM shorturls WHERE uid = ?", result);

@@ -19,7 +19,7 @@ public class MLBrokenModsCommand extends Command {
         if (!checkPerms(event))
             return;
         StringBuilder message = new StringBuilder("**Broken mods:**\n");
-        List<String> brokenMods = null;
+        List<String> brokenMods;
         synchronized (CommandManager.brokenMods) {
             brokenMods = new ArrayList<>(CommandManager.brokenMods);
         }

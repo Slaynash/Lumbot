@@ -15,7 +15,7 @@ public final class MelonScannerReadPass {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";
-            String lastLine = "";
+            String lastLine;
             while ((lastLine = line) != null && (line = br.readLine()) != null) {
 
                 if (shouldOmitLineCheck(line, context)) {

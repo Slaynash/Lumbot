@@ -109,7 +109,7 @@ public final class MelonScanner {
 
 
             boolean issueFound = false;
-            issueFound |= mlOutdatedCheck(context);
+            issueFound  = mlOutdatedCheck(context);
             issueFound |= vrchatVersionCheck(context);
             issueFound |= knownErrorsCheck(context);
             issueFound |= duplicatedModsCheck(context);

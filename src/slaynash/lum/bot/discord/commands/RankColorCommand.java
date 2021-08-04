@@ -48,24 +48,14 @@ public class RankColorCommand extends Command {
                         try {
                             RoleAction r = event.getGuild().createCopyOfRole(cr.get(0)).setName(arg).setColor(CommandManager.hex2Rgb(arg));
                             r.queue(
-                                role -> {
-                                    event.getGuild().modifyRolePositions().selectPosition(0).moveTo(cr.get(0).getPosition() - 1).queue(// insecure
-                                        success -> {
-                                            event.getGuild().addRoleToMember(event.getMember(), role).queue(
-                                                success2 -> { },
-                                                error -> {
-                                                    event.getChannel().sendMessage("I don't have enough permission to this role to you").queue();
-                                                }
-                                            );
-                                        },
-                                        failure -> {
-                                            event.getChannel().sendMessage("Unable to move the role `" + arg + "` to the position of `_COLOR_DEFAULT_`").queue();
-                                        }
-                                    );
-                                },
-                                role -> {
-                                    event.getChannel().sendMessage("Unable to create the role :(").queue();
-                                }
+                                role -> event.getGuild().modifyRolePositions().selectPosition(0).moveTo(cr.get(0).getPosition() - 1).queue(// insecure
+                                    success -> event.getGuild().addRoleToMember(event.getMember(), role).queue(
+                                        success2 -> { },
+                                        error -> event.getChannel().sendMessage("I don't have enough permission to this role to you").queue()
+                                    ),
+                                    failure -> event.getChannel().sendMessage("Unable to move the role `" + arg + "` to the position of `_COLOR_DEFAULT_`").queue()
+                                ),
+                                role -> event.getChannel().sendMessage("Unable to create the role :(").queue()
                             );
                         }
                         catch (InsufficientPermissionException e) {
