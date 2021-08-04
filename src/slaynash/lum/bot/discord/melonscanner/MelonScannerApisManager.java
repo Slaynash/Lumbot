@@ -338,6 +338,11 @@ public class MelonScannerApisManager {
             }
             return response; //only returns if the above continue did not run
         }
-        throw new Exception(exception);
+        if (exception instanceof HttpTimeoutException)
+            throw new HttpTimeoutException(exception.getCause().getMessage());
+        else if (exception instanceof IOException)
+            throw new IOException(exception);
+        else
+            throw new Exception(exception);
     }
 }
