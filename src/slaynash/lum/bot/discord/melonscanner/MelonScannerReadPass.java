@@ -16,6 +16,7 @@ public final class MelonScannerReadPass {
             context.bufferedReader = br;
             String line = "";
             String lastLine;
+            isMLOutdated = false;
             while ((lastLine = line) != null && (line = br.readLine()) != null) {
 
                 if (shouldOmitLineCheck(line, context)) {
@@ -306,6 +307,7 @@ public final class MelonScannerReadPass {
             context.mlVersion = line.split("v")[1].split(" ")[0].trim();
             context.alpha = line.toLowerCase().contains("alpha");
             System.out.println("ML " + context.mlVersion + " (>= 0.3.0). Alpha: " + context.alpha);
+            isMLOutdated = context.mlVersion != null && !(context.mlVersion.equals(MelonScanner.latestMLVersionRelease) || (context.mlVersion.equals(MelonScanner.latestMLVersionAlpha) && VersionUtils.compareVersion(MelonScanner.latestMLVersionAlpha, MelonScanner.latestMLVersionRelease) == 1/* If Alpha is more recent */));
             return true;
         }
         return false;
@@ -439,10 +441,12 @@ public final class MelonScannerReadPass {
         return false;
     }
 
+    private static boolean isMLOutdated;
+
     private static boolean unhollowerErrorCheck(String line, MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
             if (line.matches(knownError.regex)) {
-                if (!context.assemblyGenerationFailed && !context.errors.contains(knownError) && !(context.isMLOutdatedVRC || context.isMLOutdated))
+                if (!context.assemblyGenerationFailed && !context.errors.contains(knownError) && !isMLOutdated)
                     context.errors.add(knownError);
                 System.out.println("Found known unhollower error");
                 context.hasErrors = true;
