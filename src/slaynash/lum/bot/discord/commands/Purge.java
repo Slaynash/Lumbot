@@ -72,8 +72,13 @@ public class Purge extends Command {
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
                 List<Message> oldMessages = new ArrayList<>();
+                boolean oldMessage = false;
                 for (Message mes : messageList) {
                     if (mes.getTimeCreated().isBefore(OffsetDateTime.now().minusWeeks(2))) {
+                        if (oldMessage == false) {
+                            event.getMessage().reply("Purge contains old messages, I need to remove one at a time and this can take a while. Please be patent.").queue(/* TODO maybe ignore errors for failure */);
+                            oldMessage = true;
+                        }
                         oldMessages.add(mes); //manually remove messages older than 2 weeks old
                         mes.delete().queue();
                     }
@@ -112,11 +117,13 @@ public class Purge extends Command {
         new Thread(() -> {
             thread.start();
             try {
-                Thread.sleep(60 * 1000);
+                Thread.sleep(20 * 60 * 1000);
             }
             catch (InterruptedException ignored) { }
             if (thread.isAlive()) {
                 thread.interrupt(); //stop purge if taking too long because .complete gotten stuck
+                System.out.println("Stopping purge because it took too long");
+                event.getTextChannel().sendMessage("Stopping purge, It took way too long.").queue();
             }
         }).start();
     }
