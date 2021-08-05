@@ -442,7 +442,7 @@ public final class MelonScannerReadPass {
     private static boolean unhollowerErrorCheck(String line, MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
             if (line.matches(knownError.regex)) {
-                if (!context.assemblyGenerationFailed && !context.errors.contains(knownError))
+                if (!context.assemblyGenerationFailed && !context.errors.contains(knownError) && !(context.isMLOutdatedVRC || context.isMLOutdated))
                     context.errors.add(knownError);
                 System.out.println("Found known unhollower error");
                 context.hasErrors = true;

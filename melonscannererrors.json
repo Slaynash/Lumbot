@@ -87,6 +87,14 @@
         {
             "regex": ".*due to: Could not load file or assembly '.*",
             "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
+        },
+        {
+            "regex": ".*Exception initializing LibCpp2IL.*",
+            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+        },
+        {
+            "regex": ".*\\[Program] Execution Failed.*",
+            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         }
     ],
     "knownErrors": [
@@ -145,14 +153,6 @@
         {
             "regex": "\\[[0-9.:]+] \\[ERROR] Source Code ZIP Detected.*",
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
-        },
-        {
-            "regex": ".*Exception initializing LibCpp2IL.*",
-            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
-        },
-        {
-            "regex": ".*\\[Program] Execution Failed.*",
-            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
             "regex": "\\[[0-9.:]+] \\[ERROR] Fatal Exception writing DLL.*",
