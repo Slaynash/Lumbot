@@ -75,7 +75,7 @@ public class Purge extends Command {
                 boolean oldMessage = false;
                 for (Message mes : messageList) {
                     if (mes.getTimeCreated().isBefore(OffsetDateTime.now().minusWeeks(2))) {
-                        if (oldMessage == false) {
+                        if (!oldMessage) {
                             event.getMessage().reply("Purge contains old messages, I need to remove one at a time and this can take a while. Please be patent.").queue(/* TODO maybe ignore errors for failure */);
                             oldMessage = true;
                         }

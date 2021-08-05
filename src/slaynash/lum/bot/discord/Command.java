@@ -11,10 +11,6 @@ public abstract class Command {
 
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {}
 
-    public String getHelpPath() {
-        return null;
-    }
-
     public String getHelpName() {
         return null;
     }

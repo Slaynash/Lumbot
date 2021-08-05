@@ -710,12 +710,12 @@ public final class MelonScanner {
             }
 
             StringBuilder error = new StringBuilder();
-            String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0), context);
+            String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0));
             for (int i = 0; i < context.outdatedMods.size() && i < 20; ++i) {
                 error.append(nextModLine);
 
                 if (i + 1 < context.outdatedMods.size())
-                    nextModLine = computeOutdatedModLine(context.outdatedMods.get(i + 1), context);
+                    nextModLine = computeOutdatedModLine(context.outdatedMods.get(i + 1));
                 else
                     break; // no next outdated Mod
 
@@ -734,7 +734,7 @@ public final class MelonScanner {
         return false;
     }
 
-    private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod, MelonScanContext context) {
+    private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod) {
         String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.getShortenedUrl(outdatedMod.downloadUrl) + ")");
         String line = "- " + namePart + ": `" + CrossServerUtils.sanitizeInputString(outdatedMod.currentVersion) + "` -> `" + outdatedMod.latestVersion + "`";
         if (!outdatedMod.name.equals(outdatedMod.newName))

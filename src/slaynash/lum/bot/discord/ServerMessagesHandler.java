@@ -105,7 +105,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program"))) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token"))) {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;
@@ -264,7 +264,7 @@ public class ServerMessagesHandler {
 
     /**
      * Check if the message is posted in a guild using a whitelist and if it contains a DLL.
-     * @param event
+     * @param event MessageReceivedEvent
      * @return true if the message is posted in a guild using a whitelist, contains a DLL attachment, and isn't posted by a whitelisted user
      */
     private static boolean checkDllPostPermission(MessageReceivedEvent event) {
@@ -296,7 +296,7 @@ public class ServerMessagesHandler {
 
     /**
      * Check if sender is part of Guild Staff/Trusted.
-     * @param event
+     * @param event MessageReceivedEvent
      * @return true if sender really was Guild Staff/Trusted
      */
     public static boolean checkIfStaff(MessageReceivedEvent event) {

@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege.Typ
 public class Moderation {
     public static void voiceJoin(GuildVoiceJoinEvent event) {
         Long guildID = (event.getGuild().getIdLong());
-        if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
+        if (GuildConfigurations.noMicChannels.containsKey(guildID) && event.getMember().hasPermission(Permission.MESSAGE_WRITE)) {
             event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().putPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE), null).queue();
         }
     }

@@ -18,8 +18,9 @@ public class MLHashRegisterCommand extends Command {
             return;
 
         String[] split = paramString.split(" ");
+        String usage = "Usage: l!registermlhash <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
         if (split.length != 5) {
-            paramMessageReceivedEvent.getChannel().sendMessage(printUsage()).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage(usage).queue();
             return;
         }
 
@@ -30,17 +31,17 @@ public class MLHashRegisterCommand extends Command {
         System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString + " for ML version " + version);
 
         if (!branch.equals("alpha") && !branch.equals("release")) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Invalid branch " + printUsage()).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid branch " + usage).queue();
             return;
         }
 
         if (!version.matches("^\\d+\\.\\d+\\.\\d+(\\.\\d+)?$")) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Invalid version " + printUsage()).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid version " + usage).queue();
             return;
         }
 
         if (!(hash64.matches("^[0-9]{5,}$") && hash86.matches("^[0-9]{5,}$"))) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + printUsage()).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + usage).queue();
             return;
         }
 
@@ -89,7 +90,4 @@ public class MLHashRegisterCommand extends Command {
         return "l!registermlhash";
     }
 
-    public String printUsage() {
-        return "Usage: l!registermlhash <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
-    }
 }
