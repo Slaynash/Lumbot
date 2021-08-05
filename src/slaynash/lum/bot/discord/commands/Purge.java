@@ -71,12 +71,14 @@ public class Purge extends Command {
 
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
+                List<Message> oldMessages = new ArrayList<>();
                 for (Message mes : messageList) {
                     if (mes.getTimeCreated().isBefore(OffsetDateTime.now().minusWeeks(2))) {
-                        messageList.remove(mes); //manually remove messages older than 2 weeks old
+                        oldMessages.add(mes); //manually remove messages older than 2 weeks old
                         mes.delete().queue();
                     }
                 }
+                messageList.removeAll(oldMessages);
 
                 // removing the messages
                 if (messageList.size() > 0) {
