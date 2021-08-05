@@ -699,7 +699,10 @@ public final class MelonScanner {
             String muMessage;
             switch (context.game) {
                 case "VRChat":
-                    muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
+                    if (context.misplacedPlugins.contains("VRCModUpdater.Loader"))
+                        muMessage = "";
+                    else
+                        muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
                     break;
                 case "TheLongDark":
                     muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);

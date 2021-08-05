@@ -496,13 +496,13 @@ public final class MelonScannerReadPass {
             String mod = line.split("\\[[0-9.:]+]( \\[MelonLoader])? \\[", 2)[1].split("]", 2)[0].replace("_", " ");
             if (!context.modsThrowingErrors.contains(mod))
                 context.modsThrowingErrors.add(mod);
-            System.out.println("Found mod error, caused by " + mod + ": " + line);
+            //System.out.println("Found mod error, caused by " + mod + ": " + line);
             context.hasErrors = true;
         }
         else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? \\[(Error|ERROR)].*")) {
             context.hasErrors = true;
             context.hasNonModErrors = true;
-            System.out.println("Found non-mod error: " + line);
+            //System.out.println("Found non-mod error: " + line);
         }
     }
 
