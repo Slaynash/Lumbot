@@ -82,7 +82,10 @@ public class Purge extends Command {
 
                 // removing the messages
                 if (messageList.size() > 0) {
-                    if (messageList.size() <= 100) {
+                    if (messageList.size() == 1) {
+                        messageList.get(0).delete().queue();
+                    }
+                    else if (messageList.size() <= 100) {
                         event.getTextChannel().deleteMessages(messageList).queue();
                     }
                     else { // greater than 100 messages

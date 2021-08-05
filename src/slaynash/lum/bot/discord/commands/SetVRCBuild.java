@@ -55,8 +55,8 @@ public class SetVRCBuild extends Command {
     }
 
     private boolean checkPerms(MessageReceivedEvent event) {
-        // if (event.getMember().getIdLong() == 145556654241349632L) // Slaynash
-        //    return true;
+        if (event.getGuild().getIdLong() == 673663870136746046L) // Modders & Chill
+            return true;
 
         Member member = event.getMember();
 
