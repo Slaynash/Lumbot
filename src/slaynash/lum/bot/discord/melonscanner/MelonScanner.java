@@ -154,7 +154,7 @@ public final class MelonScanner {
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
-                "Exception while reading attachment of message:",
+                "PLEASE DO NOT USE CANARY, IT BROKY!!!",
                 exception, messageReceivedEvent.getTextChannel());
         }
     }

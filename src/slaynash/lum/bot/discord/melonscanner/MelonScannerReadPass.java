@@ -9,13 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import slaynash.lum.bot.utils.ExceptionUtils;
+
 public final class MelonScannerReadPass {
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
+        if (context.attachment.getUrl().contains("/%"))
+            ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";
-            String lastLine;
+            String lastLine; ///String title, String comment, Throwable exception, TextChannel textChannel) {
             isMLOutdated = false;
             while ((lastLine = line) != null && (line = br.readLine()) != null) {
 
