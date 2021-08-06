@@ -51,6 +51,9 @@ public class ServerMessagesHandler {
 
             CommandManager.runAsServer(event);
 
+            if (!event.getTextChannel().canTalk())
+                return;
+
             if (!event.getMessage().isEdited()) { //log handler
                 if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
                     String mess = memberMention + " ";
