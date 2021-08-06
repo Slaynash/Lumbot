@@ -14,8 +14,10 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public final class MelonScannerReadPass {
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
-        if (context.attachment.getUrl().contains("/%"))
+        if (context.attachment.getUrl().contains("/%")) {
             ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
+            return false;
+        }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";

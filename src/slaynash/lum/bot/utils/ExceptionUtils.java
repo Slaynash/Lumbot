@@ -53,11 +53,9 @@ public final class ExceptionUtils {
     public static void reportException(String title) {
         reportException(title, null, null, null);
     }
-
     public static void reportException(String title, String comment) {
         reportException(title, comment, null, null);
     }
-
     public static void reportException(String title, Throwable exception) {
         reportException(title, null, exception, null);
     }
