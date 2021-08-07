@@ -228,7 +228,7 @@ public class MelonScannerApisManager {
                             ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
-                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + api.endpoint, exception);
+                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + api.endpoint, exception.getMessage());
                     }
                     catch (Exception exception) {
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + api.endpoint, exception);
