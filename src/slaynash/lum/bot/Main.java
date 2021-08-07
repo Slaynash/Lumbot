@@ -375,7 +375,10 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        System.out.println("Joined " + event.getGuild().getName() + ", connected to " + JDAManager.getJDA().getGuilds().size() + " guilds");
+        int guildSize = JDAManager.getJDA().getGuilds().size();
+        System.out.println("Joined " + event.getGuild().getName() + ", connected to " + guildSize + " guilds");
+        if (guildSize > 99)
+            ExceptionUtils.reportException("<@145556654241349632> and <@240701606977470464> I joined my 100th guild and can no longer join any new guilds! Please finish the verification.");
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"

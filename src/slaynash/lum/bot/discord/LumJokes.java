@@ -66,7 +66,7 @@ public class LumJokes {
                     try {
                         Message sentJoke = event.getChannel().sendMessage(joke).complete();
                         event.getTextChannel().sendTyping().queue(); //sends typing for 10 seconds
-                        Thread.sleep(6 * 1000);
+                        Thread.sleep(7 * 1000);
                         sentJoke.editMessage(joke + "\n\n||" + punchLine + "||").queue();
                     }
                     catch (InterruptedException e) {
