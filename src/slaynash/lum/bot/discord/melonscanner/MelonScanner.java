@@ -118,10 +118,10 @@ public final class MelonScanner {
             issueFound |= corruptedModsCheck(context);
             issueFound |= brokenModsCheck(context);
             issueFound |= oldModsCheck(context);
-            issueFound |= unknownModsCheck(context);
-            issueFound |= outdatedModsCheck(context);
             issueFound |= misplacedModsCheck(context);
             issueFound |= misplacedPluginsCheck(context);
+            issueFound |= outdatedModsCheck(context);
+            issueFound |= unknownModsCheck(context);
             issueFound |= modsThrowingErrorsCheck(context);
             issueFound |= minorErrorsHandling(context);
 
