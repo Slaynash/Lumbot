@@ -178,7 +178,7 @@ public class ChattyLum {
             message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
             message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")
         ) {
-            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum"))) {
+            if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event)) {
                 System.out.println("Thanks was detected");
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;
@@ -221,10 +221,8 @@ public class ChattyLum {
     }
 
     public static void addNewHelpedRecently(MessageReceivedEvent event) {
-        for (int i = helpedRecently.size() - 1; i >= 0; --i)
-            if (helpedRecently.get(i).time + helpDuration < Instant.now().getEpochSecond())
-                helpedRecently.remove(i);
-
+        helpedRecently.removeIf(h -> h.userid == event.getMember().getIdLong()); //remove all past log from user
+        helpedRecently.removeIf(h -> h.time + helpDuration < Instant.now().getEpochSecond());
         helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
         System.out.println("Helped recently added");
     }
