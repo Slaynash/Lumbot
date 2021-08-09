@@ -65,7 +65,7 @@ public class ScamShield {
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
         suspiciousValue += message.contains("code:") ? 2 : 0;
-        suspiciousValue += message.contains("booster") ? 2 : 0;
+        suspiciousValue += message.contains("booster") ? 1 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
         suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;

@@ -332,7 +332,7 @@ public class MelonScannerApisManager {
             }
             catch (Exception e) {
                 exception = e;
-                System.out.println("Caught Exception " + e.getClass().getName() + " from " + source);
+                System.out.println("Caught Exception " + e.getMessage() + " from " + source);
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;
             }

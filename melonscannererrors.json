@@ -53,7 +53,7 @@
             "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
-            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Find Mono Directory!",
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Find Mono (Directory|Library)!",
             "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
@@ -258,6 +258,7 @@
         "ClearVRAM": "ClearVRAM is no longer needed as this bug is now fixed in VRChat.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
+        "DesktopFOV": "DesktopFOV is replaced by [NotOptifine](https://api.vrcmg.com/v0/mods/243/NotOptifine.dll) by another creator",
         "DiscordRichPresence-ML": "DiscordRichPresence-ML has been added into VRChat and also no longer works and can be removed.",
         "DownloadFix": "DownloadFix is no longer needed as this bug is now fixed in VRChat.",
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
