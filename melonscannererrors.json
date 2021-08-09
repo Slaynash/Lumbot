@@ -165,6 +165,10 @@
         {
             "regex": "\\[[0-9.:]+] \\[ERROR] Fatal Exception writing DLL.*",
             "error": "Cpp2IL failed to save generated dll, please make sure that a virus scanner is not blocking MelonLoader and that MelonLoader has write permissions."
+        },
+        {
+            "regex": "\\[[0-9.:]+] \\[ERROR] System\\.Reflection\\.TargetInvocationException: Exception has been thrown by the target of an invocation\\. ---> System\\.IO\\.DirectoryNotFoundException: Could not find a part of the path .*\\.tmp\"\\.",
+            "error": "Temp folder does not exist. Please follow these directions to change your [temp folder](https://www.digitalriser.com/change-windows-temporary-folders-location.html)."
         }
     ],
     "gameSpecificErrors": {
