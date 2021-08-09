@@ -226,7 +226,7 @@
                 "error": "emmVRC's Emoji Favorites is currently not working. We are working on fixing this issue."
             },
             {
-                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occurred while trying to update emmVRC: System.IO.DirectoryNotFoundException:.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occur+ed while trying to update emmVRC: System.IO.(DirectoryNotFoundException|FileNotFoundException).*",
                 "error": "Please make sure that the launch options is cleared."
             },
             {
