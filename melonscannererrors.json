@@ -37,6 +37,10 @@
             "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/vrchat) and tell us if it loads."
         },
         {
+            "regex": "\\[[0-9.:]+] \\[Error] Assembly Generator exited with code -2",
+            "error": "The assembly generation failed. Please update MelonLoader to $MLRelease$."
+        },
+        {
             "regex": "\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
             "error": "The storage space is full. Please free some space and try your game again. You need at least 500MB free."
         },
