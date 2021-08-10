@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord.utils;
 
 import java.util.function.Consumer;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -27,6 +28,8 @@ public class MessageFinder {
     public void findMessage(Guild guild, String messageId) {
 
         for (TextChannel tc : guild.getTextChannels()) {
+            if (!guild.getSelfMember().hasPermission(tc, Permission.VIEW_CHANNEL))
+                continue;
             System.out.println("tc: " + tc);
             waiting = true;
             try {

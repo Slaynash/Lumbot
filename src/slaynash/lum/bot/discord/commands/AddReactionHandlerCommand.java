@@ -31,6 +31,7 @@ public class AddReactionHandlerCommand extends Command {
         new MessageFinder().findMessageAsync(paramMessageReceivedEvent.getGuild(), params[1], success -> {
             if (success == null) {
                 paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Message not found", Color.RED)).queue();
+                System.out.println("Failed to find message for Add Reaction");
                 return;
             }
 
@@ -42,6 +43,7 @@ public class AddReactionHandlerCommand extends Command {
                 }
             }
             if (react != null) {
+                System.out.println("Removing existing reaction");
                 CommandManager.reactionListeners.remove(react);
                 /*
                 if(params[2].matches("^<:.*:[0-9]+>$")) {
@@ -65,6 +67,7 @@ public class AddReactionHandlerCommand extends Command {
                 Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[3]);
                 if (role == null) {
                     paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
+                    System.out.println("Role not found");
                     return;
                 }
                 react = new ReactionListener(success.getId(), params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
@@ -74,6 +77,7 @@ public class AddReactionHandlerCommand extends Command {
                     Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
                     if (emote == null) {
                         paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Emote not found on current server", Color.RED)).queue();
+                        System.out.println("Emote not found on current server");
                         return;
                     }
                     success.addReaction(paramMessageReceivedEvent.getGuild().getEmoteById(emoteId)).queue();
@@ -83,6 +87,7 @@ public class AddReactionHandlerCommand extends Command {
 
                 CommandManager.reactionListeners.add(react);
                 paramMessageReceivedEvent.getChannel().sendMessage("Successfully added reaction listener to the target message").queue();
+                System.out.println("Successfully added reaction listener to the target message");
             }
             CommandManager.saveReactions();
         }, error -> paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error while looking for message: " + error.getMessage(), Color.RED)).queue());
