@@ -729,7 +729,7 @@ public final class MelonScanner {
                 }
             }
             if (context.outdatedMods.size() >= 3)
-                error.insert(0, muMessage);
+                error.insert(0, muMessage + "\n");
 
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.toString(), false);
             context.embedColor = Color.ORANGE;

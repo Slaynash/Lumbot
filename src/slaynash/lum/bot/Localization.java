@@ -37,7 +37,7 @@ public final class Localization {
         synchronized (localizations) {
             Map<String, Map<String, String>> localizationsBackup = new HashMap<>(localizations);
             localizations.clear();
-            if (!init()) {
+            if (!init()) { //restore if load failed
                 localizations.putAll(localizationsBackup);
                 return false;
             }
