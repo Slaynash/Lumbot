@@ -339,7 +339,7 @@ public class MelonScannerApisManager {
             return response; //only returns if the above continue did not run
         }
         if (exception instanceof HttpTimeoutException)
-            throw new HttpTimeoutException(exception.getCause().getMessage());
+            throw new HttpTimeoutException(source + " timed out :(");
         else if (exception instanceof IOException)
             throw new IOException(exception);
         else
