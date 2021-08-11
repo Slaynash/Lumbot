@@ -353,6 +353,9 @@ public final class MelonScanner {
                 case "Demeo":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
                     break;
+                case "EscapeFromTarkov":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
+                    break;
                 case "Ghost Hunters Corp":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                     break;
