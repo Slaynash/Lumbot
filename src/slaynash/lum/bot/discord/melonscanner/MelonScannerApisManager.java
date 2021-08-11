@@ -46,7 +46,7 @@ public class MelonScannerApisManager {
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(Redirect.ALWAYS)
-            .connectTimeout(Duration.ofSeconds(20))
+            .connectTimeout(Duration.ofSeconds(30))
             .build();
 
     private static final Gson gson = new Gson();
@@ -315,19 +315,19 @@ public class MelonScannerApisManager {
     }
     public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
         HttpResponse<String> response;
-        Exception exception = null;
+        Exception exception = new Exception("Something failed downloading");
         int attempts = 4;
         for (int i = 0; i < attempts; i++) {
             try {
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                    // System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
+                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source);
                     throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
                 }
-                if (response.body() == null || response.body().isBlank()) {
-                    // System.out.println(source + " provided empty response");
-                    throw new Exception("Lum gotten an empty responce: " + response.statusCode() + " from " + source);
+                if (response.body().isBlank() || response.body().equals("[]")) {
+                    System.out.println(source + " provided empty response");
+                    throw new Exception("Lum gotten an empty responce from " + source);
                 }
             }
             catch (Exception e) {
