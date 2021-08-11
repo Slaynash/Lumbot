@@ -70,7 +70,7 @@
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T]\\(Int64.*",
-            "error": "Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
+            "error": "Ran into obfuscation issues. Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
         },
         {
             "regex": "\\[[0-9.:]+] Can't download Unity Dependencies, Unstripping will NOT be done!",
@@ -90,7 +90,7 @@
         },
         {
             "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
+            "error": "Failed to load critical files. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner. Ignore if there is a missing dependencies below."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
@@ -102,7 +102,7 @@
         },
         {
             "regex": ".*MelonLoader\\.ModHandler.*",
-            "error": "Please update MelonLoader to $MLRelease$."
+            "error": "Outdated MelonLoader. Please update MelonLoader to $MLRelease$."
         }
     ],
     "knownErrors": [
@@ -231,7 +231,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occur+ed while trying to update emmVRC: System.IO.(DirectoryNotFoundException|FileNotFoundException).*",
-                "error": "Please make sure that the launch options is cleared."
+                "error": "emmVRC Dev mode is on. Please make sure that the launch options is cleared."
             },
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
