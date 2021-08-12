@@ -27,11 +27,11 @@ public class LumJokes {
             String joke = "";
             String punchLine = "";
             boolean dad = message.contains("dad");
-            HttpResponse<String> response;
+            HttpResponse<byte[]> response;
             if (dad) {
                 try {
                     response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
-                    joke = response.body();
+                    joke = new String(response.body());
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getTextChannel());
@@ -41,7 +41,7 @@ public class LumJokes {
                 try {
                     response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
                     JsonParser parser = new JsonParser();
-                    JsonObject parsed = parser.parse(response.body()).getAsJsonObject();
+                    JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
                     if ("single".equals(parsed.get("type").getAsString())) {
                         joke = parsed.get("joke").getAsString();
                     }

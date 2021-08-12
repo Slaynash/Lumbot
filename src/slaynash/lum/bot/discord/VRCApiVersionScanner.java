@@ -36,9 +36,9 @@ public class VRCApiVersionScanner {
 
             while (true) {
                 try {
-                    HttpResponse<String> response = MelonScannerApisManager.downloadRequest(httpClient, request, "VRChat API");
+                    HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(httpClient, request, "VRChat API");
 
-                    VRCAPIConfig config = gson.fromJson(response.body(), VRCAPIConfig.class);
+                    VRCAPIConfig config = gson.fromJson(new String(response.body()), VRCAPIConfig.class);
 
                     if (lastBVT == null) {
                         lastBVT = config.buildVersionTag;
