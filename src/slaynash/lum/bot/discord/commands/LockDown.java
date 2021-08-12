@@ -20,9 +20,9 @@ public class LockDown extends Command {
         event.getGuild().getRoleById(lockDownRole).getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null)
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getIdLong() + "has frozen this server.").queue();
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getIdLong() + " has Locked down this server.").queue();
         else
-            event.getChannel().sendMessage("User " + event.getAuthor().getIdLong() + "has frozen this server.").queue();
+            event.getChannel().sendMessage("User " + event.getAuthor().getIdLong() + " has Locked down this server.").queue();
     }
 
     @Override

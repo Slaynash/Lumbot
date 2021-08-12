@@ -47,7 +47,7 @@ public class ServerMessagesHandler {
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
-                    event.getMessage().getAttachments().isEmpty() ? "" : " *has attachments*");
+                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl());
 
             CommandManager.runAsServer(event);
 

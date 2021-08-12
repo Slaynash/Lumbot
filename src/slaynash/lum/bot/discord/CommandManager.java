@@ -13,8 +13,10 @@ import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
+import slaynash.lum.bot.discord.commands.Ban;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
+import slaynash.lum.bot.discord.commands.Kick;
 import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.MLBrokenModsCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
@@ -28,6 +30,7 @@ import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.ThawServer;
+import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
@@ -109,6 +112,9 @@ public class CommandManager {
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new ThawServer());
         CommandManager.registerCommand(new Purge());
+        CommandManager.registerCommand(new Ban());
+        CommandManager.registerCommand(new Unban());
+        CommandManager.registerCommand(new Kick());
 
         CommandManager.registerCommand(new TestVRCObfmap());
     }
