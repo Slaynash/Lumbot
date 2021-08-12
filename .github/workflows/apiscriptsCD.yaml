@@ -42,7 +42,8 @@ jobs:
             apiscripts/btd6_inferno.lua \
             apiscripts/btd6_gurrenm4.lua \
             apiscripts/audica_ahriana.lua \
-            apiscripts/tld.lua
+            apiscripts/tld.lua \
+            apiscripts/thunderstore.lua
 
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}
