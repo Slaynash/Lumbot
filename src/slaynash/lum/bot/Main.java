@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User.UserFlag;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -375,7 +376,7 @@ public class Main extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         int guildSize = JDAManager.getJDA().getGuilds().size();
         System.out.println("Joined " + event.getGuild().getName() + ", connected to " + guildSize + " guilds");
-        if (guildSize > 99)
+        if (guildSize > 99 && !event.getJDA().getSelfUser().getFlags().contains(UserFlag.VERIFIED_BOT))
             ExceptionUtils.reportException("<@145556654241349632> and <@240701606977470464> I joined my 100th guild and can no longer join any new guilds! Please finish the verification.");
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(

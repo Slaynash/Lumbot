@@ -380,6 +380,9 @@ public final class MelonScanner {
                 case "Pistol Whip":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
                     break;
+                case "Superliminal":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
+                    break;
                 case "TheLongDark":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
                     break;

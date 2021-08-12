@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild.Ban;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
@@ -23,14 +24,20 @@ public class Unban extends Command {
             event.getMessage().reply("User was not found!").queue();
             return;
         }
+        new Thread(() -> {
+            Ban bannedMember = event.getGuild().retrieveBan(unbanUser).complete();
+            if (bannedMember == null) {
+                event.getMessage().reply("User was not banned!").queue();
+                return;
+            }
+            event.getGuild().unban(unbanUser).queue();
 
-        event.getGuild().unban(unbanUser).queue();
-
-        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null)
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").queue();
-        else
-            event.getChannel().sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned!").queue();
+            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+            if (reportChannel != null)
+                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").queue();
+            else
+                event.getChannel().sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned!").queue();
+        }).start();
     }
 
     @Override

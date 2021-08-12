@@ -67,7 +67,12 @@ public class CommandManager {
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
-                rcmd.onClient(command, event);
+                try {
+                    rcmd.onClient(command, event);
+                }
+                catch (Exception e) {
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
+                }
             }
         }
     }
@@ -77,7 +82,12 @@ public class CommandManager {
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
-                rcmd.onServer(command, event);
+                try {
+                    rcmd.onServer(command, event);
+                }
+                catch (Exception e) {
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
+                }
             }
         }
     }
