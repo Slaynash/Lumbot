@@ -139,7 +139,7 @@ public class VRChatVersionComparer {
             }
         }
 
-        if (!new File("unitydeps_" + unityVersion).exists()) {
+        if (!new File("vrcdecomp/unitydeps_" + unityVersion).exists()) {
             System.out.println("Downloading Unity dependencies");
             if (event != null)
                 event.getChannel().sendMessage("Downloading and extracting Unity dependencies...").queue();

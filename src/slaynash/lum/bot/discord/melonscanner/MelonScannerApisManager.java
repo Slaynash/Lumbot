@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.melonscanner;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -17,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPInputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -55,12 +58,16 @@ public class MelonScannerApisManager {
     private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     static {
-        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true /* Check using hashes? */));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json", false /* Check using hashes? */));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json", false /* Check using hashes? */));
-        apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json", false /* Check using hashes? */));
-        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json", false /* Check using hashes? */));
-        // apis.add(new MelonScannerApi("Domeo", "domeo", "", false /* Check using hashes? */));
+        MelonScannerApi api = null;
+        apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json"));
+        api.compareUsingHashes = true;
+        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json"));
+        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
+        apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
+        apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
+        api.isGZip = true;
+        // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
     }
 
     public static void startFetchingThread() {
@@ -72,20 +79,43 @@ public class MelonScannerApisManager {
 
                 for (MelonScannerApi api : apis) {
 
-                    HttpRequest request = HttpRequest.newBuilder()
+                    HttpRequest.Builder builder = HttpRequest.newBuilder()
                             .GET()
                             .uri(URI.create(api.endpoint))
                             .setHeader("User-Agent", "LUM Bot")
-                            .timeout(Duration.ofSeconds(30))
-                            .build();
+                            .timeout(Duration.ofSeconds(30));
+
+                    
+                    if (api.isGZip)
+                        builder.header("Accept-Encoding", "gzip");
+
+                    HttpRequest request = builder.build();
 
                     try {
 
                         // API request
 
-                        HttpResponse<String> response = downloadRequest(request, api.name);
+                        HttpResponse<byte[]> response = downloadRequest(request, api.name);
+                        byte[] responseBody = response.body();
+                        if (api.isGZip) {
+                            System.out.println(new String(responseBody));
+                            ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
+                            try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
+                                int len;
+                                while ((len = gis.read(responseBody)) > 0)
+                                    decompressedStream.write(responseBody, 0, len);
+                            }
+                            catch (Exception e) {
+                                //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
+                                return;
+                            }
 
-                        String apiDataRaw = response.body();
+                            responseBody = decompressedStream.toByteArray();
+                        }
+
+
+
+                        String apiDataRaw = new String(responseBody);
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
                         // Script pass
@@ -113,8 +143,8 @@ public class MelonScannerApisManager {
 
                         user_globals.set("data", CoerceJavaToLua.coerce(data));
 
-                        FileInputStream fis = new FileInputStream("apiscripts/" + api.name + ".lua"); // TODO compile and cache
-                        LuaValue modsLuaRaw = server_globals.load(fis, api.name + ".lua", "t", user_globals).call();
+                        FileInputStream fis = new FileInputStream("apiscripts/" + api.getScriptName() + ".lua"); // TODO compile and cache
+                        LuaValue modsLuaRaw = server_globals.load(fis, api.getScriptName() + ".lua", "t", user_globals).call();
                         fis.close();
 
                         // Parse data returned by script
@@ -258,15 +288,30 @@ public class MelonScannerApisManager {
         public final String game;
         public final String name;
         public final String endpoint;
-        public final boolean compareUsingHashes;
+        public boolean isGZip = false;
+        public boolean compareUsingHashes = false;
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 
-        public MelonScannerApi(String game, String name, String endpoint, boolean compareUsingHashes) {
+        public MelonScannerApi(String game, String name, String endpoint) {
             this.game = game;
             this.name = name;
             this.endpoint = endpoint;
-            this.compareUsingHashes = compareUsingHashes;
+        }
+
+        public String getScriptName() {
+            return name;
+        }
+    }
+
+    private static class ThunderstoreApi extends MelonScannerApi {
+        public ThunderstoreApi(String game, String tsName) {
+            super(game, "thunderstore:" + tsName, "https://" + tsName + ".thunderstore.io/api/v1/package/");
+        }
+
+        @Override
+        public String getScriptName() {
+            return "thunderstore";
         }
     }
 
@@ -310,39 +355,33 @@ public class MelonScannerApisManager {
         return new String(hexChars, StandardCharsets.UTF_8);
     }
 
-    public static HttpResponse<String> downloadRequest(HttpRequest request, String source) throws Exception {
+    public static HttpResponse<byte[]> downloadRequest(HttpRequest request, String source) throws Exception {
         return downloadRequest(httpClient, request, source);
     }
-    public static HttpResponse<String> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
-        HttpResponse<String> response;
-        Exception exception = new Exception("Something failed downloading");
-        int attempts = 4;
+    public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
+        HttpResponse<byte[]> response = null;
+        Exception exception = null;
+        int attempts = 3;
         for (int i = 0; i < attempts; i++) {
             try {
-                response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source);
+                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
                     throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
                 }
-                if (response.body().isBlank() || response.body().equals("[]")) {
+                if (response.body() == null || response.body().length == 0) {
                     System.out.println(source + " provided empty response");
-                    throw new Exception("Lum gotten an empty responce from " + source);
+                    throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
                 }
             }
             catch (Exception e) {
                 exception = e;
-                System.out.println("Caught Exception " + e.getMessage() + " from " + source);
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;
             }
-            return response; //only returns if the above continue did not run
+            return response;
         }
-        if (exception instanceof HttpTimeoutException)
-            throw new HttpTimeoutException(source + " timed out :(");
-        else if (exception instanceof IOException)
-            throw new IOException(exception);
-        else
-            throw new Exception(exception);
+        throw new Exception(exception);
     }
 }
