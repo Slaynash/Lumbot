@@ -3,7 +3,7 @@ local mods = {}
 
 for i = 0, apiData:size() - 1, 1 do
     local mod = apiData:get(i)
-    if mod:get("full_name"):getAsString():equals("LavaGang-MelonLoader") then goto continue end
+    if mod:get("full_name"):getAsString() == "LavaGang-MelonLoader" then goto continue end
 
     local modDetails = mod:get("versions"):get(0)
 
