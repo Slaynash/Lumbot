@@ -79,6 +79,8 @@ public class MelonScannerApisManager {
 
                 for (MelonScannerApi api : apis) {
 
+                    System.out.println("[ML:API] Fetching " + api.name);
+
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                             .GET()
                             .uri(URI.create(api.endpoint))
@@ -98,7 +100,6 @@ public class MelonScannerApisManager {
                         HttpResponse<byte[]> response = downloadRequest(request, api.name);
                         byte[] responseBody = response.body();
                         if (api.isGZip) {
-                            System.out.println(new String(responseBody));
                             ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
                             try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
                                 int len;
@@ -106,6 +107,7 @@ public class MelonScannerApisManager {
                                     decompressedStream.write(responseBody, 0, len);
                             }
                             catch (Exception e) {
+                                ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
                                 //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
                                 return;
                             }
@@ -113,9 +115,12 @@ public class MelonScannerApisManager {
                             responseBody = decompressedStream.toByteArray();
                         }
 
+                        
+
 
 
                         String apiDataRaw = new String(responseBody);
+                        System.out.println("[ML:API] API retured body: " + apiDataRaw);
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
                         // Script pass
