@@ -15,7 +15,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,7 +88,7 @@ public class MelonScannerApisManager {
                             .setHeader("User-Agent", "LUM Bot")
                             .timeout(Duration.ofSeconds(30));
 
-                    
+
                     if (api.isGZip)
                         builder.header("Accept-Encoding", "gzip");
 
@@ -117,12 +116,9 @@ public class MelonScannerApisManager {
                             responseBody = decompressedStream.toByteArray();
                         }
 
-                        
-
-
 
                         String apiDataRaw = new String(responseBody);
-                        System.out.println("[ML:API] API retured body: " + apiDataRaw);
+                        //System.out.println("[ML:API] API retured body: " + apiDataRaw);
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
                         // Script pass
@@ -216,8 +212,9 @@ public class MelonScannerApisManager {
                         // Update stored api datas
 
                         List<MelonApiMod> currentMods = games.get(api.game);
-                        currentMods = currentMods == null ? new ArrayList<>() : new ArrayList<>(currentMods);
-                        if (!currentMods.isEmpty()) {
+                        if (currentMods == null || currentMods.isEmpty()) //If we are starting up
+                            games.put(api.game, new ArrayList<>(apiMods)); //just add all mods in
+                        else { //check for updates
                             for (MelonApiMod newMod : apiMods) {
 
                                 MelonApiMod currentMod = null;
@@ -238,8 +235,8 @@ public class MelonScannerApisManager {
                                         currentMods.add(newMod);
                                     }
                                 }
-
                             }
+                            games.put(api.game, currentMods);
                         }
 
                         /*
@@ -254,8 +251,6 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
-
-                        games.put(api.game, currentMods);
 
                         if (doneFirstInit)
                             Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
