@@ -57,6 +57,8 @@ public class MelonScannerApisManager {
 
     private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
+    private static boolean doneFirstInit = false;
+
     static {
         MelonScannerApi api = null;
         apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json"));
@@ -66,7 +68,7 @@ public class MelonScannerApisManager {
         apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
         apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
-        api.isGZip = true;
+        // api.isGZip = true;
         // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
     }
 
@@ -75,7 +77,7 @@ public class MelonScannerApisManager {
             while (true) {
 
                 // We use a temp Map to avoid clearing the common one
-                Map<String, List<MelonApiMod>> gamesTemp = new HashMap<>();
+                //Map<String, List<MelonApiMod>> gamesTemp = new HashMap<>();
 
                 for (MelonScannerApi api : apis) {
 
@@ -213,10 +215,9 @@ public class MelonScannerApisManager {
 
                         // Update stored api datas
 
-                        List<MelonApiMod> currentMods = gamesTemp.get(api.game);
-                        if (currentMods == null || currentMods.isEmpty())
-                            games.put(api.game, currentMods = new ArrayList<>(apiMods));
-                        else {
+                        List<MelonApiMod> currentMods = games.get(api.game);
+                        currentMods = currentMods == null ? new ArrayList<>() : new ArrayList<>(currentMods);
+                        if (!currentMods.isEmpty()) {
                             for (MelonApiMod newMod : apiMods) {
 
                                 MelonApiMod currentMod = null;
@@ -253,7 +254,13 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
-                        Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
+
+                        games.put(api.game, currentMods);
+
+                        if (doneFirstInit)
+                            Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
+                        else
+                            Thread.sleep(5 * 1000);
                     }
                     catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + api.endpoint);
@@ -268,9 +275,10 @@ public class MelonScannerApisManager {
                     catch (Exception exception) {
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + api.endpoint, exception);
                     }
+
                 }
 
-                games.putAll(gamesTemp);
+                doneFirstInit = true;
 
             }
         }, "MelonScannerApisManagerThread");
