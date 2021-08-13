@@ -346,7 +346,7 @@ public class MelonScannerApisManager {
         MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
 
         if (mod == null) {
-            mod = mods.stream().filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
+            mod = mods.stream().filter(modtmp -> modtmp.aliases != null).filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
         }
 
         return mod != null ? mod.downloadLink : null;
