@@ -456,7 +456,7 @@ public final class MelonScanner {
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, latestMLVersionRelease, CommandManager.melonLoaderVRCMinDate), false);
                     break;
                 case -1: //right more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, latestMLVersionAlpha), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : latestMLVersionRelease), false);
                     break;
                 default:
             }
