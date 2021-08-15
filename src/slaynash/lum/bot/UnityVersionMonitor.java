@@ -10,15 +10,21 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -27,7 +33,9 @@ public class UnityVersionMonitor {
 
     private static String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
 
-    private static String downloadPath = "unity_versions";
+    private static String downloadPath = "/mnt/hdd3t/unity_versions";
+
+    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -143,6 +151,7 @@ public class UnityVersionMonitor {
 
     private static void downloadUnity(UnityVersion uv) {
         File targetFile = new File(downloadPath + "/" + uv.version);
+        File targetFileTmp = new File(downloadPath + "/" + uv.version + "_tmp");
         if (targetFile.exists()) {
             try {
                 Files.walk(targetFile.toPath())
@@ -156,24 +165,49 @@ public class UnityVersionMonitor {
             }
         }
 
-        System.out.println("Downloading " + uv.downloadUrl);
-        try (FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat")) {
-            ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
-            fileOutputStream.getChannel()
-                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (mono)", e);
-            return;
+        if (targetFileTmp.exists()) {
+            try {
+                Files.walk(targetFileTmp.toPath())
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            }
+            catch (IOException e) {
+                ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
+                return;
+            }
         }
 
-        extractFilesFromArchive(uv, false);
+        List<String> installedArchitectures = installedVersions.get(uv.version);
 
-        if (uv.downloadUrlIl2CppWin != null) {
-            try (FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat")) {
+        if (installedArchitectures == null || !installedArchitectures.contains("windows mono")) {
+
+            System.out.println("Downloading " + uv.downloadUrl);
+            try (
+                FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat");
+                FileChannel fileChannel = fileOutputStream.getChannel()
+            ) {
+                ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
+                fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (mono)", e);
+                return;
+            }
+
+            extractFilesFromArchive(uv, false);
+
+            saveInstalledVersionCache(uv.version, "windows mono");
+
+        }
+
+        if ((installedArchitectures == null || !installedArchitectures.contains("windows il2cpp")) && uv.downloadUrlIl2CppWin != null) {
+            try (
+                FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat");
+                FileChannel fileChannel = fileOutputStream.getChannel()
+            ) {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrlIl2CppWin).openStream());
-                fileOutputStream.getChannel()
-                    .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+                fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (il2cpp)", e);
@@ -181,9 +215,46 @@ public class UnityVersionMonitor {
             }
 
             extractFilesFromArchive(uv, true);
+
+            saveInstalledVersionCache(uv.version, "windows il2cpp");
+        }
+
+        try {
+            Files.walk(targetFileTmp.toPath())
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
+            return;
         }
 
         new File("unitydownload_" + uv.version + ".dat").delete();
+        new File("Payload~").delete();
+    }
+
+    public static void loadInstalledVersionCache() {
+        try {
+            installedVersions = gson.fromJson(Files.readString(Paths.get("unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to load unity installation cache", e);
+        }
+    }
+
+    public static void saveInstalledVersionCache(String unityVersion, String architecture) {
+        List<String> installedArchitectures = installedVersions.get(unityVersion);
+        if (installedArchitectures == null)
+            installedVersions.put(unityVersion, installedArchitectures = new ArrayList<String>());
+        installedArchitectures.add(architecture);
+
+        try {
+            Files.write(Paths.get("unityInstallCache.json"), gson.toJson(installedVersions).getBytes());
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to save unity installation cache", e);
+        }
     }
 
     public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp) {
@@ -206,7 +277,7 @@ public class UnityVersionMonitor {
                 internalPath = "Editor/Data/PlaybackEngines/windowsstandalonesupport/Variations";
         }
 
-        String internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "$INSTDIR$*/" : "./")) : "";
+        String internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
         internalPathZip += internalPath;
         internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\"";
 
@@ -239,7 +310,7 @@ public class UnityVersionMonitor {
                 return false;
         }
         else
-            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + " -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
+            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
                 return false;
 
         return true;
