@@ -126,6 +126,9 @@ public class UnityVersionMonitor {
                             urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
                     }
 
+                    if (foundVersion.startsWith("5.3")) // We don't care about versions earlier than 5.4.0
+                        break;
+
                     unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
                 }
 
