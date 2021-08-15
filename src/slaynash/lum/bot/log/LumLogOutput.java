@@ -55,14 +55,8 @@ public class LumLogOutput extends PrintStream {
         }
 
         if (loggingElement != null)
-            super.print("[" + TimeManager.getTimeForLog() + "] [" + name + "] [" + loggingElement + "] " + obj);
+            super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] [" + loggingElement + "] " + obj);
         else
-            super.print("[" + TimeManager.getTimeForLog() + "] [" + name + "] " + obj);
-    }
-
-    @Override
-    public PrintStream printf(String format, Object... args) {
-        println(String.format(format, args));
-        return this;
+            super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] " + obj);
     }
 }
