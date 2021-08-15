@@ -15,11 +15,11 @@ public class PrivateMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {
-            System.out.printf("[DM] %s%s%s: %s\n",
+            System.out.println(String.format("[DM] %s%s%s: %s",
                     event.getAuthor().getAsTag(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
-                    event.getMessage().getContentRaw().replace("\n", "\n\t\t"));
+                    event.getMessage().getContentRaw().replace("\n", "\n\t\t")));
             List<Attachment> attachments = event.getMessage().getAttachments();
             if (attachments.size() > 0) {
                 System.out.println(attachments.size() + " Files");

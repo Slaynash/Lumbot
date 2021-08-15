@@ -38,14 +38,14 @@ public class ServerMessagesHandler {
             String memberMention = Objects.requireNonNull(event.getMessage().getMember()).getAsMention();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
-            System.out.printf("[%s][%s] %s%s%s: %s%s\n",
+            System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
                     event.getAuthor().getAsTag(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
-                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl());
+                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
 
             CommandManager.runAsServer(event);
 
