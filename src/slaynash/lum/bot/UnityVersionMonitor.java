@@ -232,14 +232,14 @@ public class UnityVersionMonitor {
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean keepFilePath) throws IOException, InterruptedException {
         if (isPkg) {
-            if (Runtime.getRuntime().exec("7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y").waitFor() != 0)
+            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y"}).waitFor() != 0)
                 return false;
 
-            if (Runtime.getRuntime().exec("7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y").waitFor() != 0)
+            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
                 return false;
         }
         else
-            if (Runtime.getRuntime().exec("7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + " -o\"" + outputPath + "\" " + internalPath + " -y").waitFor() != 0)
+            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + " -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
                 return false;
 
         return true;
