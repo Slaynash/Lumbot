@@ -283,7 +283,7 @@ public final class MelonScanner {
             String latestModDownloadUrl = null;
             boolean deprecatedName = false;
             for (MelonApiMod modDetail : context.modDetails) {
-                if (modDetail.name.equals(modName) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
+                if (modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
                     System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;
