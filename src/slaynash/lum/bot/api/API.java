@@ -14,6 +14,7 @@ import slaynash.lum.bot.api.endpoints.ReloadTranslationsEndpoint;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class API {
+    public static final String LOG_IDENTIFIER = "API";
 
     public static final Map<String, Endpoint> endpoints = new HashMap<>();
 

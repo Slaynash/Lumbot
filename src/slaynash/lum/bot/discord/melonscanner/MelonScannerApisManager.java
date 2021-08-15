@@ -42,6 +42,7 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
+    public static final String LOG_IDENTIFIER = "ML:API";
 
     private static final List<MelonScannerApi> apis = new ArrayList<>();
 
@@ -80,7 +81,7 @@ public class MelonScannerApisManager {
 
                 for (MelonScannerApi api : apis) {
 
-                    System.out.println("[ML:API] Fetching " + api.name);
+                    System.out.println("Fetching " + api.name);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                             .GET()
@@ -118,7 +119,7 @@ public class MelonScannerApisManager {
 
 
                         String apiDataRaw = new String(responseBody);
-                        //System.out.println("[ML:API] API retured body: " + apiDataRaw);
+                        //System.out.println("API retured body: " + apiDataRaw);
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
                         // Script pass
@@ -181,7 +182,7 @@ public class MelonScannerApisManager {
                                 }
 
                                 String name = mod.get("name").checkjstring();
-                                System.out.println("[API] Processing mod " + name);
+                                System.out.println("Processing mod " + name);
                                 String approvalStatus = "0";
                                 if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
                                     approvalStatus = mod.get("approvalStatus").checkjstring();

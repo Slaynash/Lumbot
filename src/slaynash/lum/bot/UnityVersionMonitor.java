@@ -30,6 +30,7 @@ import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class UnityVersionMonitor {
+    public static final String LOG_IDENTIFIER = "UnityVersionMonitor";
 
     private static String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
 
@@ -281,7 +282,7 @@ public class UnityVersionMonitor {
         internalPathZip += internalPath;
         internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\"";
 
-        System.out.println("[UnityVersionMonitor] Extracting DLLs from Archive");
+        System.out.println("Extracting DLLs from Archive");
         if (!new File(downloadPath).exists())
             new File(downloadPath).mkdir();
         try {

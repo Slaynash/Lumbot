@@ -11,6 +11,8 @@ import java.util.Map;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class DBConnectionManagerShortUrls {
+    public static final String LOG_IDENTIFIER = "DB";
+
     private DBConnectionManagerShortUrls() {}
 
     private static final int DATABASE_TIMEOUT = 10; // in seconds
@@ -21,10 +23,10 @@ public final class DBConnectionManagerShortUrls {
 
     public static void init() {
         try {
-            System.out.println("[DB] Connecting to Database...");
+            System.out.println("Connecting to Database...");
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
             connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabase, ConfigManager.dbLogin, ConfigManager.dbPassword);
-            System.out.println("[DB] Connection to Database initialised");
+            System.out.println("Connection to Database initialised");
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to contact database", e);

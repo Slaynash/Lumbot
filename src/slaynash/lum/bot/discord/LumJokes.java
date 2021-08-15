@@ -14,6 +14,8 @@ import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class LumJokes {
+    public static final String LOG_IDENTIFIER = "LumJokes";
+
     public static boolean sendJoke(MessageReceivedEvent event) {
         String message = event.getMessage().getContentStripped().toLowerCase();
         boolean hasLum = message.matches(".*\\blum\\b.*");

@@ -28,7 +28,7 @@ public class MLHashRegisterCommand extends Command {
         String version = split[2].trim();
         String hash86 = split[3].trim();
         String hash64 = split[4].trim();
-        System.out.println("[MLHashRegisterCommand] branch: " + branch + ", hash: " + paramString + " for ML version " + version);
+        System.out.println("branch: " + branch + ", hash: " + paramString + " for ML version " + version);
 
         if (!branch.equals("alpha") && !branch.equals("release")) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid branch " + usage).queue();

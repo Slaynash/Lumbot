@@ -82,6 +82,10 @@ public final class ExceptionUtils {
     }
 
     private static void reportDiscord(String title, String comment, Throwable exception, TextChannel textChannel) {
+
+        if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L)
+            return;
+
         String exceptionString = "";
         try {
             EmbedBuilder embedBuilder = new EmbedBuilder();

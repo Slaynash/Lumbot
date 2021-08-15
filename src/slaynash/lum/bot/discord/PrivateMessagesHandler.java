@@ -7,23 +7,24 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import slaynash.lum.bot.utils.TimeManager;
 
 public class PrivateMessagesHandler {
+    public static final String LOG_IDENTIFIER = "PrivateMessagesHandler";
+
     private static final List<Long> dmSS = new ArrayList<>();
     public static void handle(MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {
-            System.out.printf("[%s] [DM] %s%s%s: %s\n", TimeManager.getTimeForLog(),
+            System.out.printf("[DM] %s%s%s: %s\n",
                     event.getAuthor().getAsTag(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"));
             List<Attachment> attachments = event.getMessage().getAttachments();
             if (attachments.size() > 0) {
-                System.out.println("[" + TimeManager.getTimeForLog() + "] " + attachments.size() + " Files");
+                System.out.println(attachments.size() + " Files");
                 for (Attachment a : attachments)
-                    System.out.println("[" + TimeManager.getTimeForLog() + "] - " + a.getUrl());
+                    System.out.println(" - " + a.getUrl());
             }
             if (ScamShield.ssValue(event) > 3 && !dmSS.contains(event.getAuthor().getIdLong())) {
                 System.out.println("I was DM'd Scam, sending FitnessGram™");

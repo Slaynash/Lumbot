@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 public class APIClient {
+    public static final String LOG_IDENTIFIER = "APIClient";
+
     private final int id;
     public boolean valid = false;
 

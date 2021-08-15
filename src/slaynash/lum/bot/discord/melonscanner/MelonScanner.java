@@ -30,6 +30,7 @@ import slaynash.lum.bot.utils.ArrayUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class MelonScanner {
+    public static final String LOG_IDENTIFIER = "MelonScanner";
 
     public static String latestMLVersionRelease = "0.4.1"; // Is this really still hard coded?
     public static String latestMLVersionAlpha = "0.3.0";

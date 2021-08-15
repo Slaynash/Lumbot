@@ -38,6 +38,8 @@ import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
+    public static final String LOG_IDENTIFIER = "CommandManager";
+
     private static final List<Command> commands = new ArrayList<>();
     private static boolean init = false;
 

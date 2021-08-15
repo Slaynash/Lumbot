@@ -18,10 +18,9 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
-import slaynash.lum.bot.utils.TimeManager;
 
 public class ServerMessagesHandler {
-
+    public static final String LOG_IDENTIFIER = "ServerMessagesHandler";
 
     private static String fileExt;
 
@@ -39,8 +38,7 @@ public class ServerMessagesHandler {
             String memberMention = Objects.requireNonNull(event.getMessage().getMember()).getAsMention();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
-            System.out.printf("[%s] [%s][%s] %s%s%s: %s%s\n",
-                    TimeManager.getTimeForLog(),
+            System.out.printf("[%s][%s] %s%s%s: %s%s\n",
                     event.getGuild().getName(),
                     event.getTextChannel().getName(),
                     event.getAuthor().getAsTag(),

@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class VRChatVersionComparer {
+    public static final String LOG_IDENTIFIER = "VRChatVersionComparer";
 
     public static String obfMapUrl;
 

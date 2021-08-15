@@ -44,6 +44,7 @@ import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.Slash;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -55,6 +56,7 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
+        LogSystem.init();
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;

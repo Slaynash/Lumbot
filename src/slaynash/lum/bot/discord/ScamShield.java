@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 
 public class ScamShield {
+    public static final String LOG_IDENTIFIER = "ScamShield";
 
     private static final Queue<MessageReceivedEvent> allMessages = new LinkedList<>();
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
@@ -85,12 +86,7 @@ public class ScamShield {
         }
 
         if (suspiciousValue > 0) {
-            System.out.print("Scam Shield points for this message: " + suspiciousValue);
-            if (newAccount)
-                System.out.print(" New account");
-            if (crossPost > 0)
-                System.out.print(" Crossposted");
-            System.out.println();
+            System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted" : ""));
         }
 
         return suspiciousValue;

@@ -8,6 +8,7 @@ import java.util.Random;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ChattyLum {
+    public static final String LOG_IDENTIFIER = "ChattyLum";
 
     private static class HelpedRecentlyData {
         public final long time;

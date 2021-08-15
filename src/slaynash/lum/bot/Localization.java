@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class Localization {
+    public static final String LOG_IDENTIFIER = "Localization";
 
     public static final Map<String, Map<String, String>> localizations = new HashMap<>();
 

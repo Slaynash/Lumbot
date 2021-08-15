@@ -61,9 +61,9 @@ public class SetVRCBuild extends Command {
         Member member = event.getMember();
 
         if (event.getGuild().getIdLong() != 439093693769711616L) { // VRChat Modding Group
-            // System.out.println("[SetVRCBuild] Command not run on the VRCMG");
+            // System.out.println("Command not run on the VRCMG");
             member = event.getJDA().getGuildById(439093693769711616L).getMember(event.getAuthor());
-            // System.out.println("[SetVRCBuild] VRCMG member is " + member);
+            // System.out.println("VRCMG member is " + member);
 
             if (member == null)
                 return false;
