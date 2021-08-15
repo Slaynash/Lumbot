@@ -28,15 +28,15 @@ public class PrivateMessagesHandler {
             if (ScamShield.ssValue(event) > 3 && !dmSS.contains(event.getAuthor().getIdLong())) {
                 System.out.println("I was DM'd Scam, sending FitnessGram™");
                 dmSS.add(event.getAuthor().getIdLong());
-                event.getChannel().sendMessage("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues.").delay(Duration.ofSeconds(3))
+                event.getChannel().sendMessage("The FitnessGram™ Pacer Test is a multistage aerobic capacity test that progressively gets more difficult as it continues.").delay(Duration.ofSeconds(10))
                     .flatMap(m -> m.getChannel().sendMessage("The 20 meter pacer test will begin in 30 seconds.").delay(Duration.ofSeconds(3))
-                    .flatMap(m2 -> m2.getChannel().sendMessage("Line up at the start.").delay(Duration.ofSeconds(3))
-                    .flatMap(m3 -> m3.getChannel().sendMessage("The running speed starts slowly, but gets faster each minute after you hear this signal.").delay(Duration.ofSeconds(3))
-                    .flatMap(m4 -> m4.getChannel().sendMessage("Ding!").delay(Duration.ofSeconds(3))
+                    .flatMap(m2 -> m2.getChannel().sendMessage("Line up at the start.").delay(Duration.ofSeconds(2))
+                    .flatMap(m3 -> m3.getChannel().sendMessage("The running speed starts slowly, but gets faster each minute after you hear this signal.").delay(Duration.ofSeconds(4))
+                    .flatMap(m4 -> m4.getChannel().sendMessage("Ding!").delay(Duration.ofSeconds(1))
                     .flatMap(m5 -> m5.getChannel().sendMessage("A single lap should be completed each time you hear this sound.").delay(Duration.ofSeconds(3))
-                    .flatMap(m6 -> m6.getChannel().sendMessage("Ding!").delay(Duration.ofSeconds(3))
-                    .flatMap(m7 -> m7.getChannel().sendMessage("Remember to run in a straight line, and run as long as possible.").delay(Duration.ofSeconds(3))
-                    .flatMap(m8 -> m8.getChannel().sendMessage("The second time you fail to complete a lap before the sound, your test is over.").delay(Duration.ofSeconds(3))
+                    .flatMap(m6 -> m6.getChannel().sendMessage("Ding!").delay(Duration.ofSeconds(1))
+                    .flatMap(m7 -> m7.getChannel().sendMessage("Remember to run in a straight line, and run as long as possible.").delay(Duration.ofSeconds(6))
+                    .flatMap(m8 -> m8.getChannel().sendMessage("The second time you fail to complete a lap before the sound, your test is over.").delay(Duration.ofSeconds(5))
                     .flatMap(m9 -> m9.getChannel().sendMessage("The test will begin on the word start.").delay(Duration.ofSeconds(3))
                     .flatMap(m10 -> m10.getChannel().sendMessage("On your mark, get ready, Ding!"))))))))))).queue();
             }

@@ -199,9 +199,9 @@ public class ScamShield {
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
                 if (event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
-                    ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).queueAfter(10, TimeUnit.SECONDS);
+                    ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(message.getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
                 else
-                    ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).queueAfter(10, TimeUnit.SECONDS);
+                    ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(message.getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
             }
             else {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
