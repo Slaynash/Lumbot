@@ -49,6 +49,9 @@ public class UnityVersionMonitor {
     private static Map<String, List<String>> installedVersions = new HashMap<>();
 
     public static void start() {
+
+        loadInstalledVersionCache();
+
         Thread thread = new Thread(() -> {
 
             boolean firstRun = true;
