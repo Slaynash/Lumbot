@@ -135,7 +135,7 @@ public class UnityVersionMonitor {
                     if (!installedVersions.containsKey(unityVersion.version))
                         newVersions.add(unityVersion);
 
-                if (installedVersions.size() > 0) {
+                if (installedVersions.size() > 0 && installedVersions.size() < 10) {
                     String message = "New Unity version published:";
                     for (UnityVersion newVersion : newVersions)
                         message += "\n - " + newVersion.version;
