@@ -156,6 +156,7 @@ public class UnityVersionMonitor {
             }
         }
 
+        System.out.println("Downloading " + uv.downloadUrl);
         try (FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat")) {
             ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
             fileOutputStream.getChannel()
