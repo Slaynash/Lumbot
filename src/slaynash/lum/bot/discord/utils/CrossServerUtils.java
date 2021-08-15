@@ -27,4 +27,14 @@ public final class CrossServerUtils {
 
         return input;
     }
+
+    public static boolean isLumDev(Member member) {
+        return isLumDev(member.getId());
+    }
+
+    public static boolean isLumDev(String userId) {
+        return
+            "145556654241349632".equals(userId) || // Slaynash
+            "240701606977470464".equals(userId); // Rakosi
+    }
 }

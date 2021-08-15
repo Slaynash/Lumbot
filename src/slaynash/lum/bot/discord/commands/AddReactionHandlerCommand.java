@@ -12,13 +12,14 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ReactionListener;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.discord.utils.MessageFinder;
 
 public class AddReactionHandlerCommand extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (!paramMessageReceivedEvent.getMember().hasPermission(Permission.MANAGE_ROLES) && !paramMessageReceivedEvent.getMember().getId().equals("145556654241349632")) {
+        if (!paramMessageReceivedEvent.getMember().hasPermission(Permission.MANAGE_ROLES) && !CrossServerUtils.isLumDev(paramMessageReceivedEvent.getMember())) {
             paramMessageReceivedEvent.getChannel().sendMessage("Error: You need to have the Manage Role permission").queue();
             return;
         }
@@ -100,7 +101,7 @@ public class AddReactionHandlerCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || event.getMember().getId().equals("145556654241349632"));
+        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || CrossServerUtils.isLumDev(event.getMember()));
     }
 
     @Override

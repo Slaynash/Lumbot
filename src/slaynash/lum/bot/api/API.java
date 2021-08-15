@@ -26,21 +26,7 @@ public class API {
     public static void start() {
 
         gson = new GsonBuilder()
-            //.serializeNulls()
             .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-            /*
-            .registerTypeAdapter(WorldInstanceInfos.class, new JsonSerializer<WorldInstanceInfos>() {
-                @Override
-                public JsonElement serialize(WorldInstanceInfos src, Type typeOfSrc, JsonSerializationContext context) {
-                    JsonArray serialized = new JsonArray();
-
-                    serialized.add(src.id);
-                    serialized.add(src.users);
-
-                    return serialized;
-                }
-            })
-            */
             .create();
 
         try {
