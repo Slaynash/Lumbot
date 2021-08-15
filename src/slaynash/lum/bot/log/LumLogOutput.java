@@ -19,7 +19,8 @@ public class LumLogOutput extends PrintStream {
         this.name = streamName;
     }
 
-    public void print(String obj) {
+    @Override
+    public void println(String obj) {
         String loggingElement = null;
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
             Class<?> elementClass = null;
@@ -57,5 +58,11 @@ public class LumLogOutput extends PrintStream {
             super.print("[" + TimeManager.getTimeForLog() + "] [" + name + "] [" + loggingElement + "] " + obj);
         else
             super.print("[" + TimeManager.getTimeForLog() + "] [" + name + "] " + obj);
+    }
+
+    @Override
+    public PrintStream printf(String format, Object... args) {
+        println(String.format(format, args));
+        return this;
     }
 }
