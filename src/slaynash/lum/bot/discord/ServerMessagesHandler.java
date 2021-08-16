@@ -2,6 +2,9 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.File;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -16,6 +19,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -269,6 +273,9 @@ public class ServerMessagesHandler {
      * @return true if the message is posted in a guild using a whitelist, contains a DLL attachment, and isn't posted by a whitelisted user
      */
     private static boolean checkDllPostPermission(MessageReceivedEvent event) {
+        if (checkIfStaff(event))
+            return true;
+
         long guildId = event.getGuild().getIdLong();
         boolean postedInWhitelistedServer = false;
         for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
@@ -281,18 +288,25 @@ public class ServerMessagesHandler {
         if (!postedInWhitelistedServer)
             return true; // Not a whitelisted server
 
+        boolean allowed = true;
         for (Attachment attachment : event.getMessage().getAttachments()) {
             fileExt = attachment.getFileExtension();
             if (fileExt == null) fileExt = "";
             fileExt = fileExt.toLowerCase();
 
-            if (fileExt.equals("dll") || fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") ||
-                fileExt.equals("rar") || fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
-
-                return checkIfStaff(event); // The sender isn't allowed to send a DLL file
+            if (fileExt.equals("dll")) {
+                if (!checkHash(attachment)) {
+                    allowed = false;
+                    break;
+                }
+            }
+            else if (fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") || fileExt.equals("rar") ||
+                fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
+                allowed = false;
+                break;
             }
         }
-        return true; // No attachement, or no DLL
+        return allowed;
     }
 
     /**
@@ -322,4 +336,18 @@ public class ServerMessagesHandler {
         return false;
     }
 
+    public static boolean checkHash(Attachment attachment) {
+        try {
+            InputStream is = attachment.retrieveInputStream().get();
+            byte[] data = is.readAllBytes(); //Blocks so maybe limit large downloads
+            is.close();
+            MessageDigest digester = MessageDigest.getInstance("SHA-256");
+            String hash = Base64.getEncoder().encodeToString(digester.digest(data));
+            return MelonScannerApisManager.getMods("VRChat").stream().anyMatch(m -> hash.equals(m.versions[0].hash)); //TODO loop through all Unity games with hashes
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed attachment hash check", e);
+        }
+        return false;
+    }
 }
