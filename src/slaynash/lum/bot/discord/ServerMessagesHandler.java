@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
@@ -342,7 +341,7 @@ public class ServerMessagesHandler {
             byte[] data = is.readAllBytes(); //Blocks so maybe limit large downloads
             is.close();
             MessageDigest digester = MessageDigest.getInstance("SHA-256");
-            String hash = Base64.getEncoder().encodeToString(digester.digest(data));
+            String hash = MelonScannerApisManager.bytesToHex(digester.digest(data));
             return MelonScannerApisManager.getMods("VRChat").stream().anyMatch(m -> hash.equals(m.versions[0].hash)); //TODO loop through all Unity games with hashes
         }
         catch (Exception e) {
