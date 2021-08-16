@@ -236,6 +236,10 @@
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
                 "error": "Please click on the button UI Elements then try to dismiss the emmVRC notifications."
+            },
+            {
+                "regex": ".*\\[emmVRCLoader] \\[ERROR] Error with platform icon: System\\.NullReferenceException.*",
+                "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team are aware of this issue."
             }
         ],
         "BloonsTD6": [
