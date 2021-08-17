@@ -31,6 +31,8 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -109,7 +111,7 @@ public class Main extends ListenerAdapter {
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
 
-        //registerCommands();
+        registerCommands();
 
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
@@ -412,7 +414,7 @@ public class Main extends ListenerAdapter {
     public void onReady(ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-    /*
+
     private static void registerCommands() {
         Guild loopGuild = null;
         try {
@@ -435,7 +437,7 @@ public class Main extends ListenerAdapter {
                 "Error registering command for " + loopGuild.getName() + " :", e);
         }
     }
-    */
+
     @Override
     public void onException(ExceptionEvent event) {
         try {

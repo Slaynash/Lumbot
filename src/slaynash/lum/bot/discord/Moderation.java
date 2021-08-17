@@ -8,6 +8,7 @@ import java.util.List;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
@@ -39,12 +40,25 @@ public class Moderation {
         return adminList;
     }
 
-    public static Collection<? extends CommandPrivilege> getAdminsPrivileges(Guild guild) {
-        List<Long> admins = getAdmins(guild);
-        List<CommandPrivilege> adminPrivList = new ArrayList<>();
-        for (Long id : admins) {
-            adminPrivList.add(new CommandPrivilege(Type.USER, true, id));
+    public static List<Long> getAdminRoles(Guild guild) {
+        List<Long> adminList = new ArrayList<>();
+        for (Role role : guild.getRoles()) {
+            if (role.hasPermission(Permission.ADMINISTRATOR))
+                adminList.add(role.getIdLong());
         }
-        return adminPrivList;
+        return adminList;
+    }
+
+    public static Collection<? extends CommandPrivilege> getAdminsPrivileges(Guild guild) {
+        List<Long> admins = getAdminRoles(guild);
+        List<CommandPrivilege> adminPrivList = new ArrayList<>();
+        adminPrivList.add(new CommandPrivilege(Type.USER, true, guild.getOwnerIdLong()));
+        for (Long id : admins) {
+            adminPrivList.add(new CommandPrivilege(Type.ROLE, true, id));
+        }
+        adminPrivList.add(new CommandPrivilege(Type.USER, true, 145556654241349632L/*Slay*/));
+        adminPrivList.add(new CommandPrivilege(Type.USER, true, 240701606977470464L/*rakosi2*/));
+
+        return adminPrivList.subList(0, Math.min(10, adminPrivList.size()));
     }
 }
