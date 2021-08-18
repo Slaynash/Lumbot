@@ -32,11 +32,11 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class UnityVersionMonitor {
     public static final String LOG_IDENTIFIER = "UnityVersionMonitor";
 
-    private static String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
+    private static final String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
 
-    private static String downloadPath = "/mnt/hdd3t/unity_versions";
+    private static final String downloadPath = "/mnt/hdd3t/unity_versions";
 
-    private static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
@@ -44,7 +44,7 @@ public class UnityVersionMonitor {
             .connectTimeout(Duration.ofSeconds(30))
             .build();
 
-    private static List<UnityVersion> unityVersions = new ArrayList<>();
+    private static final List<UnityVersion> unityVersions = new ArrayList<>();
 
     private static Map<String, List<String>> installedVersions = new HashMap<>();
 
@@ -139,10 +139,10 @@ public class UnityVersionMonitor {
                         newVersions.add(unityVersion);
 
                 if (installedVersions.size() > 0 && installedVersions.size() < 10) {
-                    String message = "New Unity version published:";
+                    StringBuilder message = new StringBuilder("New Unity version published:");
                     for (UnityVersion newVersion : newVersions)
-                        message += "\n - " + newVersion.version;
-                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message).queue();
+                        message.append("\n - ").append(newVersion.version);
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
                 }
 
                 for (UnityVersion newVersion : newVersions)
@@ -251,9 +251,7 @@ public class UnityVersionMonitor {
     }
 
     public static void saveInstalledVersionCache(String unityVersion, String architecture) {
-        List<String> installedArchitectures = installedVersions.get(unityVersion);
-        if (installedArchitectures == null)
-            installedVersions.put(unityVersion, installedArchitectures = new ArrayList<String>());
+        List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<String>());
         installedArchitectures.add(architecture);
 
         try {
@@ -313,14 +311,10 @@ public class UnityVersionMonitor {
             if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y"}).waitFor() != 0)
                 return false;
 
-            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
-                return false;
+            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
         }
         else
-            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() != 0)
-                return false;
-
-        return true;
+            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
     }
 
     private static void moveDirectory(File src, File dest) {

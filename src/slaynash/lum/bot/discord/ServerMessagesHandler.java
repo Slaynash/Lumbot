@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -30,6 +31,7 @@ public class ServerMessagesHandler {
     public static void handle(MessageReceivedEvent event) {
         try {
             long inputTime = new Date().getTime();
+            handleAP(event);
             if (event.getAuthor().isBot()) return;
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
@@ -349,5 +351,18 @@ public class ServerMessagesHandler {
             ExceptionUtils.reportException("Failed attachment hash check", e);
         }
         return false;
+    }
+
+    private static void handleAP(MessageReceivedEvent event) {
+        if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
+            return;
+        try {
+            if (CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED)) {
+                event.getMessage().crosspost().queue();
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to handle Auto Publish", e);
+        }
     }
 }

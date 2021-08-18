@@ -10,9 +10,9 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.utils.TimeManager;
 
 public class LumLogOutput extends PrintStream {
-    private String name;
+    private final String name;
 
-    private static Map<Class<?>, String> knownLoggingElements = new HashMap<>();
+    private static final Map<Class<?>, String> knownLoggingElements = new HashMap<>();
 
     public LumLogOutput(PrintStream defaultOut, String streamName) {
         super(defaultOut);
@@ -42,7 +42,7 @@ public class LumLogOutput extends PrintStream {
                         knownLoggingElements.put(elementClass, loggingElement);
                         break;
                     }
-                    catch (Exception e) { }
+                    catch (Exception ignored) { }
                 }
             }
             if (loggingElement != null)

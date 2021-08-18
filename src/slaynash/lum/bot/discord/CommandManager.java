@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
+import slaynash.lum.bot.discord.commands.AutoPublish;
 import slaynash.lum.bot.discord.commands.Ban;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
@@ -45,6 +46,7 @@ public class CommandManager {
 
     public static final List<ReactionListener> reactionListeners = new ArrayList<>();
     public static final Map<Long, String> logChannels = new HashMap<>();
+    public static final List<Long> apChannels = new ArrayList<>();
     public static final Map<Long, VerifyPair> verifyChannels = new HashMap<>();
     public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
 
@@ -127,6 +129,7 @@ public class CommandManager {
         CommandManager.registerCommand(new Ban());
         CommandManager.registerCommand(new Unban());
         CommandManager.registerCommand(new Kick());
+        CommandManager.registerCommand(new AutoPublish());
 
         CommandManager.registerCommand(new TestVRCObfmap());
     }
@@ -232,6 +235,17 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Guild Configs", e);
+        }
+    }
+
+    public static void saveAPChannels() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("autopublishchannels.txt"))) {
+            for (Long channel : apChannels) {
+                writer.write(channel + "\n");
+            }
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
         }
     }
 
