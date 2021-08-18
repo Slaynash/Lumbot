@@ -12,6 +12,8 @@ public class AutoPublish extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+        if (!paramMessageReceivedEvent.getTextChannel().isNews())
+            return;
         if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
             paramMessageReceivedEvent.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Lum does not have the proper permissions to publish messages in " + paramMessageReceivedEvent.getTextChannel().getName() + " Please make sure that Lum has Message Read, Write, and Manage Permissions.")).queue(null, m -> System.out.println("failed to open DM"));
