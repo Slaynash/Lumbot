@@ -202,8 +202,12 @@ public class MelonScannerApisManager {
                                     }
                                 }
 
-                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2)
-                                    CommandManager.brokenMods.add(name);
+                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
+                                    if (!CommandManager.brokenMods.contains(name))
+                                        CommandManager.brokenMods.add(name);
+                                }
+                                else if (CommandManager.brokenMods.contains(name))
+                                        CommandManager.brokenMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
                             }
 
@@ -220,7 +224,7 @@ public class MelonScannerApisManager {
 
                                 MelonApiMod currentMod = null;
                                 for (MelonApiMod mod : currentMods) {
-                                    if (mod.name.equals(newMod.name)) {
+                                    if (mod.name.equalsIgnoreCase(newMod.name)) {
                                         currentMod = mod;
                                         break;
                                     }
