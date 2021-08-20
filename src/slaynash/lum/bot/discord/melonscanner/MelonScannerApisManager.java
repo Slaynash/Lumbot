@@ -60,7 +60,7 @@ public class MelonScannerApisManager {
     private static boolean doneFirstInit = false;
 
     static {
-        MelonScannerApi api = null;
+        MelonScannerApi api;
         apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json"));
         api.compareUsingHashes = true;
         apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://raw.githubusercontent.com/Inferno-Dev-Team/Inferno-Omnia/main/version.json"));
@@ -206,8 +206,7 @@ public class MelonScannerApisManager {
                                     if (!CommandManager.brokenMods.contains(name))
                                         CommandManager.brokenMods.add(name);
                                 }
-                                else if (CommandManager.brokenMods.contains(name))
-                                        CommandManager.brokenMods.remove(name);
+                                else CommandManager.brokenMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
                             }
 
@@ -301,7 +300,7 @@ public class MelonScannerApisManager {
         public final String game;
         public final String name;
         public final String endpoint;
-        public boolean isGZip = false;
+        public final boolean isGZip = false;
         public boolean compareUsingHashes = false;
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
@@ -372,7 +371,7 @@ public class MelonScannerApisManager {
         return downloadRequest(httpClient, request, source);
     }
     public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
-        HttpResponse<byte[]> response = null;
+        HttpResponse<byte[]> response;
         Exception exception = null;
         int attempts = 3;
         for (int i = 0; i < attempts; i++) {

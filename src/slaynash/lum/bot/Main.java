@@ -396,12 +396,14 @@ public class Main extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         int guildSize = JDAManager.getJDA().getGuilds().size();
         System.out.println("Joined " + event.getGuild().getName() + ", connected to " + guildSize + " guilds");
+        if (guildSize % 50 == 0)
+            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(876466104036393060L).sendMessage("I joined my " + guildSize + "th guild <:Neko_cat_woah:851935805874110504>").queue();
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
                 + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>")).queue(null, m -> System.out.println("Failed to open dms with guild owner"));
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
-                .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue()); // register Guild command for newly joined server
+                .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);

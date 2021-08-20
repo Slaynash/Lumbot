@@ -140,7 +140,7 @@ public class Purge extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Purge messages `l!purge #` or reply to the top message - Moderators Only";
+        return "Purge messages `l!purge #` or reply to the top message - Moderators Only\n\tpurgeu will only remove messages from the user replied to";
     }
 
     @Override

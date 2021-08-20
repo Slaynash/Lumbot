@@ -77,7 +77,7 @@ public class UnityVersionMonitor {
                     .timeout(Duration.ofSeconds(30))
                     .build();
 
-                String pagedata = null;
+                String pagedata;
 
                 try {
                     HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -251,7 +251,7 @@ public class UnityVersionMonitor {
     }
 
     public static void saveInstalledVersionCache(String unityVersion, String architecture) {
-        List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<String>());
+        List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<>());
         installedArchitectures.add(architecture);
 
         try {
@@ -327,10 +327,10 @@ public class UnityVersionMonitor {
     }
 
     private static class UnityVersion {
-        public String version;
-        public String fullVersion;
-        public String downloadUrl;
-        public String downloadUrlIl2CppWin;
+        public final String version;
+        public final String fullVersion;
+        public final String downloadUrl;
+        public final String downloadUrlIl2CppWin;
 
         public UnityVersion(String version, String fullVersion, String downloadUrl, String downloadUrlIl2CppWin) {
             this.version = version;

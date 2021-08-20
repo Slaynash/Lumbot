@@ -23,7 +23,7 @@ public class LumLogOutput extends PrintStream {
     public void println(String obj) {
         String loggingElement = null;
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
-            Class<?> elementClass = null;
+            Class<?> elementClass;
             try {
                 elementClass = Class.forName(element.getClassName());
             }
