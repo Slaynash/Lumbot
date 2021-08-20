@@ -15,7 +15,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 
+import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class MelonLoaderError {
 
@@ -34,11 +36,20 @@ public class MelonLoaderError {
 
 
     public final String regex;
-    public final String error;
+    private String errorEN = "";
+    private String errorFR = "";
+    private String errorDE = "";
 
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;
-        this.error = error;
+        try {
+            this.errorEN = error;
+            this.errorFR = Utils.translate("en", "fr", error);
+            this.errorDE = Utils.translate("en", "de", error);
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to translate MelonLoader Errors", e);
+        }
     }
 
     public static boolean init() {
@@ -69,6 +80,7 @@ public class MelonLoaderError {
                 for (Entry<String, String> modSpecificError : modSpecificErrorsTemp.entrySet())
                     modSpecificErrors.add(new MelonLoaderError(modSpecificError.getKey(), modSpecificError.getValue()));
             }
+            System.out.println("Done loading Errors.");
         }
         catch (IOException exception) {
             ExceptionUtils.reportException("Failed to load MelonLoader Errors", exception);
@@ -107,4 +119,16 @@ public class MelonLoaderError {
         }
     }
 
+    public String error(String lang) {
+        switch (lang) {
+            case "fr":
+                return errorFR;
+            case "de":
+                return errorDE;
+            case "sga":
+                return Localization.toStandardGalacticAlphabet(errorEN);
+            default:
+                return errorEN;
+        }
+    }
 }

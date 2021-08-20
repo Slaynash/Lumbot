@@ -507,7 +507,7 @@ public final class MelonScanner {
         if (context.errors.size() > 0) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.errors.size(); ++i) {
-                error.append("- ").append(context.errors.get(i).error).append("\n");
+                error.append("- ").append(context.errors.get(i).error(context.lang)).append("\n");
             }
             context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.toString(), false);
             context.embedColor = Color.RED;
