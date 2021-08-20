@@ -36,20 +36,11 @@ public class MelonLoaderError {
 
 
     public final String regex;
-    private String errorEN = "";
-    private String errorFR = "";
-    private String errorDE = "";
+    private final String error;
 
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;
-        try {
-            this.errorEN = error;
-            this.errorFR = Utils.translate("en", "fr", error);
-            this.errorDE = Utils.translate("en", "de", error);
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to translate MelonLoader Errors", e);
-        }
+        this.error = error;
     }
 
     public static boolean init() {
@@ -120,15 +111,20 @@ public class MelonLoaderError {
     }
 
     public String error(String lang) {
-        switch (lang) {
-            case "fr":
-                return errorFR;
-            case "de":
-                return errorDE;
-            case "sga":
-                return Localization.toStandardGalacticAlphabet(errorEN);
-            default:
-                return errorEN;
+        try {
+            switch (lang) {
+                case "fr":
+                    return Utils.translate("en", "fr", error);
+                case "de":
+                    return Utils.translate("en", "de", error);
+                case "sga":
+                    return Localization.toStandardGalacticAlphabet(error);
+                default:
+            }
         }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to translate MelonLoader Errors", e);
+        }
+        return error;
     }
 }
