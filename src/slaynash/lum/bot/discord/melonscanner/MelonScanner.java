@@ -61,6 +61,8 @@ public final class MelonScanner {
 
             if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
                 lang = "fr";
+            else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
+                lang = "de";
 
             if (messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
                 Random random = new Random();
