@@ -48,7 +48,7 @@ public final class Localization {
     }
 
     public static String get(String key, String lang) {
-        String ret = getInternal(key, "en");
+        String ret = getInternal(key, lang);
         if ("sga".equals(lang))
             return toStandardGalacticAlphabet(ret);
 
