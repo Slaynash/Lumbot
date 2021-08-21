@@ -8,7 +8,6 @@ import java.util.List;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
-import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -69,14 +68,12 @@ public class Purge extends Command {
                 else
                     message.reply("Command is `l!purge #` or reply to the top message.").queue();
 
-                //remove if unknown message ie message already removed
-                messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
                 List<Message> oldMessages = new ArrayList<>();
                 boolean oldMessage = false;
                 for (Message mes : messageList) {
                     if (mes.getTimeCreated().isBefore(OffsetDateTime.now().minusWeeks(2))) {
                         if (!oldMessage) {
-                            event.getMessage().reply("Purge contains old messages, I need to remove one at a time and this can take a while. Please be patent.").queue(/* TODO maybe ignore errors for failure */);
+                            event.getMessage().reply("Purge contains old messages, I need to remove one at a time and this can take a while. Please be patent.").delay(Duration.ofSeconds(5)).flatMap(Message::delete).queue();
                             oldMessage = true;
                         }
                         oldMessages.add(mes); //manually remove messages older than 2 weeks old
