@@ -24,6 +24,7 @@ import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
+import slaynash.lum.bot.discord.commands.Replies;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
@@ -53,6 +54,7 @@ public class CommandManager {
     public static final List<MLHashPair> melonLoaderHashes = new ArrayList<>();
     public static final List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
+    public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
     public static final List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
@@ -130,6 +132,7 @@ public class CommandManager {
         CommandManager.registerCommand(new Unban());
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
+        CommandManager.registerCommand(new Replies());
 
         CommandManager.registerCommand(new TestVRCObfmap());
     }
@@ -246,6 +249,20 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
+        }
+    }
+
+    public static void saveReplies() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("replies.txt"))) {
+            for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
+                for (Entry<String, String> reply : guilds.getValue().entrySet()) {
+                    writer.write(reply.getKey().concat(reply.getKey()).concat(",").concat(reply.getValue()).concat("\n"));
+                }
+                writer.write(guilds.getKey() + "\n");
+            }
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to save Replies", e);
         }
     }
 

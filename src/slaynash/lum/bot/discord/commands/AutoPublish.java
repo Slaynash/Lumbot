@@ -12,8 +12,10 @@ public class AutoPublish extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (!paramMessageReceivedEvent.getTextChannel().isNews())
+        if (!paramMessageReceivedEvent.getTextChannel().isNews()) {
+            paramMessageReceivedEvent.getMessage().reply("This is not an announcement channel.").queue();
             return;
+        }
         if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
             paramMessageReceivedEvent.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Lum does not have the proper permissions to publish messages in " + paramMessageReceivedEvent.getTextChannel().getName() + " Please make sure that Lum has Message Read, Write, and Manage Permissions.")).queue(null, m -> System.out.println("failed to open DM"));
@@ -24,11 +26,13 @@ public class AutoPublish extends Command {
             CommandManager.apChannels.remove(paramMessageReceivedEvent.getChannel().getIdLong());
             CommandManager.saveAPChannels();
             paramMessageReceivedEvent.getChannel().sendMessage("Successfully removed " + paramMessageReceivedEvent.getChannel().getName() + " from autopublish!").delay(Duration.ofSeconds(5)).flatMap(Message::delete).queue();
+            System.out.println("Successfully removed autopublish from " + paramMessageReceivedEvent.getChannel().getName());
         }
         else {
             CommandManager.apChannels.add(paramMessageReceivedEvent.getChannel().getIdLong());
             CommandManager.saveAPChannels();
             paramMessageReceivedEvent.getChannel().sendMessage("Successfully set " + paramMessageReceivedEvent.getChannel().getName() + " to autopublish!").delay(Duration.ofSeconds(5)).flatMap(Message::delete).queue();
+            System.out.println("Successfully added autopublish to " + paramMessageReceivedEvent.getChannel().getName());
         }
         paramMessageReceivedEvent.getMessage().delete().queue();
     }

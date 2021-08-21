@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
@@ -110,6 +111,9 @@ public class ServerMessagesHandler {
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
+
+            if (handleReplies(event))
+                return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token"))) {
                 System.out.println("Partial Log was printed");
@@ -372,5 +376,23 @@ public class ServerMessagesHandler {
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to handle Auto Publish", e);
         }
+    }
+
+    private static boolean handleReplies(MessageReceivedEvent event) {
+        Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
+        if (replies == null)
+            return false;
+        String content = event.getMessage().getContentRaw();
+        StringBuilder sb = new StringBuilder();
+        if (event.getMessage().getReferencedMessage() != null)
+            sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat("\n\n"));
+        for (String reply : replies.keySet()) {
+            if (content.contains(reply)) {
+                sb.append(replies.get(content));
+                event.getMessage().reply(sb.toString()).queue();
+                return true;
+            }
+        }
+        return false;
     }
 }

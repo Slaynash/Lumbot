@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
@@ -91,6 +92,7 @@ public class Main extends ListenerAdapter {
         loadVRCBuild();
         loadGuildConfigs();
         loadAPChannels();
+        loadReplies();
 
         API.start();
 
@@ -308,6 +310,30 @@ public class Main extends ListenerAdapter {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Auto Publish Channels", e);
+        }
+    }
+
+    private static void loadReplies() {
+        BufferedReader reader;
+        Map<String, String> tempReplies = new HashMap<>();
+        try {
+            reader = new BufferedReader(new FileReader("replies.txt"));
+            String line;
+            String[] parts;
+            while ((line = reader.readLine()) != null) {
+                parts = line.split(",", 2);
+                if (parts.length > 1) {
+                    tempReplies.put(parts[0], parts[1]);
+                }
+                else {
+                    CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
+                    tempReplies = new HashMap<>();
+                }
+            }
+            reader.close();
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to load Replies", e);
         }
     }
 
