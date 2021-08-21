@@ -382,13 +382,13 @@ public class ServerMessagesHandler {
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
         if (replies == null)
             return false;
-        String content = event.getMessage().getContentRaw();
+        String content = event.getMessage().getContentRaw().toLowerCase();
         StringBuilder sb = new StringBuilder();
         if (event.getMessage().getReferencedMessage() != null)
             sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat("\n\n"));
         for (String reply : replies.keySet()) {
             if (content.contains(reply)) {
-                sb.append(replies.get(content));
+                sb.append(replies.get(reply));
                 event.getMessage().reply(sb.toString()).queue();
                 return true;
             }
