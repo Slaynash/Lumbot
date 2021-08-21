@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import net.dv8tion.jda.api.Permission;
@@ -15,6 +16,9 @@ public class Replies extends Command {
 
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
         String[] parts = paramString.split(" ", 2);
+
+        if (replies == null)
+            replies = new HashMap<>();
 
         if (parts.length == 1) {
             StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
