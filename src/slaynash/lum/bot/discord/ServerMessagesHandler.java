@@ -253,14 +253,6 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildID == 867514400701153281L/*AssetRipper*/) {
-                if (message.startsWith("!arlog")) {
-                    System.out.println("ARlog");
-                    event.getChannel().sendMessage("Please upload your AssetRipper log. It is in the same folder as the exe and will be called `AssetRipper.log`").queue();
-                    return;
-                }
-            }
-
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
                 return;
             }
