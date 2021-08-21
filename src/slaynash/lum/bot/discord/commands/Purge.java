@@ -8,6 +8,7 @@ import java.util.List;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageHistory;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -68,6 +69,8 @@ public class Purge extends Command {
                 else
                     message.reply("Command is `l!purge #` or reply to the top message.").queue();
 
+                //remove if unknown message ie message already removed
+                messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
                 List<Message> oldMessages = new ArrayList<>();
                 boolean oldMessage = false;
                 for (Message mes : messageList) {
