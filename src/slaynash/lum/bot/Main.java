@@ -33,6 +33,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemove
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -358,7 +359,7 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
+    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
         //System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + " (isEmote: " + event.getReactionEmote().isEmote() + ", is Emoji: " + EmojiUtils.containsEmoji(event.getReactionEmote().getName()) + ")");
         for (ReactionListener rl : CommandManager.reactionListeners) {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
@@ -385,7 +386,7 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
+    public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
         for (ReactionListener rl : CommandManager.reactionListeners) {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
@@ -409,12 +410,12 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
+    public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
         Moderation.voiceJoin(event);
     }
 
     @Override
-    public void onGuildVoiceLeave(GuildVoiceLeaveEvent event) {
+    public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
         Moderation.voiceLeave(event);
     }
 
@@ -442,17 +443,17 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommand(SlashCommandEvent event) {
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
         Slash.slashRun(event);
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event) {
+    public void onButtonClick(@NotNull ButtonClickEvent event) {
         Slash.buttonUpdate(event);
     }
 
     @Override
-    public void onReady(ReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
 
@@ -480,7 +481,7 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onException(ExceptionEvent event) {
+    public void onException(@NotNull ExceptionEvent event) {
         try {
             ExceptionUtils.reportException(
                 "Exception while handling JDA event:", event.getCause());

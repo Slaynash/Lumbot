@@ -41,7 +41,7 @@ public class ServerMessagesHandler {
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
-            String memberMention = Objects.requireNonNull(event.getMessage().getMember()).getAsMention();
+            String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
@@ -376,7 +376,7 @@ public class ServerMessagesHandler {
             return false;
         String content = event.getMessage().getContentRaw().toLowerCase();
         StringBuilder sb = new StringBuilder();
-        if (event.getMessage().getReferencedMessage() != null)
+        if (event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getMember() != null)
             sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat("\n\n"));
         for (String reply : replies.keySet()) {
             if (content.contains(reply)) {
