@@ -192,12 +192,14 @@ public class ScamShield {
 
             if (reportChannelID != null) {
                 TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
+                StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + "\n");
+                sameauthormessages.forEach(a -> sb.append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n"));
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
                 if (event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
-                    ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(message.getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
+                    ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
                 else
-                    ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(message.getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
+                    ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
             }
             else {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
