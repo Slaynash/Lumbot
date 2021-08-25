@@ -20,7 +20,7 @@ public class Ban extends Command {
         if (replied != null) {
             String[] parts = paramString.split(" ", 2);
             if (parts.length > 1 && parts[1].matches("^\\d{1,2}$"))
-                delDays = Math.min(Integer.parseInt(parts[1]), 14);
+                delDays = Math.min(Integer.parseInt(parts[1]), 7);
             banMember = replied.getMember();
         }
         else {
@@ -30,7 +30,7 @@ public class Ban extends Command {
                 return;
             }
             if (parts.length == 3 && parts[2].matches("^\\d{1,2}$")) {
-                delDays = Math.min(Integer.parseInt(parts[2]), 14);
+                delDays = Math.min(Integer.parseInt(parts[2]), 7);
             }
             banMember = event.getGuild().getMemberById(parts[1]);
         }

@@ -67,7 +67,7 @@ public class Purge extends Command {
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
-                    message.reply("Command is `l!purge #` or reply to the top message.").queue();
+                    message.reply("Command is `l!purge #` or reply to the top message.\npurgeu will only remove messages from the user replied to").queue();
 
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
