@@ -59,8 +59,8 @@ public class ScamShield {
         suspiciousValue += message.contains("skin") ? 1 : 0;
         suspiciousValue += message.contains("knife") ? 1 : 0;
         suspiciousValue += message.contains("offer") ? 1 : 0;
-        suspiciousValue += message.contains("btc") ? 2 : 0;
-        suspiciousValue += message.contains("bitcoin") ? 2 : 0;
+        suspiciousValue += message.contains("btc") ? 1 : 0;
+        suspiciousValue += message.contains("bitcoin") ? 1 : 0;
         suspiciousValue += message.contains("nitro") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
@@ -192,7 +192,7 @@ public class ScamShield {
 
             if (reportChannelID != null) {
                 TextChannel reportChannel = event.getGuild().getTextChannelById(reportChannelID);
-                StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + "\n");
+                StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
                 sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
                 if (ssQueued != null)
                     ssQueued.cancel(/*mayInterruptIfRunning*/ true);
