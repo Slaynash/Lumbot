@@ -827,6 +827,7 @@ public final class MelonScanner {
     }
 
     public static void translateLog(MessageReceivedEvent event) {
+        System.out.println("Translating Log Results");
         String message = event.getMessage().getContentStripped().toLowerCase();
         Message referenced = event.getMessage().getReferencedMessage();
         if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
@@ -836,6 +837,7 @@ public final class MelonScanner {
             return;
         String lan = message.substring(3).trim();
         EmbedBuilder editEmbed = new EmbedBuilder(embed);
+        System.out.println("Passed validations, translating to " + lan);
         editEmbed.setTitle(Utils.translate("en", lan, embed.getTitle()));
         editEmbed.setDescription(Utils.translate("en", lan, embed.getDescription()));
         editEmbed.clearFields();
@@ -844,6 +846,7 @@ public final class MelonScanner {
             String value = Utils.translate("en", lan, field.getValue());
             editEmbed.addField(name, value, field.isInline());
         }
-        event.getMessage().editMessageEmbeds(editEmbed.build()).queue();
+        System.out.println("Done Translating Log Results");
+        referenced.editMessageEmbeds(editEmbed.build()).queue();
     }
 }
