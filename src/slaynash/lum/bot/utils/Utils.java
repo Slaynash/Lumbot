@@ -14,6 +14,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Utils {
     public static String translate(String langFrom, String langTo, String text) {
+        if (langFrom == null || langTo == null || text == null)
+            return "";
+        if (langFrom.isBlank() || langTo.isBlank() || text.isBlank())
+            return "";
         StringBuilder response = new StringBuilder();
         try {
             String urlStr = "https://script.google.com/macros/s/AKfycbyBJH20ap3UN_KUjbBjSRmEVALyvvYsyQ5bIprevMDWRrLg9GOf/exec" + //From my personal account, I get 20,000 translations / day

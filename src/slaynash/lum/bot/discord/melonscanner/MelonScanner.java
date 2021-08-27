@@ -833,7 +833,7 @@ public final class MelonScanner {
         if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
             return;
         MessageEmbed embed = referenced.getEmbeds().get(0);
-        if (embed == null || embed.getFooter() == null || !embed.getFooter().getText().equals("Lum Log Scanner"))
+        if (embed == null || embed.getFooter() == null || !"Lum Log Scanner".equals(embed.getFooter().getText()))
             return;
         String lan = message.substring(3).trim();
         System.out.println("Passed validations, translating to " + lan);
