@@ -97,7 +97,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (replied.getAuthor().getIdLong() == 275759980752273418L)
+            if (replied != null && replied.getAuthor().getIdLong() == 275759980752273418L)
                 MelonScanner.translateLog(event);
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
