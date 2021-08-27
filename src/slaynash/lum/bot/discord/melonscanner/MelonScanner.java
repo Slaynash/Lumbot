@@ -16,8 +16,10 @@ import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
@@ -28,6 +30,7 @@ import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ArrayUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScanner {
     public static final String LOG_IDENTIFIER = "MelonScanner";
@@ -170,7 +173,7 @@ public final class MelonScanner {
         for (Attachment attachment : attachments)
             if (isValidFileFormat(attachment)) {
                 if (hasAlreadyFound) {
-                    replyStandard(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
+                    Utils.replyStandard(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
                     return true;
                 }
                 hasAlreadyFound = true;
@@ -180,7 +183,7 @@ public final class MelonScanner {
 
     private static boolean oldEmmVRCLogCheck(MelonScanContext context) {
         if (context.attachment.getFileName().startsWith("emmVRC")) {
-            replyStandard(Localization.get("melonscanner.vrchat.oldemmvrc", context.lang), Color.orange, context.messageReceivedEvent);
+            Utils.replyStandard(Localization.get("melonscanner.vrchat.oldemmvrc", context.lang), Color.orange, context.messageReceivedEvent);
             return true;
         }
         return false;
@@ -813,16 +816,6 @@ public final class MelonScanner {
 
 
     // Utils
-
-    static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(color)
-                    .setDescription(message);
-        MessageEmbed embed = embedBuilder.build();
-
-        messageReceivedEvent.getMessage().replyEmbeds(embed);
-    }
-
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
@@ -831,5 +824,26 @@ public final class MelonScanner {
                             "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.orange)).queue();
         }
+    }
+
+    public static void translateLog(MessageReceivedEvent event) {
+        String message = event.getMessage().getContentStripped().toLowerCase();
+        Message referenced = event.getMessage().getReferencedMessage();
+        if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
+            return;
+        MessageEmbed embed = referenced.getEmbeds().get(0);
+        if (embed == null || embed.getFooter() == null || embed.getFooter().getText().equals("Lum Log Scanner"))
+            return;
+        String lan = message.substring(3).trim();
+        EmbedBuilder editEmbed = new EmbedBuilder(embed);
+        editEmbed.setTitle(Utils.translate("en", lan, embed.getTitle()));
+        editEmbed.setDescription(Utils.translate("en", lan, embed.getDescription()));
+        editEmbed.clearFields();
+        for (Field field : embed.getFields()) {
+            String name = Utils.translate("en", lan, field.getName());
+            String value = Utils.translate("en", lan, field.getValue());
+            editEmbed.addField(name, value, field.isInline());
+        }
+        event.getMessage().editMessageEmbeds(editEmbed.build()).queue();
     }
 }

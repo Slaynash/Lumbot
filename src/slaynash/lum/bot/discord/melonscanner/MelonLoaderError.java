@@ -111,19 +111,14 @@ public class MelonLoaderError {
     }
 
     public String error(String lang) {
-        try {
-            switch (lang) {
-                case "fr":
-                    return Utils.translate("en", "fr", error);
-                case "de":
-                    return Utils.translate("en", "de", error);
-                case "sga":
-                    return Localization.toStandardGalacticAlphabet(error);
-                default:
-            }
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to translate MelonLoader Errors", e);
+        switch (lang) {
+            case "fr":
+                return Utils.translate("en", "fr", error);
+            case "de":
+                return Utils.translate("en", "de", error);
+            case "sga":
+                return Localization.toStandardGalacticAlphabet(error);
+            default:
         }
         return error;
     }

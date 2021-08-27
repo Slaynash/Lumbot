@@ -137,7 +137,7 @@ public class ScamShield {
             }
             System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag);
             EmbedBuilder embedBuilder = new EmbedBuilder()
-                .setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
+                .setAuthor(ssBan ? "Ban" : "Kick" + " Report - " + event.getAuthor().getAsMention(), null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 

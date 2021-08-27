@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
 
@@ -104,7 +105,7 @@ public final class MelonScannerReadPass {
             line.contains("Injecting coremod")
         ) {
             System.out.println("Minecraft Log detected");
-            MelonScanner.replyStandard("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
+            Utils.replyStandard("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
             return true;
         }
         return false;

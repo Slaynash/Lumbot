@@ -41,6 +41,7 @@ public class ServerMessagesHandler {
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
             String message = event.getMessage().getContentStripped().toLowerCase();
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
+            Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
@@ -95,6 +96,9 @@ public class ServerMessagesHandler {
                     }).start();
                 }
             }
+
+            if (replied.getAuthor().getIdLong() == 275759980752273418L)
+                MelonScanner.translateLog(event);
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
                 return;
@@ -171,7 +175,6 @@ public class ServerMessagesHandler {
                 if (message.startsWith("!log")) {
                     System.out.println("logs printed");
                     String sendMessage = "";
-                    Message replied = event.getMessage().getReferencedMessage();
                     if (replied != null && replied.getMember() != null) {
                         sendMessage = sendMessage + CrossServerUtils.sanitizeInputString(replied.getMember().getEffectiveName()) + "\n\n";
                     }
