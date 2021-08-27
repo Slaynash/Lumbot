@@ -827,17 +827,17 @@ public final class MelonScanner {
     }
 
     public static void translateLog(MessageReceivedEvent event) {
-        System.out.println("Translating Log Results");
+        System.out.println("Translating Log Results Checks");
         String message = event.getMessage().getContentStripped().toLowerCase();
         Message referenced = event.getMessage().getReferencedMessage();
         if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
             return;
         MessageEmbed embed = referenced.getEmbeds().get(0);
-        if (embed == null || embed.getFooter() == null || embed.getFooter().getText().equals("Lum Log Scanner"))
+        if (embed == null || embed.getFooter() == null || !embed.getFooter().getText().equals("Lum Log Scanner"))
             return;
         String lan = message.substring(3).trim();
-        EmbedBuilder editEmbed = new EmbedBuilder(embed);
         System.out.println("Passed validations, translating to " + lan);
+        EmbedBuilder editEmbed = new EmbedBuilder(embed);
         editEmbed.setTitle(Utils.translate("en", lan, embed.getTitle()));
         editEmbed.setDescription(Utils.translate("en", lan, embed.getDescription()));
         editEmbed.clearFields();
