@@ -30,15 +30,14 @@ public class Utils {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
+                response.append(inputLine + "\n");
             }
             in.close();
-
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to translate message", e);
         }
-        return response.toString();
+        return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/");
     }
 
     public static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
