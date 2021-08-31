@@ -37,7 +37,7 @@ public class Utils {
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to translate message", e);
         }
-        return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/");
+        return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/").replace(" .", ".");
     }
 
     public static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
