@@ -141,8 +141,14 @@ public class ScamShield {
                 .setTimestamp(Instant.now())
                 .setFooter("Received " + suspiciousCount + " naughty points.");
 
-            if (!event.getGuild().getSelfMember().canInteract(event.getMember()))
+            if (!event.getGuild().getSelfMember().canInteract(event.getMember())) {
+                embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
+                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
+                    event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                else
+                    event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
                 return false;
+            }
 
             if (event.getGuild().getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() +
