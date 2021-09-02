@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.text.Normalizer;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +40,7 @@ public class ServerMessagesHandler {
             defaultConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
-            String message = event.getMessage().getContentStripped().toLowerCase();
+            String message = Normalizer.normalize(event.getMessage().getContentStripped(), Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase();
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
