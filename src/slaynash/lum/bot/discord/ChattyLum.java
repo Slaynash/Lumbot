@@ -137,7 +137,7 @@ public class ChattyLum {
             return true;
 
         boolean hasLum = message.matches(".*\\blum\\b.*");
-        boolean refLum = event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
+        boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
         if (!(hasLum || refLum))
             return false;
 
