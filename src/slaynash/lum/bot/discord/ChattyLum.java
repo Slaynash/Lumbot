@@ -131,13 +131,14 @@ public class ChattyLum {
 
 
     public static boolean handle(String message, MessageReceivedEvent event) {
-        boolean hasLum = message.matches(".*\\blum\\b.*");
         if (
             handleThanks(message, event) ||
             handleHelp(message, event))
             return true;
 
-        if (!hasLum)
+        boolean hasLum = message.matches(".*\\blum\\b.*");
+        boolean refLum = event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
+        if (!(hasLum || refLum))
             return false;
 
         if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|(head)?p([ea])t)\\b.*")) {
