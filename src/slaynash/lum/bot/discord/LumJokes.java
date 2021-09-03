@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Random;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,6 +16,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class LumJokes {
     public static final String LOG_IDENTIFIER = "LumJokes";
+    private static final Random random = new Random();
 
     public static boolean sendJoke(MessageReceivedEvent event) {
         String message = event.getMessage().getContentStripped().toLowerCase();
@@ -28,35 +30,57 @@ public class LumJokes {
         new Thread(() -> {
             String joke = "";
             String punchLine = "";
-            boolean dad = message.contains("dad");
-            HttpResponse<byte[]> response;
-            if (dad) {
-                try {
-                    response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
-                    joke = new String(response.body());
-                }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getTextChannel());
-                }
-            }
-            else {
-                try {
-                    response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
-                    JsonParser parser = new JsonParser();
-                    JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
-                    if ("single".equals(parsed.get("type").getAsString())) {
-                        joke = parsed.get("joke").getAsString();
+            HttpResponse<byte[]> response = null;
+            switch (random.nextInt(3)) {
+                case 1:
+                    try {
+                        response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
+                        joke = new String(response.body());
                     }
-                    else if ("twopart".equals(parsed.get("type").getAsString())) {
-                        joke = parsed.get("setup").getAsString();
-                        punchLine = parsed.get("delivery").getAsString();
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getTextChannel());
                     }
-                    else
-                        throw new Exception("json was not as expected from JokeAPI");
-                }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getTextChannel());
-                }
+                    break;
+                case 2:
+                    try {
+                        response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
+                        JsonParser parser = new JsonParser();
+                        JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
+                        if ("single".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("joke").getAsString();
+                        }
+                        else if ("twopart".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("setup").getAsString();
+                            punchLine = parsed.get("delivery").getAsString();
+                        }
+                        else
+                            throw new Exception("json was not as expected from JokeAPI");
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getTextChannel());
+                    }
+                    break;
+                case 3: //Sorry for doing this round about way Gives a higher probability
+                    try {
+                        response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
+                        JsonParser parser = new JsonParser();
+                        JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
+                        if ("single".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("joke").getAsString();
+                        }
+                        else if ("twopart".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("setup").getAsString();
+                            punchLine = parsed.get("delivery").getAsString();
+                        }
+                        else
+                            throw new Exception("json was not as expected from JokeAPI");
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("An error has occurred while while getting Spooky JokeAPI:", e, event.getTextChannel());
+                    }
+                    break;
+                default:
+                    joke = "<@240701606977470464> OOPSIE WOOPSIE!! Uwu I make a fucky wucky!!";
             }
             if (!joke.isEmpty()) {
                 if (punchLine.isEmpty()) {
@@ -77,7 +101,7 @@ public class LumJokes {
                 }
             }
             else
-                ExceptionUtils.reportException(dad ? "Dad " : "" + "Joke is empty :( in " + event.getGuild().getName());
+                ExceptionUtils.reportException("Joke is empty :( in " + event.getGuild().getName() + " from " + response.uri());
         }).start();
         return true;
     }
@@ -93,6 +117,14 @@ public class LumJokes {
     private static final HttpRequest jokeAPIRequest = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create("https://v2.jokeapi.dev/joke/Programming,Miscellaneous,Pun"/*,Dark,Spooky,Christmas*/ + "?blacklistFlags=nsfw,religious,political,racist,sexist"/*,explicit*/))
+        .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
+        .setHeader("Accept", "text/json") //may not be needed
+        .timeout(Duration.ofSeconds(20))
+        .build();
+
+    private static final HttpRequest spookyjokeAPIRequest = HttpRequest.newBuilder()
+        .GET()
+        .uri(URI.create("https://v2.jokeapi.dev/joke/Spooky?blacklistFlags=nsfw,religious,political,racist,sexist"))
         .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
         .setHeader("Accept", "text/json") //may not be needed
         .timeout(Duration.ofSeconds(20))

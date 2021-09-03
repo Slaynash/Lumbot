@@ -31,7 +31,6 @@ import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
-import slaynash.lum.bot.discord.commands.ThawServer;
 import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
@@ -126,7 +125,6 @@ public class CommandManager {
         CommandManager.registerCommand(new SetVRCBuild());
 
         CommandManager.registerCommand(new LockDown());
-        CommandManager.registerCommand(new ThawServer());
         CommandManager.registerCommand(new Purge());
         CommandManager.registerCommand(new Ban());
         CommandManager.registerCommand(new Unban());

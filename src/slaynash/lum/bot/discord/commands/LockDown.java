@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
@@ -15,14 +16,18 @@ public class LockDown extends Command {
         if (!includeInHelp(event))
             return;
 
-        Long lockDownRole = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
-
-        event.getGuild().getRoleById(lockDownRole).getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null)
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getIdLong() + " has Locked down this server.").queue();
+        Role lockDownRole = event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()));
+        boolean lockDownState = lockDownRole.hasPermission(Permission.MESSAGE_WRITE);
+
+        if (lockDownState)
+            lockDownRole.getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
         else
-            event.getChannel().sendMessage("User " + event.getAuthor().getIdLong() + " has Locked down this server.").queue();
+            lockDownRole.getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
+
+        if (reportChannel != event.getTextChannel().getId())
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server in " + event.getChannel().getName()).queue();
+        event.getChannel().sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server.").queue();
     }
 
     @Override
@@ -37,7 +42,7 @@ public class LockDown extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Prevent Members from sending messages in all channels for emergencies - Staff only";
+        return "Toggles Member's sending messages permission in all channels for emergencies - Staff only";
     }
 
     @Override
