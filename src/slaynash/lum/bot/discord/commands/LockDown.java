@@ -9,6 +9,8 @@ import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 
+import java.util.Objects;
+
 public class LockDown extends Command {
 
     @Override
@@ -25,7 +27,7 @@ public class LockDown extends Command {
         else
             lockDownRole.getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
 
-        if (reportChannel != event.getTextChannel().getId())
+        if (!Objects.equals(reportChannel, event.getTextChannel().getId()))
             event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server in " + event.getChannel().getName()).queue();
         event.getChannel().sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server.").queue();
     }

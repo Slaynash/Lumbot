@@ -354,7 +354,10 @@ public final class MelonScanner {
                         context.embedBuilder.setThumbnail("https://i.imgur.com/BSXtkvW.png");
                     break;
                 case "BONEWORKS":
-                    context.embedBuilder.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
+                    if (context.pirate)
+                        context.embedBuilder.setThumbnail("https://i.redd.it/o248hiyef2v61.png");
+                    else
+                        context.embedBuilder.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
                     break;
                 case "Demeo":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");

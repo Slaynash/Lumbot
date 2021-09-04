@@ -267,7 +267,7 @@ public class ServerMessagesHandler {
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("An error has occurred processing message:", e, event.getTextChannel());
+            ExceptionUtils.reportException("An error has occurred processing message:", e);
         }
     }
 

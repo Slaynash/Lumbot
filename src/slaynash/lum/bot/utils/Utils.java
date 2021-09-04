@@ -30,7 +30,7 @@ public class Utils {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine + "\n");
+                response.append(inputLine).append("\n");
             }
             in.close();
         }

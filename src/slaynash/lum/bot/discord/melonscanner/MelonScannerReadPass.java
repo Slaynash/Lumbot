@@ -112,10 +112,15 @@ public final class MelonScannerReadPass {
     }
 
     private static void pirateCheck(String line, MelonScanContext context) {
-        if (line.contains("Bloons.TD.6") || line.contains("Bloons.TD6")) {
+        line = line.toLowerCase();
+        if (line.contains("bloons.td.6") || line.contains("bloons.td6")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
             //reportUserPiratedBTD(event);
+        }
+        else if (line.matches(".*\\\\boneworks.v\\d.*")) {
+            System.out.println("Pirated BW detected");
+            context.pirate = true;
         }
     }
 
