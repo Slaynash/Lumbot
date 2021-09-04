@@ -243,6 +243,11 @@ public final class MelonScannerReadPass {
             }
         }
 
+        if (line.matches(".*BloonsTD6.*No Compatibility Layer Found!")) {
+            context.errors.add(MelonLoaderError.btd6mh);
+            return true;
+        }
+
         if (line.matches("\\[[0-9.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*")) {
             String oldName = splitName(line);
             if (!context.oldMods.contains(oldName))
