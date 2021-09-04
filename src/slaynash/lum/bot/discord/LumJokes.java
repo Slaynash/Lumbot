@@ -32,7 +32,7 @@ public class LumJokes {
             String punchLine = "";
             HttpResponse<byte[]> response = null;
             switch (random.nextInt(3)) {
-                case 1:
+                case 0:
                     try {
                         response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
                         joke = new String(response.body());
@@ -41,7 +41,7 @@ public class LumJokes {
                         ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getTextChannel());
                     }
                     break;
-                case 2:
+                case 1:
                     try {
                         response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
                         JsonParser parser = new JsonParser();
@@ -60,7 +60,7 @@ public class LumJokes {
                         ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getTextChannel());
                     }
                     break;
-                case 3: //Sorry for doing this round about way Gives a higher probability
+                case 2: //Sorry for doing this round about way Gives a higher probability
                     try {
                         response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
                         JsonParser parser = new JsonParser();
