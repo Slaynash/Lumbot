@@ -114,7 +114,7 @@ public class Main extends ListenerAdapter {
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
 
-        registerCommands();
+        //registerCommands();
 
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");

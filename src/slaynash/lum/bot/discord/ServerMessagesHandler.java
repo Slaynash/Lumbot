@@ -147,8 +147,8 @@ public class ServerMessagesHandler {
                         event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
                         return;
                     }
-                    if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|crash(e)?)(s)?\\b.*") && !checkIfStaff(event)) {
-                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease follow the instructions in this image to remove MelonLoader:").addFile(new File("images/MLPhasmo.png")).queue();
+                    if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !checkIfStaff(event)) {
+                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFile(new File("images/Phasmo_folder.png")).queue();
                         return;
                     }
                 }
