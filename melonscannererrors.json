@@ -1,6 +1,10 @@
 {
     "unhollowerErrors": [
         {
+            "regex": ".*\\\\Phasmophobia.*",
+            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
+        },
+        {
             "regex": ".*System\\.IO\\.FileNotFoundException: .* ['|\"]System\\.IO\\.Compression.*",
             "error": "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>."
         },
@@ -145,10 +149,6 @@
         {
             "regex": ".*\\\\MelonLoader(.x64|.x32).zip/.*",
             "error": "Please do not move the MelonLoader zip into your Mods/Plugins folder! Follow the provided tutorial on how to install MelonLoader or ask for help."
-        },
-        {
-            "regex": ".*\\\\Phasmophobia.*",
-            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
         },
         {
             "regex": ".*Unexpected escape character.*",

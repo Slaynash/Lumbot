@@ -84,7 +84,8 @@ public class ChattyLum {
         "<:SagiriHeadEmpty:828070253337509918>",
         "<:Sagiri_Shy:828073525214183437>",
         "<a:HeartCat:828087151232286749>",
-        "<a:Neko_cat_HeadPat:851934772959510578>"
+        "<a:Neko_cat_HeadPat:851934772959510578>",
+        "<a:Neko_pet:883168394625560587>"
     };
 
     private static final String[] badLum = new String[] {
@@ -110,6 +111,7 @@ public class ChattyLum {
     private static final String[] gunLum = new String[] {
         "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_Gun:851934721914175498>",
+        "<:Neko_Gun_Big:883168394759766046>",
         "<:Neko_cop:865328472540971058>",
         "<:Neko_dead:865328473760595999>",
         "<:Neko_knife:865328473858113536>",
