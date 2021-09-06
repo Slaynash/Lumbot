@@ -519,8 +519,12 @@ public class Main extends ListenerAdapter {
             noRoles.addAll(guild.getMemberCache().asList());
             if (noRoles.size() > 0) {
                 noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
-                noRoles.forEach(m -> m.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guildName +
-                    " for not accepting the rules within a week.\nIf you feel that this is an error, feel free to rejoin " + guildName)).queue(null, null));
+                try {
+                    noRoles.forEach(m -> m.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guildName +
+                        " for not accepting the rules within a week.\nIf you feel that this is an error, feel free to rejoin " + guildName)).queue(null, null));
+                }
+                catch (Exception ignored) {
+                }
                 noRoles.forEach(r -> r.kick("Kicked due to not accepting rules within a week").queue());
                 System.out.println("Guild " + guildName + " has " + noRoles.size() + " members that haven't accepted the rules and have been kicked");
             }
