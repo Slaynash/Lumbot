@@ -57,7 +57,6 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 
 public class Main extends ListenerAdapter {
-    public static JDA jda;
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
@@ -514,6 +513,7 @@ public class Main extends ListenerAdapter {
 
     private static void scanNoRoles(long guild) {
         new Thread(() -> {
+            JDA jda = JDAManager.getJDA();
             List<Member> noRoles = new ArrayList<>();
             noRoles.addAll(jda.getGuildById(guild).getMemberCache().asList());
             noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
