@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -513,8 +514,9 @@ public class Main extends ListenerAdapter {
 
     private static void scanNoRoles(long guild) {
         new Thread(() -> {
-            List<Member> noRoles = jda.getGuildById(guild).getMembers();
-            noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isAfter(OffsetDateTime.now().minusWeeks(1)));
+            List<Member> noRoles = new ArrayList<>();
+            noRoles.addAll(jda.getGuildById(guild).getMemberCache().asList());
+            noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
             System.out.println("Guild " + jda.getGuildById(guild).getName() + " has " + noRoles.size() + " members that haven't accepted the rules");
         }).start();
     }
