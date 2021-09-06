@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -14,6 +16,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
@@ -118,6 +121,10 @@ public class Main extends ListenerAdapter {
 
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
+
+        scanNoRoles(600298024425619456L /* emmVRC */);
+        scanNoRoles(439093693769711616L /* VRCMG */);
+        scanNoRoles(663449315876012052L /* MelonLoader */);
     }
 
     private static void loadReactionsList() {
@@ -502,5 +509,13 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage("The max guild member has been lowered to " + event.getNewMaxMembers() + " from " + event.getOldMaxMembers()).queue();
             }
         }
+    }
+
+    private static void scanNoRoles(long guild) {
+        new Thread(() -> {
+            List<Member> noRoles = jda.getGuildById(guild).getMembers();
+            noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isAfter(OffsetDateTime.now().minusWeeks(1)));
+            System.out.println("Guild " + jda.getGuildById(guild).getName() + " has " + noRoles.size() + " members that haven't accepted the rules");
+        }).start();
     }
 }
