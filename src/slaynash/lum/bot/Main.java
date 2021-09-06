@@ -511,13 +511,19 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    private static void scanNoRoles(long guild) {
+    private static void scanNoRoles(long guildID) {
         new Thread(() -> {
-            JDA jda = JDAManager.getJDA();
+            Guild guild = JDAManager.getJDA().getGuildById(guildID);
+            String guildName = guild.getName();
             List<Member> noRoles = new ArrayList<>();
-            noRoles.addAll(jda.getGuildById(guild).getMemberCache().asList());
-            noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
-            System.out.println("Guild " + jda.getGuildById(guild).getName() + " has " + noRoles.size() + " members that haven't accepted the rules");
+            noRoles.addAll(guild.getMemberCache().asList());
+            if (noRoles.size() > 0) {
+                noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
+                noRoles.forEach(m -> m.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guildName +
+                    " for not accepting the rules within a week.\nIf you feel that this is an error, feel free to rejoin " + guildName)).queue(null, null));
+                noRoles.forEach(r -> r.kick("Kicked due to not accepting rules within a week").queue());
+                System.out.println("Guild " + guildName + " has " + noRoles.size() + " members that haven't accepted the rules and have been kicked");
+            }
         }).start();
     }
 }

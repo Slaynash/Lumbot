@@ -31,7 +31,7 @@ public class LumJokes {
             String joke = "";
             String punchLine = "";
             HttpResponse<byte[]> response = null;
-            switch (random.nextInt(3)) {
+            switch (message.contains("dad") ? 0 : message.contains("spook") ? 3 : random.nextInt(3)) {
                 case 0:
                     try {
                         response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
