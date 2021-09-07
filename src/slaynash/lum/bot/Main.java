@@ -33,8 +33,6 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -48,6 +46,7 @@ import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.Slash;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -94,6 +93,7 @@ public class Main extends ListenerAdapter {
         loadGuildConfigs();
         loadAPChannels();
         loadReplies();
+        CrossServerUtils.loadGuildCount();
 
         API.start();
 
@@ -421,10 +421,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(GuildJoinEvent event) {
-        int guildSize = JDAManager.getJDA().getGuilds().size();
-        System.out.println("Joined " + event.getGuild().getName() + ", connected to " + guildSize + " guilds");
-        if (guildSize % 50 == 0)
-            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(876466104036393060L).sendMessage("I joined my " + guildSize + "th guild <:Neko_cat_woah:851935805874110504>").queue();
+        CrossServerUtils.checkGuildCount(event);
         try {
             event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
@@ -456,7 +453,7 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-
+    /*
     private static void registerCommands() {
         Guild loopGuild = null;
         try {
@@ -479,7 +476,7 @@ public class Main extends ListenerAdapter {
                 "Error registering command for " + loopGuild.getName() + " :", e);
         }
     }
-
+    */
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {
