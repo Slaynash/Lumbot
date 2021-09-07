@@ -113,6 +113,8 @@ public class Steam {
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
                     JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessageEmbeds(embed).queue();
+                    JDAManager.getJDA().getGuildById(816616602887651338L).getTextChannelById(884934353539432529L).sendMessageEmbeds(embed).queue();
+                    JDAManager.getJDA().getGuildById(467219008798720000L).getTextChannelById(597288399287877642L).sendMessageEmbeds(embed).queue();
 
                     apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
                 }
@@ -202,6 +204,8 @@ public class Steam {
 
                     JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(message).queue();
                     JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessage(message).queue();
+                    JDAManager.getJDA().getGuildById(816616602887651338L).getTextChannelById(884934353539432529L).sendMessage(message).queue();
+                    JDAManager.getJDA().getGuildById(467219008798720000L).getTextChannelById(597288399287877642L).sendMessage(message).queue();
                 }
 
                 vrchatAppDetails = newAppDetails;
