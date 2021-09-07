@@ -250,7 +250,9 @@ public final class MelonScannerReadPass {
 
         if (line.matches("\\[[0-9.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*")) {
             String oldName = splitName(line);
-            if (!context.oldMods.contains(oldName))
+            if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
+                context.errors.add(new MelonLoaderError("", "Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
+            else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
             return true;
         }
