@@ -4,20 +4,18 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
@@ -37,7 +35,6 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemove
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -121,10 +118,6 @@ public class Main extends ListenerAdapter {
 
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
-
-        scanNoRoles(600298024425619456L /* emmVRC */);
-        scanNoRoles(439093693769711616L /* VRCMG */);
-        scanNoRoles(663449315876012052L /* MelonLoader */);
     }
 
     private static void loadReactionsList() {
@@ -509,25 +502,5 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage("The max guild member has been lowered to " + event.getNewMaxMembers() + " from " + event.getOldMaxMembers()).queue();
             }
         }
-    }
-
-    private static void scanNoRoles(long guildID) {
-        new Thread(() -> {
-            Guild guild = JDAManager.getJDA().getGuildById(guildID);
-            String guildName = guild.getName();
-            List<Member> noRoles = new ArrayList<>();
-            noRoles.addAll(guild.getMemberCache().asList());
-            noRoles.removeIf(m -> m.getRoles().size() > 0 || m.getTimeJoined().isBefore(OffsetDateTime.now().minusWeeks(1)));
-            if (noRoles.size() > 0) {
-                try {
-                    noRoles.forEach(m -> m.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guildName +
-                        " for not accepting the rules within a week.\nIf you feel that this is an error, feel free to rejoin " + guildName)).queue(null, null));
-                }
-                catch (Exception ignored) {
-                }
-                noRoles.forEach(r -> r.kick("Kicked due to not accepting rules within a week").queue());
-                System.out.println("Guild " + guildName + " has " + noRoles.size() + " members that haven't accepted the rules and have been kicked");
-            }
-        }).start();
     }
 }
