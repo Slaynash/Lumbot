@@ -254,9 +254,8 @@ public class CommandManager {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("replies.txt"))) {
             for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
-                    writer.write(reply.getKey().concat(",").concat(reply.getValue()).concat("\n"));
+                    writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
                 }
-                writer.write(guilds.getKey() + "\n");
             }
         }
         catch (IOException e) {

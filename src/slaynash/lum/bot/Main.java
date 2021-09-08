@@ -316,20 +316,15 @@ public class Main extends ListenerAdapter {
 
     private static void loadReplies() {
         BufferedReader reader;
-        Map<String, String> tempReplies = new HashMap<>();
         try {
             reader = new BufferedReader(new FileReader("replies.txt"));
             String line;
             String[] parts;
             while ((line = reader.readLine()) != null) {
-                parts = line.split(",", 2);
-                if (parts.length > 1) {
-                    tempReplies.put(parts[0], parts[1]);
-                }
-                else {
-                    CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
-                    tempReplies = new HashMap<>();
-                }
+                parts = line.split(",", 3);
+                Map<String, String> tempReplies = CommandManager.guildReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
+                tempReplies.put(parts[1], parts[2].replace("&#10;", "\n"));
+                CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
             }
             reader.close();
         }
