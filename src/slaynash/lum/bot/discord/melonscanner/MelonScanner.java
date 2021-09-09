@@ -515,7 +515,7 @@ public final class MelonScanner {
             for (int i = 0; i < context.errors.size(); ++i) {
                 error.append("- ").append(context.errors.get(i).error(context.lang)).append("\n");
             }
-            context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
@@ -531,7 +531,7 @@ public final class MelonScanner {
                 error.append(Localization.getFormat("melonscanner.duplicatemods.more", context.lang, context.duplicatedMods.size() - 10));
 
             error.append(Localization.get("melonscanner.duplicatemods.warning", context.lang));
-            context.embedBuilder.addField(Localization.get("melonscanner.duplicatemods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.duplicatemods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
@@ -552,7 +552,7 @@ public final class MelonScanner {
             if (context.missingMods.size() > 10)
                 error.append(Localization.getFormat("melonscanner.missingmods.more", context.lang, context.missingMods.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
             return true;
         }
@@ -569,7 +569,7 @@ public final class MelonScanner {
             if (context.incompatibleMods.size() > 10)
                 error.append(Localization.getFormat("melonscanner.incompatibleMods.more", context.lang, context.incompatibleMods.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.incompatibleMods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.incompatibleMods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
             return true;
         }
@@ -588,7 +588,7 @@ public final class MelonScanner {
                 error.append(Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10));
 
             error.append(Localization.get("melonscanner.corruptedmods.warning", context.lang));
-            context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
@@ -603,7 +603,7 @@ public final class MelonScanner {
             if (context.brokenMods.size() > 20)
                 error.append(Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.brokenMods.size() - 20));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.brokenmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.brokenmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
@@ -643,7 +643,7 @@ public final class MelonScanner {
             if (context.oldMods.size() > 20)
                 error.append(Localization.getFormat("melonscanner.oldmods.more", context.lang, context.oldMods.size() - 20));
             if (added) {
-                context.embedBuilder.addField(Localization.get("melonscanner.oldmods.fieldname", context.lang), error.toString(), false);
+                context.embedBuilder.addField(Localization.get("melonscanner.oldmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
                 context.embedColor = Color.RED;
             }
             return true;
@@ -666,7 +666,7 @@ public final class MelonScanner {
             if (context.unknownMods.size() > 10)
                 error.append(Localization.getFormat("melonscanner.unknownmods.more", context.lang, context.unknownMods.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.unknownmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.unknownmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
             return true;
@@ -684,7 +684,7 @@ public final class MelonScanner {
             if (context.misplacedMods.size() > 10)
                 error.append(Localization.getFormat("melonscanner.misplacedmods.more", context.lang, context.misplacedMods.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.misplacedmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.misplacedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
             return true;
@@ -702,7 +702,7 @@ public final class MelonScanner {
             if (context.misplacedPlugins.size() > 10)
                 error.append(Localization.getFormat("melonscanner.misplacedplugins.more", context.lang, context.misplacedPlugins.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.misplacedplugins.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.misplacedplugins.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             if (context.embedColor.equals(Color.BLUE))
                 context.embedColor = Color.RED;
             return true;
@@ -738,7 +738,7 @@ public final class MelonScanner {
                 else
                     break; // no next outdated Mod
 
-                if (error.length() + nextModLine.length() + muMessage.length() + 18 > 1024) {
+                if (error.length() + nextModLine.length() + muMessage.length() + 18 > MessageEmbed.VALUE_MAX_LENGTH) {
                     error.append(Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.outdatedMods.size() - i)).append("\n"); //length is about 17 char
                     break;
                 }
@@ -746,7 +746,7 @@ public final class MelonScanner {
             if (context.outdatedMods.size() >= 3)
                 error.insert(0, muMessage + "\n");
 
-            context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
             return true;
         }
@@ -770,7 +770,7 @@ public final class MelonScanner {
             if (context.modsThrowingErrors.size() > 10)
                 error.append(Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.modsThrowingErrors.size() - 10));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error.toString(), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
