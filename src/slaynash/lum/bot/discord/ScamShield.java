@@ -20,6 +20,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 
@@ -63,6 +64,7 @@ public class ScamShield {
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("bitcoin") ? 1 : 0;
         suspiciousValue += message.contains("nitro") ? 1 : 0;
+        suspiciousValue += message.contains("3 months") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
@@ -89,6 +91,9 @@ public class ScamShield {
         if (suspiciousValue > 0) {
             System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted" : ""));
         }
+
+        if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping bots
+            suspiciousValue = 4;
 
         return suspiciousValue;
     }
