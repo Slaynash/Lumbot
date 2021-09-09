@@ -244,7 +244,8 @@ public final class MelonScannerReadPass {
         }
 
         if (line.matches(".*BloonsTD6.*No Compatibility Layer Found!")) {
-            context.errors.add(MelonLoaderError.btd6mh);
+            if (!context.errors.contains(MelonLoaderError.btd6mh))
+                context.errors.add(MelonLoaderError.btd6mh);
             return true;
         }
 

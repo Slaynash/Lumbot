@@ -14,11 +14,8 @@ public class Replies extends Command {
         if (!includeInHelp(event))
             return;
 
-        Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
+        Map<String, String> replies = CommandManager.guildReplies.getOrDefault(event.getGuild().getIdLong(), new HashMap<>());
         String[] parts = paramString.split(" ", 2);
-
-        if (replies == null)
-            replies = new HashMap<>();
 
         if (parts.length == 1) {
             StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
