@@ -32,7 +32,7 @@ public class Kick extends Command {
             return;
         }
 
-        kickMember.kick("Kicked by " + event.getMember().getEffectiveName()).queue();
+        kickMember.kick().reason("Kicked by " + event.getMember().getEffectiveName()).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null)

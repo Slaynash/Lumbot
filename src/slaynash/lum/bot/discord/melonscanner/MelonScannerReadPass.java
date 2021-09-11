@@ -71,7 +71,7 @@ public final class MelonScannerReadPass {
                 ) continue;
 
                 if (compromisedMLCheck(line, context)) {
-                    context.messageReceivedEvent.getMessage().delete().queue();
+                    context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
                     return true;
                 }
 

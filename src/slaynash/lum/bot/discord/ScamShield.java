@@ -160,16 +160,16 @@ public class ScamShield {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() +
                     " for phishing. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
                 if (ssBan)
-                    event.getMember().ban(1, "Banned by Lum's Scam Shield").queue();
+                    event.getMember().ban(1).reason("Banned by Lum's Scam Shield").queue();
                 else
-                    event.getMember().ban(1, "Kicked by Lum's Scam Shield").queue((s) -> event.getGuild().unban(event.getAuthor()).queue());
+                    event.getMember().ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> event.getGuild().unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
             }
             else if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + event.getGuild().getName() +
                     " for phishing. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
-                event.getMember().kick("Kicked by Lum's Scam Shield").queue();
+                event.getMember().kick().reason("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
                 LogCounter.addSSCounter(userId, message, event.getGuild().getId()); // add to status counter
 

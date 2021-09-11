@@ -30,7 +30,7 @@ public class Unban extends Command {
                 event.getMessage().reply("User was not banned!").queue();
                 return;
             }
-            event.getGuild().unban(unbanUser).queue();
+            event.getGuild().unban(unbanUser).reason("Unbanned by " + event.getMember().getEffectiveName()).queue();
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null)

@@ -40,7 +40,7 @@ public class Ban extends Command {
             return;
         }
 
-        banMember.ban(delDays, "Banned by " + event.getMember().getEffectiveName()).queue();
+        banMember.ban(delDays).reason("Banned by " + event.getMember().getEffectiveName()).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null)
