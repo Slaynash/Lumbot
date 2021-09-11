@@ -39,7 +39,12 @@ public class AutoPublish extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!autopublish");
+        return paramString.split(" ", 2)[0].equals(getName());
+    }
+
+    @Override
+    public String getName() {
+        return "l!autopublish";
     }
 
     @Override

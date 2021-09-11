@@ -28,7 +28,7 @@ public class Replies extends Command {
                 if (replies.remove(parts[0].toLowerCase()) != null)
                     event.getMessage().reply("Removed the reply " + parts[0]).queue();
                 else {
-                    event.getMessage().reply("Please do `l!replies <trigger>,<message>`").queue();
+                    event.getMessage().reply("Please do `" + getName() + " <trigger>,<message>`").queue();
                     return;
                 }
             }
@@ -49,7 +49,7 @@ public class Replies extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!replies");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class Replies extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!replies";
     }
 }

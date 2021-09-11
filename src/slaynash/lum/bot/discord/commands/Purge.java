@@ -45,7 +45,7 @@ public class Purge extends Command {
                     }
                     while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
 
-                    if (message.getContentRaw().startsWith("l!purgeu")) {
+                    if (message.getContentRaw().startsWith(getName() + "u")) {
                         messageList.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
                         if (message.getAuthor().getIdLong() != replied.getAuthor().getIdLong())
                             messageList.add(message); // add message back to be removed
@@ -67,7 +67,7 @@ public class Purge extends Command {
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
-                    message.reply("Command is `l!purge #` or reply to the top message.\npurgeu will only remove messages from the user replied to").queue();
+                    message.reply("Command is `" + getName() + " #` or reply to the top message.\n" + getName() + " will only remove messages from the user replied to").queue();
 
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
@@ -130,7 +130,7 @@ public class Purge extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!purge");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -140,11 +140,11 @@ public class Purge extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Purge messages `l!purge #` or reply to the top message - Moderators Only\n\tpurgeu will only remove messages from the user replied to";
+        return "Purge messages `" + getName() + " #` or reply to the top message - Moderators Only\n\t" + getName() + "u will only remove messages from the user replied to";
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!purge";
     }
 }

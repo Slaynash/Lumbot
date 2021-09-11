@@ -22,13 +22,13 @@ public class VerifyChannelHandlerCommand extends Command {
         else {
             String[] parts = paramString.split(" ", 3);
             if (parts.length != 2) {
-                paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!setverifychannel `roleid`").queue();
+                paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " `roleid`").queue();
             }
             try {
                 Long.parseLong(parts[1]);
             }
             catch (Exception e) {
-                paramMessageReceivedEvent.getChannel().sendMessage("Error: Invalid role id. usage: l!setverifychannel `roleid`").queue();
+                paramMessageReceivedEvent.getChannel().sendMessage("Error: Invalid role id. usage: " + getName() + " `roleid`").queue();
                 return;
             }
 
@@ -40,7 +40,7 @@ public class VerifyChannelHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!setverifychannel");
+        return paramString.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class VerifyChannelHandlerCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!setverifychannel";
     }
 

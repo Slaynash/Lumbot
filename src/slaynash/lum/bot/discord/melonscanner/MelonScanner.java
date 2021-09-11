@@ -783,7 +783,7 @@ public final class MelonScanner {
             if (context.noMods && context.missingMods.size() == 0 && context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
-            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError)) {
+            if (context.noMods && context.missingMods.size() == 0 && !context.preListingMods && context.errors.size() == 0) {
                 long guildID = context.messageReceivedEvent.getGuild().getIdLong();
                 if (guildID == 600298024425619456L)
                     error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";

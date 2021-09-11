@@ -14,7 +14,7 @@ public class TestVRCObfmap extends Command {
         String[] parts = paramString.split(" ");
 
         if (parts.length != 4) {
-            event.getMessage().reply("usage: l!testvrcobfmap <manifestid> <branch> <map url>");
+            event.getMessage().reply("usage: " + getName() + " <manifestid> <branch> <map url>");
             return;
         }
 
@@ -28,7 +28,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!testvrcobfmap");
+        return paramString.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -42,7 +42,7 @@ public class TestVRCObfmap extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!testvrcobfmap";
     }
 

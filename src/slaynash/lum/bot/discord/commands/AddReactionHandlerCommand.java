@@ -25,7 +25,7 @@ public class AddReactionHandlerCommand extends Command {
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
         if (params.length != 4 || !params[1].matches("^[0-9]+$") || (!params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") && !EmojiUtils.containsEmoji(params[2]))) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!reaction <messageid> <reaction> [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
 
@@ -61,7 +61,7 @@ public class AddReactionHandlerCommand extends Command {
             }
             else {
                 if (!params[3].matches("^[0-9]+$")) {
-                    paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!reaction <messageid> <reaction> [roleid]").queue();
+                    paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
                     return;
                 }
 
@@ -96,7 +96,7 @@ public class AddReactionHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals("l!reaction");
+        return pattern.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -105,7 +105,7 @@ public class AddReactionHandlerCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!reaction";
     }
 

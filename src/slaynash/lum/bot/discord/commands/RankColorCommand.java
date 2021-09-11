@@ -20,15 +20,15 @@ public class RankColorCommand extends Command {
     protected void onServer(String command, MessageReceivedEvent event) {
         try {
             if (command.split(" ").length == 1 || (arg = command.split(" ", 2)[1]).equals("help") || !arg.startsWith("#")) {
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: " + getHelpName() + " <hexcolor>\nExemple (pure green): " + getHelpName() + " #00ff00", Color.BLUE)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.BLUE)).queue();
             }
             else if (arg.length() != 7) {
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getHelpName() + " <hexcolor>\nExemple (pure green): " + getHelpName() + " #00ff00", Color.RED)).queue();
+                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
             }
             else {
                 for (char c:arg.substring(1).toCharArray()) {
                     if (!(('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'))) {
-                        event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getHelpName() + " <hexcolor>\nExemple (pure green): " + getHelpName() + " #00ff00", Color.RED)).queue();
+                        event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
                         return;
                     }
                 }
@@ -80,7 +80,7 @@ public class RankColorCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals("l!rankcolor");
+        return pattern.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -90,11 +90,11 @@ public class RankColorCommand extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Set rank color. Example (pure green): " + this.getHelpName() + " #00ff00";
+        return "Set rank color. Example (pure green): " + this.getName() + " #00ff00";
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!rankcolor";
     }
 }

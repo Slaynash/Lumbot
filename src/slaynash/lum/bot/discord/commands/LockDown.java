@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.Objects;
+
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -8,8 +10,6 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
-
-import java.util.Objects;
 
 public class LockDown extends Command {
 
@@ -34,7 +34,7 @@ public class LockDown extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!lockdown");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class LockDown extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!lockdown";
     }
 }

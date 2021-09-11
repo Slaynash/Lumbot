@@ -21,7 +21,7 @@ public class Kick extends Command {
         else {
             String[] parts = paramString.split(" ", 2);
             if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
-                event.getMessage().reply("Usage: reply to user or l!kick <UserID>").queue();
+                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID>").queue();
                 return;
             }
             kickMember = event.getGuild().getMemberById(parts[1]);
@@ -43,7 +43,7 @@ public class Kick extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!kick");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -57,7 +57,7 @@ public class Kick extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!kick";
     }
 }

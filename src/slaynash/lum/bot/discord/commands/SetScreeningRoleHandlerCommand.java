@@ -19,7 +19,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
         if (params.length > 2 || (params.length == 2 && !params[1].matches("^[0-9]+$"))) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: l!setscreeningrole [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " [roleid]").queue();
             return;
         }
 
@@ -44,7 +44,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals("l!setscreeningrole");
+        return pattern.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!setscreeningrole";
     }
 

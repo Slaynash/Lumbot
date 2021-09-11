@@ -11,7 +11,7 @@ public class HelpCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals("l!help");
+        return pattern.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -25,7 +25,7 @@ public class HelpCommand extends Command {
         for (Command cmd : CommandManager.getCommands()) {
             if (/*cmd.getHelpPath() != null && cmd.getHelpPath().equals(path) &&*/ cmd.includeInHelp(event)) {
                 empty = false;
-                helpMessage.append("**").append(cmd.getHelpName()).append("**: ").append(cmd.getHelpDescription()).append("\n");
+                helpMessage.append("**").append(cmd.getName()).append("**: ").append(cmd.getHelpDescription()).append("\n");
             }
         }
         if (!empty) {
@@ -43,7 +43,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!help";
     }
 }

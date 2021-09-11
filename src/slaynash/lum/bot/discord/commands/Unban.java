@@ -16,7 +16,7 @@ public class Unban extends Command {
         User unbanUser;
         String[] parts = paramString.split(" ", 2);
         if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
-            event.getMessage().reply("Usage: l!unban <UserID>").queue();
+            event.getMessage().reply("Usage: " + getName() + " <UserID>").queue();
             return;
         }
         unbanUser = event.getJDA().getUserById(parts[1]);
@@ -42,7 +42,7 @@ public class Unban extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!unban");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -56,7 +56,7 @@ public class Unban extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!unban";
     }
 }

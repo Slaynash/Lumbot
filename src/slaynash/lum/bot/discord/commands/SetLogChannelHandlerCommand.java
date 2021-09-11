@@ -20,7 +20,7 @@ public class SetLogChannelHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!setlogchannel");
+        return paramString.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class SetLogChannelHandlerCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!setlogchannel";
     }
 

@@ -45,13 +45,13 @@ public class SetVRCBuild extends Command {
 
         }
         catch (Exception e) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\nl!vrcbuild <build>", Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\n" + getName() + " <build>", Color.RED)).queue();
         }
     }
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!vrcbuild");
+        return paramString.split(" ", 2)[0].equals(getName());
     }
 
     private boolean checkPerms(MessageReceivedEvent event) {
@@ -94,7 +94,7 @@ public class SetVRCBuild extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!vrcbuild";
     }
 

@@ -18,7 +18,7 @@ public class MLHashRegisterCommand extends Command {
             return;
 
         String[] split = paramString.split(" ");
-        String usage = "Usage: l!registermlhash <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
+        String usage = "Usage: " + getName() + " <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
         if (split.length != 5) {
             paramMessageReceivedEvent.getChannel().sendMessage(usage).queue();
             return;
@@ -62,7 +62,7 @@ public class MLHashRegisterCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals("l!registermlhash");
+        return paramString.split(" ", 2)[0].equals(getName());
     }
 
     @Override
@@ -86,7 +86,7 @@ public class MLHashRegisterCommand extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!registermlhash";
     }
 

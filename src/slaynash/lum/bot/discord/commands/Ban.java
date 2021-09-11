@@ -26,7 +26,7 @@ public class Ban extends Command {
         else {
             String[] parts = paramString.split(" ", 3);
             if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
-                event.getMessage().reply("Usage: reply to user or l!ban <UserID> (purge days)").queue();
+                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days)").queue();
                 return;
             }
             if (parts.length == 3 && parts[2].matches("^\\d{1,2}$")) {
@@ -51,7 +51,7 @@ public class Ban extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith("l!ban");
+        return paramString.startsWith(getName());
     }
 
     @Override
@@ -65,7 +65,7 @@ public class Ban extends Command {
     }
 
     @Override
-    public String getHelpName() {
+    public String getName() {
         return "l!ban";
     }
 }
