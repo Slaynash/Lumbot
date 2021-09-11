@@ -18,9 +18,14 @@ public class Replies extends Command {
         String[] parts = paramString.split(" ", 2);
 
         if (parts.length == 1) {
-            StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
-            replies.forEach((k, v) -> sb.append(k.concat(" -> ").concat(v).concat("\n")));
-            event.getMessage().reply(sb.toString()).queue();
+            if (replies.size() > 0) {
+                StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
+                replies.forEach((k, v) -> sb.append(k.concat(" -> ").concat(v).concat("\n")));
+                event.getMessage().reply(sb.toString()).queue();
+            }
+            else {
+                event.getMessage().reply("There are no replies in this guild").queue();
+            }
         }
         else {
             parts = parts[1].split(",");
