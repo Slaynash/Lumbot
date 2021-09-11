@@ -805,7 +805,7 @@ public final class MelonScanner {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
             }
-            else if (context.mlVersion != null && context.loadedMods.size() == 0) {
+            else if (context.mlVersion != null && context.loadedMods.size() == 0 && context.errors.size() == 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
                 context.embedColor = Color.ORANGE;
             }
