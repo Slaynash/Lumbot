@@ -29,12 +29,14 @@ import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetVRCBuild;
+import slaynash.lum.bot.discord.commands.SteamWatcher;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
@@ -127,6 +129,7 @@ public class CommandManager {
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
         CommandManager.registerCommand(new Replies());
+        CommandManager.registerCommand(new SteamWatcher());
 
         CommandManager.registerCommand(new TestVRCObfmap());
     }
@@ -251,6 +254,19 @@ public class CommandManager {
             for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
                     writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
+                }
+            }
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to save Replies", e);
+        }
+    }
+
+    public static void saveSteamWatch() {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("steamwatch.txt"))) {
+            for (Entry<Integer, List<ServerChannel>> reportChannel : Steam.reportChannels.entrySet()) {
+                for (ServerChannel sc : reportChannel.getValue()) {
+                    writer.write(reportChannel.getKey().toString().concat(",").concat(sc.serverID).concat(",").concat(sc.channelId).concat("\n"));
                 }
             }
         }

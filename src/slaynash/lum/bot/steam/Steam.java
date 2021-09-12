@@ -1,6 +1,7 @@
 package slaynash.lum.bot.steam;
 
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -22,9 +23,9 @@ import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.ServerChannel;
 
 public class Steam {
     public static final String LOG_IDENTIFIER = "Steam";
@@ -37,9 +38,9 @@ public class Steam {
     private int tickerHash;
 
     private int previousChangeNumber;
-    private SteamAppDetails vrchatAppDetails;
 
-    private final int gameId = 438100; //VRChat
+    private static final Map<Integer, SteamAppDetails> gameDetails = new HashMap<>();
+    public static final Map<Integer, List<ServerChannel>> reportChannels = new HashMap<>();
 
     public Steam() {
 
@@ -84,8 +85,10 @@ public class Steam {
 
             startChangesRequesterThread();
 
-            if (vrchatAppDetails == null)
-                apps.picsGetProductInfo(gameId, null, false, false);
+            for (Integer gameID : reportChannels.keySet()) {
+                if (gameDetails.get(gameID) == null)
+                    apps.picsGetProductInfo(gameID, null, false, false);
+            }
         });
         callbackManager.subscribe(LoggedOffCallback.class, callback -> {
             if (isLoggedOn) {
@@ -104,19 +107,18 @@ public class Steam {
             previousChangeNumber = callback.getCurrentChangeNumber();
 
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
-                System.out.println("" + changeDataPair.getKey() + ": " + changeDataPair.getValue().getId());
-                if (changeDataPair.getKey() == gameId) {
-
+                Integer gameID = changeDataPair.getKey();
+                System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
+                if (reportChannels.containsKey(gameID)) {
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("New Steam changelist available (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameId + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
-                    MessageEmbed embed = eb.build();
+                    eb.setTitle("New Steam changelist available (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
-                    JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessageEmbeds(embed).queue();
-                    JDAManager.getJDA().getGuildById(816616602887651338L).getTextChannelById(884934353539432529L).sendMessageEmbeds(embed).queue();
-                    JDAManager.getJDA().getGuildById(467219008798720000L).getTextChannelById(597288399287877642L).sendMessageEmbeds(embed).queue();
+                    List<ServerChannel> rchannels = reportChannels.get(gameID);
+                    for (ServerChannel sc : rchannels) {
+                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessageEmbeds(eb.build()).queue();
+                    }
 
-                    apps.picsGetProductInfo(changeDataPair.getKey(), null, false, false);
+                    apps.picsGetProductInfo(gameID, null, false, false);
                 }
             }
 
@@ -125,46 +127,25 @@ public class Steam {
             System.out.println("[PICSProductInfoCallback] apps: ");
             for (Entry<Integer, PICSProductInfo> app : callback.getApps().entrySet()) {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
-                if (app.getKey() != gameId)
+                if (!reportChannels.containsKey(app.getKey()))
                     return;
 
                 printKeyValue(app.getValue().getKeyValues(), 1);
-                /*
-                System.out.println("[PICSProductInfoCallback]  > " + app.getValue().getHttpUri());
-                System.out.println("[PICSProductInfoCallback]  > " + bytesToHex(app.getValue().getShaHash()));
-                System.out.println("[PICSProductInfoCallback]  > " + app.getValue().getKeyValues().toString());
-                */
+                List<ServerChannel> rchannels = reportChannels.get(app.getKey());
+                SteamAppDetails gameDetail = gameDetails.get(app.getKey());
 
-                if (vrchatAppDetails == null) {
-                    vrchatAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
-                    /*
-                    System.out.println("Public Manifest:");
-                    System.out.println(vrchatAppDetails.depots.elements);
-                    System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1));
-                    System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1).manifests);
-                    System.out.println(vrchatAppDetails.depots.elements.get(gameId + 1).manifests.get("public"));
-                    */
-
-
-                    /*
-                    System.out.println("Branches:");
-                    for (Entry<String, SteamAppDetails.SteamAppBranch> branch : vrchatAppDetails.depots.branches.entrySet()) {
-                        System.out.println("[" + branch.getKey() + "]");
-                        System.out.println("    buildid: " + branch.getValue().buildid);
-                        System.out.println("    desc: " + branch.getValue().description);
-                        System.out.println("    time: " + branch.getValue().timeupdated);
-                        System.out.println("    pwd: " + branch.getValue().pwdrequired);
-                    }
-                    */
+                if (gameDetail == null) {
+                    gameDetail = new SteamAppDetails(app.getValue().getKeyValues());
+                    gameDetails.put(app.getKey(), gameDetail);
                     return;
                 }
 
                 SteamAppDetails newAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
-                SteamAppDetails appChanges = SteamAppDetails.compare(vrchatAppDetails, newAppDetails);
+                SteamAppDetails appChanges = SteamAppDetails.compare(gameDetail, newAppDetails);
 
                 if (appChanges != null && appChanges.depots != null && appChanges.depots.branches != null) {
 
-                    Map<String, SteamAppDetails.SteamAppBranch> oldBranches = vrchatAppDetails.depots.branches;
+                    Map<String, SteamAppDetails.SteamAppBranch> oldBranches = gameDetail.depots.branches;
                     Map<String, SteamAppDetails.SteamAppBranch> newBranches = newAppDetails.depots.branches;
                     Map<String, SteamAppDetails.SteamAppBranch> changeBranches = appChanges.depots.branches;
 
@@ -180,7 +161,6 @@ public class Steam {
                                 description.append(" - Description: ").append(branchDetails.description).append("\n");
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
-                            //SteamAppDetails.SteamAppBranch branchDetails = oldBranches.get(changedBranch.getKey());
                             description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
                         }
                         else {
@@ -195,20 +175,17 @@ public class Steam {
                         }
                     }
                     eb.setDescription(description.toString());
-                    MessageEmbed embed = eb.build();
                     MessageBuilder mb = new MessageBuilder();
-                    if (isPublicBranchUpdate)
+                    if (isPublicBranchUpdate) //TODO only for M&C
                         mb.setContent("@everyone");
-                    mb.setEmbeds(embed);
+                    mb.setEmbeds(eb.build());
                     Message message = mb.build();
 
-                    JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessage(message).queue();
-                    JDAManager.getJDA().getGuildById(854071236363550763L /* VRCX */).getTextChannelById(864294859081515009L /* #steam */).sendMessage(message).queue();
-                    JDAManager.getJDA().getGuildById(816616602887651338L).getTextChannelById(884934353539432529L).sendMessage(message).queue();
-                    JDAManager.getJDA().getGuildById(467219008798720000L).getTextChannelById(597288399287877642L).sendMessage(message).queue();
+                    for (ServerChannel sc : rchannels) {
+                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(message).queue();
+                    }
                 }
-
-                vrchatAppDetails = newAppDetails;
+                gameDetails.put(app.getKey(), newAppDetails);
             }
         });
     }
@@ -259,18 +236,6 @@ public class Steam {
         }, "PICS ticker #" + currentHash);
         thread.setDaemon(true);
         thread.start();
-    }
-
-    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
-
-    public static String bytesToHex(byte[] bytes) {
-        byte[] hexChars = new byte[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars, StandardCharsets.UTF_8);
     }
 
 }

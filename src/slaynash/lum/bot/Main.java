@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,6 +42,7 @@ import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
+import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
@@ -79,6 +82,7 @@ public class Main extends ListenerAdapter {
 
         DBConnectionManagerShortUrls.init();
 
+        loadSteamWatch();
         new Steam().start();
 
         loadLogchannelList();
@@ -330,6 +334,26 @@ public class Main extends ListenerAdapter {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Replies", e);
+        }
+    }
+
+    private static void loadSteamWatch() {
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("steamwatch.txt"));
+            String line;
+            String[] parts;
+            while ((line = reader.readLine()) != null) {
+                parts = line.split(",");
+                Integer gameID = Integer.parseInt(parts[0]);
+                List<ServerChannel> rc = Steam.reportChannels.getOrDefault(gameID, new ArrayList<>());
+                rc.add(new ServerChannel(parts[1], parts[2]));
+                Steam.reportChannels.put(gameID, rc);
+            }
+            reader.close();
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to load Steam watch configs", e);
         }
     }
 
