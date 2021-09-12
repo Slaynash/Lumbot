@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class SteamWatcher extends Command {
         }
         Integer gameID = Integer.parseInt(parts[1]);
         ServerChannel sc = null;
-        List<ServerChannel> rc = Steam.reportChannels.get(gameID);
+        List<ServerChannel> rc = Steam.reportChannels.getOrDefault(gameID, new ArrayList<>());
         for (ServerChannel serverChannel : rc) {
             if (Objects.equals(serverChannel.serverID, event.getGuild().getId()) && Objects.equals(serverChannel.channelId, event.getTextChannel().getId())) {
                 sc = serverChannel;

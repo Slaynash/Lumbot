@@ -150,7 +150,7 @@ public class Steam {
                     Map<String, SteamAppDetails.SteamAppBranch> changeBranches = appChanges.depots.branches;
 
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("Depot" + (changeBranches.size() > 0 ? "s" : "") + " updated");
+                    eb.setTitle(gameDetail.common.name + " Depot" + (changeBranches.size() > 0 ? "s" : "") + " updated");
                     StringBuilder description = new StringBuilder();
                     boolean isPublicBranchUpdate = false;
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
