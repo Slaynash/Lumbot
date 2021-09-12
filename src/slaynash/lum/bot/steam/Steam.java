@@ -85,7 +85,10 @@ public class Steam {
 
             startChangesRequesterThread();
 
-            apps.picsGetProductInfo(reportChannels.keySet(), null, false, false);
+            for (Integer gameID : reportChannels.keySet()) {
+                if (gameDetails.get(gameID) == null)
+                    apps.picsGetProductInfo(gameID, null, false, false);
+            }
         });
         callbackManager.subscribe(LoggedOffCallback.class, callback -> {
             if (isLoggedOn) {
