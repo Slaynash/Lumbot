@@ -44,6 +44,10 @@ public class ServerMessagesHandler {
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
+            boolean ping = message.startsWith("l!ping");
+            if (ping) {
+                message = message.substring(6).trim();
+            }
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
@@ -260,10 +264,10 @@ public class ServerMessagesHandler {
                 return;
             }
 
-            if (message.equals("l!ping")) {
+            if (ping) {
                 long processing = new Date().getTime() - inputTime;
-                long ping = event.getJDA().getGatewayPing();
-                event.getChannel().sendMessage("Pong: Lum took " + ping + "milliseconds to response.\nIt took " + processing + " milliseconds to parse the command.").queue();
+                long gatewayPing = event.getJDA().getGatewayPing();
+                event.getChannel().sendMessage("Pong: Lum took " + gatewayPing + "millisecond" + (gatewayPing > 1 ? "s" : "") + " to response.\nIt took " + processing + " millisecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();
             }
         }
         catch (Exception e) {
