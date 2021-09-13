@@ -94,7 +94,7 @@ public class ScamShield {
         }
 
         if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping bots
-            suspiciousValue = 4;
+            suspiciousValue = 69420;
 
         return suspiciousValue;
     }
@@ -109,12 +109,18 @@ public class ScamShield {
             return false;
 
         int suspiciousValue = ssValue(event);
+        boolean massping = false;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
         allMessages.add(event);
+
+        if (suspiciousValue == 69420) {
+            suspiciousValue = 4;
+            massping = true;
+        }
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
@@ -131,7 +137,7 @@ public class ScamShield {
 
         int suspiciousCount = sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.ADMINISTRATOR, Permission.MESSAGE_MANAGE)) {
+        if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
             String reportChannelID = CommandManager.mlReportChannels.get(guildID);
@@ -213,6 +219,9 @@ public class ScamShield {
                     ssQueued = reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
                 else
                     ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
+                if (massping) {
+                    event.getTextChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
+                }
             }
             else {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
@@ -222,6 +231,9 @@ public class ScamShield {
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
             return true;
+        }
+        else if (massping && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server").queue();
         }
         return false;
     }
