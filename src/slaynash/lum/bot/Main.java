@@ -442,9 +442,13 @@ public class Main extends ListenerAdapter {
     public void onGuildJoin(GuildJoinEvent event) {
         CrossServerUtils.checkGuildCount(event);
         try {
-            event.getGuild().getSystemChannel().sendMessage(
-                "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\n"
-                + "If you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>").queue(null, m -> System.out.println("Failed to send message in System channel"));
+            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>";
+            if (event.getGuild().getSystemChannel().canTalk()) {
+                event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
+            }
+            else {
+                event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
+            }
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
                 .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server
         }

@@ -134,8 +134,13 @@ public class ServerMessagesHandler {
                     }
                 }
                 if (postedInWhitelistedServer && !checkIfStaff(event)) {
-                    event.getChannel().sendMessage(memberMention + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
-                    event.getMessage().delete().queue();
+                    if (message.contains("failed to create logs folder")) {
+                        event.getChannel().sendMessage(memberMention + " Please make sure your MelonLoader folder is clear of special characters like `'` or Chinese characters").queue();
+                    }
+                    else {
+                        event.getChannel().sendMessage(memberMention + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
+                        event.getMessage().delete().queue();
+                    }
                     return;
                 }
             }
