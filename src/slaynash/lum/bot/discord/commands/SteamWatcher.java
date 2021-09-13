@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -18,21 +19,36 @@ public class SteamWatcher extends Command {
         if (!includeInHelp(event))
             return;
         String[] parts = paramString.split(" ");
+        String guildID = event.getGuild().getId();
+        String channelID = event.getTextChannel().getId();
         if (parts.length == 1) {
-            event.getMessage().reply("Usage: " + getName() + " <GameID>").queue();
+            boolean found = false;
+            StringBuilder sb = new StringBuilder("Current Steam games being watched:\n");
+            for (Entry<Integer, List<ServerChannel>> gEntry : Steam.reportChannels.entrySet()) {
+                for (ServerChannel sc : gEntry.getValue()) {
+                    if (Objects.equals(sc.serverID, guildID)) {
+                        sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(gEntry.getKey()).append("\n"); //maybe look into sorting by channels
+                        found = true;
+                    }
+                }
+            }
+            if (found)
+                event.getMessage().reply(sb.toString()).queue();
+            else
+                event.getMessage().reply("Usage: " + getName() + " <GameID>").queue();
             return;
         }
         Integer gameID = Integer.parseInt(parts[1]);
         ServerChannel sc = null;
         List<ServerChannel> rc = Steam.reportChannels.getOrDefault(gameID, new ArrayList<>());
         for (ServerChannel serverChannel : rc) {
-            if (Objects.equals(serverChannel.serverID, event.getGuild().getId()) && Objects.equals(serverChannel.channelId, event.getTextChannel().getId())) {
+            if (Objects.equals(serverChannel.serverID, guildID) && Objects.equals(serverChannel.channelId, channelID)) {
                 sc = serverChannel;
                 break;
             }
         }
         if (sc == null) {
-            rc.add(new ServerChannel(event.getGuild().getId(), event.getTextChannel().getId()));
+            rc.add(new ServerChannel(guildID, channelID));
             event.getMessage().reply("Added gameID " + gameID + " to Steam Watch").queue();
         }
         else {
