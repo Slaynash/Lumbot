@@ -391,7 +391,7 @@ public class ServerMessagesHandler {
         String content = event.getMessage().getContentRaw().toLowerCase();
         StringBuilder sb = new StringBuilder();
         if (event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getMember() != null)
-            sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat("\n\n"));
+            sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat(":\n"));
         for (String reply : replies.keySet()) {
             if (content.contains(reply)) {
                 sb.append(replies.get(reply));

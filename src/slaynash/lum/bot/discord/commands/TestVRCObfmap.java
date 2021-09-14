@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord.commands;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.VRChatVersionComparer;
 import slaynash.lum.bot.discord.Command;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class TestVRCObfmap extends Command {
 
@@ -33,7 +34,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().getIdLong() == 145556654241349632L); // Slaynash
+        return CrossServerUtils.isLumDev(event.getMember());
     }
 
     @Override

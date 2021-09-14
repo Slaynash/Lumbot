@@ -120,28 +120,19 @@ public class Main extends ListenerAdapter {
                 .queue();
 
         try {
+            OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
+                new Command.Choice("conversions binaire", "binconv"),
+                new Command.Choice("boucles", "boucles"),
+                new Command.Choice("Master Theorem", "mthm"),
+                new Command.Choice("TAS", "tas"),
+                new Command.Choice("AVL", "avl"));
             JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
                 .addSubcommands(
                     new SubcommandData("create", "Génère un exercice")
-                        .addOptions(
-                            new OptionData(OptionType.STRING, "type", "Type d'exercice", true)
-                                .addChoices(
-                                    new Command.Choice("conversions binaire", "binconv"),
-                                    new Command.Choice("boucles", "boucles"),
-                                    new Command.Choice("Master Theorem", "mthm"),
-                                    new Command.Choice("TAS", "tas"),
-                                    new Command.Choice("AVL", "avl")
-                                ))
+                        .addOptions(optionUCBLLIF)
                     .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
                 .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
-                    .addOptions(new OptionData(OptionType.STRING, "type", "Type d'exercice", true)
-                        .addChoices(
-                            new Command.Choice("conversions binaire", "binconv"),
-                            new Command.Choice("boucles", "boucles"),
-                            new Command.Choice("Master Theorem", "mthm"),
-                            new Command.Choice("TAS", "tas"),
-                            new Command.Choice("AVL", "avl")
-                        ))
+                    .addOptions(optionUCBLLIF)
                     .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
                 .setDefaultEnabled(true)
                 .queue();
@@ -474,7 +465,7 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildJoin(GuildJoinEvent event) {
+    public void onGuildJoin(@NotNull GuildJoinEvent event) {
         CrossServerUtils.checkGuildCount(event);
         try {
             String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>";

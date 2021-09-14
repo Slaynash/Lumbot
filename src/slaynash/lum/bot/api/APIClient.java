@@ -152,7 +152,7 @@ public class APIClient {
     }
 
     private String readInLine() throws IOException {
-        char c = (char) -1;
+        char c;
         StringBuilder s = new StringBuilder();
         do {
             c = (char) inputStream.read();

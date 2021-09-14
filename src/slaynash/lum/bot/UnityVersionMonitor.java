@@ -93,7 +93,7 @@ public class UnityVersionMonitor {
                     if (line.isEmpty() || line.contains("Samsung"))
                         continue;
 
-                    int hrefIdentifierIndex = -1;
+                    int hrefIdentifierIndex;
                     if ((hrefIdentifierIndex = line.indexOf(hrefIdentifier)) < 0)
                         continue;
 
@@ -103,7 +103,7 @@ public class UnityVersionMonitor {
 
                     String subline = line.substring(hrefIdentifierIndex + hrefIdentifier.length());
                     String foundUrl = "https://download.unity3d.com/" + subline.split("\"", 2)[0];
-                    int extensionIndex = -1;
+                    int extensionIndex;
                     if ((extensionIndex = subline.indexOf(".exe")) < 0)
                         continue;
 

@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class SetScreeningRoleHandlerCommand extends Command {
 
@@ -49,7 +50,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || event.getMember().getId().equals("145556654241349632"));
+        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || CrossServerUtils.isLumDev(event.getMember()));
     }
 
     @Override

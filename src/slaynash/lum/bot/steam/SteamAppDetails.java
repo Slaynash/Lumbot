@@ -36,7 +36,7 @@ public class SteamAppDetails {
         SteamAppDetails ret = new SteamAppDetails();
         boolean changed = false;
 
-        changed |= (ret.depots = SteamAppDepots.compare(oldDetails.depots, newDetails.depots)) != null;
+        changed = (ret.depots = SteamAppDepots.compare(oldDetails.depots, newDetails.depots)) != null;
 
         return changed ? ret : null;
     }
@@ -96,7 +96,7 @@ public class SteamAppDetails {
                 if (!newDepots.branches.containsKey(oldBranch.getKey()))
                     changeBranches.put(oldBranch.getKey(), oldBranch.getValue());
             }
-            changed |= (ret.branches = changeBranches.size() > 0 ? changeBranches : null) != null;
+            changed = (ret.branches = changeBranches.size() > 0 ? changeBranches : null) != null;
 
             Map<Integer, SteamAppDepot> changeElements = new HashMap<>();
             for (Entry<Integer, SteamAppDepot> newElementEntries : newDepots.elements.entrySet()) {
@@ -142,7 +142,7 @@ public class SteamAppDetails {
             SteamAppDepot ret = new SteamAppDepot();
             boolean changed = false;
 
-            changed |= (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
+            changed = (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
 
             Map<String, Long> changeManifests = new HashMap<>();
             for (Entry<String, Long> newManifestEntries : newDepot.manifests.entrySet()) {
@@ -193,7 +193,7 @@ public class SteamAppDetails {
             SteamAppBranch ret = new SteamAppBranch();
             boolean changed = false;
 
-            changed |= (ret.buildid = (oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1)) != -1;
+            changed = (ret.buildid = (oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1)) != -1;
             changed |= (ret.description = (!isStringEquals(oldBranch.description, newBranch.description) ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null)) != null;
             changed |= (ret.timeupdated = (oldBranch.timeupdated != newBranch.timeupdated ? newBranch.timeupdated : -1)) != -1;
             changed |= (ret.pwdrequired = (oldBranch.pwdrequired != newBranch.pwdrequired ? (newBranch.pwdrequired != null ? newBranch.pwdrequired : oldBranch.pwdrequired) : null)) != null;
