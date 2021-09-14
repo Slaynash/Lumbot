@@ -35,6 +35,8 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -451,6 +453,16 @@ public class Main extends ListenerAdapter {
             }
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
                 .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server
+
+            if (event.getGuild().getIdLong() == 624635229222600717L) {
+                event.getGuild().upsertCommand("exolifap4", "Génère ou affiche le corrigé d'un exercice de LIFAP4")
+                    .addSubcommands(new SubcommandData("create", "Génère un exercice de LIFAP4")
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
+                    .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice de LIFAP4")
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", true))
+                    .setDefaultEnabled(false)
+                    .queue();
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);

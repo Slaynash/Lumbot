@@ -32,7 +32,6 @@ import slaynash.lum.bot.discord.commands.SetVRCBuild;
 import slaynash.lum.bot.discord.commands.SteamWatcher;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.Unban;
-import slaynash.lum.bot.discord.commands.UnivLIFASR4ExerciceGenerator;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
@@ -133,8 +132,6 @@ public class CommandManager {
         CommandManager.registerCommand(new SteamWatcher());
 
         CommandManager.registerCommand(new TestVRCObfmap());
-        
-        CommandManager.registerCommand(new UnivLIFASR4ExerciceGenerator());
     }
 
 
