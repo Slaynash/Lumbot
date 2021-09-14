@@ -35,7 +35,9 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
@@ -116,6 +118,37 @@ public class Main extends ListenerAdapter {
                 .getTextChannelById(808076226064941086L)
                 .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
                 .queue();
+
+        try {
+            JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
+                .addSubcommands(
+                    new SubcommandData("create", "Génère un exercice")
+                        .addOptions(
+                            new OptionData(OptionType.STRING, "type", "Type d'exercice", true)
+                                .addChoices(
+                                    new Command.Choice("conversions binaire", "binconv"),
+                                    new Command.Choice("boucles", "boucles"),
+                                    new Command.Choice("Master Theorem", "mthm"),
+                                    new Command.Choice("TAS", "tas"),
+                                    new Command.Choice("AVL", "avl")
+                                ))
+                    .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
+                .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
+                    .addOptions(new OptionData(OptionType.STRING, "type", "Type d'exercice", true)
+                        .addChoices(
+                            new Command.Choice("conversions binaire", "binconv"),
+                            new Command.Choice("boucles", "boucles"),
+                            new Command.Choice("Master Theorem", "mthm"),
+                            new Command.Choice("TAS", "tas"),
+                            new Command.Choice("AVL", "avl")
+                        ))
+                    .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
+                .setDefaultEnabled(true)
+                .queue();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
+        }
 
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
@@ -453,16 +486,6 @@ public class Main extends ListenerAdapter {
             }
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
                 .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server
-
-            if (event.getGuild().getIdLong() == 624635229222600717L) {
-                event.getGuild().upsertCommand("exolifap4", "Génère ou affiche le corrigé d'un exercice de LIFAP4")
-                    .addSubcommands(new SubcommandData("create", "Génère un exercice de LIFAP4")
-                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
-                    .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice de LIFAP4")
-                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", true))
-                    .setDefaultEnabled(true)
-                    .queue();
-            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);

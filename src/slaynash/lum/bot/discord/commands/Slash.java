@@ -10,7 +10,7 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
-import slaynash.lum.bot.discord.slashs.UnivLIFASR4ExerciceGenerator;
+import slaynash.lum.bot.discord.slashs.UnivUCBLLIFExoGenerator;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Slash {
@@ -23,8 +23,8 @@ public class Slash {
             String guildID = event.getOptionsByName("guild").get(0).getAsString();
             sendReply(event, guildID);
         }
-        else if (event.getName().equals("exolifap4")) {
-            new UnivLIFASR4ExerciceGenerator().onCommand(event);
+        else if (event.getName().equals("exo")) {
+            new UnivUCBLLIFExoGenerator().onCommand(event);
         }
     }
 

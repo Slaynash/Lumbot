@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public class UnivLIFASR4ExerciceGenerator {
+public class UnivUCBLLIFExoGenerator {
 
     Random rand = new Random();
 
@@ -31,7 +31,8 @@ public class UnivLIFASR4ExerciceGenerator {
 
         event.deferReply().queue(success -> interactionhook = success);
 
-        String ticket = event.getOptions().size() > 0 ? event.getOptions().get(0).getAsString() : null;
+        String exo = event.getOptions().get(0).getAsString();
+        String ticket = event.getOptions().size() > 1 ? event.getOptions().get(1).getAsString() : null;
 
         String subcommandname = event.getSubcommandName();
 
@@ -42,7 +43,7 @@ public class UnivLIFASR4ExerciceGenerator {
 
         HttpRequest request = HttpRequest.newBuilder()
             .GET()
-            .uri(URI.create("https://liris.cnrs.fr/vincent.nivoliers/suzette.php?exo=binconv&query=" + subcommandname + (ticket != null ? ("&ticket=" + ticket) : "")))
+            .uri(URI.create("https://liris.cnrs.fr/vincent.nivoliers/suzette.php?exo=" + exo + "&query=" + subcommandname + (ticket != null ? ("&ticket=" + ticket) : "")))
             .setHeader("User-Agent", "LUM Bot")
             .timeout(Duration.ofSeconds(30))
             .build();
