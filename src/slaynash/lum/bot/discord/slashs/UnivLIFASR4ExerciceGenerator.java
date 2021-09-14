@@ -36,7 +36,7 @@ public class UnivLIFASR4ExerciceGenerator {
         String subcommandname = event.getSubcommandName();
 
         if (!subcommandname.equals("create") && !subcommandname.equals("solve")) {
-            event.getChannel().sendMessage("Invalid subcommand name: " + event.getSubcommandName()).queue();
+            interactionhook.sendMessage("Invalid subcommand name: " + event.getSubcommandName()).queue();
             return;
         }
 
@@ -61,9 +61,13 @@ public class UnivLIFASR4ExerciceGenerator {
 
         System.out.println("cnrs returned: " + data);
 
+        String ticketReturned = data.split("\"ticket\": \"", 2)[1].split("\",", 2)[0];
         String imageDataStr = data.split("\"data\": \"", 2)[1].split("\"}", 2)[0];
         byte[] imageData = Base64.getDecoder().decode(imageDataStr);
 
-        interactionhook.sendFile(imageData, "exercice_" + ticket + ".png").queue();
+        if (!ticketReturned.equals(ticket))
+            interactionhook.sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
+        else
+            interactionhook.sendFile(imageData, "exercice_" + ticketReturned + ".png").queue();
     }
 }
