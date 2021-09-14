@@ -460,7 +460,7 @@ public class Main extends ListenerAdapter {
                         .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
                     .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice de LIFAP4")
                         .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", true))
-                    .setDefaultEnabled(false)
+                    .setDefaultEnabled(true)
                     .queue();
             }
         }
