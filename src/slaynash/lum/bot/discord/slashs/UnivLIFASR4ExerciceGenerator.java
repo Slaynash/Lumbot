@@ -26,7 +26,9 @@ public class UnivLIFASR4ExerciceGenerator {
     public void onCommand(SlashCommandEvent event) {
         // ₁₂₃₄₅₆₇₈₉
 
-        String ticket = event.getOptions().get(0).getAsString();
+        event.deferReply().queue();
+
+        String ticket = event.getOptions().size() > 0 ? event.getOptions().get(0).getAsString() : null;
 
         String subcommandname = event.getSubcommandName();
 
@@ -59,6 +61,6 @@ public class UnivLIFASR4ExerciceGenerator {
         String imageDataStr = data.split("\"data\": \"", 2)[1].split("\"}", 2)[0];
         byte[] imageData = Base64.getDecoder().decode(imageDataStr);
 
-        event.getChannel().sendFile(imageData, "exercice_" + ticket + ".png").queue();
+        event.reply("").addFile(imageData, "exercice_" + ticket + ".png").queue();
     }
 }
