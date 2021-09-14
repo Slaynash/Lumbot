@@ -41,6 +41,8 @@ public class UnivUCBLLIFExoGenerator {
             return;
         }
 
+        System.out.println("exo: " + exo);
+
         HttpRequest request = HttpRequest.newBuilder()
             .GET()
             .uri(URI.create("https://liris.cnrs.fr/vincent.nivoliers/suzette.php?exo=" + exo + "&query=" + subcommandname + (ticket != null ? ("&ticket=" + ticket) : "")))
