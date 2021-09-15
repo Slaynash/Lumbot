@@ -178,9 +178,8 @@ public class ChattyLum {
 
     private static boolean handleThanks(String message, MessageReceivedEvent event) {
         if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-            message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.contains("tysm") || message.equals("ty") ||
-            message.contains(" ty ") || message.contains("fixed") || message.matches("(^|.*\\s)rad(.*)") || message.contains("that bot") ||
-            message.contains("this bot") || message.contains("awesome") || message.contains(" wow ")
+            message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.matches(".*\\bty(|sm)\\b.*") ||
+            message.contains("fixed") || message.matches(".*\\brad.*") || message.contains("that bot") || message.contains("this bot") || message.contains("awesome") || message.matches(".*\\bwow\\b.*")
         ) {
             if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event)) {
                 System.out.println("Thanks was detected");

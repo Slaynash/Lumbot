@@ -33,7 +33,11 @@ public class ServerMessagesHandler {
         try {
             long inputTime = new Date().getTime();
             handleAP(event);
-            if (event.getAuthor().isBot()) return;
+            CommandManager.runAsServer(event);
+            if (event.getAuthor().isBot()) {
+                handleReplies(event);
+                return;
+            }
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
             boolean[] defaultConfig = new boolean[GuildConfigurations.ConfigurationMap.values().length];
@@ -57,8 +61,6 @@ public class ServerMessagesHandler {
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
-
-            CommandManager.runAsServer(event);
 
             if (!event.getTextChannel().canTalk())
                 return;

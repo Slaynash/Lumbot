@@ -111,7 +111,7 @@ public class Steam {
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
                 if (reportChannels.containsKey(gameID)) {
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("New Steam changelist available (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
+                    eb.setTitle("New Steam changelist from " + gameID + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
                     List<ServerChannel> rchannels = reportChannels.get(gameID);
                     for (ServerChannel sc : rchannels) {
