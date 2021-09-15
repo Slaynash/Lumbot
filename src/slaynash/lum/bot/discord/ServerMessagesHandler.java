@@ -387,6 +387,7 @@ public class ServerMessagesHandler {
     }
 
     private static boolean handleReplies(MessageReceivedEvent event) {
+        if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
         Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
         String content = event.getMessage().getContentRaw().toLowerCase();
