@@ -14,18 +14,43 @@ public class Replies extends Command {
         if (!includeInHelp(event))
             return;
 
+        Map<String, String> regexReplies = CommandManager.guildRegexReplies.getOrDefault(event.getGuild().getIdLong(), new HashMap<>());
         Map<String, String> replies = CommandManager.guildReplies.getOrDefault(event.getGuild().getIdLong(), new HashMap<>());
         String[] parts = paramString.split(" ", 2);
 
         if (parts.length == 1) {
-            if (replies.size() > 0) {
+            if (replies.size() > 0 || regexReplies.size() > 0) {
                 StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
                 replies.forEach((k, v) -> sb.append(k.concat(" -> ").concat(v).concat("\n")));
+                regexReplies.forEach((k, v) -> sb.append(k.concat(" -> ").concat(v).concat("\n")));
                 event.getMessage().reply(sb.toString()).queue();
             }
             else {
                 event.getMessage().reply("There are no replies in this guild").queue();
             }
+        }
+        else if (parts[0].startsWith(getName() + "r")) {
+            parts = parts[1].split(",");
+            if (parts.length == 1) {
+                if (regexReplies.remove(parts[0].toLowerCase()) != null)
+                    event.getMessage().reply("Removed the regex " + parts[0]).queue();
+                else {
+                    event.getMessage().reply("Please do `" + getName() + "r <regex>,<message>`").queue();
+                    return;
+                }
+            }
+            else {
+                if (regexReplies.put(parts[0].toLowerCase(), parts[1].trim()) != null) {
+                    event.getMessage().reply("Updated the regex reply " + parts[0]).queue();
+                }
+                else
+                    event.getMessage().reply("Created the regex reply " + parts[0]).queue();
+            }
+            if (regexReplies.size() == 0)
+                CommandManager.guildRegexReplies.remove(event.getGuild().getIdLong());
+            else
+                CommandManager.guildRegexReplies.put(event.getGuild().getIdLong(), regexReplies);
+            CommandManager.saveReplies();
         }
         else {
             parts = parts[1].split(",");

@@ -352,9 +352,17 @@ public class Main extends ListenerAdapter {
             String[] parts;
             while ((line = reader.readLine()) != null) {
                 parts = line.split(",", 3);
-                Map<String, String> tempReplies = CommandManager.guildReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
-                tempReplies.put(parts[1], parts[2].replace("&#10;", "\n"));
-                CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
+                if (parts[0].startsWith("regex")) {
+                    parts[0] = parts[0].substring(5);
+                    Map<String, String> tempReplies = CommandManager.guildRegexReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
+                    tempReplies.put(parts[1], parts[2].replace("&#10;", "\n"));
+                    CommandManager.guildRegexReplies.put(Long.parseLong(parts[0]), tempReplies);
+                }
+                else {
+                    Map<String, String> tempReplies = CommandManager.guildReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
+                    tempReplies.put(parts[1], parts[2].replace("&#10;", "\n"));
+                    CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
+                }
             }
             reader.close();
         }

@@ -55,6 +55,7 @@ public class CommandManager {
     public static final List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
+    public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
     public static final List<String> brokenMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
@@ -254,6 +255,11 @@ public class CommandManager {
             for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
                     writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
+                }
+            }
+            for (Entry<Long, Map<String, String>> guilds : guildRegexReplies.entrySet()) {
+                for (Entry<String, String> reply : guilds.getValue().entrySet()) {
+                    writer.write("regex".concat(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n"))));
                 }
             }
         }

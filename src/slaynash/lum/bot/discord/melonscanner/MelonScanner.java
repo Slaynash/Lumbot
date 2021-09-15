@@ -398,6 +398,9 @@ public final class MelonScanner {
                 case "VRChat":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
                     break;
+                case "Wobbly Life":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/887755823038754886/Wobbly_Life.png");
+                    break;
                 default:
             }
         }

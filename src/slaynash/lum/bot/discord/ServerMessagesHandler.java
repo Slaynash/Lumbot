@@ -387,18 +387,29 @@ public class ServerMessagesHandler {
     }
 
     private static boolean handleReplies(MessageReceivedEvent event) {
+        Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
-        if (replies == null)
-            return false;
         String content = event.getMessage().getContentRaw().toLowerCase();
         StringBuilder sb = new StringBuilder();
         if (event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getMember() != null)
             sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat(":\n"));
-        for (String reply : replies.keySet()) {
-            if (content.contains(reply)) {
-                sb.append(replies.get(reply));
-                event.getMessage().reply(sb.toString()).queue();
-                return true;
+
+        if (regexReplies != null) {
+            for (String reply : regexReplies.keySet()) {
+                if (content.matches(reply)) {
+                    sb.append(regexReplies.get(reply));
+                    event.getMessage().reply(sb.toString()).queue();
+                    return true;
+                }
+            }
+        }
+        if (replies != null) {
+            for (String reply : replies.keySet()) {
+                if (content.contains(reply)) {
+                    sb.append(replies.get(reply));
+                    event.getMessage().reply(sb.toString()).queue();
+                    return true;
+                }
             }
         }
         return false;

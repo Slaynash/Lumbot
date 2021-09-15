@@ -22,7 +22,6 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerChannel;
@@ -176,13 +175,13 @@ public class Steam {
                     }
                     eb.setDescription(description.toString());
                     MessageBuilder mb = new MessageBuilder();
-                    if (isPublicBranchUpdate) //TODO only for M&C
-                        mb.setContent("@everyone");
                     mb.setEmbeds(eb.build());
-                    Message message = mb.build();
 
                     for (ServerChannel sc : rchannels) {
-                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(message).queue();
+                        if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
+                            mb.setContent("@everyone");
+                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).queue();
+                        mb.setContent("");
                     }
                 }
                 gameDetails.put(app.getKey(), newAppDetails);
