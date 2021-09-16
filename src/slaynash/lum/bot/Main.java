@@ -121,10 +121,10 @@ public class Main extends ListenerAdapter {
 
         try {
             OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
-                new Command.Choice("conversions binaire", "binconv"),
-                new Command.Choice("boucles", "boucles"),
+                new Command.Choice("Conversions binaire", "binconv"),
+                new Command.Choice("Boucles", "loops"),
                 new Command.Choice("Master Theorem", "mthm"),
-                new Command.Choice("TAS", "tas"),
+                new Command.Choice("Tas", "heap"),
                 new Command.Choice("AVL", "avl"));
             JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
                 .addSubcommands(
