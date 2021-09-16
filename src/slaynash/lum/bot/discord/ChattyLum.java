@@ -143,7 +143,7 @@ public class ChattyLum {
         if (!(hasLum || refLum))
             return false;
 
-        if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|(head)?p([ea])t)\\b.*")) {
+        if (message.matches(".*\\b(good|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|p([ea])t|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
@@ -177,10 +177,7 @@ public class ChattyLum {
     }
 
     private static boolean handleThanks(String message, MessageReceivedEvent event) {
-        if (message.contains("thank") || message.contains("thx") || message.contains("neat") || message.contains("cool") || message.contains("nice") ||
-            message.contains("helpful") || message.contains("epic") || message.contains("worked") || message.matches(".*\\bty(|sm)\\b.*") ||
-            message.contains("fixed") || message.matches(".*\\brad.*") || message.contains("that bot") || message.contains("this bot") || message.contains("awesome") || message.matches(".*\\bwow\\b.*")
-        ) {
+        if (message.matches(".*\\b(th(ank|x)|neat|cool|nice|(?<!(not|n'?t) )help|epic|work(s|ed)|ty(|sm)|fixed|rad.*|th(at|is) bot|awesome|wow)\\b.*")) {
             if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event)) {
                 System.out.println("Thanks was detected");
                 String sentence;
@@ -202,7 +199,7 @@ public class ChattyLum {
     }
 
     private static boolean handleHelp(String message, MessageReceivedEvent event) {
-        if (message.contains("help") && !message.contains("helping") || message.contains("fix") || message.contains("what do "/*i do*/) || message.contains("what should "/*i do*/)) {
+        if (message.matches(".*\\b(help|fix|what (do|should))\\b.*")) {
             if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum"))) {
                 System.out.println("Help was detected");
                 String sentence;
