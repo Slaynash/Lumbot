@@ -35,10 +35,9 @@ public class Kick extends Command {
         kickMember.kick().reason("Kicked by " + event.getMember().getEffectiveName()).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null)
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!").queue();
-        else
-            event.getChannel().sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked!").queue();
+        if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!").allowedMentions(null).queue();
+        event.getChannel().sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked!").queue();
     }
 
     @Override

@@ -167,7 +167,7 @@ public class ServerMessagesHandler {
                 if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg([oe])t|reset|lost|t remember).*) (.*\\b(pins?|password)\\b.*)|(.*\\b(pins?|password)\\b.*) (.*\\b(forg([oe])t|reset|lost|t remember).*)")) {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/)
-                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).queue();
+                        event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null)).allowedMentions(null).queue();
                     else
                         event.getMessage().replyEmbeds(JDAManager.wrapMessageInEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null)).queue();
                     return;
@@ -208,7 +208,7 @@ public class ServerMessagesHandler {
                     else
                         temp = "here";
                     sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest.log`\n- drag and drop that file " + temp + ".\n\nIf you see `MelonLoader.ModHandler.dll` instead of `Latest.log`, Please update MelonLoader to " + MelonScanner.latestMLVersionRelease;
-                    event.getChannel().sendMessage(sendMessage).queue();
+                    event.getChannel().sendMessage(sendMessage).allowedMentions(null).queue();
                     return;
                 }
 
@@ -399,7 +399,7 @@ public class ServerMessagesHandler {
             for (String reply : regexReplies.keySet()) {
                 if (content.matches(reply)) {
                     sb.append(regexReplies.get(reply));
-                    event.getMessage().reply(sb.toString()).queue();
+                    event.getMessage().reply(sb.toString()).allowedMentions(null).queue();
                     return true;
                 }
             }
@@ -408,7 +408,7 @@ public class ServerMessagesHandler {
             for (String reply : replies.keySet()) {
                 if (content.contains(reply)) {
                     sb.append(replies.get(reply));
-                    event.getMessage().reply(sb.toString()).queue();
+                    event.getMessage().reply(sb.toString()).allowedMentions(null).queue();
                     return true;
                 }
             }

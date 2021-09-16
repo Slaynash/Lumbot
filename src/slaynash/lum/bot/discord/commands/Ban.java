@@ -43,10 +43,9 @@ public class Ban extends Command {
         banMember.ban(delDays).reason("Banned by " + event.getMember().getEffectiveName()).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null)
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!").queue();
-        else
-            event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!").queue();
+        if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!").allowedMentions(null).queue();
+        event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!").queue();
     }
 
     @Override
