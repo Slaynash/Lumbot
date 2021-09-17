@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.Collections;
+
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild.Ban;
 import net.dv8tion.jda.api.entities.User;
@@ -34,7 +36,7 @@ public class Unban extends Command {
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))
-                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").allowedMentions(null).queue();
+                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").allowedMentions(Collections.emptyList()).queue();
             event.getChannel().sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned!").queue();
         }).start();
     }
