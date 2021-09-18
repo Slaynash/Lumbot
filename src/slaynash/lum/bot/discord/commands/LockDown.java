@@ -20,6 +20,10 @@ public class LockDown extends Command {
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         Role lockDownRole = event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()));
+        if (!event.getGuild().getSelfMember().canInteract(lockDownRole)) {
+            event.getChannel().sendMessage("I can not interact with the role " + lockDownRole.getName()).queue();
+            return;
+        }
         boolean lockDownState = lockDownRole.hasPermission(Permission.MESSAGE_WRITE);
 
         if (lockDownState)
