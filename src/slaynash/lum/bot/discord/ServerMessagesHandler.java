@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.Normalizer;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -30,9 +29,8 @@ public class ServerMessagesHandler {
 
     private static String fileExt;
 
-    public static void handle(MessageReceivedEvent event) {
+    public static void mainHandle(MessageReceivedEvent event) {
         try {
-            long inputTime = new Date().getTime();
             handleAP(event);
             CommandManager.runAsServer(event);
             if (event.getAuthor().isBot()) {
@@ -49,10 +47,8 @@ public class ServerMessagesHandler {
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
-            boolean ping = message.startsWith("l!ping");
-            if (ping) {
+            if (message.startsWith("l!ping"))
                 message = message.substring(6).trim();
-            }
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
@@ -271,12 +267,6 @@ public class ServerMessagesHandler {
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
                 return;
             }
-
-            if (ping) {
-                long processing = new Date().getTime() - inputTime;
-                long gatewayPing = event.getJDA().getGatewayPing();
-                event.getChannel().sendMessage("Pong: Lum took " + gatewayPing + "millisecond" + (gatewayPing > 1 ? "s" : "") + " to response.\nIt took " + processing + " millisecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();
-            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e);
@@ -285,6 +275,17 @@ public class ServerMessagesHandler {
 
     public static void handle(MessageUpdateEvent event) {
         handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
+    }
+
+    public static void handle(MessageReceivedEvent event) {
+        long inputTime = System.nanoTime();
+        mainHandle(event);
+
+        if (event.getMessage().getContentStripped().toLowerCase().startsWith("l!ping")) {
+            long processing = System.nanoTime() - inputTime;
+            long gatewayPing = event.getJDA().getGatewayPing();
+            event.getChannel().sendMessage("Pong: Ping from Discord " + gatewayPing + "millisecond" + (gatewayPing > 1 ? "s" : "") + ".\nIt took " + processing + " nanosecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();
+        }
     }
 
     /**
