@@ -86,6 +86,7 @@ public class CommandManager {
 
     protected static void runAsServer(MessageReceivedEvent event) {
         String command = event.getMessage().getContentRaw();
+        if (command.startsWith("l!ping")) command = command.substring(6).trim();
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command)) continue;
