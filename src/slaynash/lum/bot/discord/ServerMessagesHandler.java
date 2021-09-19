@@ -401,7 +401,7 @@ public class ServerMessagesHandler {
             for (String reply : regexReplies.keySet()) {
                 if (content.matches(reply)) {
                     sb.append(regexReplies.get(reply));
-                    event.getMessage().reply(sb.toString()).allowedMentions(Collections.emptyList()).queue();
+                    event.getTextChannel().sendMessage(sb.toString()).allowedMentions(Collections.emptyList()).queue();
                     return true;
                 }
             }
@@ -410,7 +410,7 @@ public class ServerMessagesHandler {
             for (String reply : replies.keySet()) {
                 if (content.contains(reply)) {
                     sb.append(replies.get(reply));
-                    event.getMessage().reply(sb.toString()).allowedMentions(Collections.emptyList()).queue();
+                    event.getTextChannel().sendMessage(sb.toString()).allowedMentions(Collections.emptyList()).queue();
                     return true;
                 }
             }

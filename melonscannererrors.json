@@ -238,6 +238,10 @@
                 "error": "emmVRC Dev mode is on. Please make sure that the launch options is cleared."
             },
             {
+                "regex": ".*emmVRC is currently running with developer mode enabled.*",
+                "error": "emmVRC Dev mode is on. Please make sure that the launch options is cleared as this can cause issues."
+            },
+            {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
                 "error": "Please click on the button UI Elements then try to dismiss the emmVRC notifications."
             },

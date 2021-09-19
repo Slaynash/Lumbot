@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.Collections;
 import java.util.Objects;
 
 import net.dv8tion.jda.api.Permission;
@@ -17,6 +18,11 @@ public class LockDown extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!includeInHelp(event))
             return;
+
+        if (event.getGuild().getPublicRole().hasPermission(Permission.MESSAGE_WRITE)) {
+            event.getChannel().sendMessage("@everyone has send message and lockdown will not work").allowedMentions(Collections.emptyList()).queue();
+            return;
+        }
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         Role lockDownRole = event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()));
