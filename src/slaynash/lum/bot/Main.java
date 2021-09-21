@@ -418,7 +418,7 @@ public class Main extends ListenerAdapter {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null) {
-                    event.getGuild().addRoleToMember(event.getMember(), role).queue();
+                    event.getGuild().addRoleToMember(event.getMember(), role).reason("User clicked role reaction").queue();
                     writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to " + event.getUser().getAsMention());
                 }
                 return;
@@ -444,7 +444,7 @@ public class Main extends ListenerAdapter {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null) {
-                    event.getGuild().removeRoleFromMember(event.getUserId(), role).queue();
+                    event.getGuild().removeRoleFromMember(event.getUserId(), role).reason("User removed role reaction").queue();
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
                 return;
@@ -458,7 +458,7 @@ public class Main extends ListenerAdapter {
         if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null)
-                event.getGuild().addRoleToMember(event.getMember(), role).queue();
+                event.getGuild().addRoleToMember(event.getMember(), role).reason("User has agreed to Membership Screening requirements").queue();
         }
     }
 

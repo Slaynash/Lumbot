@@ -1,5 +1,6 @@
 package slaynash.lum.bot.steam;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerChannel;
@@ -180,7 +182,7 @@ public class Steam {
                     for (ServerChannel sc : rchannels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
-                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).queue();
+                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
                         mb.setContent("");
                     }
                 }

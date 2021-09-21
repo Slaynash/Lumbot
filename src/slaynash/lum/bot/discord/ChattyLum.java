@@ -31,7 +31,7 @@ public class ChattyLum {
     };
 
     private static final String[] alreadyHelpedSentencesRare = new String[] {
-        "<https://lmgtfy.app/?q=How+do+I+read>",
+        "<https://letmegooglethat.com/?q=How+do+I+read>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>"
@@ -143,7 +143,7 @@ public class ChattyLum {
         if (!(hasLum || refLum))
             return false;
 
-        if (message.matches(".*\\b(good|best|nice|love(ly)?|cool|cuti?e(st)?|adorable|helped|thank(s)*|p([ea])t|dab)\\b.*")) {
+        if (message.matches(".*\\b(good|best|nice|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
