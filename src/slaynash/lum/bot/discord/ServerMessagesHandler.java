@@ -393,15 +393,11 @@ public class ServerMessagesHandler {
         Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
         String content = event.getMessage().getContentRaw().toLowerCase();
-        StringBuilder sb = new StringBuilder();
-        if (event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getMember() != null)
-            sb.append(event.getMessage().getReferencedMessage().getMember().getEffectiveName().concat(":\n"));
 
         if (regexReplies != null) {
             for (String reply : regexReplies.keySet()) {
-                if (content.matches("(?s)".concat(reply))) {
-                    sb.append(regexReplies.get(reply));
-                    event.getTextChannel().sendMessage(sb.toString()).allowedMentions(Collections.emptyList()).queue();
+                if (content.matches("(?s)".concat(reply))) { //maybe add a %u replacement for replied user
+                    event.getTextChannel().sendMessage(regexReplies.get(reply)).allowedMentions(Collections.emptyList()).queue();
                     return true;
                 }
             }
@@ -409,8 +405,7 @@ public class ServerMessagesHandler {
         if (replies != null) {
             for (String reply : replies.keySet()) {
                 if (content.contains(reply)) {
-                    sb.append(replies.get(reply));
-                    event.getTextChannel().sendMessage(sb.toString()).allowedMentions(Collections.emptyList()).queue();
+                    event.getTextChannel().sendMessage(replies.get(reply)).allowedMentions(Collections.emptyList()).queue();
                     return true;
                 }
             }
