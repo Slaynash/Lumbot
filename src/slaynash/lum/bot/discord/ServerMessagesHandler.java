@@ -399,7 +399,7 @@ public class ServerMessagesHandler {
 
         if (regexReplies != null) {
             for (String reply : regexReplies.keySet()) {
-                if (content.matches(reply)) {
+                if (content.matches("(?s)".concat(reply))) {
                     sb.append(regexReplies.get(reply));
                     event.getTextChannel().sendMessage(sb.toString()).allowedMentions(Collections.emptyList()).queue();
                     return true;
