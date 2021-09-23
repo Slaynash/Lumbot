@@ -97,9 +97,8 @@ public class Purge extends Command {
                         try {
                             int i = 0;
                             while (i < messageList.size() - 1) {
-                                event.getTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size() - 1))).complete();
+                                event.getTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size() - 1))).queue();
                                 i = i + 100;
-                                Thread.sleep(1111); // ratelimited once per second per Guild. I am ignoring the "per guild" part for now.
                             }
                             if (i == messageList.size() - 1) // on the very rare chance that there is only one message left
                                 messageList.get(messageList.size() - 1).delete().queue();

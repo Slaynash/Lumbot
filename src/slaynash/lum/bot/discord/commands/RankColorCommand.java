@@ -35,7 +35,7 @@ public class RankColorCommand extends Command {
                 for (Role r:event.getMember().getRoles()) {
                     Color color = r.getColor();
                     if (r.getColor() != null && r.getName() != null && r.getName().startsWith("#") && r.getName().length() == 7 && r.getName().toLowerCase().equals(String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()))) {
-                        event.getGuild().removeRoleFromMember(event.getMember(), r).complete();
+                        event.getGuild().removeRoleFromMember(event.getMember(), r).queue();
                     }
                 }
                 if (event.getGuild().getRolesByName(arg, true).size() == 0) {
