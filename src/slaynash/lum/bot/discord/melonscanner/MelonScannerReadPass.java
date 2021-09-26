@@ -525,7 +525,10 @@ public final class MelonScannerReadPass {
             //System.out.println("Found non-mod error: " + line);
         }
         else if (line.startsWith("  at ")) {
-            String mod = line.substring(5).split(".")[0];
+            String[] modt = line.substring(5).split(".");
+            if (modt.length == 0)
+                return;
+            String mod = modt[0];
             if (context.modDetails.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod) || (m.aliases != null && Arrays.asList(m.aliases).contains(mod))))
                 if (!context.modsThrowingErrors.contains(mod))
                     context.modsThrowingErrors.add(mod);
