@@ -524,6 +524,12 @@ public final class MelonScannerReadPass {
             context.hasNonModErrors = true;
             //System.out.println("Found non-mod error: " + line);
         }
+        else if (line.startsWith("  at ")) {
+            String mod = line.substring(5).split(".")[0];
+            if (context.modDetails.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod) || (m.aliases != null && Arrays.asList(m.aliases).contains(mod))))
+                if (!context.modsThrowingErrors.contains(mod))
+                    context.modsThrowingErrors.add(mod);
+        }
     }
 
     private static void consoleCopypasteCheck(String line, MelonScanContext context) {

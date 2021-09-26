@@ -143,7 +143,7 @@ public class ChattyLum {
         if (!(hasLum || refLum))
             return false;
 
-        if (message.matches(".*\\b(good|best|nice|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
+        if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
