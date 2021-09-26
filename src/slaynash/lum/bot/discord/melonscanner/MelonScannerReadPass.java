@@ -525,7 +525,7 @@ public final class MelonScannerReadPass {
             //System.out.println("Found non-mod error: " + line);
         }
         else if (line.startsWith("  at ")) {
-            String[] modt = line.substring(5).split(".");
+            String[] modt = line.substring(5).split("\\.");
             if (modt.length == 0)
                 return;
             String mod = modt[0];
