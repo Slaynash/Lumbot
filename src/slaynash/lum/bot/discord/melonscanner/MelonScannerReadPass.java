@@ -529,7 +529,8 @@ public final class MelonScannerReadPass {
             if (modt.length == 0 || context.game == null)
                 return;
             String mod = modt[0];
-            if (MelonScannerApisManager.getMods(context.game).stream().anyMatch(m -> m.name.equalsIgnoreCase(mod) || (m.aliases != null && Arrays.asList(m.aliases).contains(mod))))
+            List<MelonApiMod> mods = MelonScannerApisManager.getMods(context.game);
+            if (mods != null && mods.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod) || (m.aliases != null && Arrays.asList(m.aliases).contains(mod))))
                 if (!context.modsThrowingErrors.contains(mod))
                     context.modsThrowingErrors.add(mod);
         }
