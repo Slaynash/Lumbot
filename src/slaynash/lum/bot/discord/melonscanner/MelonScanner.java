@@ -660,7 +660,7 @@ public final class MelonScanner {
             for (int i = 0; i < context.unknownMods.size() && i < 10; ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
-                if (md.name.equalsIgnoreCase("ReMod") && (context.messageReceivedEvent.getGuild().getIdLong() != 819950183784644618L || context.messageReceivedEvent.getGuild().getIdLong() != 673663870136746046L))
+                if (md.name.equalsIgnoreCase("ReMod") && (context.messageReceivedEvent.getGuild().getIdLong() != 819950183784644618L && context.messageReceivedEvent.getGuild().getIdLong() != 673663870136746046L))
                     context.messageReceivedEvent.getMessage().delete().reason("Log not in ReMod discord").queue();
                 if (!md.version.isBlank())
                     unknowModOut += " " + CrossServerUtils.sanitizeInputString(md.version);
