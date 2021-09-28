@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -530,9 +531,17 @@ public final class MelonScannerReadPass {
                 return;
             String mod = modt[0];
             List<MelonApiMod> mods = MelonScannerApisManager.getMods(context.game);
-            if (mods != null && mods.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod) || (m.aliases != null && Arrays.asList(m.aliases).contains(mod))))
-                if (!context.modsThrowingErrors.contains(mod))
-                    context.modsThrowingErrors.add(mod);
+            if (mods != null) {
+                if (mods.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod))) {
+                    if (!context.modsThrowingErrors.contains(mod))
+                        context.modsThrowingErrors.add(mod);
+                }
+                else {
+                    Optional<MelonApiMod> aliasedMod = mods.stream().filter(m -> m.aliases != null && Arrays.asList(m.aliases).contains(mod)).findFirst();
+                    if (aliasedMod.isPresent() && !context.modsThrowingErrors.contains(aliasedMod.get().name))
+                        context.modsThrowingErrors.add(aliasedMod.get().name);
+                }
+            }
         }
     }
 
