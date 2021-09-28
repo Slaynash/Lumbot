@@ -94,7 +94,7 @@
         },
         {
             "regex": ".*due to: Could not load file or assembly '.*",
-            "error": "Failed to load critical files. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner. Ignore if there is a missing dependencies below."
+            "error": "Failed to load critical files. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner. Make sure that there is no ` (#)` in any mod dll name."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
