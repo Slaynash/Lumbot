@@ -178,12 +178,13 @@ public final class MelonScannerReadPass {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
 
-            if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
-                context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
-
-            context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
-            //if (tmpModAuthor != null)
-            //    modAuthors.put(tmpModName.trim(), tmpModAuthor.trim());
+            if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)) { //ignore BCP, it is part of ModThatIsNotMod
+                if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
+                    context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
+                context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
+                //if (tmpModAuthor != null)
+                //    modAuthors.put(tmpModName.trim(), tmpModAuthor.trim());
+            }
 
             context.tmpModName = null;
             context.tmpModVersion = null;

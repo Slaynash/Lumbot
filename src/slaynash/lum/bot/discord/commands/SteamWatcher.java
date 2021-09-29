@@ -21,6 +21,8 @@ public class SteamWatcher extends Command {
         String[] parts = paramString.split(" ");
         String guildID = event.getGuild().getId();
         String channelID = event.getTextChannel().getId();
+        if (!event.getTextChannel().canTalk())
+            return;
         if (parts.length == 1) {
             boolean found = false;
             StringBuilder sb = new StringBuilder("Current Steam games being watched:\n");
