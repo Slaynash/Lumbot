@@ -255,12 +255,12 @@ public class CommandManager {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("replies.txt"))) {
             for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
-                    writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
+                    writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
                 }
             }
             for (Entry<Long, Map<String, String>> guilds : guildRegexReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
-                    writer.write("regex".concat(guilds.getKey().toString().concat(",").concat(reply.getKey().concat(",").concat(reply.getValue().replace("\n", "&#10;")).concat("\n"))));
+                    writer.write("regex".concat(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n"))));
                 }
             }
         }
