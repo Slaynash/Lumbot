@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ChattyLum {
     public static final String LOG_IDENTIFIER = "ChattyLum";
+    private static final boolean halloween = LocalDate.now().getMonthValue() == 10;
 
     private static class HelpedRecentlyData {
         public final long time;
@@ -125,6 +127,21 @@ public class ChattyLum {
         "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497"
     };
 
+    private static final String[] halloweenHelloLum = new String[] {
+        "<:Neko_mummy:865328473761775627>",
+        "<:Neko_padoru:865328474150797342>",
+        "<:Neko_pumpkin:865328473962053683>"
+    };
+
+    private static final String[] halloweenNiceLum = new String[] {
+        "<:Neko_present:865328471232348190>",
+        "<:Neko_pumpkinlove:865328473441435649>"
+    };
+
+    private static final String[] halloweenBadLum = new String[] {
+        "<:Neko_clown:865328473732415508>",
+        "<:Neko_devil:865328473974374420>"
+    };
 
     private static final Random random = new Random();
 
@@ -145,7 +162,10 @@ public class ChattyLum {
 
         if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
-            event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
+            if (halloween)
+                event.getChannel().sendMessage(halloweenNiceLum[random.nextInt(niceLum.length)]).queue();
+            else
+                event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
         }
 
@@ -157,13 +177,19 @@ public class ChattyLum {
 
         if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid)\\b.*")) {
             System.out.println("Bad Lum was detected");
-            event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
+            if (halloween)
+                event.getChannel().sendMessage(halloweenBadLum[random.nextInt(badLum.length)]).queue();
+            else
+                event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
             return true;
         }
 
         if (message.matches(".*\\b(hello|hi)\\b.*")) {
             System.out.println("Hello Lum was detected");
-            event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+            if (halloween)
+                event.getChannel().sendMessage(halloweenHelloLum[random.nextInt(helloLum.length)]).queue();
+            else
+                event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
             return true;
         }
 
