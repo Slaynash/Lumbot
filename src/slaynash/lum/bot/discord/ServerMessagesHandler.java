@@ -32,11 +32,12 @@ public class ServerMessagesHandler {
     public static void mainHandle(MessageReceivedEvent event) {
         try {
             handleAP(event);
-            CommandManager.runAsServer(event);
             if (event.getAuthor().isBot()) {
-                handleReplies(event);
+                if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong())
+                    handleReplies(event);
                 return;
             }
+            CommandManager.runAsServer(event);
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
             boolean[] defaultConfig = new boolean[GuildConfigurations.ConfigurationMap.values().length];
