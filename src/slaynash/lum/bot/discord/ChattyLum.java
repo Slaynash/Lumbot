@@ -163,7 +163,7 @@ public class ChattyLum {
         if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             if (halloween)
-                event.getChannel().sendMessage(halloweenNiceLum[random.nextInt(niceLum.length)]).queue();
+                event.getChannel().sendMessage(halloweenNiceLum[random.nextInt(halloweenNiceLum.length)]).queue();
             else
                 event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
             return true;
@@ -178,7 +178,7 @@ public class ChattyLum {
         if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid)\\b.*")) {
             System.out.println("Bad Lum was detected");
             if (halloween)
-                event.getChannel().sendMessage(halloweenBadLum[random.nextInt(badLum.length)]).queue();
+                event.getChannel().sendMessage(halloweenBadLum[random.nextInt(halloweenBadLum.length)]).queue();
             else
                 event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
             return true;
@@ -187,7 +187,7 @@ public class ChattyLum {
         if (message.matches(".*\\b(hello|hi)\\b.*")) {
             System.out.println("Hello Lum was detected");
             if (halloween)
-                event.getChannel().sendMessage(halloweenHelloLum[random.nextInt(helloLum.length)]).queue();
+                event.getChannel().sendMessage(halloweenHelloLum[random.nextInt(halloweenHelloLum.length)]).queue();
             else
                 event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
             return true;
