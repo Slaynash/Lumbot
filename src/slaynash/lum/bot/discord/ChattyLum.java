@@ -160,7 +160,7 @@ public class ChattyLum {
         if (!(hasLum || refLum))
             return false;
 
-        if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
+        if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             if (halloween)
                 event.getChannel().sendMessage(halloweenNiceLum[random.nextInt(halloweenNiceLum.length)]).queue();
@@ -204,7 +204,7 @@ public class ChattyLum {
 
     private static boolean handleThanks(String message, MessageReceivedEvent event) {
         if (message.matches(".*\\b(th(ank|x)|neat|cool|nice|(?<!(not|n'?t) )help|epic|work(s|ed)|ty(|sm)|fixed|rad.*|th(at|is) bot|awesome|wow)\\b.*")) {
-            if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event)) {
+            if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event) || message.matches(".*\\blum\\b.*")) {
                 System.out.println("Thanks was detected");
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;

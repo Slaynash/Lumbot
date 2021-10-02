@@ -111,6 +111,7 @@ public class Main extends ListenerAdapter {
         JDAManager.init(ConfigManager.discordToken);
 
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
+        System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
             JDAManager.getJDA()
@@ -145,8 +146,8 @@ public class Main extends ListenerAdapter {
         UnityVersionMonitor.start();
 
         //registerCommands();
+        addMissingRoles();
 
-        System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
         System.out.println("LUM Started!");
     }
 
@@ -432,7 +433,7 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    private void writeLogMessage(Guild guild, String message) {
+    private static void writeLogMessage(Guild guild, String message) {
         String channelId;
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
@@ -466,6 +467,23 @@ public class Main extends ListenerAdapter {
             if (role != null)
                 event.getGuild().addRoleToMember(event.getMember(), role).reason("User has agreed to Membership Screening requirements").queue();
         }
+    }
+
+    private static void addMissingRoles() {
+        CommandManager.autoScreeningRoles.forEach((k, v) -> {
+            Guild guild = JDAManager.getJDA().getGuildById(k);
+            if (guild == null)
+                return;
+            Role role = guild.getRoleById(v);
+            if (role == null)
+                return;
+            guild.getMembers().forEach(m -> {
+                if (!m.isPending() && !m.getRoles().contains(role)) {
+                    guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
+                    System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
+                }
+            });
+        });
     }
 
     @Override
