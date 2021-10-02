@@ -477,6 +477,11 @@ public class Main extends ListenerAdapter {
             Role role = guild.getRoleById(v);
             if (role == null)
                 return;
+            if (!guild.getSelfMember().canInteract(role)) {
+                System.out.println("Lum can not modify role " + role.getName() + " in " + guild.getName() + " " + k);
+                //TODO announce that Lum can not interact with role
+                return;
+            }
             guild.getMembers().forEach(m -> {
                 if (!m.isPending() && !m.getRoles().contains(role)) {
                     guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
