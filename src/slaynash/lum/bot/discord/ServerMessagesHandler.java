@@ -145,9 +145,6 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
-                return;
-
             if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
                 long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
 
@@ -268,6 +265,9 @@ public class ServerMessagesHandler {
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
                 return;
             }
+
+            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
+                return;
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e);
