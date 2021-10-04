@@ -145,7 +145,7 @@ public class Main extends ListenerAdapter {
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
 
-        //registerCommands();
+        registerCommands();
         addMissingRoles();
 
         System.out.println("LUM Started!");
@@ -505,8 +505,8 @@ public class Main extends ListenerAdapter {
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
         CrossServerUtils.checkGuildCount(event);
         try {
-            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled use the command `/config` or contact us in Slaynash's server <https://discord.gg/akFkAG2>";
-            if (event.getGuild().getSystemChannel().canTalk()) {
+            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>";
+            if (event.getGuild().getSystemChannel() != null && event.getGuild().getSystemChannel().canTalk()) {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
             else {
@@ -539,15 +539,17 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-    /*
+
     private static void registerCommands() {
         Guild loopGuild = null;
         try {
             JDAManager.getJDA().setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
-            JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons")
-                .addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
+            // JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons").addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
             for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
                 loopGuild = tempGuild;
+                List<Command> commands = loopGuild.retrieveCommands().complete();
+                if (commands.stream().anyMatch(c -> c.getName().equals("config")))
+                    continue;
                 try {
                     long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
@@ -559,10 +561,10 @@ public class Main extends ListenerAdapter {
         }
         catch (Exception e) {
             ExceptionUtils.reportException(
-                "Error registering command for " + loopGuild.getName() + " :", e);
+                "Error registering command for " + loopGuild.getName(), e);
         }
     }
-    */
+
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {
