@@ -288,6 +288,7 @@
         "PlayerVolumeControl": "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder.",
         "PortableMirror": "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it.",
         "Portal Confirmation": "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it.",
+        "USpeakerPlaybackDelayFix": "USpeakerPlaybackDelayFix is no longer needed as this bug is now fixed in VRChat.",
         "YoutubeDLUpdater": "YoutubeDLUpdater is no longer needed and should be removed.",
 
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
