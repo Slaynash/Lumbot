@@ -145,7 +145,7 @@ public class Main extends ListenerAdapter {
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
 
-        registerCommands();
+        //registerCommands();
         addMissingRoles();
 
         System.out.println("LUM Started!");
@@ -485,7 +485,7 @@ public class Main extends ListenerAdapter {
             guild.getMembers().forEach(m -> {
                 if (!m.isPending() && !m.getRoles().contains(role)) {
                     try {
-                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
+                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, null);
                         System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
                     }
                     catch (Exception ignored) {
@@ -543,7 +543,7 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-
+    /*
     private static void registerCommands() {
         Guild loopGuild = null;
         try {
@@ -568,7 +568,7 @@ public class Main extends ListenerAdapter {
                 "Error registering command for " + loopGuild.getName(), e);
         }
     }
-
+    */
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {
