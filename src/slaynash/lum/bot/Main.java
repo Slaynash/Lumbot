@@ -484,8 +484,12 @@ public class Main extends ListenerAdapter {
             }
             guild.getMembers().forEach(m -> {
                 if (!m.isPending() && !m.getRoles().contains(role)) {
-                    guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
-                    System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
+                    try {
+                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
+                        System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
+                    }
+                    catch (Exception ignored) {
+                    }
                 }
             });
         });
@@ -547,10 +551,10 @@ public class Main extends ListenerAdapter {
             // JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons").addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
             for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
                 loopGuild = tempGuild;
-                List<Command> commands = loopGuild.retrieveCommands().complete();
-                if (commands.stream().anyMatch(c -> c.getName().equals("config")))
-                    continue;
                 try {
+                    List<Command> commands = loopGuild.retrieveCommands().complete();
+                    if (commands.stream().anyMatch(c -> c.getName().equals("config")))
+                        continue;
                     long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
                     loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
                 }
