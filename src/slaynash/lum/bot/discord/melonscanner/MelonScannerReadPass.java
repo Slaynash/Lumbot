@@ -20,6 +20,8 @@ public final class MelonScannerReadPass {
             ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
             return false;
         }
+        if (context.attachment.getSize() > 5000000)
+            return false;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";
