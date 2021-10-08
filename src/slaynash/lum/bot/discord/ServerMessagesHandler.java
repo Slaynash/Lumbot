@@ -7,6 +7,7 @@ import java.security.MessageDigest;
 import java.text.Normalizer;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -35,6 +36,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong())
                     handleReplies(event);
+                tickettool(event);
                 return;
             }
             CommandManager.runAsServer(event);
@@ -412,5 +414,21 @@ public class ServerMessagesHandler {
             }
         }
         return false;
+    }
+
+    private static void tickettool(MessageReceivedEvent event) {
+        long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
+        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && category == 765058331345420298L /*emmVRC Tickets*/ && (event.getTextChannel().getName().contains("reset") || event.getTextChannel().getName().contains("wipe")) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
+            event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it to your Status or Bio, please send your VRChat username that is displayed above your head in VRChat and a staff will help you.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+        }
+    }
+
+    private static final String AB = "023456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    private static final Random random = new Random();
+    private static String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(random.nextInt(AB.length())));
+        return sb.toString();
     }
 }
