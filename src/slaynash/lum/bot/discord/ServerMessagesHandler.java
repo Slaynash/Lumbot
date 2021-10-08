@@ -419,7 +419,7 @@ public class ServerMessagesHandler {
     private static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && category == 765058331345420298L /*emmVRC Tickets*/ && (event.getTextChannel().getName().contains("reset") || event.getTextChannel().getName().contains("wipe")) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it to your Status or Bio, please send your VRChat username that is displayed above your head in VRChat and a staff will help you.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+            event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it to your Status or Bio, please send your VRChat username as displayed above your head in VRChat and a staff will help you.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
         }
     }
 

@@ -482,10 +482,10 @@ public class Main extends ListenerAdapter {
                 //TODO announce that Lum can not interact with role
                 return;
             }
-            guild.getMembers().forEach(m -> {
+            guild.loadMembers(m -> {
                 if (!m.isPending() && !m.getRoles().contains(role)) {
                     try {
-                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, null);
+                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue();
                         System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
                     }
                     catch (Exception ignored) {
