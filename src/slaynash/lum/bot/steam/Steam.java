@@ -116,7 +116,10 @@ public class Steam {
 
                     List<ServerChannel> rchannels = reportChannels.get(gameID);
                     for (ServerChannel sc : rchannels) {
-                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessageEmbeds(eb.build()).queue();
+                        if (JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).canTalk())
+                            JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessageEmbeds(eb.build()).queue();
+                        else
+                            System.out.println("Lum can't talk in " + JDAManager.getJDA().getGuildById(sc.serverID).getName() + " " + JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).getName());
                     }
 
                     apps.picsGetProductInfo(gameID, null, false, false);
@@ -182,7 +185,8 @@ public class Steam {
                     for (ServerChannel sc : rchannels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
-                        JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
+                        if (JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).canTalk())
+                            JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
                         mb.setContent("");
                     }
                 }
