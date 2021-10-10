@@ -126,7 +126,8 @@ public class Main extends ListenerAdapter {
                 new Command.Choice("Boucles", "loops"),
                 new Command.Choice("Master Theorem", "mthm"),
                 new Command.Choice("Tas", "heap"),
-                new Command.Choice("AVL", "avl"));
+                new Command.Choice("AVL", "avl"),
+                new Command.Choice("Table de vérité", "bintable"));
             JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
                 .addSubcommands(
                     new SubcommandData("create", "Génère un exercice")
