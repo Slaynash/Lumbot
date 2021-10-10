@@ -50,9 +50,9 @@ import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
-import slaynash.lum.bot.discord.commands.Slash;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.slashs.Slash;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
@@ -538,7 +538,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent event) {
-        Slash.buttonUpdate(event);
+        Slash.buttonClick(event);
     }
 
     @Override
