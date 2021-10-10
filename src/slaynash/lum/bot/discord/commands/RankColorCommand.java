@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class RankColorCommand extends Command {
 
@@ -20,15 +20,15 @@ public class RankColorCommand extends Command {
     protected void onServer(String command, MessageReceivedEvent event) {
         try {
             if (command.split(" ").length == 1 || (arg = command.split(" ", 2)[1]).equals("help") || !arg.startsWith("#")) {
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.BLUE)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.BLUE)).queue();
             }
             else if (arg.length() != 7) {
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
             }
             else {
                 for (char c:arg.substring(1).toCharArray()) {
                     if (!(('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'))) {
-                        event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
+                        event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
                         return;
                     }
                 }
@@ -69,7 +69,7 @@ public class RankColorCommand extends Command {
             }
         }
         catch (Exception e) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("An error has occurred:\n" + e + "\n at " + e.getStackTrace()[0], Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("An error has occurred:\n" + e + "\n at " + e.getStackTrace()[0], Color.RED)).queue();
         }
     }
 

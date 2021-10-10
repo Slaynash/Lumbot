@@ -57,6 +57,7 @@ import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 
 public class Main extends ListenerAdapter {
@@ -75,7 +76,7 @@ public class Main extends ListenerAdapter {
             jda
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum is shutting down", Color.orange))
+                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                 .complete();
 
             MelonScanner.shutdown();
@@ -117,7 +118,7 @@ public class Main extends ListenerAdapter {
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
                 .queue();
 
         try {
@@ -439,7 +440,7 @@ public class Main extends ListenerAdapter {
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
                 if (c.getId().equals(channelId)) {
-                    c.sendMessageEmbeds(JDAManager.wrapMessageInEmbed(message, Color.gray)).queue();
+                    c.sendMessageEmbeds(Utils.wrapMessageInEmbed(message, Color.gray)).queue();
                     break;
                 }
             }

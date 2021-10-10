@@ -25,7 +25,6 @@ import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ArrayUtils;
@@ -828,8 +827,8 @@ public final class MelonScanner {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
             event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
-                    JDAManager.wrapMessageInEmbed(
-                            "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                Utils.wrapMessageInEmbed(
+                        "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
                             Color.orange)).queue();
         }
     }

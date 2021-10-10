@@ -1,15 +1,12 @@
 package slaynash.lum.bot.discord;
 
-import java.awt.Color;
 import java.util.EnumSet;
 
 import javax.security.auth.login.LoginException;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.AllowedMentions;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
@@ -33,17 +30,6 @@ public class JDAManager {
         jda.awaitReady();
         EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE);
         AllowedMentions.setDefaultMentions(EnumSet.complementOf(deny));
-    }
-
-    public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
-        EmbedBuilder eb = new EmbedBuilder();
-        if (color != null)
-            eb.setColor(color);
-        if (message.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH)
-            eb.setDescription(message.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 4) + " ...");
-        else
-            eb.setDescription(message);
-        return eb.build();
     }
 
     public static JDA getJDA() {

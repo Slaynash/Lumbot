@@ -1,7 +1,6 @@
 package slaynash.lum.bot.discord.slashs;
 
 import java.awt.Color;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -14,8 +13,8 @@ import java.util.Random;
 
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class UnivUCBLLIFExoGenerator {
 
@@ -76,7 +75,7 @@ public class UnivUCBLLIFExoGenerator {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("UCBLLIF command failed", e);
-            interactionhook.sendMessageEmbeds(JDAManager.wrapMessageInEmbed("La commande a échouée. Cette erreur a été rapporté aux développeurs.", Color.RED)).queue();
+            interactionhook.sendMessageEmbeds(Utils.wrapMessageInEmbed("La commande a échouée. Cette erreur a été rapporté aux développeurs.", Color.RED)).queue();
         }
     }
 }

@@ -34,7 +34,7 @@ public class SteamAppDetails {
 
     public static SteamAppDetails compare(SteamAppDetails oldDetails, SteamAppDetails newDetails) {
         SteamAppDetails ret = new SteamAppDetails();
-        boolean changed = false;
+        boolean changed;
 
         changed = (ret.depots = SteamAppDepots.compare(oldDetails.depots, newDetails.depots)) != null;
 
@@ -76,7 +76,7 @@ public class SteamAppDetails {
 
         public static SteamAppDepots compare(SteamAppDepots oldDepots, SteamAppDepots newDepots) {
             SteamAppDepots ret = new SteamAppDepots();
-            boolean changed = false;
+            boolean changed;
 
             Map<String, SteamAppBranch> changeBranches = new HashMap<>();
             for (Entry<String, SteamAppBranch> newBranchEntries : newDepots.branches.entrySet()) {
@@ -140,7 +140,7 @@ public class SteamAppDetails {
 
         public static SteamAppDepot compare(SteamAppDepot oldDepot, SteamAppDepot newDepot) {
             SteamAppDepot ret = new SteamAppDepot();
-            boolean changed = false;
+            boolean changed;
 
             changed = (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
 
@@ -191,7 +191,7 @@ public class SteamAppDetails {
 
         public static SteamAppBranch compare(SteamAppBranch oldBranch, SteamAppBranch newBranch) {
             SteamAppBranch ret = new SteamAppBranch();
-            boolean changed = false;
+            boolean changed;
 
             changed = (ret.buildid = (oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1)) != -1;
             changed |= (ret.description = (!isStringEquals(oldBranch.description, newBranch.description) ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null)) != null;

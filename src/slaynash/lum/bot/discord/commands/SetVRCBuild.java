@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class SetVRCBuild extends Command {
 
@@ -28,7 +28,7 @@ public class SetVRCBuild extends Command {
             Integer.parseInt(parts[1]);
 
             if (CommandManager.vrchatBuild.equals(parts[1])) {
-                event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("VRChat build is already set to " + parts[1], Color.ORANGE)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("VRChat build is already set to " + parts[1], Color.ORANGE)).queue();
                 return;
             }
 
@@ -41,11 +41,11 @@ public class SetVRCBuild extends Command {
                 ExceptionUtils.reportException("Failed to save VRChat Build", e);
             }
 
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();
+            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("VRChat build is now set to " + parts[1], Color.GREEN)).queue();
 
         }
         catch (Exception e) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("**Usage**:\n" + getName() + " <build>", Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("**Usage**:\n" + getName() + " <build>", Color.RED)).queue();
         }
     }
 
