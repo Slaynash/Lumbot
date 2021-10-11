@@ -42,7 +42,7 @@ public final class VersionUtils {
     public static VersionData getVersion(String versionString) {
         versionString = versionString != null ? versionString.trim() : null;
 
-        if (versionString == null || versionString.equals(""))
+        if (versionString == null || versionString.isBlank())
             return new VersionData();
 
         Matcher matcher = versionPattern.matcher(versionString);

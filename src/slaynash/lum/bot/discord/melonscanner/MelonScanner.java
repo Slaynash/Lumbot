@@ -485,12 +485,13 @@ public final class MelonScanner {
         if ((context.gameBuild != null) && "VRChat".equals(context.game)) {
             String[] tempString = context.gameBuild.split("-", 3);
             context.gameBuild = tempString.length > 1 ? tempString[1] : "0"; //VRChat build number
-            if (Integer.parseInt(context.gameBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+            int compare = VersionUtils.compareVersion(context.gameBuild, CommandManager.vrchatBuild);
+            if (compare == -1) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, CrossServerUtils.sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
             }
-            else if (Integer.parseInt(context.gameBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+            else if (compare == 1) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, CrossServerUtils.sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
@@ -498,12 +499,13 @@ public final class MelonScanner {
         }
         //for pre0.4.0 VRChat version checking with emmVRC
         else if (context.emmVRCVRChatBuild != null) {
-            if (Integer.parseInt(context.emmVRCVRChatBuild) < Integer.parseInt(CommandManager.vrchatBuild)) {
+            int compare = VersionUtils.compareVersion(context.emmVRCVRChatBuild, CommandManager.vrchatBuild);
+            if (compare == -1) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, CrossServerUtils.sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
             }
-            else if (Integer.parseInt(context.emmVRCVRChatBuild) > Integer.parseInt(CommandManager.vrchatBuild)) {
+            else if (compare == 1) {
                 context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, CrossServerUtils.sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
                 context.embedColor = Color.ORANGE;
                 return true;
