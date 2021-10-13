@@ -36,7 +36,7 @@ public class ScamShield {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
         if (event.getMember() == null) return 0;
-        String message = Normalizer.normalize(event.getMessage().getContentStripped(), Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase().replace("  ", " ");
+        String message = Normalizer.normalize(event.getMessage().getContentStripped(), Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase().replace(":", "").replace(" ", "");
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         if (event.getMessage().getEmbeds().size() > 0) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
@@ -57,7 +57,7 @@ public class ScamShield {
         suspiciousValue += message.contains("@everyone") ? 2 : 0;
         suspiciousValue += message.contains("money") ? 1 : 0;
         suspiciousValue += message.contains("loot") ? 2 : 0;
-        suspiciousValue += message.replace(":", "").replace(" ", "").contains("csgo") ? 2 : 0; //CS:GO that ignores colon and spaces
+        suspiciousValue += message.contains("csgo") ? 2 : 0;
         suspiciousValue += message.contains("trade") ? 2 : 0;
         suspiciousValue += message.contains("skin") ? 1 : 0;
         suspiciousValue += message.contains("knife") ? 1 : 0;
@@ -65,18 +65,19 @@ public class ScamShield {
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("bitcoin") ? 1 : 0;
         suspiciousValue += message.contains("nitro") ? 1 : 0;
-        suspiciousValue += message.contains("3 months") ? 1 : 0;
+        suspiciousValue += message.contains("1months") ? 1 : 0;
+        suspiciousValue += message.contains("3months") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
-        suspiciousValue += message.contains("code:") ? 2 : 0;
         suspiciousValue += message.contains("booster") ? 1 : 0;
         suspiciousValue += message.contains("dollar") ? 1 : 0;
         suspiciousValue += message.contains("download") ? 1 : 0;
         suspiciousValue += message.contains("100%") ? 1 : 0;
         suspiciousValue += message.contains("bro") ? 1 : 0;
-        suspiciousValue += message.contains("check this") ? 1 : 0;
-        suspiciousValue += message.contains("made a game") ? 2 : 0;
+        suspiciousValue += message.contains("checkthis") ? 1 : 0;
+        suspiciousValue += message.matches(".*made.*game.*") ? 1 : 0;
+        suspiciousValue += message.matches(".*left.*game.*") ? 2 : 0;
         if (suspiciousValue > 1) {
             suspiciousValue += message.contains("http") ? 1 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
