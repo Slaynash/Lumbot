@@ -1,11 +1,14 @@
 local apiData = data:getAsJsonObject():entrySet():iterator()
 local mods = {}
 
-while apiData:hasNext() do
-    local entry = apiData:next()
+for i = 0, apiData:size() - 1, 1 do
+    local mod = apiData:get(i)
+    local modDetails = mod:get("versions"):get(0)
+    
     table.insert(mods, {
-        name = entry:getKey(),
-        version = entry:getValue():get("Version"):getAsString()
+        name = mod:get("name"):getAsString(),
+        version = mod:getValue():get("readableVersion"):getAsString(),
+        downloadLink = modDetails:get("downloadlink"):getAsString()
     })
 end
 
