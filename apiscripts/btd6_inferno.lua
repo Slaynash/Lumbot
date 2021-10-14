@@ -7,7 +7,7 @@ for i = 0, apiData:size() - 1, 1 do
 
     table.insert(mods, {
         name = mod:get("name"):getAsString(),
-        version = mod:getValue():get("readableVersion"):getAsString(),
+        version = modDetails:get("readableVersion"):getAsString(),
         downloadLink = modDetails:get("downloadlink"):getAsString()
     })
 end
