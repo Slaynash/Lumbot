@@ -11,7 +11,7 @@ import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public class Config {
+public class SlashConfig {
 
     InteractionHook interactionhook;
 

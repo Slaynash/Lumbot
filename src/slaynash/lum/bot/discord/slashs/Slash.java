@@ -11,11 +11,11 @@ public class Slash {
             return;
         if (event.getName().equals("config")) { // Guild command
             String guildID = event.getGuild().getId();
-            new Config().sendReply(event, guildID);
+            new SlashConfig().sendReply(event, guildID);
         }
         else if (event.getName().equals("configs")) { //Global/DM command
             String guildID = event.getOptionsByName("guild").get(0).getAsString();
-            new Config().sendReply(event, guildID);
+            new SlashConfig().sendReply(event, guildID);
         }
         else if (event.getName().equals("exo")) {
             new UnivUCBLLIFExoGenerator().onCommand(event);
@@ -27,7 +27,7 @@ public class Slash {
             return;
         String message = event.getMessage().getContentRaw();
         if (message.startsWith("Server Config"))
-            new Config().buttonClick(event);
+            new SlashConfig().buttonClick(event);
         else
             event.deferEdit().queue();
     }

@@ -138,6 +138,7 @@ public class ScamShield {
 
         if (massping && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             handleMassPings(event, sameauthormessages, suspiciousCount);
+            return true;
         }
         else if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             handleCrossBan(event, sameauthormessages, suspiciousCount);
@@ -149,7 +150,6 @@ public class ScamShield {
 
     public static boolean checkForFishingPrivate(MessageReceivedEvent event) {
         String message = event.getMessage().getContentDisplay().toLowerCase();
-        String userId = event.getAuthor().getId();
 
         if (event.getMessage().getType().isSystem())
             return false;
@@ -162,28 +162,33 @@ public class ScamShield {
         if (suspiciousValue <= 3)
             return false;
 
-        LogCounter.addSSCounter(userId, message, "Private"); // add to status counter
-
-        return true;
+        //return handleCrossBan(event, null, suspiciousValue);
+        return false; //remove line when enabling above
     }
 
-    private static void handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
+    private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
         List<Guild> mutualGuilds;
-        if (event.getChannelType() == ChannelType.PRIVATE)
-            LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), "Private"); // add to status counter
-        else
-            LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), event.getGuild().getId()); // add to status counter
-
         mutualGuilds = event.getAuthor().getMutualGuilds();
-        mutualGuilds.remove(event.getGuild());
         mutualGuilds.removeIf(g -> {
+            if (g == event.getGuild())
+                return false;
             if (GuildConfigurations.configurations.get(g.getIdLong()) != null)
                 return !GuildConfigurations.configurations.get(g.getIdLong())[GuildConfigurations.ConfigurationMap.SSCROSS.ordinal()];
             else
                 return true;
         });
-        handleBan(event, event.getGuild().getIdLong(), suspiciousCount, false, sameauthormessages);
-        mutualGuilds.forEach(g -> handleBan(event, g.getIdLong(), suspiciousCount, true, sameauthormessages));
+        boolean status = false;
+        for (Guild guild : mutualGuilds) {
+            if (handleBan(event, guild.getIdLong(), suspiciousCount, true, sameauthormessages))
+                status = true;
+        }
+        if (status) {
+            if (event.getChannelType() == ChannelType.PRIVATE)
+                LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), "Private"); // add to status counter
+            else
+                LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), event.getGuild().getId()); // add to status counter
+        }
+        return status;
     }
 
     private static void handleMassPings(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
@@ -196,7 +201,8 @@ public class ScamShield {
         }
     }
 
-    public static void handleBan(MessageReceivedEvent event, Long guildID, int suspiciousCount, Boolean cross, List<HandledServerMessageContext> sameauthormessages) {
+    public static boolean handleBan(MessageReceivedEvent event, Long guildID, int suspiciousCount, Boolean cross, List<HandledServerMessageContext> sameauthormessages) {
+        boolean status = false;
         Guild guild = event.getJDA().getGuildById(guildID);
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
@@ -220,7 +226,6 @@ public class ScamShield {
                 event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
             else
                 event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
-            return;
         }
 
         if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
@@ -231,6 +236,7 @@ public class ScamShield {
             else
                 event.getMember().ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (cross ? "cross " : "") + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
+            status = true;
         }
         else if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
             event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guild.getName() +
@@ -238,7 +244,7 @@ public class ScamShield {
             event.getMember().kick().reason("Kicked by Lum's Scam Shield").queue();
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
 
-            if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && sameauthormessages != null) {
                 List<Message> messagelist = new ArrayList<>();
                 sameauthormessages.forEach(m -> {
                     if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
@@ -256,13 +262,14 @@ public class ScamShield {
                 if (messagelist.size() > 0)
                     messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
             }
-            else {
+            else if (sameauthormessages != null) {
                 System.out.println("Lum does not have MESSAGE_MANAGE perm");
                 String temp = "";
                 if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
                     temp = embedBuilder.getDescriptionBuilder() + "\n";
                 embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
             }
+            status = true;
         }
         else
             embedBuilder.setDescription("Lum failed to " + (ssBan ? "Banned" : "Kicked") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Banned" : "Kicked") + " perms");
@@ -285,5 +292,6 @@ public class ScamShield {
             else
                 event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
         }
+        return status;
     }
 }
