@@ -7,8 +7,8 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class SetScreeningRoleHandlerCommand extends Command {
 
@@ -27,18 +27,18 @@ public class SetScreeningRoleHandlerCommand extends Command {
         if (params.length == 2) {
             Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[1]);
             if (role == null) {
-                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
+                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
                 return;
             }
 
             CommandManager.autoScreeningRoles.put(paramMessageReceivedEvent.getGuild().getIdLong(), role.getIdLong());
             CommandManager.saveScreenings();
-            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Successfully set screening role", Color.GREEN)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Successfully set screening role", Color.GREEN)).queue();
         }
         else {
             CommandManager.autoScreeningRoles.remove(paramMessageReceivedEvent.getGuild().getIdLong());
             CommandManager.saveScreenings();
-            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Successfully removed screening role", Color.GREEN)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Successfully removed screening role", Color.GREEN)).queue();
         }
 
     }

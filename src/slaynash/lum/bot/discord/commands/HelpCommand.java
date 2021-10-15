@@ -5,7 +5,7 @@ import java.awt.Color;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class HelpCommand extends Command {
 
@@ -29,11 +29,11 @@ public class HelpCommand extends Command {
             }
         }
         if (!empty) {
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage.toString(), Color.CYAN)).queue();
+            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.CYAN)).queue();
         }
         else {
             helpMessage.append("**Subhelp directory not found**");
-            event.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed(helpMessage.toString(), Color.RED)).queue();
+            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.RED)).queue();
         }
     }
 

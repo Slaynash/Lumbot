@@ -10,10 +10,10 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ReactionListener;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.discord.utils.MessageFinder;
+import slaynash.lum.bot.utils.Utils;
 
 public class AddReactionHandlerCommand extends Command {
 
@@ -31,7 +31,7 @@ public class AddReactionHandlerCommand extends Command {
 
         new MessageFinder().findMessageAsync(paramMessageReceivedEvent.getGuild(), params[1], success -> {
             if (success == null) {
-                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Message not found", Color.RED)).queue();
+                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Message not found", Color.RED)).queue();
                 System.out.println("Failed to find message for Add Reaction");
                 return;
             }
@@ -67,7 +67,7 @@ public class AddReactionHandlerCommand extends Command {
 
                 Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[3]);
                 if (role == null) {
-                    paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
+                    paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
                     System.out.println("Role not found");
                     return;
                 }
@@ -77,7 +77,7 @@ public class AddReactionHandlerCommand extends Command {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
                     Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
                     if (emote == null) {
-                        paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error: Emote not found on current server", Color.RED)).queue();
+                        paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Emote not found on current server", Color.RED)).queue();
                         System.out.println("Emote not found on current server");
                         return;
                     }
@@ -91,7 +91,7 @@ public class AddReactionHandlerCommand extends Command {
                 System.out.println("Successfully added reaction listener to the target message");
             }
             CommandManager.saveReactions();
-        }, error -> paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Error while looking for message: " + error.getMessage(), Color.RED)).queue());
+        }, error -> paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error while looking for message: " + error.getMessage(), Color.RED)).queue());
     }
 
     @Override

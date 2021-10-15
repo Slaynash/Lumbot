@@ -5,7 +5,7 @@ import java.awt.Color;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class MLSetMinForVRC extends Command {
 
@@ -17,7 +17,7 @@ public class MLSetMinForVRC extends Command {
         String[] parts = paramString.split(" ", 3);
 
         if (parts.length != 3) {
-            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: " + getName() + " <ml hash> <ml release time>\nExample: " + getName() + " 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + getName() + " <ml hash> <ml release time>\nExample: " + getName() + " 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
             return;
         }
 
@@ -25,7 +25,7 @@ public class MLSetMinForVRC extends Command {
         System.out.println("hash: " + paramString);
 
         if (!hash.matches("^[0-9]{5,}$"))
-            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(JDAManager.wrapMessageInEmbed("Usage: " + getName() + " <ml hash> <ml release time>\nExample: " + getName() + " 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
+            paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + getName() + " <ml hash> <ml release time>\nExample: " + getName() + " 25881 feb. 6, 2021 at 10.01pm CET", Color.RED)).queue();
 
         CommandManager.melonLoaderVRCHash = hash;
         CommandManager.melonLoaderVRCMinDate = parts[2];

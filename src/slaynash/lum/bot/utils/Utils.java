@@ -40,12 +40,20 @@ public class Utils {
         return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/").replace(" .", ".");
     }
 
-    public static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
-        EmbedBuilder embedBuilder = new EmbedBuilder();
-        embedBuilder.setColor(color)
-                    .setDescription(message);
-        MessageEmbed embed = embedBuilder.build();
+    public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
+        EmbedBuilder eb = new EmbedBuilder();
+        if (color != null)
+            eb.setColor(color);
+        if (message.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH)
+            eb.setDescription(message.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 4) + " ...");
+        else
+            eb.setDescription(message);
+        return eb.build();
+    }
 
-        messageReceivedEvent.getMessage().replyEmbeds(embed);
+    public static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
+        MessageEmbed embed = wrapMessageInEmbed(message, color);
+
+        messageReceivedEvent.getMessage().replyEmbeds(embed).queue();
     }
 }

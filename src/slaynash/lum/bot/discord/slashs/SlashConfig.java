@@ -1,36 +1,65 @@
-package slaynash.lum.bot.discord.commands;
+package slaynash.lum.bot.discord.slashs;
 
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
-import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
-import slaynash.lum.bot.discord.slashs.UnivUCBLLIFExoGenerator;
+import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public class Slash {
-    public static void slashRun(SlashCommandEvent event) {
-        if (event.getName().equals("config")) { // Guild command
-            String guildID = event.getGuild().getId();
-            sendReply(event, guildID);
+public class SlashConfig {
+
+    InteractionHook interactionhook;
+
+    public void sendReply(SlashCommandEvent event, String guildID) {
+        event.deferReply().queue(success -> interactionhook = success);
+
+        Guild guild = event.getJDA().getGuildById(guildID);
+        if (guild == null) {
+            interactionhook.sendMessage("Guild not found.").setEphemeral(true).queue();
+            return;
         }
-        else if (event.getName().equals("configs")) { //Global/DM command
-            String guildID = event.getOptionsByName("guild").get(0).getAsString();
-            sendReply(event, guildID);
+        try {
+            boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
+            if (config == null) {
+                config = new boolean[GuildConfigurations.ConfigurationMap.values().length];
+                config[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
+                GuildConfigurations.configurations.put(Long.valueOf(guildID), config);
+                CommandManager.saveGuildConfigs();
+            }
+            if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
+                System.out.println("sent config for " + guild.getName());
+                interactionhook.sendMessage("Server Config for " + guild.getName() + ": " + guildID)
+                    .addActionRow(// Buttons can be in a 5x5
+                        config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
+                        config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
+                        config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("ssban", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")))
+                    .addActionRow(
+                        config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
+                        config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
+                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
+                    .addActionRow(
+                        config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner"),
+                        config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"),
+                        config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
+                    .addActionRow(
+                        config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
+                        config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
+                    .addActionRow(
+                        Button.danger("delete", "Delete this message")).queue();
+            }
+            else interactionhook.sendMessage("You do not have permission to use this command.");
         }
-        else if (event.getName().equals("exo")) {
-            new UnivUCBLLIFExoGenerator().onCommand(event);
+        catch (Exception e) {
+            ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);
         }
     }
 
-    public static void buttonUpdate(ButtonClickEvent event) {
-        if (event.getChannelType() != ChannelType.PRIVATE && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
-            return;
+    public void buttonClick(ButtonClickEvent event) {
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
@@ -82,6 +111,10 @@ public class Slash {
                         config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
                         event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
                         break;
+                    case ("sscross") :
+                        config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
+                        event.editButton(config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("ssban", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick"))).queue();
+                        break;
                     case ("delete") :
                         event.getMessage().delete().queue();
                         break;
@@ -96,51 +129,6 @@ public class Slash {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while updating buttons:", event.getChannel().getName(), e);
-        }
-    }
-
-    private static void sendReply(SlashCommandEvent event, String guildID) {
-        if (!guildID.matches("^\\d{18}$")) {
-            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").queue();
-            return;
-        }
-        if (event.getChannelType() != ChannelType.PRIVATE && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
-            return;
-        try {
-            Guild guild = event.getJDA().getGuildById(guildID);
-            boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
-            if (config == null) {
-                config = new boolean[GuildConfigurations.ConfigurationMap.values().length];
-                config[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
-                GuildConfigurations.configurations.put(Long.valueOf(guildID), config);
-                CommandManager.saveGuildConfigs();
-            }
-            if (guild != null) {
-                if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
-                    System.out.println("sent config for " + guild.getName());
-                    event.reply("Server Config for " + guild.getName() + ": " + guildID)
-                        .addActionRow(// Buttons can be in a 5x5
-                            config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
-                            config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
-                            config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
-                            config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
-                        .addActionRow(
-                            config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
-                            config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
-                            config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
-                        .addActionRow(
-                            config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner"),
-                            config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"),
-                            config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
-                        .addActionRow(
-                            Button.danger("delete", "Delete this message")).queue();
-                }
-                else event.reply("You do not have permission to use this command.");
-            }
-            else event.reply("Guild not found.");
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);
         }
     }
 }
