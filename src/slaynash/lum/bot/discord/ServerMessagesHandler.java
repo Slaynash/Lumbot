@@ -33,6 +33,7 @@ public class ServerMessagesHandler {
     public static void mainHandle(MessageReceivedEvent event) {
         try {
             handleAP(event);
+            if (event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong())
                     handleReplies(event);
@@ -390,7 +391,7 @@ public class ServerMessagesHandler {
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
             return;
         try {
-            if (CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED)) {
+            if (event.getTextChannel().isNews() && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED)) {
                 event.getMessage().crosspost().queue();
             }
         }
