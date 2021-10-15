@@ -181,6 +181,14 @@ public class ServerMessagesHandler {
                     return;
                 }
 
+                if (message.startsWith("!loggif")) {
+                    System.out.println("log GIF printed");
+                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/600661924010786816/807099652611899402/Ke4nJYRBK5.gif").queue();
+                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/600661924010786816/807070239644450836/4qJBVv68ZN.gif").queue();
+                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/440088207799877634/807857275498790912/S6yvAxnMkE.gif").queue();
+                    return;
+                }
+
                 if (message.startsWith("!log")) {
                     System.out.println("logs printed");
                     String sendMessage = "";
