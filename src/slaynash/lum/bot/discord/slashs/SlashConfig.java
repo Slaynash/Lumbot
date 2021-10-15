@@ -18,6 +18,11 @@ public class SlashConfig {
     public void sendReply(SlashCommandEvent event, String guildID) {
         event.deferReply().queue(success -> interactionhook = success);
 
+        if (!guildID.matches("^\\d{18}$")) {
+            interactionhook.sendMessage("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").setEphemeral(true).queue();
+            return;
+        }
+
         Guild guild = event.getJDA().getGuildById(guildID);
         if (guild == null) {
             interactionhook.sendMessage("Guild not found.").setEphemeral(true).queue();
@@ -32,7 +37,7 @@ public class SlashConfig {
                 CommandManager.saveGuildConfigs();
             }
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
-                System.out.println("sent config for " + guild.getName());
+                System.out.println("Sent config for " + guild.getName());
                 interactionhook.sendMessage("Server Config for " + guild.getName() + ": " + guildID)
                     .addActionRow(// Buttons can be in a 5x5
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
@@ -52,7 +57,7 @@ public class SlashConfig {
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
-            else interactionhook.sendMessage("You do not have permission to use this command.");
+            else interactionhook.sendMessage("You do not have permission to use this command.").queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);

@@ -320,8 +320,6 @@ public class Main extends ListenerAdapter {
                 boolean[] tempBooleans = new boolean[GuildConfigurations.ConfigurationMap.values().length];
                 for (int i = 1; i < broke.length; i++)
                     tempBooleans[i - 1] = Boolean.parseBoolean(broke[i]);
-                if (broke.length - 1/*starts from 2*/ < tempBooleans.length/*starts from 1*/)
-                    tempBooleans[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
                 tempMap.put(Long.parseLong(broke[0]), tempBooleans);
             }
             reader.close();

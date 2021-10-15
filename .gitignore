@@ -70,3 +70,4 @@ local.properties
 .vscode
 .idea
 /Lumbot.iml
+*.orig
