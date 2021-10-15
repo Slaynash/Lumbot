@@ -46,6 +46,11 @@ public class AutoPublish extends Command {
     }
 
     @Override
+    public String getHelpDescription() {
+        return "Automatically publish all messages in an announcement channel";
+    }
+
+    @Override
     public String getName() {
         return "l!autopublish";
     }
