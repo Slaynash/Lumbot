@@ -46,4 +46,9 @@ public class HelpCommand extends Command {
     public String getName() {
         return "l!help";
     }
+
+    @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return false;
+    }
 }

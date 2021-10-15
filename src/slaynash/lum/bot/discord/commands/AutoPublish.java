@@ -22,6 +22,9 @@ public class AutoPublish extends Command {
             return;
         }
 
+        if (!includeInHelp(paramMessageReceivedEvent))
+            return;
+
         if (CommandManager.apChannels.contains(paramMessageReceivedEvent.getChannel().getIdLong())) {
             CommandManager.apChannels.remove(paramMessageReceivedEvent.getChannel().getIdLong());
             CommandManager.saveAPChannels();
@@ -49,7 +52,7 @@ public class AutoPublish extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return false;
+        return event.getMember().hasPermission(Permission.ADMINISTRATOR);
     }
 
 }
