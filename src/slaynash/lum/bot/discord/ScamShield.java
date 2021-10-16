@@ -229,8 +229,7 @@ public class ScamShield {
             else
                 event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
         }
-
-        if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+        else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
             event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
                 " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
             if (ssBan)
