@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.slashs;
 
+import java.util.Arrays;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -38,6 +40,7 @@ public class SlashConfig {
             }
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 System.out.println("Sent config for " + guild.getName());
+                System.out.println(Arrays.toString(config));
                 interactionhook.sendMessage("Server Config for " + guild.getName() + ": " + guildID)
                     .addActionRow(// Buttons can be in a 5x5
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
