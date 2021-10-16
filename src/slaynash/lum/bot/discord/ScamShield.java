@@ -160,7 +160,7 @@ public class ScamShield {
 
         int suspiciousValue = ssValue(event);
         if (suspiciousValue > 0)
-            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessage("DM from " + event.getAuthor().getAsMention() + " " + event.getAuthor().getId() + " gotten " + suspiciousValue + " sus points\n\n" + message).queue();
+            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsMention() + " " + event.getAuthor().getId() + " gotten " + suspiciousValue + " sus points\n\n" + message).queue();
         if (suspiciousValue <= 3)
             return false;
 
