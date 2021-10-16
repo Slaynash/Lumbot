@@ -108,7 +108,7 @@ public class ScamShield {
         if (ServerMessagesHandler.checkIfStaff(event))
             return false;
 
-        Long guildID = event.getGuild().getIdLong();
+        long guildID = event.getGuild().getIdLong();
         int suspiciousValue = ssValue(event);
         boolean massping = false;
 
@@ -168,8 +168,7 @@ public class ScamShield {
     }
 
     private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
-        List<Guild> mutualGuilds;
-        mutualGuilds = event.getAuthor().getMutualGuilds();
+        List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
             if (g == event.getGuild())
                 return false;
