@@ -160,7 +160,7 @@ public class ScamShield {
 
         int suspiciousValue = ssValue(event);
         if (suspiciousValue > 0)
-            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsMention() + " " + event.getAuthor().getId() + " gotten " + suspiciousValue + " sus points\n\n" + message).queue();
+            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousValue + " sus points\n\n" + message).queue();
         if (suspiciousValue <= 3)
             return false;
 
@@ -218,9 +218,12 @@ public class ScamShield {
         }
         System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
         EmbedBuilder embedBuilder = new EmbedBuilder()
-            .setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp")
             .setTimestamp(Instant.now())
             .setFooter("Received " + suspiciousCount + " naughty points.");
+        if (cross)
+            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName(), null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+        else
+            embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
         if (!guild.getSelfMember().canInteract(member)) {
             embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
