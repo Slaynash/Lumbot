@@ -41,7 +41,7 @@ public class SlashConfig {
                     .addActionRow(// Buttons can be in a 5x5
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
                         config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
-                        config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("ssban", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")))
+                        config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")))
                     .addActionRow(
                         config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
                         config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
