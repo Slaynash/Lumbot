@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -204,6 +205,7 @@ public class ScamShield {
     public static boolean handleBan(MessageReceivedEvent event, Long guildID, int suspiciousCount, Boolean cross, List<HandledServerMessageContext> sameauthormessages) {
         boolean status = false;
         Guild guild = event.getJDA().getGuildById(guildID);
+        Member member = guild.getMember(event.getAuthor());
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
         String reportChannelID = CommandManager.mlReportChannels.get(guildID);
@@ -220,7 +222,7 @@ public class ScamShield {
             .setTimestamp(Instant.now())
             .setFooter("Received " + suspiciousCount + " naughty points.");
 
-        if (!guild.getSelfMember().canInteract(event.getMember())) {
+        if (!guild.getSelfMember().canInteract(member)) {
             embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
             if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                 event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
@@ -232,16 +234,16 @@ public class ScamShield {
             event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
                 " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
             if (ssBan)
-                event.getMember().ban(1).reason("Banned by Lum's Scam Shield").queue();
+                member.ban(1).reason("Banned by Lum's Scam Shield").queue();
             else
-                event.getMember().ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
+                member.ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (cross ? "cross " : "") + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
             status = true;
         }
         else if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
             event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guild.getName() +
                 " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
-            event.getMember().kick().reason("Kicked by Lum's Scam Shield").queue();
+            member.kick().reason("Kicked by Lum's Scam Shield").queue();
             embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
 
             if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && sameauthormessages != null) {
