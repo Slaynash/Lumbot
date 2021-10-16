@@ -5,7 +5,6 @@ import java.util.Arrays;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -15,19 +14,16 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class SlashConfig {
 
-    InteractionHook interactionhook;
-
     public void sendReply(SlashCommandEvent event, String guildID) {
-        event.deferReply(/*Ephemeral*/true).queue(success -> interactionhook = success);
 
         if (!guildID.matches("^\\d{18}$")) {
-            interactionhook.sendMessage("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").setEphemeral(true).queue();
+            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").queue();
             return;
         }
 
         Guild guild = event.getJDA().getGuildById(guildID);
         if (guild == null) {
-            interactionhook.sendMessage("Guild not found.").setEphemeral(true).queue();
+            event.reply("Guild not found.").queue();
             return;
         }
         try {
@@ -60,7 +56,7 @@ public class SlashConfig {
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
-            else interactionhook.sendMessage("You do not have permission to use this command.").setEphemeral(true).queue();
+            else event.reply("You do not have permission to use this command.").queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);
