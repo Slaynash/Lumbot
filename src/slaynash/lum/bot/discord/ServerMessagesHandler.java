@@ -438,7 +438,7 @@ public class ServerMessagesHandler {
         }
     }
 
-    private static final String AB = "023456789abcdefghijkmnopqrstuvwxyz";
+    private static final String AB = "23456789abcdefghijkmnopqrstuvwxyz";
     private static final Random random = new Random();
     private static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
