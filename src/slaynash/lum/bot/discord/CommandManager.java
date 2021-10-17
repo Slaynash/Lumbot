@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.AutoPublish;
 import slaynash.lum.bot.discord.commands.Ban;
@@ -134,6 +135,7 @@ public class CommandManager {
         CommandManager.registerCommand(new SteamWatcher());
 
         CommandManager.registerCommand(new TestVRCObfmap());
+        CommandManager.registerCommand(new AddMissingRoles());
     }
 
 
