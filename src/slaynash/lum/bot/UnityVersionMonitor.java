@@ -68,87 +68,94 @@ public class UnityVersionMonitor {
                         e.printStackTrace();
                     }
 
-                // fetch unity versions
-
-                HttpRequest request = HttpRequest.newBuilder()
-                    .GET()
-                    .uri(URI.create("https://unity3d.com/get-unity/download/archive"))
-                    .setHeader("User-Agent", "LUM Bot")
-                    .timeout(Duration.ofSeconds(30))
-                    .build();
-
-                String pagedata;
-
                 try {
-                    HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-                    pagedata = response.body();
-                }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to fetch Unity versions", e);
-                    continue;
-                }
+                    // fetch unity versions
 
-                String[] pageLines = pagedata.split("[\r\n]");
-                for (String line : pageLines) {
-                    if (line.isEmpty() || line.contains("Samsung"))
+                    HttpRequest request = HttpRequest.newBuilder()
+                        .GET()
+                        .uri(URI.create("https://unity3d.com/get-unity/download/archive"))
+                        .setHeader("User-Agent", "LUM Bot")
+                        .timeout(Duration.ofSeconds(30))
+                        .build();
+
+                    String pagedata;
+
+                    try {
+                        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                        pagedata = response.body();
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("Failed to fetch Unity versions", e);
                         continue;
-
-                    int hrefIdentifierIndex;
-                    if ((hrefIdentifierIndex = line.indexOf(hrefIdentifier)) < 0)
-                        continue;
-
-                    String setupIdentifier = "UnitySetup64-";
-                    if (!line.contains(setupIdentifier) && !line.contains(setupIdentifier = "UnitySetup-"))
-                        continue;
-
-                    String subline = line.substring(hrefIdentifierIndex + hrefIdentifier.length());
-                    String foundUrl = "https://download.unity3d.com/" + subline.split("\"", 2)[0];
-                    int extensionIndex;
-                    if ((extensionIndex = subline.indexOf(".exe")) < 0)
-                        continue;
-
-                    String foundVersion = subline.substring(0, extensionIndex);
-                    foundVersion = foundVersion.substring(foundVersion.lastIndexOf(setupIdentifier) + setupIdentifier.length());
-
-                    String fullVersion = foundVersion;
-                    if (foundVersion.contains("f"))
-                        foundVersion = foundVersion.split("f")[0];
-
-                    String urlIl2CppWin = null;
-                    if (foundVersion.startsWith("20")) {
-                        String versionId = subline.split("/")[1];
-                        if (foundVersion.startsWith("2017"))
-                            foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
-                        else
-                            foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
-
-                        if (!foundVersion.startsWith("2017") && !(foundVersion.startsWith("2020") || foundVersion.startsWith("2020.1")) && !foundVersion.startsWith("2021"))
-                            urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
                     }
 
-                    if (foundVersion.startsWith("5.3")) // We don't care about versions earlier than 5.4.0
-                        break;
+                    String[] pageLines = pagedata.split("[\r\n]");
+                    for (String line : pageLines) {
+                        if (line.isEmpty() || line.contains("Samsung"))
+                            continue;
 
-                    unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
-                }
+                        int hrefIdentifierIndex;
+                        if ((hrefIdentifierIndex = line.indexOf(hrefIdentifier)) < 0)
+                            continue;
 
-                List<UnityVersion> newVersions = new ArrayList<>();
+                        String setupIdentifier = "UnitySetup64-";
+                        if (!line.contains(setupIdentifier) && !line.contains(setupIdentifier = "UnitySetup-"))
+                            continue;
 
-                for (UnityVersion unityVersion : unityVersions)
-                    if (!installedVersions.containsKey(unityVersion.version))
-                        newVersions.add(unityVersion);
+                        String subline = line.substring(hrefIdentifierIndex + hrefIdentifier.length());
+                        String foundUrl = "https://download.unity3d.com/" + subline.split("\"", 2)[0];
+                        int extensionIndex;
+                        if ((extensionIndex = subline.indexOf(".exe")) < 0)
+                            continue;
 
-                if (installedVersions.size() > 0 && installedVersions.size() < 10) {
-                    StringBuilder message = new StringBuilder("New Unity version published:");
+                        String foundVersion = subline.substring(0, extensionIndex);
+                        foundVersion = foundVersion.substring(foundVersion.lastIndexOf(setupIdentifier) + setupIdentifier.length());
+
+                        String fullVersion = foundVersion;
+                        if (foundVersion.contains("f"))
+                            foundVersion = foundVersion.split("f")[0];
+
+                        String urlIl2CppWin = null;
+                        if (foundVersion.startsWith("20")) {
+                            String versionId = subline.split("/")[1];
+                            if (foundVersion.startsWith("2017"))
+                                foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
+                            else
+                                foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
+
+                            if (!foundVersion.startsWith("2017") && !(foundVersion.startsWith("2020") || foundVersion.startsWith("2020.1")) && !foundVersion.startsWith("2021"))
+                                urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
+                        }
+
+                        if (foundVersion.startsWith("5.3")) // We don't care about versions earlier than 5.4.0
+                            break;
+
+                        unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
+                    }
+
+                    List<UnityVersion> newVersions = new ArrayList<>();
+
+                    for (UnityVersion unityVersion : unityVersions)
+                        if (!installedVersions.containsKey(unityVersion.version))
+                            newVersions.add(unityVersion);
+
+                    System.out.println("unity3d.com returned " + newVersions.size() + " new versions");
+
+                    if (installedVersions.size() > 0 && installedVersions.size() < 10) {
+                        StringBuilder message = new StringBuilder("New Unity version published:");
+                        for (UnityVersion newVersion : newVersions)
+                            message.append("\n - ").append(newVersion.version);
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+                    }
+
                     for (UnityVersion newVersion : newVersions)
-                        message.append("\n - ").append(newVersion.version);
-                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+                        downloadUnity(newVersion);
+
+                    // run tools sanity checks
                 }
-
-                for (UnityVersion newVersion : newVersions)
-                    downloadUnity(newVersion);
-
-                // run tools sanity checks
+                catch (Exception e) {
+                    ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
+                }
             }
 
         }, "UnityVersionMonitor");
@@ -243,7 +250,9 @@ public class UnityVersionMonitor {
 
     public static void loadInstalledVersionCache() {
         try {
+            System.out.println("Loading versions cache");
             installedVersions = gson.fromJson(Files.readString(Paths.get("unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+            System.out.println("Done loading versions cache");
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to load unity installation cache", e);
