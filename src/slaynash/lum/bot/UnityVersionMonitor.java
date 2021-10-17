@@ -4,9 +4,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpClient.Redirect;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -328,22 +330,35 @@ public class UnityVersionMonitor {
     }
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {
-        if (useNSISBIExtractor) {
-            System.out.println("Running command: sh -c mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"");
-            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\""}).waitFor() == 0;
-        }
+        if (useNSISBIExtractor)
+            return runProgram("UnityNSISReader", "sh", "-c", "mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"") == 0;
 
         if (isPkg) {
-            System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y");
-            if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y"}).waitFor() != 0)
+            if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y") != 0)
                 return false;
 
-            System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y");
-            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
+            return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
         }
 
-        System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y");
-        return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
+        return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
+    }
+
+    private static int runProgram(String name, String... command) throws IOException, InterruptedException
+    {
+        String printCmd = "";
+        for (String param : command)
+            printCmd += "\"" + param.replace("\"", "\\\"") + "\" ";
+        System.out.println("Running command: " + printCmd);
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line = "";
+            while ((line = br.readLine()) != null)
+                System.out.println(line);
+        }
+
+        return p.waitFor();
     }
 
     private static void moveDirectory(File src, File dest) {
