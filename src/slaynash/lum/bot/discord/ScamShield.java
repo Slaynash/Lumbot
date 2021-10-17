@@ -164,8 +164,7 @@ public class ScamShield {
         if (suspiciousValue <= 3)
             return false;
 
-        //return handleCrossBan(event, null, suspiciousValue);
-        return false; //remove line when enabling above
+        return handleCrossBan(event, null, suspiciousValue);
     }
 
     private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
@@ -225,7 +224,7 @@ public class ScamShield {
         else
             embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-        if (!guild.getSelfMember().canInteract(member)) {
+        if (!guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
             embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
             if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                 event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
@@ -280,8 +279,15 @@ public class ScamShield {
 
         if (reportChannelID != null) {
             TextChannel reportChannel = guild.getTextChannelById(reportChannelID);
-            StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
-            sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
+            StringBuilder sb;
+            if (sameauthormessages == null) { //came from DMs
+                sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam" + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                sb.append(event.getMessage().getContentRaw());
+            }
+            else {
+                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
+            }
             if (ssQueued != null)
                 ssQueued.cancel(/*mayInterruptIfRunning*/ true);
             if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
@@ -289,7 +295,7 @@ public class ScamShield {
             else
                 ssQueued = reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
         }
-        else {
+        else if (sameauthormessages != null) {
             embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
             if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                 event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
