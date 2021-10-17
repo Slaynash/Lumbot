@@ -123,7 +123,7 @@ public class UnityVersionMonitor {
                             else
                                 foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
 
-                            if (!foundVersion.startsWith("2017") && !(foundVersion.startsWith("2020") || foundVersion.startsWith("2020.1")) && !foundVersion.startsWith("2021"))
+                            if (!foundVersion.startsWith("2017"))
                                 urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
                         }
 
@@ -141,7 +141,7 @@ public class UnityVersionMonitor {
 
                     System.out.println("unity3d.com returned " + newVersions.size() + " new versions");
 
-                    if (installedVersions.size() > 0 && installedVersions.size() < 10) {
+                    if (newVersions.size() > 0 && newVersions.size() < 10) {
                         StringBuilder message = new StringBuilder("New Unity version published:");
                         for (UnityVersion newVersion : newVersions)
                             message.append("\n - ").append(newVersion.version);
@@ -209,7 +209,7 @@ public class UnityVersionMonitor {
                 return;
             }
 
-            extractFilesFromArchive(uv, false);
+            extractFilesFromArchive(uv, false, false);
 
             saveInstalledVersionCache(uv.version, "windows mono");
 
@@ -228,7 +228,8 @@ public class UnityVersionMonitor {
                 return;
             }
 
-            extractFilesFromArchive(uv, true);
+            boolean useNSISBIExtractor = (uv.version.startsWith("2020") && !uv.version.startsWith("2020.1")) || uv.version.startsWith("2021");
+            extractFilesFromArchive(uv, true, useNSISBIExtractor);
 
             saveInstalledVersionCache(uv.version, "windows il2cpp");
         }
@@ -260,7 +261,9 @@ public class UnityVersionMonitor {
     }
 
     public static void saveInstalledVersionCache(String unityVersion, String architecture) {
-        List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<>());
+        List<String> installedArchitectures = installedVersions.get(unityVersion);
+        if (installedArchitectures == null)
+            installedVersions.put(unityVersion, installedArchitectures = new ArrayList<>());
         installedArchitectures.add(architecture);
 
         try {
@@ -271,7 +274,7 @@ public class UnityVersionMonitor {
         }
     }
 
-    public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp) {
+    public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) {
         String internalPath = "Variations";
 
         if (version.version.startsWith("3."))
@@ -291,7 +294,14 @@ public class UnityVersionMonitor {
                 internalPath = "Editor/Data/PlaybackEngines/windowsstandalonesupport/Variations";
         }
 
-        String internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
+
+        String internalPathZip;
+        if (useNSISExtractor) {
+            internalPathZip = "\\$_OUTDIR/Variations/.*_il2cpp/UnityPlayer.*(dll|pdb)";
+        }
+        else {
+            internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
+        }
         internalPathZip += internalPath;
         internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\"";
 
@@ -299,7 +309,7 @@ public class UnityVersionMonitor {
         if (!new File(downloadPath).exists())
             new File(downloadPath).mkdir();
         try {
-            if (!extractFiles(downloadPath + "/" + version.version + "_tmp", "unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), true)) {
+            if (!extractFiles(downloadPath + "/" + version.version + "_tmp", "unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), useNSISExtractor, true)) {
                 ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")");
                 return;
             }
@@ -315,7 +325,11 @@ public class UnityVersionMonitor {
         moveDirectory(new File(tomoveFolder), new File(downloadPath + "/" + version.version));
     }
 
-    private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean keepFilePath) throws IOException, InterruptedException {
+    private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {
+        if (useNSISBIExtractor) {
+            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\""}).waitFor() == 0;
+        }
+
         if (isPkg) {
             if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y"}).waitFor() != 0)
                 return false;
