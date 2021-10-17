@@ -216,6 +216,8 @@ public class UnityVersionMonitor {
         }
 
         if ((installedArchitectures == null || !installedArchitectures.contains("windows il2cpp")) && uv.downloadUrlIl2CppWin != null) {
+
+            System.out.println("Downloading " + uv.downloadUrlIl2CppWin);
             try (
                 FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat");
                 FileChannel fileChannel = fileOutputStream.getChannel()
@@ -327,17 +329,21 @@ public class UnityVersionMonitor {
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {
         if (useNSISBIExtractor) {
+            System.out.println("Running command: sh -c mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"");
             return Runtime.getRuntime().exec(new String[]{"sh", "-c", "mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\""}).waitFor() == 0;
         }
 
         if (isPkg) {
+            System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y");
             if (Runtime.getRuntime().exec(new String[] {"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y"}).waitFor() != 0)
                 return false;
 
+            System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y");
             return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
         }
-        else
-            return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
+
+        System.out.println("Running command: sh -c 7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y");
+        return Runtime.getRuntime().exec(new String[]{"sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y"}).waitFor() == 0;
     }
 
     private static void moveDirectory(File src, File dest) {
