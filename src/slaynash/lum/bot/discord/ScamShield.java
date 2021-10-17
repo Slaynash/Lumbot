@@ -180,7 +180,7 @@ public class ScamShield {
         });
         boolean status = false;
         for (Guild guild : mutualGuilds) {
-            if (handleBan(event, guild.getIdLong(), suspiciousCount, true, sameauthormessages))
+            if (handleBan(event, guild.getIdLong(), suspiciousCount, guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
                 status = true;
         }
         if (status) {
