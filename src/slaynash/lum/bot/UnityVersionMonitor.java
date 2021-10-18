@@ -544,7 +544,7 @@ public class UnityVersionMonitor {
         List<String> fields = new ArrayList<>();
 
         for (FieldDefinition fieldDef : typeDefinition.getFields()) {
-            fields.add(fieldDef.getFullName());
+            fields.add(fieldDef.getFieldType().getFullName() + " " + fieldDef.getName());
         }
 
         ad.dispose();

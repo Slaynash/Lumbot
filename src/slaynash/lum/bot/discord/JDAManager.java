@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.AllowedMentions;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import slaynash.lum.bot.Main;
 
@@ -23,7 +22,7 @@ public class JDAManager {
         else return;
         jda = JDABuilder.createDefault(token)
                 .addEventListeners(new Main())
-                .setChunkingFilter(ChunkingFilter.ALL)
+                //.setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .build();
