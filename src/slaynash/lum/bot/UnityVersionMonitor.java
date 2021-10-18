@@ -1,5 +1,6 @@
 package slaynash.lum.bot;
 
+import java.awt.Color;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -23,6 +24,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,6 +32,7 @@ import com.google.gson.reflect.TypeToken;
 
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class UnityVersionMonitor {
     public static final String LOG_IDENTIFIER = "UnityVersionMonitor";
@@ -48,7 +51,21 @@ public class UnityVersionMonitor {
 
     private static final List<UnityVersion> unityVersions = new ArrayList<>();
 
-    private static Map<String, List<String>> installedVersions = new HashMap<>();
+    private static final Map<String, List<String>> installedVersions = new HashMap<>();
+
+    private static final List<UnityICall> icalls = new ArrayList<>() {
+        {
+            add(new UnityICall("UnityEngine.GL::get_sRGBWrite", "UnityEngine.CoreModule", "System.Boolean", new String[] {}));
+            add(new UnityICall("UnityEngine.ImageConversion::LoadImage", "UnityEngine.ImageConversionModule", "System.Boolean", new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected", "UnityEngine.CoreModule", "System.Void", new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" }));
+            add(new UnityICall("UnityEngine.Texture::GetDataWidth", "UnityEngine.CoreModule", "System.Int32", new String[] { "UnityEngine.Texture" }));
+            add(new UnityICall("UnityEngine.Texture::GetDataHeight", "UnityEngine.CoreModule", "System.Int32", new String[] { "UnityEngine.Texture" }));
+            add(new UnityICall("UnityEngine.Texture::set_filterMode", "UnityEngine.CoreModule", "System.Void", new String[] { "UnityEngine.FilterMode" }));
+            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl", "UnityEngine.CoreModule", "System.Void", new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" }));
+            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount", "UnityEngine.TextRenderingModule", "System.Int32", new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray", "UnityEngine.TextRenderingModule", "System.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
+        }
+    };
 
     public static void start() {
 
@@ -155,7 +172,11 @@ public class UnityVersionMonitor {
 
                     // run tools sanity checks
 
-                    // Hashes checker
+                    for (UnityVersion newVersion : newVersions)
+                        runHashChecker(newVersion.version);
+
+
+
                     // ICalls checker
                     // VFTables Checker
                     // MonoStruct Checker
@@ -261,7 +282,7 @@ public class UnityVersionMonitor {
     public static void loadInstalledVersionCache() {
         try {
             System.out.println("Loading versions cache");
-            installedVersions = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+            installedVersions.putAll(gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType()));
             System.out.println("Done loading versions cache");
         }
         catch (Exception e) {
@@ -348,8 +369,7 @@ public class UnityVersionMonitor {
         return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
     }
 
-    private static int runProgram(String name, String... command) throws IOException, InterruptedException
-    {
+    private static int runProgram(String name, String... command) throws IOException, InterruptedException {
         String printCmd = "";
         for (String param : command)
             printCmd += "\"" + param.replace("\"", "\\\"") + "\" ";
@@ -360,7 +380,7 @@ public class UnityVersionMonitor {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
             String line = "";
             while ((line = br.readLine()) != null)
-                System.out.println(line);
+                System.out.println("[" + name + "] " + line);
         }
 
         return p.waitFor();
@@ -375,6 +395,59 @@ public class UnityVersionMonitor {
             file.renameTo(new File(targetDirPath + File.separator + file.getName()));
     }
 
+    private static void runHashChecker(String unityVersion)  throws IOException, InterruptedException {
+        Map<String, Map<String, Integer>> results = null;
+
+        System.out.println("Running command: \"sh\" \"-c\" \"mono unityversionsmonitor/HashChecker.exe --uv=" + unityVersion + " --nhro\"");
+        ProcessBuilder pb = new ProcessBuilder("sh", "-c", "mono unityversionsmonitor/HashChecker.exe --uv=" + unityVersion + " --nhro");
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                System.out.println("[HashChecker] " + line);
+                if (line.startsWith("RESULT_")) {
+                    String[] resultParts = line.substring("RESULT_".length()).split(" ", 2);
+                    results = gson.fromJson(resultParts[1], new TypeToken<HashMap<String, HashMap<String, Integer>>>(){}.getType());
+                }
+            }
+        }
+
+        p.waitFor();
+
+        if (results == null) {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("HashChecker has reported no result for Unity " + unityVersion, Color.red)
+            ).queue();
+            return;
+        }
+
+        String reports = "";
+        for (Entry<String, Map<String, Integer>> arch : results.entrySet()) {
+            for (Entry<String, Integer> hash : arch.getValue().entrySet()) {
+                if (hash.getValue() > 1)
+                    reports += arch.getKey() + " - " + hash.getKey() + ": " + hash.getValue() + " results\n";
+                else if (hash.getValue() == 0)
+                    reports += arch.getKey() + " - " + hash.getKey() + ": Hash not valid\n";
+                else if (hash.getValue() == -1)
+                    reports += arch.getKey() + " - " + hash.getKey() + ": No hash for this version\n";
+                else if (hash.getValue() == -2)
+                    reports += arch.getKey() + " - " + hash.getKey() + ": File not found\n";
+            }
+        }
+
+        if (reports.length() > 0) {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("Failed to validate all hashes for Unity " + unityVersion + ":\n\n" + reports, Color.red)
+            ).queue();
+        }
+        else {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("Hash check succeeded for Unity " + unityVersion, Color.green)
+            ).queue();
+        }
+    }
+
     private static class UnityVersion {
         public final String version;
         public final String fullVersion;
@@ -386,6 +459,20 @@ public class UnityVersionMonitor {
             this.fullVersion = fullVersion;
             this.downloadUrl = downloadUrl;
             this.downloadUrlIl2CppWin = downloadUrlIl2CppWin;
+        }
+    }
+
+    private static class UnityICall {
+        public String icall;
+        public String assemblyName;
+        public String returnType;
+        public String[] parameters;
+
+        public UnityICall(String icall, String assemblyName, String returnType, String[] parameters) {
+            this.icall = icall;
+            this.assemblyName = assemblyName;
+            this.returnType = returnType;
+            this.parameters = parameters;
         }
     }
 
