@@ -172,14 +172,14 @@ public class UnityVersionMonitor {
 
                     // run tools sanity checks
 
-                    for (UnityVersion newVersion : newVersions)
+                    for (UnityVersion newVersion : newVersions) {
                         runHashChecker(newVersion.version);
+                        runICallChecker(newVersion.version);
 
-
-
-                    // ICalls checker
-                    // VFTables Checker
-                    // MonoStruct Checker
+                        // ICalls checker
+                        // VFTables Checker
+                        // MonoStruct Checker
+                    }
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
@@ -306,33 +306,44 @@ public class UnityVersionMonitor {
 
     public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) {
         String internalPath = "Variations";
+        String monoManagedSubpath = "win64_nondevelopment_mono/Data";
 
-        if (version.version.startsWith("3."))
-            internalPath = "Data/PlaybackEngines";
+        if (version.version.startsWith("3.")) {
+            internalPath = "Data/PlaybackEngines/";
+            monoManagedSubpath = "windows64standaloneplayer";
+        }
         else if (version.version.startsWith("4.")) {
             if (version.version.startsWith("4.5") ||
                 version.version.startsWith("4.6") ||
-                version.version.startsWith("4.7"))
+                version.version.startsWith("4.7")) {
                 internalPath = "Data/PlaybackEngines/windowsstandalonesupport/Variations";
-            else
+                monoManagedSubpath = "win64_nondevelopment/Data";
+            }
+            else {
                 internalPath = "Data/PlaybackEngines/";
+                monoManagedSubpath = "windows64standaloneplayer";
+            }
         }
         else if (version.version.startsWith("5.")) {
-            if (version.version.startsWith("5.3"))
+            if (version.version.startsWith("5.3")) {
                 internalPath = "Editor/Data/PlaybackEngines/WebPlayer/";
-            else
+                monoManagedSubpath = "win64_nondevelopment_mono/Data";
+            }
+            else {
                 internalPath = "Editor/Data/PlaybackEngines/windowsstandalonesupport/Variations";
+                monoManagedSubpath = "win64_nondevelopment/Data";
+            }
         }
 
 
         String internalPathZip;
         if (useNSISExtractor) {
-            internalPathZip = "\\\\$_OUTDIR/Variations/.*_il2cpp/UnityPlayer.*(dll|pdb)";
+            internalPathZip = "\\\\$_OUTDIR/Variations/(.*_il2cpp/UnityPlayer.*(dll|pdb)|mono/Managed/.*dll)";
         }
         else {
             internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
             internalPathZip += internalPath;
-            internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\"";
+            internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\" \"" + internalPathZip + "/" + monoManagedSubpath + "/*.dll\"";
         }
 
         System.out.println("Extracting DLLs from Archive");
@@ -446,6 +457,11 @@ public class UnityVersionMonitor {
                 Utils.wrapMessageInEmbed("Hash check succeeded for Unity " + unityVersion, Color.green)
             ).queue();
         }
+    }
+
+    public static void runICallChecker(String unityVersion) {
+        // TODO
+        //downloadPath + "/" + unityVersion + "/"
     }
 
     private static class UnityVersion {
