@@ -448,14 +448,18 @@ public class ServerMessagesHandler {
         }
         else if (event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
             Thread thread = new Thread(() -> {
-
+                System.out.println("Receved embed from Rubybot");
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
                 history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()));
-                if (history.size() == 0)
+                if (history.size() == 0) {
+                    System.out.println("Can not find my messages");
                     return;
+                }
                 String[] split = history.get(history.size() - 1).getContentRaw().split("`");
-                if (split.length < 2)
+                if (split.length < 2) {
+                    System.out.println("Can not find my pin in ticket");
                     return;
+                }
                 String code = split[2].toLowerCase();
                 List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
                 String id = embed.get(0).getValue();
@@ -475,6 +479,7 @@ public class ServerMessagesHandler {
                     event.getTextChannel().sendMessage("e.user delete " + id).queue();
                 }
 
+                System.out.println("Code: " + code + " ID:" + id + " Bio:" + bio);
             }, "Ticket");
             thread.start();
         }
