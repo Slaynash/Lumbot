@@ -463,6 +463,7 @@ public class UnityVersionMonitor {
         boolean[] icallFounds = new boolean[icalls.size()];
         int icallFoundCount = 0;
         byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopment_mono/UnityPlayer.dll").toPath());
+        System.out.println("fileData.length: " + fileData.length);
         int remainingDataLength = fileData.length;
         boolean insideUnityEngineStrings = false;
         for (int i = 0; i < fileData.length - 8; i += 8, remainingDataLength -= 8) {
@@ -476,6 +477,7 @@ public class UnityVersionMonitor {
                 }
 
                 if (startOfUnityEngineStrings) {
+                    System.out.println("startOfUnityEngineStrings is at offset " + i);
                     insideUnityEngineStrings = true;
                     break;
                 }
@@ -501,6 +503,11 @@ public class UnityVersionMonitor {
 
         System.out.println("Found " + icallFoundCount + " / " + icalls.size() + " icalls");
         if (icallFoundCount == icalls.size()) {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
+            ).queue();
+        }
+        else {
             String reports = "```";
             for (int i = 0; i < icallFounds.length; ++i) {
                 if (!icallFounds[i])
@@ -510,11 +517,6 @@ public class UnityVersionMonitor {
 
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Failed to validate the following icalls for Unity " + unityVersion + ":\n\n" + reports, Color.red)
-            ).queue();
-        }
-        else {
-            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
             ).queue();
         }
         
