@@ -301,7 +301,7 @@ public class UnityVersionMonitor {
 
         String internalPathZip;
         if (useNSISExtractor) {
-            internalPathZip = "\\$_OUTDIR/Variations/.*_il2cpp/UnityPlayer.*(dll|pdb)";
+            internalPathZip = "\\\\$_OUTDIR/Variations/.*_il2cpp/UnityPlayer.*(dll|pdb)";
         }
         else {
             internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
