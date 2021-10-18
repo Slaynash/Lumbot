@@ -15,11 +15,13 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -175,8 +177,6 @@ public class UnityVersionMonitor {
                     for (UnityVersion newVersion : newVersions) {
                         runHashChecker(newVersion.version);
                         runICallChecker(newVersion.version);
-
-                        // ICalls checker
                         // VFTables Checker
                         // MonoStruct Checker
                     }
@@ -306,44 +306,39 @@ public class UnityVersionMonitor {
 
     public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) {
         String internalPath = "Variations";
-        String monoManagedSubpath = "win64_nondevelopment_mono/Data";
+        String monoManagedSubpath = getMonoManagedSubpath(version.version);
 
         if (version.version.startsWith("3.")) {
             internalPath = "Data/PlaybackEngines/";
-            monoManagedSubpath = "windows64standaloneplayer";
         }
         else if (version.version.startsWith("4.")) {
             if (version.version.startsWith("4.5") ||
                 version.version.startsWith("4.6") ||
                 version.version.startsWith("4.7")) {
                 internalPath = "Data/PlaybackEngines/windowsstandalonesupport/Variations";
-                monoManagedSubpath = "win64_nondevelopment/Data";
             }
             else {
                 internalPath = "Data/PlaybackEngines/";
-                monoManagedSubpath = "windows64standaloneplayer";
             }
         }
         else if (version.version.startsWith("5.")) {
             if (version.version.startsWith("5.3")) {
                 internalPath = "Editor/Data/PlaybackEngines/WebPlayer/";
-                monoManagedSubpath = "win64_nondevelopment_mono/Data";
             }
             else {
                 internalPath = "Editor/Data/PlaybackEngines/windowsstandalonesupport/Variations";
-                monoManagedSubpath = "win64_nondevelopment/Data";
             }
         }
 
 
         String internalPathZip;
         if (useNSISExtractor) {
-            internalPathZip = "\\\\$_OUTDIR/Variations/(.*_il2cpp/UnityPlayer.*(dll|pdb)|" + monoManagedSubpath + "/Managed/.*dll)";
+            internalPathZip = "\\\\$_OUTDIR/Variations/(.*_il2cpp/UnityPlayer.*(dll|pdb)|" + monoManagedSubpath + "/.*dll)";
         }
         else {
             internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
             internalPathZip += internalPath;
-            internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\" \"" + internalPathZip + "/" + monoManagedSubpath + "/Managed/*.dll\"";
+            internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\" \"" + internalPathZip + "/" + monoManagedSubpath + "/*.dll\"";
         }
 
         System.out.println("Extracting DLLs from Archive");
@@ -459,9 +454,99 @@ public class UnityVersionMonitor {
         }
     }
 
-    public static void runICallChecker(String unityVersion) {
-        // TODO
-        //downloadPath + "/" + unityVersion + "/"
+    private static final byte[] unityStringStart = "UnityEng".getBytes(StandardCharsets.UTF_8);
+    public static void runICallChecker(String unityVersion) throws IOException {
+
+        // TODO ICall Check
+        // 1. Lookup for the word in UnityPlayer.dll
+        List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
+        boolean[] icallFounds = new boolean[icalls.size()];
+        int icallFoundCount = 0;
+        byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopement_mono/UnityPlayer.dll").toPath());
+        int remainingDataLength = fileData.length;
+        boolean insideUnityEngineStrings = false;
+        for (int i = 0; i < fileData.length - 8; i += 8, remainingDataLength -= 8) {
+            if (!insideUnityEngineStrings) {
+                boolean startOfUnityEngineStrings = true;
+                for (int j = 0; j < 8; ++j) {
+                    if (fileData[i + j] != unityStringStart[j]) {
+                        startOfUnityEngineStrings = false;
+                        break;
+                    }
+                }
+
+                if (startOfUnityEngineStrings) {
+                    insideUnityEngineStrings = true;
+                    break;
+                }
+            }
+
+            if (insideUnityEngineStrings) {
+                for (int j = 0; j < icalls.size(); ++j) {
+                    UnityICall icall = icalls.get(j);
+                    int icallUtf8Length = icall.icallUtf8.length;
+                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, icallUtf8Length, icall.icallUtf8, 0, icallUtf8Length)) {
+                        if (!icallFounds[j]) {
+                            icallFounds[j] = true;
+                            ++icallFoundCount;
+                            
+                            if (icallFoundCount == icalls.size())
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (icallFoundCount == icalls.size()) {
+            String reports = "```";
+            for (int i = 0; i < icallFounds.length; ++i) {
+                if (!icallFounds[i])
+                    reports += "\n" + icalls.get(i).icall;
+            }
+            reports += "```";
+
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("Failed to validate the following icalls for Unity " + unityVersion + ":\n\n" + reports, Color.red)
+            ).queue();
+        }
+        else {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
+            ).queue();
+        }
+        
+        // 2. Check if the signature matches in the Unity Managed Assemblies
+        String unityManaged = downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion);
+        // 3. Send result
+    }
+
+    private static String getMonoManagedSubpath(String version) {
+        String monoManagedSubpath = "win64_nondevelopment_mono/Data";
+
+        if (version.startsWith("3.")) {
+            monoManagedSubpath = "windows64standaloneplayer";
+        }
+        else if (version.startsWith("4.")) {
+            if (version.startsWith("4.5") ||
+                version.startsWith("4.6") ||
+                version.startsWith("4.7")) {
+                monoManagedSubpath = "win64_nondevelopment/Data";
+            }
+            else {
+                monoManagedSubpath = "windows64standaloneplayer";
+            }
+        }
+        else if (version.startsWith("5.")) {
+            if (version.startsWith("5.3")) {
+                monoManagedSubpath = "win64_nondevelopment_mono/Data";
+            }
+            else {
+                monoManagedSubpath = "win64_nondevelopment/Data";
+            }
+        }
+
+        return monoManagedSubpath + "/Managed";
     }
 
     private static class UnityVersion {
@@ -480,12 +565,14 @@ public class UnityVersionMonitor {
 
     private static class UnityICall {
         public String icall;
+        public byte[] icallUtf8;
         public String assemblyName;
         public String returnType;
         public String[] parameters;
 
         public UnityICall(String icall, String assemblyName, String returnType, String[] parameters) {
             this.icall = icall;
+            this.icallUtf8 = icall.getBytes(StandardCharsets.UTF_8);
             this.assemblyName = assemblyName;
             this.returnType = returnType;
             this.parameters = parameters;
