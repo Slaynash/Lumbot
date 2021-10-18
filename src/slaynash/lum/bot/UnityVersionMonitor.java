@@ -487,6 +487,7 @@ public class UnityVersionMonitor {
                     int icallUtf8Length = icall.icallUtf8.length;
                     if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, icallUtf8Length, icall.icallUtf8, 0, icallUtf8Length)) {
                         if (!icallFounds[j]) {
+                            System.out.println("Icall " + icall.icall + " found at offset " + i);
                             icallFounds[j] = true;
                             ++icallFoundCount;
                             
@@ -498,6 +499,7 @@ public class UnityVersionMonitor {
             }
         }
 
+        System.out.println("Found " + icallFoundCount + " / " + icalls.size() + " icalls");
         if (icallFoundCount == icalls.size()) {
             String reports = "```";
             for (int i = 0; i < icallFounds.length; ++i) {
