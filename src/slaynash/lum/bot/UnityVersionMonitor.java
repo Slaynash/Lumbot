@@ -533,7 +533,7 @@ public class UnityVersionMonitor {
         AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + "UnityEngine.CoreModule" + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
         ModuleDefinition mainModule = ad.getMainModule();
 
-        TypeDefinition typeDefinition = mainModule.getType("Internal_DrawTextureArguments");
+        TypeDefinition typeDefinition = mainModule.getType("UnityEngine.Internal_DrawTextureArguments");
         if (typeDefinition == null) {
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Failed to validate the following structs for Unity " + unityVersion + ":\n\n" + "Internal_DrawTextureArguments", Color.red)
