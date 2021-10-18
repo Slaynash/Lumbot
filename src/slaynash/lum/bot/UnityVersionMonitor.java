@@ -339,7 +339,7 @@ public class UnityVersionMonitor {
         if (!new File(downloadPath).exists())
             new File(downloadPath).mkdir();
         try {
-            if (!extractFiles(downloadPath + "/" + version.version + "_tmp", "unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), useNSISExtractor, true)) {
+            if (!extractFiles(downloadPath + "/" + version.version + "_tmp", "unityversionsmonitor/unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), useNSISExtractor, true)) {
                 ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")");
                 return;
             }
