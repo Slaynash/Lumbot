@@ -32,6 +32,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import mono.cecil.AssemblyDefinition;
+import mono.cecil.FieldDefinition;
+import mono.cecil.ModuleDefinition;
+import mono.cecil.ReaderParameters;
+import mono.cecil.ReadingMode;
+import mono.cecil.TypeDefinition;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -177,8 +183,8 @@ public class UnityVersionMonitor {
                     for (UnityVersion newVersion : newVersions) {
                         runHashChecker(newVersion.version);
                         runICallChecker(newVersion.version);
+                        runMonoStructChecker(newVersion.version);
                         // VFTables Checker
-                        // MonoStruct Checker
                     }
                 }
                 catch (Exception e) {
@@ -517,6 +523,60 @@ public class UnityVersionMonitor {
         // 2. Check if the signature matches in the Unity Managed Assemblies
         String unityManaged = downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion);
         // 3. Send result
+    }
+
+    public static void runMonoStructChecker(String unityVersion) {
+        // TODO MonoStruct checker
+
+        // 1. Fetch struct (json array:field of object:{string:type, string:name} - [{"Type1", "field1"}, {"Type2": "field2"}, ...])
+
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion), new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+        ModuleDefinition mainModule = ad.getMainModule();
+
+        TypeDefinition typeDefinition = mainModule.getType("Internal_DrawTextureArguments");
+        if (typeDefinition == null) {
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("Failed to validate the following structs for Unity " + unityVersion + ":\n\n" + "Internal_DrawTextureArguments", Color.red)
+            ).queue();
+            return;
+        }
+
+        List<String> fields = new ArrayList<>();
+
+        for (FieldDefinition fieldDef : typeDefinition.getFields()) {
+            fields.add(fieldDef.getFullName());
+        }
+
+        ad.dispose();
+
+
+        /* JSONC
+        [
+            {
+                "minimalUnityVersion": ["2017.2.0", "2018.1.0"],
+                "fields": [
+                    {"UnityEngine.Rect", "screenRect"},
+                    {"UnityEngine.Rect", "sourceRect"}
+                    // ...
+                ]
+            }
+            // ...
+        ]
+        */
+
+        // 2. Get struct of latest version and compare
+        // 3. Report change if not matching, else report OK
+
+        String report = "";
+        
+        report += "Internal_DrawTextureArguments\n```\n";
+        for (String field : fields)
+            report += field + "\n";
+        report += "```";
+
+        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+            Utils.wrapMessageInEmbed("The following structs were found for Unity " + unityVersion + ":\n\n" + report, Color.gray)
+        ).queue();
     }
 
     private static String getMonoManagedSubpath(String version) {
