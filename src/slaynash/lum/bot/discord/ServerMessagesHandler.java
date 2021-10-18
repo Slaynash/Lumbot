@@ -460,14 +460,14 @@ public class ServerMessagesHandler {
                     System.out.println("Can not find my pin in ticket");
                     return;
                 }
-                String code = split[2].toLowerCase();
+                String code = split[1].toLowerCase();
                 List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
                 String id = embed.get(0).getValue();
                 String bio = "";
                 if (embed.get(1).getName().equalsIgnoreCase("bio") || embed.get(1).getName().equalsIgnoreCase("status"))
-                    bio = embed.get(1).getValue().toLowerCase().replace(" ", "");
+                    bio = embed.get(1).getValue().toLowerCase().replace("\n", "").replace(" ", "");
                 if (embed.get(2).getName().equalsIgnoreCase("status"))
-                    bio = bio + embed.get(2).getValue().toLowerCase().replace(" ", "");
+                    bio = bio + embed.get(2).getValue().toLowerCase().replace("\n", "").replace(" ", "");
 
                 if (channelName.contains("reset") && bio.contains(code)) {
                     event.getTextChannel().sendMessage("e.pin reset " + id).queue();
@@ -479,7 +479,7 @@ public class ServerMessagesHandler {
                     event.getTextChannel().sendMessage("e.user delete " + id).queue();
                 }
 
-                System.out.println("Code: " + code + " ID:" + id + " Bio:" + bio);
+                System.out.println("Code: " + code + " ID:" + id);
             }, "Ticket");
             thread.start();
         }
