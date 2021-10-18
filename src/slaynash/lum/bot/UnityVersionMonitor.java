@@ -468,15 +468,7 @@ public class UnityVersionMonitor {
         boolean insideUnityEngineStrings = false;
         for (int i = 0; i < fileData.length - 8; i += 8, remainingDataLength -= 8) {
             if (!insideUnityEngineStrings) {
-                boolean startOfUnityEngineStrings = true;
-                for (int j = 0; j < 8; ++j) {
-                    if (fileData[i + j] != unityStringStart[j]) {
-                        startOfUnityEngineStrings = false;
-                        break;
-                    }
-                }
-
-                if (startOfUnityEngineStrings) {
+                if (Arrays.equals(fileData, i, i + 8, unityStringStart, 0, 8)) {
                     System.out.println("startOfUnityEngineStrings is at offset " + i);
                     insideUnityEngineStrings = true;
                     break;
@@ -487,7 +479,8 @@ public class UnityVersionMonitor {
                 for (int j = 0; j < icalls.size(); ++j) {
                     UnityICall icall = icalls.get(j);
                     int icallUtf8Length = icall.icallUtf8.length;
-                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, icallUtf8Length, icall.icallUtf8, 0, icallUtf8Length)) {
+
+                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, i + icallUtf8Length, icall.icallUtf8, 0, icallUtf8Length)) {
                         if (!icallFounds[j]) {
                             System.out.println("Icall " + icall.icall + " found at offset " + i);
                             icallFounds[j] = true;
