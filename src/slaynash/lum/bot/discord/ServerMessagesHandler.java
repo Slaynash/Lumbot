@@ -440,13 +440,13 @@ public class ServerMessagesHandler {
             if (channelName.contains("reset"))
                 event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("wipe"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}` By running the command and the code is in your Status or Bio, all of your emmVRC favorites will be removed.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("deletion"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}` By running the command and the code is in your Status or Bio, all data saved by emmVRC will be deleted.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("export"))
                 event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via `emmVRC Functions > Settings > Export Avatar List`\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
         }
-        else if (event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
+        else if (channelName.contains("reset") && event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
             Thread thread = new Thread(() -> {
                 System.out.println("Receved embed from Rubybot");
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
@@ -472,12 +472,12 @@ public class ServerMessagesHandler {
                 if (channelName.contains("reset") && bio.contains(code)) {
                     event.getTextChannel().sendMessage("e.pin reset " + id).queue();
                 }
-                else if (channelName.contains("wipe") && bio.contains(code)) {
-                    event.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
-                }
-                else if (channelName.contains("deletion") && bio.contains(code)) {
-                    event.getTextChannel().sendMessage("e.user delete " + id).queue();
-                }
+                // else if (channelName.contains("wipe") && bio.contains(code)) {
+                //     event.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
+                // }
+                // else if (channelName.contains("deletion") && bio.contains(code)) {
+                //     event.getTextChannel().sendMessage("e.user delete " + id).queue();
+                // }
 
                 System.out.println("Code: " + code + " ID:" + id);
             }, "Ticket");
