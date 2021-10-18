@@ -140,7 +140,7 @@ public class CommandManager {
 
 
     public static void saveReactions() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolereactions.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/rolereactions.txt"))) {
             for (ReactionListener rl : reactionListeners) {
                 writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
             }
@@ -151,7 +151,7 @@ public class CommandManager {
     }
 
     public static void saveScreenings() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("rolescreening.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/rolescreening.txt"))) {
             for (Entry<Long, Long> pair : autoScreeningRoles.entrySet()) {
                 writer.write(pair.getKey() + " " + pair.getValue() + "\n");
             }
@@ -162,7 +162,7 @@ public class CommandManager {
     }
 
     public static void saveLogChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("logchannels.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/logchannels.txt"))) {
             for (Entry<Long, String> logchannel : logChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
@@ -173,7 +173,7 @@ public class CommandManager {
     }
 
     public static void saveMLReportChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlreportchannels.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlreportchannels.txt"))) {
             for (Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
@@ -184,7 +184,7 @@ public class CommandManager {
     }
 
     public static void saveMLHashes() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlhashes.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlhashes.txt"))) {
             for (MLHashPair s : melonLoaderHashes)
                 writer.write("r " + s.x86 + " " + s.x64 + "\n");
 
@@ -198,7 +198,7 @@ public class CommandManager {
     }
 
     public static void saveMelonLoaderVersions() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("melonloaderversions.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/melonloaderversions.txt"))) {
             writer.write(MelonScanner.latestMLVersionRelease + "\n");
             writer.write(MelonScanner.latestMLVersionAlpha + "\n");
         }
@@ -208,7 +208,7 @@ public class CommandManager {
     }
 
     public static void saveMLVRCHash() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("mlvrchash.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlvrchash.txt"))) {
             writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
         }
         catch (IOException e) {
@@ -217,7 +217,7 @@ public class CommandManager {
     }
 
     public static void saveVerifyChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("verifychannels.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/verifychannels.txt"))) {
             for (Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
                 writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
             }
@@ -228,7 +228,7 @@ public class CommandManager {
     }
 
     public static void saveGuildConfigs() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("guildconfigurations.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/guildconfigurations.txt"))) {
             for (Entry<Long, boolean[]> saveconfigurations : GuildConfigurations.configurations.entrySet()) {
                 writer.write(saveconfigurations.getKey().toString());
                 for (Boolean bool : saveconfigurations.getValue()) {
@@ -243,7 +243,7 @@ public class CommandManager {
     }
 
     public static void saveAPChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("autopublishchannels.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/autopublishchannels.txt"))) {
             for (Long channel : apChannels) {
                 writer.write(channel + "\n");
             }
@@ -254,7 +254,7 @@ public class CommandManager {
     }
 
     public static void saveReplies() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("replies.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/replies.txt"))) {
             for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
                     writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
@@ -272,7 +272,7 @@ public class CommandManager {
     }
 
     public static void saveSteamWatch() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("steamwatch.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/steamwatch.txt"))) {
             for (Entry<Integer, List<ServerChannel>> reportChannel : Steam.reportChannels.entrySet()) {
                 for (ServerChannel sc : reportChannel.getValue()) {
                     writer.write(reportChannel.getKey().toString().concat(",").concat(sc.serverID).concat(",").concat(sc.channelId).concat("\n"));

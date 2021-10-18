@@ -154,6 +154,11 @@ public class UnityVersionMonitor {
                         downloadUnity(newVersion);
 
                     // run tools sanity checks
+
+                    // Hashes checker
+                    // ICalls checker
+                    // VFTables Checker
+                    // MonoStruct Checker
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
@@ -200,7 +205,7 @@ public class UnityVersionMonitor {
 
             System.out.println("Downloading " + uv.downloadUrl);
             try (
-                FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat");
+                FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
                 FileChannel fileChannel = fileOutputStream.getChannel()
             ) {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
@@ -221,7 +226,7 @@ public class UnityVersionMonitor {
 
             System.out.println("Downloading " + uv.downloadUrlIl2CppWin);
             try (
-                FileOutputStream fileOutputStream = new FileOutputStream("unitydownload_" + uv.version + ".dat");
+                FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
                 FileChannel fileChannel = fileOutputStream.getChannel()
             ) {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrlIl2CppWin).openStream());
@@ -256,7 +261,7 @@ public class UnityVersionMonitor {
     public static void loadInstalledVersionCache() {
         try {
             System.out.println("Loading versions cache");
-            installedVersions = gson.fromJson(Files.readString(Paths.get("unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
+            installedVersions = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType());
             System.out.println("Done loading versions cache");
         }
         catch (Exception e) {
@@ -271,7 +276,7 @@ public class UnityVersionMonitor {
         installedArchitectures.add(architecture);
 
         try {
-            Files.write(Paths.get("unityInstallCache.json"), gson.toJson(installedVersions).getBytes());
+            Files.write(Paths.get("unityversionsmonitor/unityInstallCache.json"), gson.toJson(installedVersions).getBytes());
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to save unity installation cache", e);
@@ -331,7 +336,7 @@ public class UnityVersionMonitor {
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {
         if (useNSISBIExtractor)
-            return runProgram("UnityNSISReader", "sh", "-c", "mono UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"") == 0;
+            return runProgram("UnityNSISReader", "sh", "-c", "mono unityversionsmonitor/UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"") == 0;
 
         if (isPkg) {
             if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y") != 0)

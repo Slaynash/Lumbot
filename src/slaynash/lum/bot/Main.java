@@ -155,7 +155,7 @@ public class Main extends ListenerAdapter {
     private static void loadReactionsList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("rolereactions.txt"));
+            reader = new BufferedReader(new FileReader("storage/rolereactions.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
@@ -173,7 +173,7 @@ public class Main extends ListenerAdapter {
     private static void loadScreeningRolesList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("rolescreening.txt"));
+            reader = new BufferedReader(new FileReader("storage/rolescreening.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ");
@@ -192,7 +192,7 @@ public class Main extends ListenerAdapter {
     private static void loadMLHashes() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("mlhashes.txt"));
+            reader = new BufferedReader(new FileReader("storage/mlhashes.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
@@ -215,7 +215,7 @@ public class Main extends ListenerAdapter {
     private static void loadMLVRCHash() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("mlvrchash.txt"));
+            reader = new BufferedReader(new FileReader("storage/mlvrchash.txt"));
             CommandManager.melonLoaderVRCHash = reader.readLine();
             CommandManager.melonLoaderVRCMinDate = reader.readLine();
             reader.close();
@@ -228,7 +228,7 @@ public class Main extends ListenerAdapter {
     private static void loadVRCBuild() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("vrchatbuild.txt"));
+            reader = new BufferedReader(new FileReader("storage/vrchatbuild.txt"));
             String line = reader.readLine();
             if (line != null)
                 CommandManager.vrchatBuild = line.trim();
@@ -244,7 +244,7 @@ public class Main extends ListenerAdapter {
     private static void loadMLReportChannels() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("mlreportchannels.txt"));
+            reader = new BufferedReader(new FileReader("storage/mlreportchannels.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
@@ -262,7 +262,7 @@ public class Main extends ListenerAdapter {
     private static void loadLogchannelList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("logchannels.txt"));
+            reader = new BufferedReader(new FileReader("storage/logchannels.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 4);
@@ -280,7 +280,7 @@ public class Main extends ListenerAdapter {
     private static void loadVerifychannelList() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("verifychannels.txt"));
+            reader = new BufferedReader(new FileReader("storage/verifychannels.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(" ", 5);
@@ -298,7 +298,7 @@ public class Main extends ListenerAdapter {
     private static void loadMelonLoaderVersions() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("melonloaderversions.txt"));
+            reader = new BufferedReader(new FileReader("storage/melonloaderversions.txt"));
             MelonScanner.latestMLVersionRelease = reader.readLine().trim();
             MelonScanner.latestMLVersionAlpha = reader.readLine().trim();
             reader.close();
@@ -311,7 +311,7 @@ public class Main extends ListenerAdapter {
     private static void loadGuildConfigs() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("guildconfigurations.txt"));
+            reader = new BufferedReader(new FileReader("storage/guildconfigurations.txt"));
             String line;
             HashMap<Long, boolean[]> tempMap = new HashMap<>();
             while ((line = reader.readLine()) != null) {
@@ -332,7 +332,7 @@ public class Main extends ListenerAdapter {
     private static void loadAPChannels() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("autopublishchannels.txt"));
+            reader = new BufferedReader(new FileReader("storage/autopublishchannels.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 CommandManager.apChannels.add(Long.parseLong(line));
@@ -347,7 +347,7 @@ public class Main extends ListenerAdapter {
     private static void loadReplies() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("replies.txt"));
+            reader = new BufferedReader(new FileReader("storage/replies.txt"));
             String line;
             String[] parts;
             while ((line = reader.readLine()) != null) {
@@ -376,7 +376,7 @@ public class Main extends ListenerAdapter {
     private static void loadSteamWatch() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("steamwatch.txt"));
+            reader = new BufferedReader(new FileReader("storage/steamwatch.txt"));
             String line;
             String[] parts;
             while ((line = reader.readLine()) != null) {

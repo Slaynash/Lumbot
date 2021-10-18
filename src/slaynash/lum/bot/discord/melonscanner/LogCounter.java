@@ -17,16 +17,16 @@ public final class LogCounter {
     private static int previousLogCount = 0;
     private static int previousSSCount = 0;
 
-    public static void addtoCounter(Attachment attachment) {
+    public static void addMLCounter(Attachment attachment) {
         try {
-            String directoryPath = workingPath + ("/logs/");
+            String directoryPath = workingPath + ("/MLlogs/");
 
             attachment.downloadToFile(directoryPath + Instant.now().toString().replace(":", "_") + "-" + attachment.getFileName())
                 .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
-                "Exception while Saving Log",
+                "Exception while Saving ML Log",
                 exception.getMessage(),
                 exception);
         }
@@ -49,7 +49,7 @@ public final class LogCounter {
     public static void updateCounter() {
         try {
             Date date = new Date();
-            String directoryPath = workingPath + "/logs/";
+            String directoryPath = workingPath + "/MLlogs/";
             File directory = new File(directoryPath);
 
             int logCount = directory.listFiles().length;

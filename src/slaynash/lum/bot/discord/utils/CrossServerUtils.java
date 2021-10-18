@@ -50,7 +50,7 @@ public final class CrossServerUtils {
     public static void loadGuildCount() {
         BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("guildcount.txt"));
+            reader = new BufferedReader(new FileReader("storage/guildcount.txt"));
             String line;
             while ((line = reader.readLine()) != null) {
                 lastGuildCount = Integer.parseInt(line);
@@ -63,7 +63,7 @@ public final class CrossServerUtils {
     }
     private static void saveGuildCount(int count) {
         lastGuildCount = count;
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("guildcount.txt"))) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/guildcount.txt"))) {
             writer.write(count);
         }
         catch (IOException e) {

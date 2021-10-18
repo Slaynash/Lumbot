@@ -150,7 +150,7 @@ public final class MelonScanner {
             }
 
             if (issueFound || context.mlVersion != null) {
-                LogCounter.addtoCounter(attachment);
+                LogCounter.addMLCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append(context.messageReceivedEvent.getAuthor().getAsMention());

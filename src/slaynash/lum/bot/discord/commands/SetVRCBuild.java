@@ -34,7 +34,7 @@ public class SetVRCBuild extends Command {
 
             CommandManager.vrchatBuild = parts[1];
 
-            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("vrchatbuild.txt"))) {
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/vrchatbuild.txt"))) {
                 writer.write(parts[1]);
             }
             catch (IOException e) {
