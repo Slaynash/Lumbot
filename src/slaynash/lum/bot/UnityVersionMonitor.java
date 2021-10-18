@@ -462,7 +462,7 @@ public class UnityVersionMonitor {
         List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
         boolean[] icallFounds = new boolean[icalls.size()];
         int icallFoundCount = 0;
-        byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopement_mono/UnityPlayer.dll").toPath());
+        byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopment_mono/UnityPlayer.dll").toPath());
         int remainingDataLength = fileData.length;
         boolean insideUnityEngineStrings = false;
         for (int i = 0; i < fileData.length - 8; i += 8, remainingDataLength -= 8) {
