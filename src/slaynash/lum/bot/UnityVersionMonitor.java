@@ -471,8 +471,9 @@ public class UnityVersionMonitor {
                 if (Arrays.equals(fileData, i, i + 8, unityStringStart, 0, 8)) {
                     System.out.println("startOfUnityEngineStrings is at offset " + i);
                     insideUnityEngineStrings = true;
-                    break;
                 }
+                else
+                    continue;
             }
 
             if (insideUnityEngineStrings) {
