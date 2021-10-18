@@ -530,7 +530,7 @@ public class UnityVersionMonitor {
 
         // 1. Fetch struct (json array:field of object:{string:type, string:name} - [{"Type1", "field1"}, {"Type2": "field2"}, ...])
 
-        AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion), new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+        AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + "UnityEngine.CoreModule" + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
         ModuleDefinition mainModule = ad.getMainModule();
 
         TypeDefinition typeDefinition = mainModule.getType("Internal_DrawTextureArguments");
