@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -17,6 +18,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -36,9 +38,10 @@ public class ServerMessagesHandler {
             handleAP(event);
             if (event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
-                if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong())
+                if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
                     handleReplies(event);
-                tickettool(event);
+                    tickettool(event);
+                }
                 return;
             }
             CommandManager.runAsServer(event);
@@ -430,11 +433,50 @@ public class ServerMessagesHandler {
 
     private static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && category == 765058331345420298L /*emmVRC Tickets*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            if (event.getTextChannel().getName().contains("reset") || event.getTextChannel().getName().contains("wipe") || event.getTextChannel().getName().contains("deletion"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please send your VRChat username as displayed above your head in VRChat even if it is the same on Discord. A staff will soon manually verify your account as it is not automatic.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
-            else if (event.getTextChannel().getName().contains("export"))
+        String channelName = event.getTextChannel().getName();
+        if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/)
+            return;
+        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
+            if (channelName.contains("reset"))
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+            else if (channelName.contains("wipe"))
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}` By running the command and the code is in your Status or Bio, all of your emmVRC favorites will be removed.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+            else if (channelName.contains("deletion"))
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}` By running the command and the code is in your Status or Bio, all data saved by emmVRC will be deleted.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+            else if (channelName.contains("export"))
                 event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via `emmVRC Functions > Settings > Export Avatar List`\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
+        }
+        else if (event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
+            Thread thread = new Thread(() -> {
+
+                List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
+                history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()));
+                if (history.size() == 0)
+                    return;
+                String[] split = history.get(history.size() - 1).getContentRaw().split("`");
+                if (split.length < 2)
+                    return;
+                String code = split[2].toLowerCase();
+                List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
+                String id = embed.get(0).getValue();
+                String bio = "";
+                if (embed.get(1).getName().equalsIgnoreCase("bio") || embed.get(1).getName().equalsIgnoreCase("status"))
+                    bio = embed.get(1).getValue().toLowerCase().replace(" ", "");
+                if (embed.get(2).getName().equalsIgnoreCase("status"))
+                    bio = bio + embed.get(2).getValue().toLowerCase().replace(" ", "");
+
+                if (channelName.contains("reset") && bio.contains(code)) {
+                    event.getTextChannel().sendMessage("e.pin reset " + id).queue();
+                }
+                else if (channelName.contains("wipe") && bio.contains(code)) {
+                    event.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
+                }
+                else if (channelName.contains("deletion") && bio.contains(code)) {
+                    event.getTextChannel().sendMessage("e.user delete " + id).queue();
+                }
+
+            }, "Ticket");
+            thread.start();
         }
     }
 
