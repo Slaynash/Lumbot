@@ -320,7 +320,7 @@ public class UnityVersionMonitor {
     public static void loadMonoStructCache() {
         try {
             System.out.println("Loading MonoStructs cache");
-            Map<String, List<MonoStructRow>> monoStructsSave = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/monoStructCache.json")), new TypeToken<HashMap<String, MonoStructRow>>(){}.getType());
+            Map<String, List<MonoStructRow>> monoStructsSave = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/monoStructCache.json")), new TypeToken<HashMap<String, List<MonoStructRow>>>(){}.getType());
             for (MonoStructInfo msi : monoStructs) {
                 List<MonoStructRow> msr = monoStructsSave.get(msi.name);
                 if (msr != null)
