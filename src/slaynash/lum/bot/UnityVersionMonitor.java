@@ -187,12 +187,11 @@ public class UnityVersionMonitor {
                     else
                         initialisingUnityVersions = true;
 
-                    for (UnityVersion newVersion : newVersions)
+                    for (UnityVersion newVersion : newVersions) {
                         downloadUnity(newVersion);
 
-                    // run tools sanity checks
+                        // run tools sanity checks
 
-                    for (UnityVersion newVersion : newVersions) {
                         runHashChecker(newVersion.version);
                         runICallChecker(newVersion.version);
                         runMonoStructChecker(newVersion.version);
