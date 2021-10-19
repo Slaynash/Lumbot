@@ -598,7 +598,7 @@ public class UnityVersionMonitor {
 
             MonoStructRow targetMSR = null;
             int targetMSRIndex = 0;
-            for (int i = 0; i < monoStructs.size(); ++i) {
+            for (int i = 0; i < msi.rows.size(); ++i) {
                 MonoStructRow msr = msi.rows.get(i);
                 for (String msiUnityVersion : msr.unityVersions) {
                     if (compareUnityVersions(msiUnityVersion, unityVersion) >= 0) {
@@ -615,7 +615,7 @@ public class UnityVersionMonitor {
 
             if (targetMSR == null) {
                 // cases:
-                // - There is no MSI at all -> add
+                // - There is no MSR at all -> add
                 if (msi.rows.size() == 0) {
                     msi.rows.add(new MonoStructRow(unityVersion, fields));
 
@@ -630,7 +630,7 @@ public class UnityVersionMonitor {
                         }
                     }
 
-                    // - The new MSI is a new version XXXX.1.0 -> add
+                    // - The new MSR is a new version XXXX.1.0 -> add
                     if (isNewestVersion) {
                         MonoStructRow newestMSR = msi.rows.get(0);
                         boolean isValid = monoStructContainsFields(newestMSR, fields);
@@ -659,9 +659,9 @@ public class UnityVersionMonitor {
                             ).queue();
                         }
                     }
-                    // - The new MSI is an old version under all known ones -> merge with lowest version
+                    // - The new MSR is an old version under all known ones -> merge with lowest version
                     else {
-                        int lastIndex = monoStructs.size() - 1;
+                        int lastIndex = msi.rows.size() - 1;
                         MonoStructRow lowestMSR = msi.rows.get(lastIndex);
                         boolean isValid = monoStructContainsFields(lowestMSR, fields);
 
