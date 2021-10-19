@@ -22,7 +22,6 @@ import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +75,11 @@ public class UnityVersionMonitor {
         }
     };
 
-    private static final List<MonoStructInfo> monoStructs = new ArrayList<>();
+    private static final List<MonoStructInfo> monoStructs = new ArrayList<>() {
+        {
+            add(new MonoStructInfo("UnityEngine.Internal_DrawTextureArguments", "UnityEngine.CoreModule"));
+        }
+    };
 
     private static boolean initialisingUnityVersions = false;
 
@@ -308,7 +311,12 @@ public class UnityVersionMonitor {
     public static void loadMonoStructCache() {
         try {
             System.out.println("Loading MonoStructs cache");
-            monoStructs.addAll(gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/monoStructCache.json")), new TypeToken<ArrayList<MonoStructRow>>(){}.getType()));
+            Map<String, List<MonoStructRow>> monoStructsSave = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/monoStructCache.json")), new TypeToken<HashMap<String, MonoStructRow>>(){}.getType());
+            for (MonoStructInfo msi : monoStructs) {
+                List<MonoStructRow> msr = monoStructsSave.get(msi.name);
+                if (msr != null)
+                    msi.rows.addAll(msr);
+            }
             System.out.println("Done loading MonoStructs cache");
         }
         catch (Exception e) {
@@ -332,7 +340,10 @@ public class UnityVersionMonitor {
 
     public static void saveMonoStructCache() {
         try {
-            Files.write(Paths.get("unityversionsmonitor/monoStructCache.json"), gson.toJson(monoStructs).getBytes());
+            Map<String, List<MonoStructRow>> monoStructsSave = new HashMap<>();
+            for (MonoStructInfo msi : monoStructs)
+                monoStructsSave.put(msi.name, msi.rows);
+            Files.write(Paths.get("unityversionsmonitor/monoStructCache.json"), gson.toJson(monoStructsSave).getBytes());
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to save MonoStructs cache", e);
@@ -565,13 +576,13 @@ public class UnityVersionMonitor {
         for (MonoStructInfo msi : monoStructs) {
             // 1. Fetch struct
 
-            AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + "UnityEngine.CoreModule" + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+            AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + msi.assembly + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
             ModuleDefinition mainModule = ad.getMainModule();
 
-            TypeDefinition typeDefinition = mainModule.getType("UnityEngine.Internal_DrawTextureArguments");
+            TypeDefinition typeDefinition = mainModule.getType(msi.name);
             if (typeDefinition == null) {
                 JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("Failed to validate the following structs for Unity " + unityVersion + ":\n\n" + "Internal_DrawTextureArguments", Color.red)
+                    Utils.wrapMessageInEmbed("Failed to validate the following MonoStruct for Unity " + unityVersion + ":\n" + msi.name, Color.red)
                 ).queue();
                 return;
             }
@@ -630,7 +641,7 @@ public class UnityVersionMonitor {
 
                             if (!initialisingUnityVersions) {
                                 JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                                    Utils.wrapMessageInEmbed("New Minimal Unity for latest MonoStruct: " + unityVersion, Color.red)
+                                    Utils.wrapMessageInEmbed("New Minimal Unity for latest MonoStruct " + msi.name + ": " + unityVersion, Color.red)
                                 ).queue();
                             }
                         }
@@ -645,7 +656,7 @@ public class UnityVersionMonitor {
                             report += "```";
 
                             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                                Utils.wrapMessageInEmbed("New MonoStructs for Unity " + unityVersion + ":\n\n" + report, Color.red)
+                                Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
                             ).queue();
                         }
                     }
@@ -680,7 +691,7 @@ public class UnityVersionMonitor {
                     if (!initialisingUnityVersions) {
                         String report = "";
 
-                        report += "Internal_DrawTextureArguments\n```\n";
+                        report += msi.name + "\n```\n";
                         for (String field : fields)
                             report += field + "\n";
                         report += "```";
