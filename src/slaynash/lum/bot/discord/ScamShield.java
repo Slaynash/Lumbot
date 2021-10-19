@@ -104,8 +104,6 @@ public class ScamShield {
     public static boolean checkForFishing(MessageReceivedEvent event) {
         if (event.getMember() == null)
             return false;
-        if (event.getMessage().getType().isSystem())
-            return false;
         if (ServerMessagesHandler.checkIfStaff(event))
             return false;
 
@@ -153,7 +151,7 @@ public class ScamShield {
     public static boolean checkForFishingPrivate(MessageReceivedEvent event) {
         String message = event.getMessage().getContentDisplay().toLowerCase();
 
-        if (event.getMessage().getType().isSystem())
+        if (event.getMember() == null)
             return false;
         if (ServerMessagesHandler.checkIfStaff(event))
             return false;

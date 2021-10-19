@@ -449,7 +449,7 @@ public class Main extends ListenerAdapter {
         for (ReactionListener rl : CommandManager.reactionListeners) {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
-                if (role != null) {
+                if (role != null && event.getUser() != null) {
                     event.getGuild().removeRoleFromMember(event.getUserId(), role).reason("User removed role reaction").queue();
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }

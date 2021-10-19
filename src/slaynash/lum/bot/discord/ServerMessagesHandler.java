@@ -36,7 +36,7 @@ public class ServerMessagesHandler {
     public static void mainHandle(MessageReceivedEvent event) {
         try {
             handleAP(event);
-            if (event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
+            if (event.getMessage().getType().isSystem() || event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
                     handleReplies(event);
