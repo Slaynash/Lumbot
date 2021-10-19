@@ -152,6 +152,7 @@ public class UnityVersionMonitor {
                             foundVersion = foundVersion.split("f")[0];
 
                         String urlIl2CppWin = null;
+                        /*
                         if (foundVersion.startsWith("20")) {
                             String versionId = subline.split("/")[1];
                             if (foundVersion.startsWith("2017"))
@@ -164,6 +165,15 @@ public class UnityVersionMonitor {
                         }
 
                         if (foundVersion.startsWith("5.3")) // We don't care about versions earlier than 5.4.0
+                            break;
+                        */
+
+                        if (foundVersion.startsWith("20") && !foundVersion.startsWith("2017")) {
+                            String versionId = subline.split("/")[1];
+                            foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
+                            urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
+                        }
+                        else
                             break;
 
                         unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
@@ -601,7 +611,7 @@ public class UnityVersionMonitor {
             for (int i = 0; i < msi.rows.size(); ++i) {
                 MonoStructRow msr = msi.rows.get(i);
                 for (String msiUnityVersion : msr.unityVersions) {
-                    if (compareUnityVersions(msiUnityVersion, unityVersion) >= 0) {
+                    if (compareUnityVersions(unityVersion, msiUnityVersion) >= 0) {
                         targetMSR = msr;
                         targetMSRIndex = i;
                         break;
