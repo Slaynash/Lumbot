@@ -204,9 +204,40 @@ public class UnityVersionMonitor {
 
                         runHashChecker(newVersion.version);
                         runICallChecker(newVersion.version);
-                        runMonoStructChecker(newVersion.version);
+                        if (!initialisingUnityVersions)
+                            runMonoStructChecker(newVersion.version);
                         // VFTables Checker
                     }
+
+                    // MonoStruct init check
+                    boolean originalInitialisingUnityVersions = initialisingUnityVersions;
+                    if (monoStructs.size() > 0 && monoStructs.get(0).rows.size() == 0)
+                        initialisingUnityVersions = true;
+
+                    if (initialisingUnityVersions) {
+                        List<String> versions = new ArrayList<>();
+                        for (String version : new File(downloadPath).list())
+                            if (!version.endsWith("_tmp"))
+                                versions.add(version);
+
+                        versions.sort(new UnityVersionComparator());
+
+                        for (String version : versions)
+                            runMonoStructChecker(version);
+
+                        for (MonoStructInfo msi : monoStructs) {
+                            String results = "";
+                            for (MonoStructRow msr : msi.rows)
+                                results += "\n\n`" + String.join("`, `", msr.unityVersions) + "`\n```\n" + String.join("\n", msr.fields) + "```";
+                            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                                Utils.wrapMessageInEmbed("MonoStruct checks results for " + msi.name + ":" + results, Color.gray)
+                            ).queue();
+                        }
+                    }
+                    initialisingUnityVersions = originalInitialisingUnityVersions;
+
+                    // VFTable init check
+                    // TODO VFTable init check
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
@@ -514,7 +545,6 @@ public class UnityVersionMonitor {
     private static final byte[] unityStringStart = "UnityEng".getBytes(StandardCharsets.UTF_8);
     public static void runICallChecker(String unityVersion) throws IOException {
 
-        // TODO ICall Check
         // 1. Lookup for the word in UnityPlayer.dll
         List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
         boolean[] icallFounds = new boolean[icalls.size()];
@@ -583,6 +613,7 @@ public class UnityVersionMonitor {
         int successfullChecks = 0;
 
         for (MonoStructInfo msi : monoStructs) {
+
             // 1. Fetch struct
 
             AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + msi.assembly + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
@@ -590,9 +621,7 @@ public class UnityVersionMonitor {
 
             TypeDefinition typeDefinition = mainModule.getType(msi.name);
             if (typeDefinition == null) {
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("Failed to validate the following MonoStruct for Unity " + unityVersion + ":\n" + msi.name, Color.red)
-                ).queue();
+                System.out.println("Failed to validate the following MonoStruct for Unity " + unityVersion + ": " + msi.name);
                 return;
             }
 
@@ -604,116 +633,99 @@ public class UnityVersionMonitor {
 
             ad.dispose();
 
-            // 2. Get struct of latest version and compare
 
-            MonoStructRow targetMSR = null;
-            int targetMSRIndex = 0;
-            for (int i = 0; i < msi.rows.size(); ++i) {
-                MonoStructRow msr = msi.rows.get(i);
-                for (String msiUnityVersion : msr.unityVersions) {
-                    if (compareUnityVersions(unityVersion, msiUnityVersion) >= 0) {
-                        targetMSR = msr;
-                        targetMSRIndex = i;
+            // 2. Compare
+
+            // Foreach MSI, GET the 1st one WHERE compareUnityVersions(unityVersion, msi.version) > 0 OR NULL
+            MonoStructRow msrTarget = null;
+            int msrTargetIndex = 0;
+            for (int iMSR = 0; iMSR < msi.rows.size(); ++iMSR) {
+                MonoStructRow msr = msi.rows.get(iMSR);
+                for (String uv : msr.unityVersions) {
+                    if (compareUnityVersions(unityVersion, uv) > 0) {
+                        msrTarget = msr;
+                        msrTargetIndex = iMSR;
                         break;
                     }
                 }
-                if (targetMSR != null)
+                if (msrTarget != null)
                     break;
             }
-
-            // 3. Report change if not matching, else report OK
-
-            if (targetMSR == null) {
-                // cases:
-                // - There is no MSR at all -> add
-                if (msi.rows.size() == 0) {
-                    msi.rows.add(new MonoStructRow(unityVersion, fields));
-
-                    // We don't have to report anything since this shouldn't happend except when initializing
+            // If found, check if struct matches -> fieldsMatch = true
+            boolean fieldsMatch = msrTarget != null && monoStructContainsFields(msrTarget, fields);
+            // If 'fieldsMatch'
+            if (fieldsMatch) {
+                // If for all versions of row, !isUnityVersionOverOrEqual(unityVersion, matchedVersion) THEN add version string Else OK
+                boolean isVersionValid = false;
+                for (String uv : msrTarget.unityVersions) {
+                    if (isUnityVersionOverOrEqual(unityVersion, uv)) {
+                        isVersionValid = true;
+                        break;
+                    }
                 }
+
+                if (isVersionValid)
+                    ++successfullChecks;
                 else {
-                    boolean isNewestVersion = false;
-                    for (String msrLatestVersion : msi.rows.get(0).unityVersions) {
-                        if (compareUnityVersions(unityVersion, msrLatestVersion) > 0) {
-                            isNewestVersion = true;
+                    String oldUnityVersions = String.join("`, `", msrTarget.unityVersions);
+                    msrTarget.unityVersions.add(unityVersion);
+                    if (!initialisingUnityVersions)
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                            Utils.wrapMessageInEmbed("New Minimal Unity versions for MonoStruct " + msi.name + ":\n**OLD:** `" + oldUnityVersions + "`\n**NEW:** `" + String.join("`, `", msrTarget.unityVersions) + "`", Color.red)
+                        ).queue();
+                }
+            }
+            // Else
+            else if (msrTarget != null) {
+                if (msrTargetIndex > 0)
+                    msrTarget = msi.rows.get(--msrTargetIndex);
+                if (msrTarget.fields.size() == fields.size()) {
+                    fieldsMatch = true;
+                    for (int iField = 0; iField < msrTarget.fields.size(); ++iField) {
+                        if (!msrTarget.fields.get(iField).equals(fields.get(iField))) {
+                            fieldsMatch = false;
                             break;
                         }
                     }
+                }
 
-                    // - The new MSR is a new version XXXX.1.0 -> add
-                    if (isNewestVersion) {
-                        MonoStructRow newestMSR = msi.rows.get(0);
-                        boolean isValid = monoStructContainsFields(newestMSR, fields);
+                if (fieldsMatch) {
+                    String oldUnityVersions = String.join("`, `", msrTarget.unityVersions);
+                    msrTarget.unityVersions.add(unityVersion);
+                    if (!initialisingUnityVersions)
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                            Utils.wrapMessageInEmbed("New Minimal Unity versions for MonoStruct " + msi.name + ":\n**OLD:** `" + oldUnityVersions + "`\n**NEW:** `" + String.join("`, `", msrTarget.unityVersions) + "`", Color.red)
+                        ).queue();
+                }
+                else {
+                    msi.rows.add(msrTargetIndex, new MonoStructRow(unityVersion, fields));
 
-                        if (isValid) {
-                            msi.rows.get(0).unityVersions.add(unityVersion);
-
-                            if (!initialisingUnityVersions) {
-                                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                                    Utils.wrapMessageInEmbed("New Minimal Unity for latest MonoStruct " + msi.name + ": " + unityVersion, Color.red)
-                                ).queue();
-                            }
-                        }
-                        else {
-                            msi.rows.add(0, new MonoStructRow(unityVersion, fields));
-
-                            String report = "";
-
-                            report += "Internal_DrawTextureArguments\n```\n";
-                            for (String field : fields)
-                                report += field + "\n";
-                            report += "```";
-
-                            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                                Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
-                            ).queue();
-                        }
-                    }
-                    // - The new MSR is an old version under all known ones -> merge with lowest version
-                    else {
-                        int lastIndex = msi.rows.size() - 1;
-                        MonoStructRow lowestMSR = msi.rows.get(lastIndex);
-                        boolean isValid = monoStructContainsFields(lowestMSR, fields);
-
-                        if (isValid)
-                            msi.rows.get(lastIndex).unityVersions.add(unityVersion);
-                        else
-                            msi.rows.add(lastIndex, new MonoStructRow(unityVersion, fields));
-
-                        // We don't have to report anything since this shouldn't happend except when initializing
-                    }
+                    String report = msi.name + "\n```\n";
+                    for (String field : fields)
+                        report += field + "\n";
+                    report += "```";
+                    if (!initialisingUnityVersions)
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                            Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
+                        ).queue();
                 }
             }
             else {
-                boolean isValid = monoStructContainsFields(targetMSR, fields);
+                // Add new row on the beginning
+                msi.rows.add(0, new MonoStructRow(unityVersion, fields));
 
-                if (isValid) {
-                    if (!initialisingUnityVersions) {
-                        ++successfullChecks;
-                    }
-
-                    return;
-                }
-                else {
-                    msi.rows.add(targetMSRIndex, new MonoStructRow(unityVersion, fields));
-
-                    if (!initialisingUnityVersions) {
-                        String report = "";
-
-                        report += msi.name + "\n```\n";
-                        for (String field : fields)
-                            report += field + "\n";
-                        report += "```";
-
-                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                            Utils.wrapMessageInEmbed("New MonoStructs for Unity " + unityVersion + ":\n\n" + report, Color.red)
-                        ).queue();
-                    }
-                }
+                String report = msi.name + "\n```\n";
+                for (String field : fields)
+                    report += field + "\n";
+                report += "```";
+                if (!initialisingUnityVersions)
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
+                    ).queue();
             }
         }
 
-        if (successfullChecks == monoStructs.size()) {
+        if (!initialisingUnityVersions && successfullChecks == monoStructs.size()) {
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("MonoStruct checks succeeded for Unity " + unityVersion, Color.green)
             ).queue();
@@ -750,20 +762,17 @@ public class UnityVersionMonitor {
         return monoManagedSubpath + "/Managed";
     }
 
-    public static int compareUnityVersions(String left, String right)
-    {
+    public static int compareUnityVersions(String left, String right) {
         int[] leftparts = getUnityVersionNumbers(left);
         int[] rightparts = getUnityVersionNumbers(right);
 
-        for (int i = 0; i < leftparts.length || i < rightparts.length; ++i) {
-            int leftValue = leftparts.length > i ? leftparts[i] : 0;
-            int rightValue = rightparts.length > i ? rightparts[i] : 0;
+        long leftsum = leftparts[0] * 10000 + leftparts[1] * 100 + leftparts[2];
+        long rightsum = rightparts[0] * 10000 + rightparts[1] * 100 + rightparts[2];
 
-            if (leftValue > rightValue)
-                return 1;
-            if (rightValue > leftValue)
-                return -1;
-        }
+        if (leftsum > rightsum)
+            return 1;
+        if (leftsum < rightsum)
+            return -1;
         return 0;
     }
 
@@ -774,6 +783,21 @@ public class UnityVersionMonitor {
             numbers[i] = Integer.parseInt(numbersS[i]);
 
         return numbers;
+    }
+
+    public static boolean isUnityVersionOverOrEqual(String currentversion, String validversion)
+    {
+        String[] versionparts = currentversion.split("\\.");
+
+        String[] validversionparts = validversion.split("\\.");
+
+        if (
+            Integer.parseInt(versionparts[0]) >= Integer.parseInt(validversionparts[0]) &&
+            Integer.parseInt(versionparts[1]) >= Integer.parseInt(validversionparts[1]) &&
+            Integer.parseInt(versionparts[2]) >= Integer.parseInt(validversionparts[2]))
+            return true;
+
+        return false;
     }
 
     private static boolean monoStructContainsFields(MonoStructRow msi, List<String> fields) {
@@ -836,6 +860,13 @@ public class UnityVersionMonitor {
             unityVersions = new ArrayList<String>(1);
             unityVersions.add(unityVersion);
             this.fields = fields;
+        }
+    }
+
+    private static class UnityVersionComparator implements Comparator<String> {
+        @Override
+        public int compare(String left, String right) {
+            return compareUnityVersions(left, right);
         }
     }
 
