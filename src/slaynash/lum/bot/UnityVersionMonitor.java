@@ -34,7 +34,9 @@ import com.google.gson.reflect.TypeToken;
 
 import mono.cecil.AssemblyDefinition;
 import mono.cecil.FieldDefinition;
+import mono.cecil.MethodDefinition;
 import mono.cecil.ModuleDefinition;
+import mono.cecil.ParameterDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
 import mono.cecil.TypeDefinition;
@@ -588,14 +590,7 @@ public class UnityVersionMonitor {
         }
 
         System.out.println("Found " + icallFoundCount + " / " + icalls.size() + " icalls");
-        if (icallFoundCount == icalls.size()) {
-            if (!initialisingUnityVersions) {
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
-                ).queue();
-            }
-        }
-        else {
+        if (icallFoundCount != icalls.size()) {
             String reports = "```";
             for (int i = 0; i < icallFounds.length; ++i) {
                 if (!icallFounds[i])
@@ -604,13 +599,104 @@ public class UnityVersionMonitor {
             reports += "```";
 
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed("Failed to validate the following icalls for Unity " + unityVersion + ":\n\n" + reports, Color.red)
+                Utils.wrapMessageInEmbed("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports, Color.red)
             ).queue();
         }
 
-        // TODO 2. Check if the signature matches in the Unity Managed Assemblies
-        String unityManaged = downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion);
+        // 2. Check if the signature matches in the Unity Managed Assemblies
+        
+        Map<String, List<UnityICall>> assemblies = new HashMap<>();
+        for (int i = 0; i < icalls.size(); ++i) {
+            if (!icallFounds[i])
+                continue;
+            UnityICall icall = icalls.get(i);
+            List<UnityICall> icallsForAssembly = assemblies.get(icall.assemblyName);
+            if (icallsForAssembly == null)
+                assemblies.put(icall.assemblyName, icallsForAssembly = new ArrayList<UnityICall>());
+            icallsForAssembly.add(icall);
+        }
+
+        String reportNoType = "";
+        String reportNoMethod = "";
+        String reportMismatchingParams = "";
+
+        for (Entry<String, List<UnityICall>> assemblyEntry : assemblies.entrySet()) {
+            String assemblyName = assemblyEntry.getKey();
+            AssemblyDefinition ad = AssemblyDefinition.readAssembly(downloadPath + "/" + unityVersion + "/" + getMonoManagedSubpath(unityVersion) + "/" + assemblyName + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+            ModuleDefinition mainModule = ad.getMainModule();
+
+            for (UnityICall icall : assemblyEntry.getValue()) {
+                String[] icallParts = icall.icall.split("::", 2);
+                TypeDefinition typeDefinition = mainModule.getType(icallParts[0]);
+                if (typeDefinition == null) {
+                    reportNoType += "\n" + icall.icall;
+                    continue;
+                }
+
+                boolean found = false;
+                for (MethodDefinition md : typeDefinition.getMethods()) {
+                    if (md.getName().equals(icallParts[1])) {
+                        found = true;
+                        boolean valid = true;
+                        List<ParameterDefinition> parameterDefs = md.getParameters();
+                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefs.size() != icall.parameters.length) {
+                            valid = false;
+                            break;
+                        }
+                        
+                        for (int i = 0; i < icall.parameters.length; ++i) {
+                            if (!parameterDefs.get(i).getParameterType().getFullName().equals(icall.parameters[i])) {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        if (!valid) {
+                            reportMismatchingParams += "\n\n" + icall.icall;
+                            reportMismatchingParams += "\nExpected `" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
+                            reportMismatchingParams += "\nFound: `" + md.getReturnType().getFullName() + "<-" + String.join(", ", parameterDefs.stream().map(pd -> pd.getParameterType().getFullName()).toArray(String[]::new)) + "`";
+                        }
+                        // ELSE it's valid
+
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    reportNoMethod += "\n" + icall.icall;
+                }
+            }
+
+            ad.dispose();
+        }
         // 3. Send result
+
+        if (!initialisingUnityVersions) {
+            boolean hasError = false;
+            if (reportNoType.length() > 0) {
+                hasError = true;
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
+                ).queue();
+            }
+            if (reportNoMethod.length() > 0) {
+                hasError = true;
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
+                ).queue();
+            }
+            if (reportMismatchingParams.length() > 0) {
+                hasError = true;
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams, Color.red)
+                ).queue();
+            }
+
+            if (!hasError)
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
+                ).queue();
+        }
     }
 
     public static void runMonoStructChecker(String unityVersion) {
