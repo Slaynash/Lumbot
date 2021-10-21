@@ -639,13 +639,26 @@ public class UnityVersionMonitor {
                         found = true;
                         boolean valid = true;
                         List<ParameterDefinition> parameterDefs = md.getParameters();
-                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefs.size() != icall.parameters.length) {
+                        
+                        String[] parameterDefsTranslated = parameterDefs.stream()
+                            .map(pd -> {
+                                String fullname = pd.getParameterType().getFullName();
+                                if (fullname.endsWith("&"))
+                                    fullname = "ref " + fullname.substring(0, fullname.length() - 1);
+                                if (pd.getParameterType().isArray())
+                                    fullname += "[]";
+                                
+                                return fullname;
+                            })
+                            .toArray(String[]::new);
+                        
+                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.length != icall.parameters.length) {
                             valid = false;
                             break;
                         }
                         
                         for (int i = 0; i < icall.parameters.length; ++i) {
-                            if (!parameterDefs.get(i).getParameterType().getFullName().equals(icall.parameters[i])) {
+                            if (!parameterDefsTranslated[i].equals(icall.parameters[i])) {
                                 valid = false;
                                 break;
                             }
@@ -653,8 +666,8 @@ public class UnityVersionMonitor {
 
                         if (!valid) {
                             reportMismatchingParams += "\n\n" + icall.icall;
-                            reportMismatchingParams += "\nExpected `" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
-                            reportMismatchingParams += "\nFound: `" + md.getReturnType().getFullName() + "<-" + String.join(", ", parameterDefs.stream().map(pd -> pd.getParameterType().getFullName()).toArray(String[]::new)) + "`";
+                            reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
+                            reportMismatchingParams += "\nFound:\n`" + md.getReturnType().getFullName() + " <- " + String.join(", ", parameterDefsTranslated) + "`";
                         }
                         // ELSE it's valid
 
