@@ -187,15 +187,17 @@ public class UnityVersionMonitor {
 
                     System.out.println("unity3d.com returned " + newVersions.size() + " new versions");
 
-                    if (newVersions.size() > 0 && newVersions.size() < 10) {
-                        initialisingUnityVersions = false;
-                        StringBuilder message = new StringBuilder("New Unity version published:");
-                        for (UnityVersion newVersion : newVersions)
-                            message.append("\n - ").append(newVersion.version);
-                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+                    if (newVersions.size() > 0) {
+                        if (newVersions.size() < 10) {
+                            initialisingUnityVersions = false;
+                            StringBuilder message = new StringBuilder("New Unity version published:");
+                            for (UnityVersion newVersion : newVersions)
+                                message.append("\n - ").append(newVersion.version);
+                            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+                        }
+                        else
+                            initialisingUnityVersions = true;
                     }
-                    else
-                        initialisingUnityVersions = true;
 
                     for (UnityVersion newVersion : newVersions) {
                         downloadUnity(newVersion);
@@ -221,6 +223,9 @@ public class UnityVersionMonitor {
                                 versions.add(version);
 
                         versions.sort(new UnityVersionComparator());
+
+                        for (MonoStructInfo msi : monoStructs)
+                            msi.rows.clear();
 
                         for (String version : versions)
                             runMonoStructChecker(version);
