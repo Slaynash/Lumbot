@@ -16,14 +16,12 @@ public class HelpCommand extends Command {
 
     @Override
     protected void onServer(String command, MessageReceivedEvent event) {
-        String[] split = command.split(" ", 2);
-        String path = split.length > 1 ? command.split(" ", 2)[1].trim() : "";
 
-        StringBuilder helpMessage = new StringBuilder("**__Help " + path + ":__**\n\n");
+        StringBuilder helpMessage = new StringBuilder("**__Help :__**\n\n");
 
         boolean empty = true;
         for (Command cmd : CommandManager.getCommands()) {
-            if (/*cmd.getHelpPath() != null && cmd.getHelpPath().equals(path) &&*/ cmd.includeInHelp(event)) {
+            if (cmd.includeInHelp(event)) {
                 empty = false;
                 helpMessage.append("**").append(cmd.getName()).append("**: ").append(cmd.getHelpDescription()).append("\n");
             }
@@ -32,7 +30,7 @@ public class HelpCommand extends Command {
             event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.CYAN)).queue();
         }
         else {
-            helpMessage.append("**Subhelp directory not found**");
+            helpMessage.append("**No commands found**");
             event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.RED)).queue();
         }
     }
