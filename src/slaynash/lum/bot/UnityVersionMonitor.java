@@ -65,15 +65,20 @@ public class UnityVersionMonitor {
 
     private static final List<UnityICall> icalls = new ArrayList<>() { // TODO Move to setting file
         {
-            add(new UnityICall("UnityEngine.GL::get_sRGBWrite", "UnityEngine.CoreModule", "System.Boolean", new String[] {}));
-            add(new UnityICall("UnityEngine.ImageConversion::LoadImage", "UnityEngine.ImageConversionModule", "System.Boolean", new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected", "UnityEngine.CoreModule", "System.Void", new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" }));
-            add(new UnityICall("UnityEngine.Texture::GetDataWidth", "UnityEngine.CoreModule", "System.Int32", new String[] { "UnityEngine.Texture" }));
-            add(new UnityICall("UnityEngine.Texture::GetDataHeight", "UnityEngine.CoreModule", "System.Int32", new String[] { "UnityEngine.Texture" }));
-            add(new UnityICall("UnityEngine.Texture::set_filterMode", "UnityEngine.CoreModule", "System.Void", new String[] { "UnityEngine.FilterMode" }));
-            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl", "UnityEngine.CoreModule", "System.Void", new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" }));
-            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount", "UnityEngine.TextRenderingModule", "System.Int32", new String[] { "UnityEngine.TextGenerator" }));
-            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray", "UnityEngine.TextRenderingModule", "System.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.GL::get_sRGBWrite"                            , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean"   , new String[] {}));
+            add(new UnityICall("UnityEngine.ImageConversion::LoadImage"                   , new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean"   , new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture"               , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected"     , new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
+                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataWidth"                        , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetWidth"                   , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataHeight"                       , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetHeight"                  , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.FilterMode" }));
+            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
+                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
+            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount"               , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32"     , new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray"              , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
         }
     };
 
@@ -170,7 +175,7 @@ public class UnityVersionMonitor {
                             break;
                         */
 
-                        if (foundVersion.startsWith("20") && !foundVersion.startsWith("2017")) {
+                        if (foundVersion.startsWith("20") && !foundVersion.startsWith("2017.1")) {
                             String versionId = subline.split("/")[1];
                             foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
                             urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
@@ -554,7 +559,9 @@ public class UnityVersionMonitor {
 
         // 1. Lookup for the word in UnityPlayer.dll
         List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
-        boolean[] icallFounds = new boolean[icalls.size()];
+        int[] icallFoundIndexes = new int[icalls.size()];
+        for (int i = 0; i < icallFoundIndexes.length; ++i)
+            icallFoundIndexes[i] = -1;
         int icallFoundCount = 0;
         byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopment_mono/UnityPlayer.dll").toPath());
         System.out.println("fileData.length: " + fileData.length);
@@ -573,12 +580,31 @@ public class UnityVersionMonitor {
             if (insideUnityEngineStrings) {
                 for (int j = 0; j < icalls.size(); ++j) {
                     UnityICall icall = icalls.get(j);
-                    int icallUtf8Length = icall.icallUtf8.length;
 
-                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, i + icallUtf8Length, icall.icallUtf8, 0, icallUtf8Length)) {
-                        if (!icallFounds[j]) {
+                    UnityICall subICall = null;
+                    int subICallIndex = 0;
+                    if (isUnityVersionOverOrEqual(unityVersion, icall.unityVersions))
+                        subICall = icall;
+                    else {
+                        for (int iOldICall = 0; iOldICall < icall.oldICalls.size(); ++iOldICall) {
+                            UnityICall oldICallEntry = icall.oldICalls.get(iOldICall);
+                            if (isUnityVersionOverOrEqual(unityVersion, oldICallEntry.unityVersions)) {
+                                subICall = oldICallEntry;
+                                subICallIndex = iOldICall;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (subICall == null)
+                        break;
+
+                    int icallUtf8Length = subICall.icallUtf8.length;
+
+                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, i + icallUtf8Length, subICall.icallUtf8, 0, icallUtf8Length)) {
+                        if (icallFoundIndexes[j] == -1) {
                             System.out.println("Icall " + icall.icall + " found at offset " + i);
-                            icallFounds[j] = true;
+                            icallFoundIndexes[j] = subICallIndex;
                             ++icallFoundCount;
 
                             if (icallFoundCount == icalls.size())
@@ -592,8 +618,8 @@ public class UnityVersionMonitor {
         System.out.println("Found " + icallFoundCount + " / " + icalls.size() + " icalls");
         if (icallFoundCount != icalls.size()) {
             String reports = "```";
-            for (int i = 0; i < icallFounds.length; ++i) {
-                if (!icallFounds[i])
+            for (int i = 0; i < icallFoundIndexes.length; ++i) {
+                if (icallFoundIndexes[i] == -1)
                     reports += "\n" + icalls.get(i).icall;
             }
             reports += "```";
@@ -607,9 +633,12 @@ public class UnityVersionMonitor {
         
         Map<String, List<UnityICall>> assemblies = new HashMap<>();
         for (int i = 0; i < icalls.size(); ++i) {
-            if (!icallFounds[i])
+            if (icallFoundIndexes[i] == -1)
                 continue;
             UnityICall icall = icalls.get(i);
+            if (icallFoundIndexes[i] > 0)
+                icall = icall.oldICalls.get(i - 1);
+            
             List<UnityICall> icallsForAssembly = assemblies.get(icall.assemblyName);
             if (icallsForAssembly == null)
                 assemblies.put(icall.assemblyName, icallsForAssembly = new ArrayList<UnityICall>());
@@ -639,7 +668,7 @@ public class UnityVersionMonitor {
                         found = true;
                         boolean valid = true;
                         List<ParameterDefinition> parameterDefs = md.getParameters();
-                        
+
                         String[] parameterDefsTranslated = parameterDefs.stream()
                             .map(pd -> {
                                 String fullname = pd.getParameterType().getFullName();
@@ -760,13 +789,7 @@ public class UnityVersionMonitor {
             // If 'fieldsMatch'
             if (fieldsMatch) {
                 // If for all versions of row, !isUnityVersionOverOrEqual(unityVersion, matchedVersion) THEN add version string Else OK
-                boolean isVersionValid = false;
-                for (String uv : msrTarget.unityVersions) {
-                    if (isUnityVersionOverOrEqual(unityVersion, uv)) {
-                        isVersionValid = true;
-                        break;
-                    }
-                }
+                boolean isVersionValid = isUnityVersionOverOrEqual(unityVersion, msrTarget.unityVersions.toArray(new String[0]));
 
                 if (isVersionValid)
                     ++successfullChecks;
@@ -889,6 +912,7 @@ public class UnityVersionMonitor {
         return numbers;
     }
 
+    /*
     public static boolean isUnityVersionOverOrEqual(String currentversion, String validversion)
     {
         String[] versionparts = currentversion.split("\\.");
@@ -900,6 +924,29 @@ public class UnityVersionMonitor {
             Integer.parseInt(versionparts[1]) >= Integer.parseInt(validversionparts[1]) &&
             Integer.parseInt(versionparts[2]) >= Integer.parseInt(validversionparts[2]))
             return true;
+
+        return false;
+    }
+    */
+
+    public static boolean isUnityVersionOverOrEqual(String currentversion, String[] validversions)
+    {
+        if (validversions == null || validversions.length == 0)
+            return true;
+        
+        String[] versionparts = currentversion.split("\\.");
+
+        for (String validversion : validversions) {
+
+            String[] validversionparts = validversion.split("\\.");
+
+            if (
+                Integer.parseInt(versionparts[0]) >= Integer.parseInt(validversionparts[0]) &&
+                Integer.parseInt(versionparts[1]) >= Integer.parseInt(validversionparts[1]) &&
+                Integer.parseInt(versionparts[2]) >= Integer.parseInt(validversionparts[2]))
+                return true;
+
+        }
 
         return false;
     }
@@ -932,16 +979,22 @@ public class UnityVersionMonitor {
     private static class UnityICall {
         public String icall;
         public byte[] icallUtf8;
+        public String[] unityVersions;
         public String assemblyName;
         public String returnType;
         public String[] parameters;
+        public List<UnityICall> oldICalls = new ArrayList<>(0);
 
-        public UnityICall(String icall, String assemblyName, String returnType, String[] parameters) {
+        public UnityICall(String icall, String[] unityVersions, String assemblyName, String returnType, String[] parameters, UnityICall... oldICalls) {
             this.icall = icall;
             this.icallUtf8 = icall.getBytes(StandardCharsets.UTF_8);
+            this.unityVersions = unityVersions;
             this.assemblyName = assemblyName;
             this.returnType = returnType;
             this.parameters = parameters;
+            if (oldICalls != null)
+                for (UnityICall oldICall : oldICalls)
+                    this.oldICalls.add(oldICall);
         }
     }
 
