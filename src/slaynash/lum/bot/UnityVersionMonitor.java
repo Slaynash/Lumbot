@@ -40,9 +40,6 @@ import mono.cecil.ParameterDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
 import mono.cecil.TypeDefinition;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -315,8 +312,8 @@ public class UnityVersionMonitor {
 
             StringBuilder sb = new StringBuilder();
             for (String version : allUnityVersions) {
+                sb.append("\n" + version + " ---------------------------------------------------------------------------------------\n");
                 runICallChecker(version, sb);
-                sb.append(version + "\n---------------------------------------------------------------------------------------\n");
             }
 
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
@@ -676,7 +673,7 @@ public class UnityVersionMonitor {
 
                     if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, i + icallUtf8Length, subICall.icallUtf8, 0, icallUtf8Length)) {
                         if (icallFoundIndexes[j] == -1) {
-                            System.out.println("Icall " + icall.icall + " found at offset " + i);
+                            System.out.println("Icall " + icall.icall + " found at offset " + i + ". subICallIndex: " + subICallIndex);
                             icallFoundIndexes[j] = subICallIndex;
                             ++icallFoundCount;
 
@@ -688,7 +685,7 @@ public class UnityVersionMonitor {
             }
         }
 
-        System.out.println("Found " + icallFoundCount + " / " + icalls.size() + " icalls");
+        System.out.println("[" + unityVersion + "] Found " + icallFoundCount + " / " + icalls.size() + " icalls");
         if (icallFoundCount != icalls.size()) {
             String reports = "```";
             for (int i = 0; i < icallFoundIndexes.length; ++i) {
@@ -759,13 +756,13 @@ public class UnityVersionMonitor {
 
                         if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.length != icall.parameters.length) {
                             valid = false;
-                            break;
                         }
-
-                        for (int i = 0; i < icall.parameters.length; ++i) {
-                            if (!parameterDefsTranslated[i].equals(icall.parameters[i])) {
-                                valid = false;
-                                break;
+                        else {
+                            for (int i = 0; i < icall.parameters.length; ++i) {
+                                if (!parameterDefsTranslated[i].equals(icall.parameters[i])) {
+                                    valid = false;
+                                    break;
+                                }
                             }
                         }
 
@@ -773,6 +770,9 @@ public class UnityVersionMonitor {
                             reportMismatchingParams += "\n\n" + icall.icall;
                             reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
                             reportMismatchingParams += "\nFound:\n`" + md.getReturnType().getFullName() + " <- " + String.join(", ", parameterDefsTranslated) + "`";
+                            System.out.println("[" + unityVersion + "] ICall parameters mismatches for " + icall.icall);
+                            System.out.println("[" + unityVersion + "] Expected: " + icall.returnType + " <- " + String.join(", ", icall.parameters));
+                            System.out.println("[" + unityVersion + "] Found: " + md.getReturnType().getFullName() + " <- " + String.join(", ", parameterDefsTranslated));
                         }
                         // ELSE it's valid
 
@@ -782,6 +782,7 @@ public class UnityVersionMonitor {
 
                 if (!found) {
                     reportNoMethod += "\n" + icall.icall;
+                    System.out.println("[" + unityVersion + "] ICall method not found: " + icall.icall);
                 }
             }
 

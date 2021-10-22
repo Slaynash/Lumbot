@@ -15,11 +15,12 @@ public class UnityCheckCommand extends Command {
         String[] parts = paramString.split(" ");
 
         if (parts.length != 2 || !(parts[1].equals("runicalls") || parts[1].equals("runhashes"))) {
-            event.getMessage().reply("usage: " + getName() + " <runicalls>");
+            event.getMessage().reply("usage: " + getName() + " <runicalls>").queue();
             return;
         }
 
         Thread t = new Thread(() -> {
+            event.getMessage().reply("Starting checks").queue();
             if (parts[1].equals("runicalls"))
                 UnityVersionMonitor.runFullICallCheck();
         }, "UnityCheckCommand");
