@@ -40,6 +40,9 @@ import mono.cecil.ParameterDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
 import mono.cecil.TypeDefinition;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -89,6 +92,7 @@ public class UnityVersionMonitor {
     };
 
     private static boolean initialisingUnityVersions = false;
+    private static boolean isRunningCheck = false;
 
     public static void start() {
 
@@ -206,16 +210,46 @@ public class UnityVersionMonitor {
                             initialisingUnityVersions = true;
                     }
 
+                    if (isRunningCheck) {
+                        while (isRunningCheck)
+                            Thread.sleep(100);
+                            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+                    }
+                    isRunningCheck = true;
+
                     for (UnityVersion newVersion : newVersions) {
                         downloadUnity(newVersion);
 
                         // run tools sanity checks
 
                         runHashChecker(newVersion.version);
-                        runICallChecker(newVersion.version);
-                        if (!initialisingUnityVersions)
+                        if (!initialisingUnityVersions) {
+                            runICallChecker(newVersion.version, null);
                             runMonoStructChecker(newVersion.version);
+                        }
                         // VFTables Checker
+                    }
+                    
+                    List<String> allUnityVersions = new ArrayList<>();
+                    for (String version : new File(downloadPath).list())
+                        if (!version.endsWith("_tmp"))
+                            allUnityVersions.add(version);
+
+                    allUnityVersions.sort(new UnityVersionComparator());
+
+
+                    // ICall init check
+                    if (initialisingUnityVersions) {
+                        
+                        StringBuilder sb = new StringBuilder();
+                        for (String version : allUnityVersions) {
+                            runICallChecker(version, sb);
+                            sb.append(version + "\n---------------------------------------------------------------------------------------\n");
+                        }
+
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                            Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
+                        ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
                     }
 
                     // MonoStruct init check
@@ -224,17 +258,10 @@ public class UnityVersionMonitor {
                         initialisingUnityVersions = true;
 
                     if (initialisingUnityVersions) {
-                        List<String> versions = new ArrayList<>();
-                        for (String version : new File(downloadPath).list())
-                            if (!version.endsWith("_tmp"))
-                                versions.add(version);
-
-                        versions.sort(new UnityVersionComparator());
-
                         for (MonoStructInfo msi : monoStructs)
                             msi.rows.clear();
 
-                        for (String version : versions)
+                        for (String version : allUnityVersions)
                             runMonoStructChecker(version);
 
                         for (MonoStructInfo msi : monoStructs) {
@@ -250,9 +277,12 @@ public class UnityVersionMonitor {
 
                     // VFTable init check
                     // TODO VFTable init check
+
+                    isRunningCheck = false;
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
+                    isRunningCheck = false;
                 }
             }
 
@@ -260,6 +290,49 @@ public class UnityVersionMonitor {
         thread.setDaemon(true);
         thread.start();
     }
+
+
+
+    public static void runFullICallCheck() {
+        if (isRunningCheck) {
+            while (isRunningCheck)
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+        }
+        isRunningCheck = true;
+
+        try {
+            List<String> allUnityVersions = new ArrayList<>();
+            for (String version : new File(downloadPath).list())
+                if (!version.endsWith("_tmp"))
+                    allUnityVersions.add(version);
+
+            allUnityVersions.sort(new UnityVersionComparator());
+
+            StringBuilder sb = new StringBuilder();
+            for (String version : allUnityVersions) {
+                runICallChecker(version, sb);
+                sb.append(version + "\n---------------------------------------------------------------------------------------\n");
+            }
+
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
+            ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
+        }
+
+        isRunningCheck = false;
+    }
+
+
+
+
 
     private static void downloadUnity(UnityVersion uv) {
         File targetFile = new File(downloadPath + "/" + uv.version);
@@ -555,7 +628,7 @@ public class UnityVersionMonitor {
     }
 
     private static final byte[] unityStringStart = "UnityEng".getBytes(StandardCharsets.UTF_8);
-    public static void runICallChecker(String unityVersion) throws IOException {
+    public static void runICallChecker(String unityVersion, StringBuilder stringBuilder) throws IOException {
 
         // 1. Lookup for the word in UnityPlayer.dll
         List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
@@ -624,13 +697,16 @@ public class UnityVersionMonitor {
             }
             reports += "```";
 
-            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports, Color.red)
-            ).queue();
+            if (stringBuilder != null)
+                stringBuilder.append("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports);
+            else
+                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports, Color.red)
+                ).queue();
         }
 
         // 2. Check if the signature matches in the Unity Managed Assemblies
-        
+
         Map<String, List<UnityICall>> assemblies = new HashMap<>();
         for (int i = 0; i < icalls.size(); ++i) {
             if (icallFoundIndexes[i] == -1)
@@ -638,7 +714,7 @@ public class UnityVersionMonitor {
             UnityICall icall = icalls.get(i);
             if (icallFoundIndexes[i] > 0)
                 icall = icall.oldICalls.get(i - 1);
-            
+
             List<UnityICall> icallsForAssembly = assemblies.get(icall.assemblyName);
             if (icallsForAssembly == null)
                 assemblies.put(icall.assemblyName, icallsForAssembly = new ArrayList<UnityICall>());
@@ -676,16 +752,16 @@ public class UnityVersionMonitor {
                                     fullname = "ref " + fullname.substring(0, fullname.length() - 1);
                                 if (pd.getParameterType().isArray())
                                     fullname += "[]";
-                                
+
                                 return fullname;
                             })
                             .toArray(String[]::new);
-                        
+
                         if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.length != icall.parameters.length) {
                             valid = false;
                             break;
                         }
-                        
+
                         for (int i = 0; i < icall.parameters.length; ++i) {
                             if (!parameterDefsTranslated[i].equals(icall.parameters[i])) {
                                 valid = false;
@@ -717,27 +793,39 @@ public class UnityVersionMonitor {
             boolean hasError = false;
             if (reportNoType.length() > 0) {
                 hasError = true;
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
-                ).queue();
+                if (stringBuilder != null)
+                    stringBuilder.append("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType);
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
+                    ).queue();
             }
             if (reportNoMethod.length() > 0) {
                 hasError = true;
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
-                ).queue();
+                if (stringBuilder != null)
+                    stringBuilder.append("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod);
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
+                    ).queue();
             }
             if (reportMismatchingParams.length() > 0) {
                 hasError = true;
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                if (stringBuilder != null)
+                    stringBuilder.append("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams);
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                     Utils.wrapMessageInEmbed("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams, Color.red)
                 ).queue();
             }
 
             if (!hasError)
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
-                ).queue();
+                if (stringBuilder != null)
+                    stringBuilder.append("ICall check succeeded for Unity " + unityVersion);
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
+                    ).queue();
         }
     }
 
@@ -933,7 +1021,7 @@ public class UnityVersionMonitor {
     {
         if (validversions == null || validversions.length == 0)
             return true;
-        
+
         String[] versionparts = currentversion.split("\\.");
 
         for (String validversion : validversions) {
