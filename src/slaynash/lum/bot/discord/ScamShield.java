@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -104,7 +105,7 @@ public class ScamShield {
     public static boolean checkForFishing(MessageReceivedEvent event) {
         if (event.getMember() == null)
             return false;
-        if (ServerMessagesHandler.checkIfStaff(event))
+        if (CrossServerUtils.checkIfStaff(event))
             return false;
 
         long guildID = event.getGuild().getIdLong();
@@ -153,7 +154,7 @@ public class ScamShield {
 
         if (event.getMember() == null)
             return false;
-        if (ServerMessagesHandler.checkIfStaff(event))
+        if (CrossServerUtils.checkIfStaff(event))
             return false;
 
         int suspiciousValue = ssValue(event);

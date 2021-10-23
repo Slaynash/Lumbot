@@ -5,21 +5,14 @@ import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Random;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
-import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
@@ -40,7 +33,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
                     handleReplies(event);
-                    tickettool(event);
+                    TicketTool.tickettool(event);
                 }
                 return;
             }
@@ -71,7 +64,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !checkIfStaff(event)) {
+                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = memberMention + " ";
                     switch (guildIDstr) {
                         case "600298024425619456": //emmVRC
@@ -140,7 +133,7 @@ public class ServerMessagesHandler {
                         break;
                     }
                 }
-                if (postedInWhitelistedServer && !checkIfStaff(event)) {
+                if (postedInWhitelistedServer && !CrossServerUtils.checkIfStaff(event)) {
                     if (message.contains("failed to create logs folder")) {
                         event.getChannel().sendMessage(memberMention + " Please make sure your MelonLoader folder is clear of special characters like `'` or Chinese characters").queue();
                     }
@@ -160,7 +153,7 @@ public class ServerMessagesHandler {
                         event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
                         return;
                     }
-                    if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !checkIfStaff(event)) {
+                    if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !CrossServerUtils.checkIfStaff(event)) {
                         event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFile(new File("images/Phasmo_folder.png")).queue();
                         return;
                     }
@@ -312,7 +305,7 @@ public class ServerMessagesHandler {
      * @return true if the message is posted in a guild using a whitelist, contains a DLL attachment, and isn't posted by a whitelisted user
      */
     private static boolean checkDllPostPermission(MessageReceivedEvent event) {
-        if (checkIfStaff(event))
+        if (CrossServerUtils.checkIfStaff(event))
             return true;
 
         long guildId = event.getGuild().getIdLong();
@@ -346,35 +339,6 @@ public class ServerMessagesHandler {
             }
         }
         return allowed;
-    }
-
-    /**
-     * Check if sender is part of Guild Staff/Trusted.
-     * @param event MessageReceivedEvent
-     * @return true if sender really was Guild Staff/Trusted
-     */
-    public static boolean checkIfStaff(MessageReceivedEvent event) {
-        if (event.getMember() == null) //https://discord.com/channels/633588473433030666/851519891965345845/883320272982278174
-            return false;
-        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))
-            return true;
-        for (Entry<Long, long[]> whitelistedRolesServer : GuildConfigurations.whitelistedRolesServers.entrySet()) {
-            Guild targetGuild;
-            Member serverMember;
-            if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
-                (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
-                List<Role> roles = serverMember.getRoles();
-                for (Role role : roles) {
-                    long roleId = role.getIdLong();
-                    for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
-                        if (whitelistedRoleId == roleId) {
-                            return true; // The sender is whitelisted
-                        }
-                    }
-                }
-            }
-        }
-        return false;
     }
 
     public static boolean checkHash(Attachment attachment) {
@@ -431,66 +395,4 @@ public class ServerMessagesHandler {
         return false;
     }
 
-    private static void tickettool(MessageReceivedEvent event) {
-        long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-        String channelName = event.getTextChannel().getName();
-        if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/)
-            return;
-        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            if (channelName.contains("reset"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
-            else if (channelName.contains("wipe"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
-            else if (channelName.contains("deletion"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
-            else if (channelName.contains("export"))
-                event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via `emmVRC Functions > Settings > Export Avatar List`\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
-        }
-        else if (channelName.contains("reset") && event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
-            Thread thread = new Thread(() -> {
-                System.out.println("Receved embed from Rubybot");
-                List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
-                history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()));
-                if (history.size() == 0) {
-                    System.out.println("Can not find my messages");
-                    return;
-                }
-                String[] split = history.get(history.size() - 1).getContentRaw().split("`");
-                if (split.length < 2) {
-                    System.out.println("Can not find my pin in ticket");
-                    return;
-                }
-                String code = split[1].toLowerCase();
-                boolean codeFound = false;
-                List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
-                String id = embed.get(0).getValue();
-                for (Field field : embed) {
-                    if (codeFound = field.getValue().toLowerCase().replace("\n", "").replace(" ", "").contains(code))
-                        break;
-                }
-
-                if (channelName.contains("reset") && codeFound) {
-                    event.getTextChannel().sendMessage("e.pin reset " + id).queue();
-                }
-                // else if (channelName.contains("wipe") && codeFound) {
-                //     event.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
-                // }
-                // else if (channelName.contains("deletion") && codeFound) {
-                //     event.getTextChannel().sendMessage("e.user delete " + id).queue();
-                // }
-
-                System.out.println("Code: " + code + " ID:" + id);
-            }, "Ticket");
-            thread.start();
-        }
-    }
-
-    private static final String AB = "23456789abcdefghijkmnopqrstuvwxyz";
-    private static final Random random = new Random();
-    private static String randomString(int len) {
-        StringBuilder sb = new StringBuilder(len);
-        for (int i = 0; i < len; i++)
-            sb.append(AB.charAt(random.nextInt(AB.length())));
-        return sb.toString();
-    }
 }

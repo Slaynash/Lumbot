@@ -65,20 +65,20 @@ public class UnityVersionMonitor {
 
     private static final List<UnityICall> icalls = new ArrayList<>() { // TODO Move to setting file
         {
-            add(new UnityICall("UnityEngine.GL::get_sRGBWrite"                            , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean"        , new String[] {}));
-            add(new UnityICall("UnityEngine.ImageConversion::LoadImage"                   , new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean"        , new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture"               , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected"     , new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
-                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataWidth"                        , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetWidth"                   , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataHeight"                       , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetHeight"                  , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture", "UnityEngine.FilterMode" }));
-            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
-                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
-            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount"               , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32"          , new String[] { "UnityEngine.TextGenerator" }));
-            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray"              , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.GL::get_sRGBWrite",                             new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean",         new String[] {}));
+            add(new UnityICall("UnityEngine.ImageConversion::LoadImage",                    new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean",         new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture",                new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected",      new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
+                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataWidth",                         new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetWidth",                    new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataHeight",                        new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetHeight",                   new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::set_filterMode",                       new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture", "UnityEngine.FilterMode" }));
+            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl",                      new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
+                new UnityICall("UnityEngine.Texture2D::SetPixels",                          new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
+            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount",                new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32",           new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray",               new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
         }
     };
 
@@ -210,7 +210,7 @@ public class UnityVersionMonitor {
                     if (isRunningCheck) {
                         while (isRunningCheck)
                             Thread.sleep(100);
-                            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+                        JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
                     }
                     isRunningCheck = true;
 
@@ -226,7 +226,7 @@ public class UnityVersionMonitor {
                         }
                         // VFTables Checker
                     }
-                    
+
                     List<String> allUnityVersions = new ArrayList<>();
                     for (String version : new File(downloadPath).list())
                         if (!version.endsWith("_tmp"))
@@ -237,7 +237,7 @@ public class UnityVersionMonitor {
 
                     // ICall init check
                     if (initialisingUnityVersions) {
-                        
+
                         StringBuilder sb = new StringBuilder();
                         for (String version : allUnityVersions) {
                             runICallChecker(version, sb);
@@ -295,10 +295,11 @@ public class UnityVersionMonitor {
             while (isRunningCheck)
                 try {
                     Thread.sleep(100);
-                } catch (InterruptedException e) {
+                }
+                catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+            JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
         }
         isRunningCheck = true;
 
@@ -978,8 +979,7 @@ public class UnityVersionMonitor {
     }
     */
 
-    public static boolean isUnityVersionOverOrEqual(String currentversion, String[] validversions)
-    {
+    public static boolean isUnityVersionOverOrEqual(String currentversion, String[] validversions) {
         if (validversions == null || validversions.length == 0)
             return true;
 

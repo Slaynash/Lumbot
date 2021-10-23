@@ -25,7 +25,6 @@ import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ArrayUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -317,7 +316,7 @@ public final class MelonScanner {
         if (context.mlHashCode == null)
             return;
 
-        if (ServerMessagesHandler.checkIfStaff(context.messageReceivedEvent))
+        if (CrossServerUtils.checkIfStaff(context.messageReceivedEvent))
             return;
 
         for (MLHashPair hashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
