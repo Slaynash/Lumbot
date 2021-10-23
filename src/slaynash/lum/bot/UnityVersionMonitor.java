@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -66,20 +65,20 @@ public class UnityVersionMonitor {
 
     private static final List<UnityICall> icalls = new ArrayList<>() { // TODO Move to setting file
         {
-            add(new UnityICall("UnityEngine.GL::get_sRGBWrite"                            , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean"   , new String[] {}));
-            add(new UnityICall("UnityEngine.ImageConversion::LoadImage"                   , new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean"   , new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture"               , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected"     , new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
-                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataWidth"                        , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetWidth"                   , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataHeight"                       , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetHeight"                  , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"     , new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "UnityEngine.FilterMode" }));
-            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
-                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"      , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
-            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount"               , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32"     , new String[] { "UnityEngine.TextGenerator" }));
-            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray"              , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.GL::get_sRGBWrite"                            , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean"        , new String[] {}));
+            add(new UnityICall("UnityEngine.ImageConversion::LoadImage"                   , new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean"        , new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture"               , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
+            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected"     , new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
+                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataWidth"                        , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetWidth"                   , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::GetDataHeight"                       , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" },
+                new UnityICall("UnityEngine.Texture::Internal_GetHeight"                  , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
+            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.FilterMode" }));
+            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
+                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
+            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount"               , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32"          , new String[] { "UnityEngine.TextGenerator" }));
+            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray"              , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
         }
     };
 
@@ -682,6 +681,10 @@ public class UnityVersionMonitor {
                         boolean valid = true;
                         List<ParameterDefinition> parameterDefs = md.getParameters();
 
+                        String returnTypeTranslated = md.getReturnType().getFullName();
+                        if (md.getReturnType().isArray())
+                            returnTypeTranslated += "[]";
+
                         List<String> parameterDefsTranslated = parameterDefs.stream()
                             .map(pd -> {
                                 String fullname = pd.getParameterType().getFullName();
@@ -696,7 +699,7 @@ public class UnityVersionMonitor {
                         if (!md.isStatic())
                             parameterDefsTranslated.add(0, icallParts[0]);
 
-                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.size() != icall.parameters.length) {
+                        if (!returnTypeTranslated.equals(icall.returnType) || parameterDefsTranslated.size() != icall.parameters.length) {
                             valid = false;
                         }
                         else {
@@ -711,10 +714,10 @@ public class UnityVersionMonitor {
                         if (!valid) {
                             reportMismatchingParams += "\n\n" + icall.icall;
                             reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
-                            reportMismatchingParams += "\nFound:\n`" + md.getReturnType().getFullName() + " <- " + String.join(", ", parameterDefsTranslated) + "`";
+                            reportMismatchingParams += "\nFound:\n`" + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated) + "`";
                             System.out.println("[" + unityVersion + "] ICall parameters mismatches for " + icall.icall);
                             System.out.println("[" + unityVersion + "] Expected: " + icall.returnType + " <- " + String.join(", ", icall.parameters));
-                            System.out.println("[" + unityVersion + "] Found: " + md.getReturnType().getFullName() + " <- " + String.join(", ", parameterDefsTranslated));
+                            System.out.println("[" + unityVersion + "] Found: " + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated));
                         }
                         // ELSE it's valid
 
