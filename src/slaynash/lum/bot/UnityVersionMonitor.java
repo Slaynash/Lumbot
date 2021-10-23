@@ -74,9 +74,9 @@ public class UnityVersionMonitor {
                 new UnityICall("UnityEngine.Texture::Internal_GetWidth"                   , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
             add(new UnityICall("UnityEngine.Texture::GetDataHeight"                       , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" },
                 new UnityICall("UnityEngine.Texture::Internal_GetHeight"                  , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32"          , new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.FilterMode" }));
-            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
-                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "System.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
+            add(new UnityICall("UnityEngine.Texture::set_filterMode"                      , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture", "UnityEngine.FilterMode" }));
+            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl"                     , new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
+                new UnityICall("UnityEngine.Texture2D::SetPixels"                         , new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void"           , new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
             add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount"               , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32"          , new String[] { "UnityEngine.TextGenerator" }));
             add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray"              , new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
         }
@@ -675,6 +675,8 @@ public class UnityVersionMonitor {
                 }
 
                 boolean found = false;
+                boolean foundAndMatches = false;
+                String similarMethods = "";
                 for (MethodDefinition md : typeDefinition.getMethods()) {
                     if (md.getName().equals(icallParts[1])) {
                         found = true;
@@ -711,23 +713,27 @@ public class UnityVersionMonitor {
                             }
                         }
 
-                        if (!valid) {
-                            reportMismatchingParams += "\n\n" + icall.icall;
-                            reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
-                            reportMismatchingParams += "\nFound:\n`" + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated) + "`";
-                            System.out.println("[" + unityVersion + "] ICall parameters mismatches for " + icall.icall);
-                            System.out.println("[" + unityVersion + "] Expected: " + icall.returnType + " <- " + String.join(", ", icall.parameters));
-                            System.out.println("[" + unityVersion + "] Found: " + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated));
+                        if (valid) {
+                            foundAndMatches = true;
+                            break;
                         }
+                        else
+                            similarMethods += "\n`" + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated) + "`";
                         // ELSE it's valid
-
-                        break;
                     }
                 }
 
                 if (!found) {
                     reportNoMethod += "\n" + icall.icall;
                     System.out.println("[" + unityVersion + "] ICall method not found: " + icall.icall);
+                }
+                else if (!foundAndMatches) {
+                    reportMismatchingParams += "\n\n" + icall.icall;
+                    reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
+                    reportMismatchingParams += "\nFound:" + similarMethods;
+                    System.out.println("[" + unityVersion + "] ICall parameters mismatches for " + icall.icall);
+                    System.out.println("[" + unityVersion + "] Expected: " + icall.returnType + " <- " + String.join(", ", icall.parameters));
+                    System.out.println("[" + unityVersion + "] Found: " + similarMethods);
                 }
             }
 
