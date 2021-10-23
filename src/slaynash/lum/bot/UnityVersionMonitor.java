@@ -624,93 +624,32 @@ public class UnityVersionMonitor {
         }
     }
 
-    private static final byte[] unityStringStart = "UnityEng".getBytes(StandardCharsets.UTF_8);
     public static void runICallChecker(String unityVersion, StringBuilder stringBuilder) throws IOException {
 
-        // 1. Lookup for the word in UnityPlayer.dll
-        List<UnityICall> icalls = new ArrayList<UnityICall>(UnityVersionMonitor.icalls); // We cache the icall list to avoid ConcurrentModificationExceptions
-        int[] icallFoundIndexes = new int[icalls.size()];
-        for (int i = 0; i < icallFoundIndexes.length; ++i)
-            icallFoundIndexes[i] = -1;
-        int icallFoundCount = 0;
-        byte[] fileData = Files.readAllBytes(new File(downloadPath + "/" + unityVersion + "/win64_nondevelopment_mono/UnityPlayer.dll").toPath());
-        System.out.println("fileData.length: " + fileData.length);
-        int remainingDataLength = fileData.length;
-        boolean insideUnityEngineStrings = false;
-        for (int i = 0; i < fileData.length - 8; i += 8, remainingDataLength -= 8) {
-            if (!insideUnityEngineStrings) {
-                if (Arrays.equals(fileData, i, i + 8, unityStringStart, 0, 8)) {
-                    System.out.println("startOfUnityEngineStrings is at offset " + i);
-                    insideUnityEngineStrings = true;
-                }
-                else
-                    continue;
-            }
+        System.out.println("[" + unityVersion + "] Running icall check for Unity " + unityVersion);
 
-            if (insideUnityEngineStrings) {
-                for (int j = 0; j < icalls.size(); ++j) {
-                    UnityICall icall = icalls.get(j);
-
-                    UnityICall subICall = null;
-                    int subICallIndex = 0;
-                    if (isUnityVersionOverOrEqual(unityVersion, icall.unityVersions))
-                        subICall = icall;
-                    else {
-                        for (int iOldICall = 0; iOldICall < icall.oldICalls.size(); ++iOldICall) {
-                            UnityICall oldICallEntry = icall.oldICalls.get(iOldICall);
-                            if (isUnityVersionOverOrEqual(unityVersion, oldICallEntry.unityVersions)) {
-                                subICall = oldICallEntry;
-                                subICallIndex = iOldICall;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (subICall == null)
-                        break;
-
-                    int icallUtf8Length = subICall.icallUtf8.length;
-
-                    if (remainingDataLength >= icallUtf8Length && Arrays.equals(fileData, i, i + icallUtf8Length, subICall.icallUtf8, 0, icallUtf8Length)) {
-                        if (icallFoundIndexes[j] == -1) {
-                            System.out.println("Icall " + icall.icall + " found at offset " + i + ". subICallIndex: " + subICallIndex);
-                            icallFoundIndexes[j] = subICallIndex;
-                            ++icallFoundCount;
-
-                            if (icallFoundCount == icalls.size())
-                                break;
-                        }
-                    }
-                }
-            }
-        }
-
-        System.out.println("[" + unityVersion + "] Found " + icallFoundCount + " / " + icalls.size() + " icalls");
-        if (icallFoundCount != icalls.size()) {
-            String reports = "```";
-            for (int i = 0; i < icallFoundIndexes.length; ++i) {
-                if (icallFoundIndexes[i] == -1)
-                    reports += "\n" + icalls.get(i).icall;
-            }
-            reports += "```";
-
-            if (stringBuilder != null)
-                stringBuilder.append("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports);
-            else
-                JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                    Utils.wrapMessageInEmbed("**Failed to find the following icalls for Unity " + unityVersion + ":**\n\n" + reports, Color.red)
-                ).queue();
-        }
-
-        // 2. Check if the signature matches in the Unity Managed Assemblies
+        String reportNoValidVersion = "";
 
         Map<String, List<UnityICall>> assemblies = new HashMap<>();
         for (int i = 0; i < icalls.size(); ++i) {
-            if (icallFoundIndexes[i] == -1)
-                continue;
             UnityICall icall = icalls.get(i);
-            if (icallFoundIndexes[i] > 0)
-                icall = icall.oldICalls.get(i - 1);
+
+            if (!isUnityVersionOverOrEqual(unityVersion, icall.unityVersions)) {
+                boolean found = false;
+                for (UnityICall oldICallEntry : icall.oldICalls) {
+                    if (isUnityVersionOverOrEqual(unityVersion, oldICallEntry.unityVersions)) {
+                        System.out.println("[" + unityVersion + "] Icall " + icall.icall + " => " + oldICallEntry.icall);
+                        icall = oldICallEntry;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    System.out.println("[" + unityVersion + "] ICall has no valid version: " + icall.icall);
+                    reportNoValidVersion += icall.icall;
+                    continue;
+                }
+            }
 
             List<UnityICall> icallsForAssembly = assemblies.get(icall.assemblyName);
             if (icallsForAssembly == null)
@@ -792,6 +731,15 @@ public class UnityVersionMonitor {
 
         if (!initialisingUnityVersions) {
             boolean hasError = false;
+            if (reportNoValidVersion.length() > 0) {
+                hasError = true;
+                if (stringBuilder != null)
+                    stringBuilder.append("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod);
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        Utils.wrapMessageInEmbed("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
+                    ).queue();
+            }
             if (reportNoType.length() > 0) {
                 hasError = true;
                 if (stringBuilder != null)
