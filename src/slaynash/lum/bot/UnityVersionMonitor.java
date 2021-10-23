@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -681,7 +682,7 @@ public class UnityVersionMonitor {
                         boolean valid = true;
                         List<ParameterDefinition> parameterDefs = md.getParameters();
 
-                        String[] parameterDefsTranslated = parameterDefs.stream()
+                        List<String> parameterDefsTranslated = parameterDefs.stream()
                             .map(pd -> {
                                 String fullname = pd.getParameterType().getFullName();
                                 if (fullname.endsWith("&"))
@@ -691,14 +692,16 @@ public class UnityVersionMonitor {
 
                                 return fullname;
                             })
-                            .toArray(String[]::new);
+                            .collect(Collectors.toList());
+                        if (!md.isStatic())
+                            parameterDefsTranslated.add(0, icallParts[0]);
 
-                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.length != icall.parameters.length) {
+                        if (!md.getReturnType().getFullName().equals(icall.returnType) || parameterDefsTranslated.size() != icall.parameters.length) {
                             valid = false;
                         }
                         else {
                             for (int i = 0; i < icall.parameters.length; ++i) {
-                                if (!parameterDefsTranslated[i].equals(icall.parameters[i])) {
+                                if (!parameterDefsTranslated.get(i).equals(icall.parameters[i])) {
                                     valid = false;
                                     break;
                                 }
