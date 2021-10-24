@@ -170,7 +170,7 @@ public class ScamShield {
     private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
-            if (g == event.getGuild())
+            if (sameauthormessages != null && g == event.getGuild())
                 return false;
             if (GuildConfigurations.configurations.get(g.getIdLong()) != null)
                 return !GuildConfigurations.configurations.get(g.getIdLong())[GuildConfigurations.ConfigurationMap.SSCROSS.ordinal()];
@@ -179,7 +179,7 @@ public class ScamShield {
         });
         boolean status = false;
         for (Guild guild : mutualGuilds) {
-            if (handleBan(event, guild.getIdLong(), suspiciousCount, guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
+            if (handleBan(event, guild.getIdLong(), suspiciousCount, sameauthormessages == null || guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
                 status = true;
         }
         if (status) {
