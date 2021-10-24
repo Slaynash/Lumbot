@@ -152,7 +152,7 @@ public class ScamShield {
     public static boolean checkForFishingPrivate(MessageReceivedEvent event) {
         String message = event.getMessage().getContentDisplay().toLowerCase();
 
-        if (event.getMember() == null)
+        if (event.getAuthor() == null)
             return false;
         if (CrossServerUtils.checkIfStaff(event))
             return false;
