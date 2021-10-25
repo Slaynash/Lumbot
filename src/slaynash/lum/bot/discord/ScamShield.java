@@ -205,6 +205,11 @@ public class ScamShield {
         boolean status = false;
         Guild guild = event.getJDA().getGuildById(guildID);
         Member member = guild.getMember(event.getAuthor());
+        String guildName;
+        if (event.getChannelType() == ChannelType.PRIVATE)
+            guildName = "DMs";
+        else
+            guildName = event.getGuild().getName();
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
         String reportChannelID = CommandManager.mlReportChannels.get(guildID);
@@ -220,7 +225,7 @@ public class ScamShield {
             .setTimestamp(Instant.now())
             .setFooter("Received " + suspiciousCount + " naughty points.");
         if (cross)
-            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + event.getGuild().getName(), null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + guildName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
         else
             embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
@@ -285,7 +290,7 @@ public class ScamShield {
                 sb.append(event.getMessage().getContentRaw());
             }
             else {
-                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + event.getGuild().getName() + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + guildName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
                 sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
             }
             if (ssQueued != null)

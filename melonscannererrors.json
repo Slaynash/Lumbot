@@ -102,11 +102,11 @@
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
-            "error": "<@102450956045668352> <:Neko_cat_Gun:851934721914175498> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+            "error": "<@102450956045668352> There has been an issue while running Cpp2IL. Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
             "regex": ".*\\[Program] Execution Failed.*",
-            "error": "<@102450956045668352> you <:baka:828070018935685130> Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
+            "error": "<@102450956045668352> There has been an issue while running Cpp2IL. Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {
             "regex": ".*MelonLoader\\.ModHandler.*",
