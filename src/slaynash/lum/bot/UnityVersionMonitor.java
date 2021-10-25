@@ -830,6 +830,8 @@ public class UnityVersionMonitor {
                         fields.add(fieldDef.getName() + " = " + (fieldOffset = fieldConstant));
                     else
                         fields.add(fieldDef.getName());
+
+                    fieldOffset++;
                 }
             }
             else
