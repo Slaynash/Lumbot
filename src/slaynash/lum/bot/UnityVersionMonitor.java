@@ -87,6 +87,7 @@ public class UnityVersionMonitor {
             add(new MonoStructInfo("UnityEngine.Internal_DrawTextureArguments", "UnityEngine.CoreModule"));
             add(new MonoStructInfo("UnityEngine.Rendering.VertexAttribute", "UnityEngine.CoreModule",
                 new MonoStructInfo("UnityEngine.Mesh/InternalShaderChannel", "UnityEngine.CoreModule")));
+            add(new MonoStructInfo("UnityEngine.UIVertex", "UnityEngine.TextRenderingModule"));
         }
     };
 
@@ -836,7 +837,8 @@ public class UnityVersionMonitor {
             }
             else
                 for (FieldDefinition fieldDef : typeDefinition.getFields())
-                    fields.add(fieldDef.getFieldType().getFullName() + " " + fieldDef.getName());
+                    if (!fieldDef.isStatic())
+                        fields.add(fieldDef.getFieldType().getFullName() + " " + fieldDef.getName());
 
             ad.dispose();
 
