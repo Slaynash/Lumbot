@@ -6,11 +6,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -34,6 +41,35 @@ public final class CrossServerUtils {
         input = input.substring(0, Math.min(input.length(), 50)); // limit inputs to 50 chars
 
         return input;
+    }
+
+    /**
+     * Check if sender is part of Guild Staff/Trusted.
+     * @param event MessageReceivedEvent
+     * @return true if sender really was Guild Staff/Trusted
+     */
+    public static boolean checkIfStaff(MessageReceivedEvent event) {
+        if (event.getMember() == null) //https://discord.com/channels/633588473433030666/851519891965345845/883320272982278174
+            return false;
+        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))
+            return true;
+        for (Entry<Long, long[]> whitelistedRolesServer : GuildConfigurations.whitelistedRolesServers.entrySet()) {
+            Guild targetGuild;
+            Member serverMember;
+            if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
+                (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
+                List<Role> roles = serverMember.getRoles();
+                for (Role role : roles) {
+                    long roleId = role.getIdLong();
+                    for (long whitelistedRoleId : whitelistedRolesServer.getValue()) {
+                        if (whitelistedRoleId == roleId) {
+                            return true; // The sender is whitelisted
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public static boolean isLumDev(Member member) {

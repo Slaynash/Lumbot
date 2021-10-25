@@ -25,6 +25,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -104,7 +105,7 @@ public class ScamShield {
     public static boolean checkForFishing(MessageReceivedEvent event) {
         if (event.getMember() == null)
             return false;
-        if (ServerMessagesHandler.checkIfStaff(event))
+        if (CrossServerUtils.checkIfStaff(event))
             return false;
 
         long guildID = event.getGuild().getIdLong();
@@ -151,9 +152,9 @@ public class ScamShield {
     public static boolean checkForFishingPrivate(MessageReceivedEvent event) {
         String message = event.getMessage().getContentDisplay().toLowerCase();
 
-        if (event.getMember() == null)
+        if (event.getAuthor() == null)
             return false;
-        if (ServerMessagesHandler.checkIfStaff(event))
+        if (CrossServerUtils.checkIfStaff(event))
             return false;
 
         int suspiciousValue = ssValue(event);
@@ -169,7 +170,7 @@ public class ScamShield {
     private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
-            if (g == event.getGuild())
+            if (sameauthormessages != null && g == event.getGuild())
                 return false;
             if (GuildConfigurations.configurations.get(g.getIdLong()) != null)
                 return !GuildConfigurations.configurations.get(g.getIdLong())[GuildConfigurations.ConfigurationMap.SSCROSS.ordinal()];
@@ -178,7 +179,7 @@ public class ScamShield {
         });
         boolean status = false;
         for (Guild guild : mutualGuilds) {
-            if (handleBan(event, guild.getIdLong(), suspiciousCount, guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
+            if (handleBan(event, guild.getIdLong(), suspiciousCount, sameauthormessages == null || guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
                 status = true;
         }
         if (status) {

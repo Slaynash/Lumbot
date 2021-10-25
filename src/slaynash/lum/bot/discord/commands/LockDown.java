@@ -10,7 +10,7 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.Moderation;
-import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class LockDown extends Command {
 
@@ -49,7 +49,7 @@ public class LockDown extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (Moderation.getAdmins(event.getGuild()).contains(event.getAuthor().getIdLong()) || ServerMessagesHandler.checkIfStaff(event));
+        return GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()) != null && (Moderation.getAdmins(event.getGuild()).contains(event.getAuthor().getIdLong()) || CrossServerUtils.checkIfStaff(event));
     }
 
     @Override
