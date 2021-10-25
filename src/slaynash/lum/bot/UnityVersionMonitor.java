@@ -807,7 +807,7 @@ public class UnityVersionMonitor {
             TypeDefinition typeDefinition = mainModule.getType(msi.name);
             if (typeDefinition == null) {
                 for (MonoStructInfo alt : msi.altStructs) {
-                    typeDefinition = mainModule.getType(msi.name);
+                    typeDefinition = mainModule.getType(alt.name);
                     if (typeDefinition != null)
                         break;
                 }
