@@ -819,9 +819,22 @@ public class UnityVersionMonitor {
 
             List<String> fields = new ArrayList<>();
 
-            for (FieldDefinition fieldDef : typeDefinition.getFields()) {
-                fields.add(fieldDef.getFieldType().getFullName() + " " + fieldDef.getName());
+            if (typeDefinition.isEnum()) {
+                int fieldOffset = 0;
+                for (FieldDefinition fieldDef : typeDefinition.getFields()) {
+                    if (fieldDef.getName().equals("value__"))
+                        continue;
+                    
+                    int fieldConstant = (int) fieldDef.getConstant();
+                    if (fieldConstant != fieldOffset)
+                        fields.add(fieldDef.getName() + " = " + (fieldOffset = fieldConstant));
+                    else
+                        fields.add(fieldDef.getName());
+                }
             }
+            else
+                for (FieldDefinition fieldDef : typeDefinition.getFields())
+                    fields.add(fieldDef.getFieldType().getFullName() + " " + fieldDef.getName());
 
             ad.dispose();
 
