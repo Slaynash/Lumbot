@@ -86,7 +86,7 @@ public class UnityVersionMonitor {
         {
             add(new MonoStructInfo("UnityEngine.Internal_DrawTextureArguments", "UnityEngine.CoreModule"));
             add(new MonoStructInfo("UnityEngine.Rendering.VertexAttribute", "UnityEngine.CoreModule",
-                new MonoStructInfo("UnityEngine.Mesh.InternalShaderChannel", "UnityEngine.CoreModule")));
+                new MonoStructInfo("UnityEngine.Mesh/InternalShaderChannel", "UnityEngine.CoreModule")));
         }
     };
 
