@@ -85,6 +85,8 @@ public class UnityVersionMonitor {
     private static final List<MonoStructInfo> monoStructs = new ArrayList<>() {
         {
             add(new MonoStructInfo("UnityEngine.Internal_DrawTextureArguments", "UnityEngine.CoreModule"));
+            add(new MonoStructInfo("UnityEngine.Rendering.VertexAttribute", "UnityEngine.CoreModule",
+                new MonoStructInfo("UnityEngine.Mesh.InternalShaderChannel", "UnityEngine.CoreModule")));
         }
     };
 
@@ -803,8 +805,15 @@ public class UnityVersionMonitor {
 
             TypeDefinition typeDefinition = mainModule.getType(msi.name);
             if (typeDefinition == null) {
-                System.out.println("Failed to validate the following MonoStruct for Unity " + unityVersion + ": " + msi.name);
-                return;
+                for (MonoStructInfo alt : msi.altStructs) {
+                    typeDefinition = mainModule.getType(msi.name);
+                    if (typeDefinition != null)
+                        break;
+                }
+                if (typeDefinition == null) {
+                    System.out.println("Failed to validate the following MonoStruct for Unity " + unityVersion + ": " + msi.name);
+                    continue;
+                }
             }
 
             List<String> fields = new ArrayList<>();
@@ -1051,10 +1060,12 @@ public class UnityVersionMonitor {
         public final String name;
         public final String assembly;
         public final List<MonoStructRow> rows = new ArrayList<>();
+        public final MonoStructInfo[] altStructs;
 
-        public MonoStructInfo(String fullname, String assembly) {
+        public MonoStructInfo(String fullname, String assembly, MonoStructInfo... altStructs) {
             this.name = fullname;
             this.assembly = assembly;
+            this.altStructs = altStructs != null ? altStructs : new MonoStructInfo[0];
         }
     }
 
