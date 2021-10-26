@@ -187,7 +187,16 @@ public class UnityVersionMonitor {
                         else
                             break;
 
-                        unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
+                        boolean alreadyHasVersion = false;
+                        for (UnityVersion uv : unityVersions) {
+                            if (uv.version.equals(foundVersion)) {
+                                alreadyHasVersion = true;
+                                break;
+                            }
+                        }
+
+                        if (!alreadyHasVersion)
+                            unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
                     }
 
                     List<UnityVersion> newVersions = new ArrayList<>();
