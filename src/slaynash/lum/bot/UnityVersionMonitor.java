@@ -428,8 +428,8 @@ public class UnityVersionMonitor {
             return;
         }
 
-        new File("unitydownload_" + uv.version + ".dat").delete();
-        new File("Payload~").delete();
+        new File("unityversionsmonitor/unitydownload_" + uv.version + ".dat").delete();
+        new File("unityversionsmonitor/Payload~").delete();
     }
 
     public static void loadInstalledVersionCache() {
@@ -547,10 +547,10 @@ public class UnityVersionMonitor {
             return runProgram("UnityNSISReader", "sh", "-c", "mono unityversionsmonitor/UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"") == 0;
 
         if (isPkg) {
-            if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"Payload~\" -y") != 0)
+            if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" \"unityversionsmonitor/Payload~\" -y") != 0)
                 return false;
 
-            return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
+            return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"unityversionsmonitor/Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
         }
 
         return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
