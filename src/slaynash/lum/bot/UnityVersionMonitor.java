@@ -825,7 +825,7 @@ public class UnityVersionMonitor {
                 for (FieldDefinition fieldDef : typeDefinition.getFields()) {
                     if (fieldDef.getName().equals("value__"))
                         continue;
-                    
+
                     int fieldConstant = (int) fieldDef.getConstant();
                     if (fieldConstant != fieldOffset)
                         fields.add(fieldDef.getName() + " = " + (fieldOffset = fieldConstant));
@@ -938,7 +938,7 @@ public class UnityVersionMonitor {
     }
 
     private static String getMonoManagedSubpath(String version) {
-        String monoManagedSubpath = "win64_nondevelopment_mono/Data";
+        String monoManagedSubpath = "win64_player_nondevelopment_mono/Data";
 
         if (version.startsWith("3.")) {
             monoManagedSubpath = "windows64standaloneplayer";
@@ -960,6 +960,10 @@ public class UnityVersionMonitor {
             else {
                 monoManagedSubpath = "win64_nondevelopment/Data";
             }
+        }
+        else if (version.startsWith("20")) {
+            if (compareUnityVersions(version, "2021.1.27") <= 0)
+                monoManagedSubpath = "win64_nondevelopment_mono/Data";
         }
 
         return monoManagedSubpath + "/Managed";
