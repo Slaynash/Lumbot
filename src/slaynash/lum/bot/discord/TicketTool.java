@@ -7,6 +7,7 @@ import java.util.Random;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.utils.Utils;
 
 public class TicketTool {
     public static final String LOG_IDENTIFIER = "TicketTool";
@@ -20,11 +21,11 @@ public class TicketTool {
             return;
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (channelName.contains("reset"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please type `/vrcuser [username or UserID]` for example `/vrcuser tupper`\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("wipe"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please type `/vrcuser [username or UserID]` for example `/vrcuser tupper`\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("deletion"))
-                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please use the command `/vrcuser {username or UserID}`.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
+                event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please type `/vrcuser [username or UserID]` for example `/vrcuser tupper`\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("export"))
                 event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via `emmVRC Functions > Settings > Export Avatar List`\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
         }
@@ -47,8 +48,12 @@ public class TicketTool {
                 List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
                 String id = embed.get(0).getValue();
                 for (Field field : embed) {
-                    if (codeFound = field.getValue().toLowerCase().replace("\n", "").replace(" ", "").contains(code))
-                        break;
+                    for (String line : field.getValue().split("\n")) {
+                        if (Utils.editDistance(line, code) < 2) { //allow one typo in the code
+                            codeFound = true;
+                            break;
+                        }
+                    }
                 }
 
                 if (channelName.contains("reset") && codeFound) {
@@ -71,8 +76,9 @@ public class TicketTool {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(random.nextInt(AB.length())));
-        if (sb.toString().contains("joe") || sb.toString().contains("red"))
+        String sbr = sb.toString();
+        if (sbr.contains("joe") || sbr.contains("red"))
             return "lum>rubybot";
-        return sb.toString();
+        return sbr;
     }
 }
