@@ -7,6 +7,7 @@ import java.util.Random;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.utils.Utils;
 
 public class TicketTool {
     public static final String LOG_IDENTIFIER = "TicketTool";
@@ -47,8 +48,12 @@ public class TicketTool {
                 List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
                 String id = embed.get(0).getValue();
                 for (Field field : embed) {
-                    if (codeFound = field.getValue().toLowerCase().replace("\n", "").replace(" ", "").contains(code))
-                        break;
+                    for (String line : field.getValue().split("\n")) {
+                        if (Utils.editDistance(line, code) < 2) { //allow one typo in the code
+                            codeFound = true;
+                            break;
+                        }
+                    }
                 }
 
                 if (channelName.contains("reset") && codeFound) {
