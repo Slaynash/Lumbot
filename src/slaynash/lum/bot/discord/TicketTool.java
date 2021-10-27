@@ -44,17 +44,9 @@ public class TicketTool {
                     return;
                 }
                 String code = split[1].toLowerCase();
-                boolean codeFound = false;
                 List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
-                String id = embed.get(0).getValue();
-                for (Field field : embed) {
-                    for (String line : field.getValue().split("\n")) {
-                        if (Utils.editDistance(line, code) < 2) { //allow one typo in the code
-                            codeFound = true;
-                            break;
-                        }
-                    }
-                }
+                boolean codeFound = checkForCode(embed, code);
+                String id = embed.get(0).getValue(); //assume that ID is always in the first field
 
                 if (channelName.contains("reset") && codeFound) {
                     event.getTextChannel().sendMessage("e.pin reset " + id).queue();
@@ -80,5 +72,18 @@ public class TicketTool {
         if (sbr.contains("joe") || sbr.contains("red"))
             return "lum>rubybot";
         return sbr;
+    }
+
+    private static boolean checkForCode(List<Field> embed, String code) {
+        for (Field field : embed) {
+            for (String line : field.getValue().split("\n")) {
+                for (String word : line.split(" ")) {
+                    if (Utils.editDistance(word, code) < 2) { //allow one typo in the code
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
