@@ -20,6 +20,11 @@ public class Purge extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.VIEW_CHANNEL))
             return;
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            event.getMessage().reply("I need manage message permission to be able to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            event.getMessage().delete().queue();
+            return;
+        }
         Thread thread = new Thread(() -> {
             try {
                 Message message = event.getMessage();
@@ -67,7 +72,7 @@ public class Purge extends Command {
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
-                    message.reply("Command is `" + getName() + " #` or reply to the top message.\n" + getName() + " will only remove messages from the user replied to").queue();
+                    message.reply("Command is `" + getName() + " #` or reply to the top message.\n" + getName() + "u will only remove messages from the user replied to").queue();
 
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);

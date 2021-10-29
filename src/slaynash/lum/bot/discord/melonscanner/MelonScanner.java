@@ -835,7 +835,7 @@ public final class MelonScanner {
     }
 
     public static void translateLog(MessageReceivedEvent event) {
-        System.out.println("Translating Log Results Checks");
+        System.out.println("Translating Log Results Checks in " + event.getGuild().getName());
         String message = event.getMessage().getContentStripped().toLowerCase();
         Message referenced = event.getMessage().getReferencedMessage();
         if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
