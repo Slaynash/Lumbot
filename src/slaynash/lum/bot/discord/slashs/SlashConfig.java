@@ -1,8 +1,11 @@
 package slaynash.lum.bot.discord.slashs;
 
+import java.time.Duration;
 import java.util.Arrays;
 
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
@@ -78,6 +81,7 @@ public class SlashConfig {
                     case ("ss") :
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
                         event.editButton(config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
+                        checkPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
                         break;
                     case ("dll") :
                         config[ConfigurationMap.DLLREMOVER.ordinal()] = !config[ConfigurationMap.DLLREMOVER.ordinal()];
@@ -114,6 +118,7 @@ public class SlashConfig {
                     case ("ssban") :
                         config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
                         event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
+                        checkPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
                         break;
                     case ("sscross") :
                         config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
@@ -133,6 +138,23 @@ public class SlashConfig {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while updating buttons:", event.getChannel().getName(), e);
+        }
+    }
+
+    private void checkPerm(ButtonClickEvent event, Guild guild, boolean ban) {
+        if (ban) {
+            if (!guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+                if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS))
+                    event.getTextChannel().sendMessage("I don't have ban permission but I will kick scammers instead.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                else
+                    event.getTextChannel().sendMessage("I don't have ban permission so I can't remove scammers should they appear.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            }
+        }
+        else {
+            if (!guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS))
+                event.getTextChannel().sendMessage("I don't have kick permission so I can't remove scammers should they appear.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && !guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS))
+                event.getTextChannel().sendMessage("I can't clean up messages after I removed the scammer. I need either Manage Messages or Ban permission.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
         }
     }
 }
