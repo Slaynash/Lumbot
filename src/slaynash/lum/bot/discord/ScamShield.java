@@ -223,7 +223,7 @@ public class ScamShield {
             ssBan = false;
         }
         ScheduledFuture<?> ssQueued = ssQueuedMap.getOrDefault(guildID, null);
-        if (ssQueued == null || !ssQueued.isDone()) // used to prevent multiple bans/kicks if they sent scam many times within the same second, cooldown for four seconds
+        if (ssQueued != null && !ssQueued.isDone()) // used to prevent multiple bans/kicks if they sent scam many times within the same second, cooldown for four seconds
                 return false;
         System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
         EmbedBuilder embedBuilder = new EmbedBuilder()
