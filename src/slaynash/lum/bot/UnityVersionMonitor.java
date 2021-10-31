@@ -552,7 +552,7 @@ public class UnityVersionMonitor {
             return runProgram("UnityNSISReader", "sh", "-c", "mono unityversionsmonitor/UnityNSISReader.exe \"-f" + zipPath + "\" \"-o" + outputPath + "\" \"-r" + internalPath + "\"") == 0;
 
         if (isPkg) {
-            if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -o unityversionsmonitor \"Payload~\" -y") != 0)
+            if (runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"" + zipPath + "\" -ounityversionsmonitor \"Payload~\" -y") != 0)
                 return false;
 
             return runProgram("7z", "sh", "-c", "7z " + (keepFilePath ? "x" : "e") + " \"unityversionsmonitor/Payload~\" -o\"" + outputPath + "\" " + internalPath + " -y") == 0;
