@@ -7,9 +7,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -31,6 +34,8 @@ public class ScamShield {
 
     private static final Queue<MessageReceivedEvent> allMessages = new LinkedList<>();
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
+
+    private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new HashMap<>();
 
     public static int ssValue(MessageReceivedEvent event) {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
@@ -202,11 +207,11 @@ public class ScamShield {
         boolean status = false;
         Guild guild = event.getJDA().getGuildById(guildID);
         Member member = guild.getMember(event.getAuthor());
-        String guildName;
+        String sourceName;
         if (event.getChannelType() == ChannelType.PRIVATE)
-            guildName = "DMs";
+            sourceName = "DMs";
         else
-            guildName = event.getGuild().getName();
+            sourceName = event.getGuild().getName();
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
         String reportChannelID = CommandManager.mlReportChannels.get(guildID);
@@ -217,12 +222,15 @@ public class ScamShield {
         else {
             ssBan = false;
         }
+        ScheduledFuture<?> ssQueued = ssQueuedMap.getOrDefault(guildID, null);
+        if (ssQueued != null) // used to prevent multiple bans/kicks if they sent scam many times within the same second, cooldown for four seconds
+                return false;
         System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
         EmbedBuilder embedBuilder = new EmbedBuilder()
             .setTimestamp(Instant.now())
             .setFooter("Received " + suspiciousCount + " naughty points.");
         if (cross)
-            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + guildName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + sourceName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
         else
             embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
@@ -287,13 +295,13 @@ public class ScamShield {
                 sb.append(event.getMessage().getContentRaw());
             }
             else {
-                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + guildName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
                 sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
             }
             if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
-                reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
+                ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
             else
-                reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(10, TimeUnit.SECONDS);
+                ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
         }
         else if (sameauthormessages != null) {
             embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
