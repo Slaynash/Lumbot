@@ -44,8 +44,7 @@ public class LumJokes {
                 case 1:
                     try {
                         response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
-                        JsonParser parser = new JsonParser();
-                        JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
+                        JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
                             joke = parsed.get("joke").getAsString();
                         }
@@ -63,8 +62,7 @@ public class LumJokes {
                 case 2: //Sorry for doing this round about way Gives a higher probability
                     try {
                         response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
-                        JsonParser parser = new JsonParser();
-                        JsonObject parsed = parser.parse(new String(response.body())).getAsJsonObject();
+                        JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
                             joke = parsed.get("joke").getAsString();
                         }
