@@ -184,10 +184,20 @@ public class UnityVersionMonitor {
                             break;
                         */
 
-                        if (foundVersion.startsWith("20") && !foundVersion.startsWith("2017.1")) {
+                        if (foundVersion.startsWith("20")) {
+                            if (foundVersion.startsWith("2017.1"))
+                                break;
+
                             String versionId = subline.split("/")[1];
-                            foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
-                            urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
+
+                            if (foundVersion.startsWith("2017")) {
+                                foundUrl = "https://beta.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
+                                urlIl2CppWin = "https://beta.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
+                            }
+                            else {
+                                foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
+                                urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
+                            }
                         }
                         else
                             break;
