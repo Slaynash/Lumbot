@@ -214,7 +214,7 @@ public class ScamShield {
             sourceName = event.getGuild().getName();
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
-        String reportChannelID = CommandManager.mlReportChannels.get(guildID);
+        TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.get(guildID));
         boolean ssBan;
         if (GuildConfigurations.configurations.get(guildID) != null) {
             ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
@@ -287,8 +287,7 @@ public class ScamShield {
         else
             embedBuilder.setDescription("Lum failed to " + (ssBan ? "Banned" : "Kicked") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Banned" : "Kicked") + " perms");
 
-        if (reportChannelID != null) {
-            TextChannel reportChannel = guild.getTextChannelById(reportChannelID);
+        if (reportChannel != null) {
             StringBuilder sb;
             if (sameauthormessages == null) { //came from DMs
                 sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam" + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
@@ -303,7 +302,7 @@ public class ScamShield {
             else
                 ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
         }
-        else if (sameauthormessages != null) {
+        else if (sameauthormessages != null && event.getGuild() == guild) {
             embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
             if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                 event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
