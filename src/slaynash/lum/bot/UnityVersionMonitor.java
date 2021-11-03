@@ -191,7 +191,7 @@ public class UnityVersionMonitor {
                             String versionId = subline.split("/")[1];
 
                             if (foundVersion.startsWith("2017.2")) {
-                                foundUrl = "https://beta.unity3d.com/download/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
+                                foundUrl = "https://beta.unity3d.com/download/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
                             }
                             else if (foundVersion.startsWith("2017")) {
                                 foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
