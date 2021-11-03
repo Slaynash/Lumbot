@@ -214,7 +214,7 @@ public class ScamShield {
             sourceName = event.getGuild().getName();
         String usernameWithTag = event.getAuthor().getAsTag();
         String userId = event.getAuthor().getId();
-        TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.get(guildID));
+        TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
         boolean ssBan;
         if (GuildConfigurations.configurations.get(guildID) != null) {
             ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];

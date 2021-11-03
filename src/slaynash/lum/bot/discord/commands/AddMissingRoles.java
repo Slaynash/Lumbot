@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -14,6 +16,9 @@ public class AddMissingRoles extends Command {
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!includeInHelp(event))
             return;
+
+        event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
+        AtomicInteger runCount = new AtomicInteger(0);
 
         CommandManager.autoScreeningRoles.forEach((k, v) -> {
             Guild guild = JDAManager.getJDA().getGuildById(k);
@@ -32,6 +37,7 @@ public class AddMissingRoles extends Command {
                     try {
                         guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, z -> System.out.println("Failed to regive role to " + m.getUser().getAsTag() + " in " + guild.getName()));
                         System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
+                        runCount.getAndIncrement();
                     }
                     catch (Exception ignored) {
                     }
@@ -39,7 +45,7 @@ public class AddMissingRoles extends Command {
             });
         });
 
-        event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
+        event.getMessage().reply("Added roles to " + runCount.get() + " members").queue();
     }
 
     @Override
