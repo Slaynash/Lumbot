@@ -145,7 +145,7 @@ public class Main extends ListenerAdapter {
         }
 
         VRCApiVersionScanner.init();
-        // UnityVersionMonitor.start();
+        UnityVersionMonitor.start();
 
         //registerCommands();
 
