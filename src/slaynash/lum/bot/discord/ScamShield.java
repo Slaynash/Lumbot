@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -205,109 +206,114 @@ public class ScamShield {
 
     public static boolean handleBan(MessageReceivedEvent event, Long guildID, int suspiciousCount, Boolean cross, List<HandledServerMessageContext> sameauthormessages) {
         boolean status = false;
-        Guild guild = event.getJDA().getGuildById(guildID);
-        Member member = guild.getMember(event.getAuthor());
-        String sourceName;
-        if (event.getChannelType() == ChannelType.PRIVATE)
-            sourceName = "DMs";
-        else
-            sourceName = event.getGuild().getName();
-        String usernameWithTag = event.getAuthor().getAsTag();
-        String userId = event.getAuthor().getId();
-        TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
-        boolean ssBan;
-        if (GuildConfigurations.configurations.get(guildID) != null) {
-            ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
-        }
-        else {
-            ssBan = false;
-        }
-        ScheduledFuture<?> ssQueued = ssQueuedMap.getOrDefault(guildID, null);
-        if (ssQueued != null && !ssQueued.isDone()) // used to prevent multiple bans/kicks if they sent scam many times within the same second, cooldown for four seconds
-                return false;
-        System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
-        EmbedBuilder embedBuilder = new EmbedBuilder()
-            .setTimestamp(Instant.now())
-            .setFooter("Received " + suspiciousCount + " naughty points.");
-        if (cross)
-            embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + sourceName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
-        else
-            embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
-
-        if (!guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
-            embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
-            if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
-                event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+        try {
+            Guild guild = event.getJDA().getGuildById(guildID);
+            Member member = guild.getMember(event.getAuthor());
+            String sourceName;
+            if (event.getChannelType() == ChannelType.PRIVATE)
+                sourceName = "DMs";
             else
-                event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
-        }
-        else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
-            event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
-                " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
-            if (ssBan)
-                member.ban(1).reason("Banned by Lum's Scam Shield").queue();
-            else
-                member.ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
-            embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (cross ? "cross " : "") + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
-            status = true;
-        }
-        else if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guild.getName() +
-                " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
-            member.kick().reason("Kicked by Lum's Scam Shield").queue();
-            embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
-
-            if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && sameauthormessages != null) {
-                List<Message> messagelist = new ArrayList<>();
-                sameauthormessages.forEach(m -> {
-                    if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
-                        messagelist.add(m.messageReceivedEvent.getMessage());
-                    }
-                    else {
-                        System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
-                        String temp = "";
-                        if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                            temp = embedBuilder.getDescriptionBuilder() + "\n";
-                        embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
-                    }
-                });
-                System.out.println("Removing " + messagelist.size() + " messages");
-                if (messagelist.size() > 0)
-                    messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
-            }
-            else if (sameauthormessages != null) {
-                System.out.println("Lum does not have MESSAGE_MANAGE perm");
-                String temp = "";
-                if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
-                    temp = embedBuilder.getDescriptionBuilder() + "\n";
-                embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
-            }
-            status = true;
-        }
-        else
-            embedBuilder.setDescription("Lum failed to " + (ssBan ? "Banned" : "Kicked") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Banned" : "Kicked") + " perms");
-
-        if (reportChannel != null) {
-            StringBuilder sb;
-            if (sameauthormessages == null) { //came from DMs
-                sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam" + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
-                sb.append(event.getMessage().getContentRaw());
+                sourceName = event.getGuild().getName();
+            String usernameWithTag = event.getAuthor().getAsTag();
+            String userId = event.getAuthor().getId();
+            TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
+            boolean ssBan;
+            if (GuildConfigurations.configurations.get(guildID) != null) {
+                ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
             }
             else {
-                sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
-                sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
+                ssBan = false;
             }
-            if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
-                ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
+            ScheduledFuture<?> ssQueued = ssQueuedMap.getOrDefault(guildID, null);
+            if (ssQueued != null && !ssQueued.isDone()) // used to prevent multiple bans/kicks if they sent scam many times within the same second, cooldown for four seconds
+                    return false;
+            System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTimestamp(Instant.now())
+                .setFooter("Received " + suspiciousCount + " naughty points.");
+            if (cross)
+                embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + sourceName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
             else
-                ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
+                embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+
+            if (!guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
+                embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
+                if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
+                    event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                else
+                    event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
+            }
+            else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
+                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
+                    " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
+                if (ssBan)
+                    member.ban(1).reason("Banned by Lum's Scam Shield").queue();
+                else
+                    member.ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (cross ? "cross " : "") + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
+                status = true;
+            }
+            else if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+                event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guild.getName() +
+                    " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
+                member.kick().reason("Kicked by Lum's Scam Shield").queue();
+                embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
+
+                if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && sameauthormessages != null) {
+                    List<Message> messagelist = new ArrayList<>();
+                    sameauthormessages.forEach(m -> {
+                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
+                            messagelist.add(m.messageReceivedEvent.getMessage());
+                        }
+                        else {
+                            System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
+                            String temp = "";
+                            if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                                temp = embedBuilder.getDescriptionBuilder() + "\n";
+                            embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have view channel perms.");
+                        }
+                    });
+                    System.out.println("Removing " + messagelist.size() + " messages");
+                    if (messagelist.size() > 0)
+                        messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
+                }
+                else if (sameauthormessages != null) {
+                    System.out.println("Lum does not have MESSAGE_MANAGE perm");
+                    String temp = "";
+                    if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                        temp = embedBuilder.getDescriptionBuilder() + "\n";
+                    embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms.");
+                }
+                status = true;
+            }
+            else
+                embedBuilder.setDescription("Lum failed to " + (ssBan ? "Banned" : "Kicked") + " **" + usernameWithTag + "** (*" + userId + "*) for scam because I don't have " + (ssBan ? "Banned" : "Kicked") + " perms");
+
+            if (reportChannel != null) {
+                StringBuilder sb;
+                if (sameauthormessages == null) { //came from DMs
+                    sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam" + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                    sb.append(event.getMessage().getContentRaw());
+                }
+                else {
+                    sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                    sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
+                }
+                if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
+                    ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
+                else
+                    ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
+            }
+            else if (sameauthormessages != null && event.getGuild() == guild) {
+                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
+                if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
+                    event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                else
+                    event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
+            }
         }
-        else if (sameauthormessages != null && event.getGuild() == guild) {
-            embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
-            if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
-                event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-            else
-                event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed handleBan in SS", e);
         }
         return status;
     }
