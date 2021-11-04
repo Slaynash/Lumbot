@@ -82,8 +82,11 @@ public class ServerMessagesHandler {
                         case "322211727192358914": //TLDModding
                             mess = mess + "Please reupload this log to <#827601339672035408> instead.";
                             break;
+                        case "758553724226109480": //1330 Studios
+                            mess = mess + "Please reupload this log to <#832441046750330920> instead.";
+                            break;
                         default:
-                            mess = mess + "Please reupload this log to #help-and-support or #log-scanner channel instead.";
+                            mess = mess + "Please reupload this log to help and support or log scanning channel instead.";
                             break;
                     }
                     event.getChannel().sendMessage(mess).queue();

@@ -79,7 +79,7 @@ public class TicketTool {
             for (String line : field.getValue().split("\n")) {
                 line = line.replace(".", " ").strip();
                 for (String word : line.split(" ")) {
-                    if (Utils.editDistance(word, code) < 2) { //allow one typo in the code
+                    if (Utils.editDistance(word, code) <= 2) { //allow swapping two chars
                         return true;
                     }
                 }

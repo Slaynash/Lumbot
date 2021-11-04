@@ -171,6 +171,7 @@ public class ScamShield {
     }
 
     private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
+        System.out.println(event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()));
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
             if (sameauthormessages != null && g == event.getGuild())
