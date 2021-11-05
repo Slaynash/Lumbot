@@ -20,6 +20,7 @@ import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.HelpCommand;
 import slaynash.lum.bot.discord.commands.Kick;
 import slaynash.lum.bot.discord.commands.LockDown;
+import slaynash.lum.bot.discord.commands.LumGoneCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.Purge;
@@ -138,6 +139,8 @@ public class CommandManager {
         CommandManager.registerCommand(new TestVRCObfmap());
         CommandManager.registerCommand(new UnityCheckCommand());
         CommandManager.registerCommand(new AddMissingRoles());
+
+        CommandManager.registerCommand(new LumGoneCommand());
     }
 
 

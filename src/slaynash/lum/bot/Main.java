@@ -15,6 +15,7 @@ import javax.security.auth.login.LoginException;
 import org.jetbrains.annotations.NotNull;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -111,6 +112,7 @@ public class Main extends ListenerAdapter {
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);
 
+        JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
