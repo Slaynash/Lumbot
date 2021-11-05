@@ -87,6 +87,9 @@ public class MelonScannerApisManager {
                             .GET()
                             .uri(URI.create(api.endpoint))
                             .setHeader("User-Agent", "LUM Bot")
+                            .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+                            .setHeader("Pragma", "no-cache")
+                            .setHeader("Expires", "0")
                             .timeout(Duration.ofSeconds(30));
 
 
