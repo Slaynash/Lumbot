@@ -13,6 +13,7 @@ public class LumGoneCommand extends Command {
         if (!includeInHelp(event))
             return;
 
+        event.getChannel().sendMessage("Ok I'm leaving...").queue();
         JDAManager.getJDA().getPresence().setStatus(OnlineStatus.INVISIBLE);
         try {
             Thread.sleep(10000);
@@ -25,7 +26,7 @@ public class LumGoneCommand extends Command {
 
     @Override
     protected boolean matchPattern(String str) {
-        return str.split(" ")[0].equalsIgnoreCase("lum stop");
+        return str.contains("lum stop");
     }
 
     @Override
