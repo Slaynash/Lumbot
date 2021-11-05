@@ -82,6 +82,7 @@ public class ScamShield {
         suspiciousValue += message.contains("100%") ? 1 : 0;
         suspiciousValue += message.contains("bro") ? 1 : 0;
         suspiciousValue += message.contains("checkthis") ? 1 : 0;
+        suspiciousValue += message.contains("linkforyou") ? 1 : 0;
         suspiciousValue += message.contains("friendhasgiftedyou") ? 2 : 0;
         suspiciousValue += message.matches(".*made.*game.*") ? 1 : 0;
         suspiciousValue += message.matches(".*left.*game.*") ? 2 : 0;
