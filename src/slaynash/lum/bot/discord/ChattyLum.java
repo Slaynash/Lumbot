@@ -250,7 +250,7 @@ public class ChattyLum {
         helpedRecently.removeIf(h -> h.userid == event.getMember().getIdLong()); //remove all past log from user
         helpedRecently.removeIf(h -> h.time + helpDuration < Instant.now().getEpochSecond());
         helpedRecently.add(new HelpedRecentlyData(event.getMember().getIdLong(), event.getChannel().getIdLong()));
-        System.out.println("Helped recently added");
+        // System.out.println("Helped recently added");
     }
 
     public static boolean wasHelpedRecently(MessageReceivedEvent event) {

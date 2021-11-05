@@ -64,7 +64,7 @@ public class MelonScannerApisManager {
         apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json"));
         api.compareUsingHashes = true;
         apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/api-json/"));
-        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
+        // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
         apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
         apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
