@@ -3,13 +3,12 @@ local mods = {}
 
 for i = 0, apiData:size() - 1, 1 do
     local mod = apiData:get(i)
-    print("processing mod index " .. i)
-    local modDetails = mod:get("versions"):get(0)
+    local modDetails = mod:get("Versions"):get(0)
 
     table.insert(mods, {
-        name = mod:get("name"):getAsString(),
-        version = modDetails:get("readableVersion"):getAsString(),
-        downloadLink = modDetails:get("downloadLink"):getAsString()
+        name = mod:get("Name"):getAsString(),
+        version = modDetails:get("ReadableVersion"):getAsString(),
+        downloadLink = modDetails:get("DownloadLink"):getAsString()
     })
 end
 

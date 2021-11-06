@@ -127,6 +127,7 @@ public class MelonScannerApisManager {
                         String apiDataRaw = new String(responseBody);
                         //System.out.println("API retured body: " + apiDataRaw);
                         //System.out.println("API URI: " + response.uri());
+                        
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
                         // Script pass
