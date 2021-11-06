@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
@@ -49,6 +51,7 @@ public class MelonScannerApisManager {
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(Redirect.ALWAYS)
+            .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE))
             .connectTimeout(Duration.ofSeconds(30))
             .build();
 
@@ -89,7 +92,7 @@ public class MelonScannerApisManager {
                             .setHeader("User-Agent", "LUM Bot")
                             .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                             .setHeader("Pragma", "no-cache")
-                            .setHeader("Expires", "0")
+                            .setHeader("Expires", "-1")
                             .timeout(Duration.ofSeconds(30));
 
 
@@ -122,7 +125,7 @@ public class MelonScannerApisManager {
 
 
                         String apiDataRaw = new String(responseBody);
-                        // System.out.println("API retured body: " + apiDataRaw);
+                        System.out.println("API retured body: " + apiDataRaw);
                         System.out.println("API URI: " + response.uri());
                         JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
 
