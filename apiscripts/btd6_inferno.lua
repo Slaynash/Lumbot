@@ -3,6 +3,7 @@ local mods = {}
 
 for i = 0, apiData:size() - 1, 1 do
     local mod = apiData:get(i)
+    print("processing mod index " .. i)
     local modDetails = mod:get("versions"):get(0)
 
     table.insert(mods, {
