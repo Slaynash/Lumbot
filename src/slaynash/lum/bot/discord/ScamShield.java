@@ -53,8 +53,9 @@ public class ScamShield {
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
             crossPost = allMessages.stream()
-                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && m.getMessage().getAttachments().size() == 0
+                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && ((m.getMessage().getAttachments().size() == 0
                     && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
+                    || (event.getMessage().getAttachments().size() > 0 && m.getMessage().getAttachments().size() > 0 && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
                 .count();
         }
 

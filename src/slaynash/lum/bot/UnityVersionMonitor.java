@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -270,7 +271,7 @@ public class UnityVersionMonitor {
                         StringBuilder sb = new StringBuilder();
                         for (String version : allUnityVersions) {
                             runICallChecker(version, sb);
-                            sb.append(version + "\n---------------------------------------------------------------------------------------\n");
+                            sb.append(version).append("\n---------------------------------------------------------------------------------------\n");
                         }
 
                         JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
@@ -291,9 +292,9 @@ public class UnityVersionMonitor {
                             runMonoStructChecker(version);
 
                         for (MonoStructInfo msi : monoStructs) {
-                            String results = "";
+                            StringBuilder results = new StringBuilder();
                             for (MonoStructRow msr : msi.rows)
-                                results += "\n\n`" + String.join("`, `", msr.unityVersions) + "`\n```\n" + String.join("\n", msr.fields) + "```";
+                                results.append("\n\n`").append(String.join("`, `", msr.unityVersions)).append("`\n```\n").append(String.join("\n", msr.fields)).append("```");
                             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                                 Utils.wrapMessageInEmbed("MonoStruct checks results for " + msi.name + ":" + results, Color.gray)
                             ).queue();
@@ -342,7 +343,7 @@ public class UnityVersionMonitor {
 
             StringBuilder sb = new StringBuilder();
             for (String version : allUnityVersions) {
-                sb.append("\n" + version + " ---------------------------------------------------------------------------------------\n");
+                sb.append("\n").append(version).append(" ---------------------------------------------------------------------------------------\n");
                 runICallChecker(version, sb);
             }
 
@@ -477,9 +478,7 @@ public class UnityVersionMonitor {
     }
 
     public static void saveInstalledVersionCache(String unityVersion, String architecture) {
-        List<String> installedArchitectures = installedVersions.get(unityVersion);
-        if (installedArchitectures == null)
-            installedVersions.put(unityVersion, installedArchitectures = new ArrayList<>());
+        List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<>());
         installedArchitectures.add(architecture);
 
         try {
@@ -574,15 +573,15 @@ public class UnityVersionMonitor {
     }
 
     private static int runProgram(String name, String... command) throws IOException, InterruptedException {
-        String printCmd = "";
+        StringBuilder printCmd = new StringBuilder();
         for (String param : command)
-            printCmd += "\"" + param.replace("\"", "\\\"") + "\" ";
+            printCmd.append("\"").append(param.replace("\"", "\\\"")).append("\" ");
         System.out.println("Running command: " + printCmd);
         ProcessBuilder pb = new ProcessBuilder(command);
         pb.redirectErrorStream(true);
         Process p = pb.start();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null)
                 System.out.println("[" + name + "] " + line);
         }
@@ -607,7 +606,7 @@ public class UnityVersionMonitor {
         pb.redirectErrorStream(true);
         Process p = pb.start();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line = "";
+            String line;
             while ((line = br.readLine()) != null) {
                 System.out.println("[HashChecker] " + line);
                 if (line.startsWith("RESULT_")) {
@@ -626,17 +625,17 @@ public class UnityVersionMonitor {
             return;
         }
 
-        String reports = "";
+        StringBuilder reports = new StringBuilder();
         for (Entry<String, Map<String, Integer>> arch : results.entrySet()) {
             for (Entry<String, Integer> hash : arch.getValue().entrySet()) {
                 if (hash.getValue() > 1)
-                    reports += arch.getKey() + " - " + hash.getKey() + ": " + hash.getValue() + " results\n";
+                    reports.append(arch.getKey()).append(" - ").append(hash.getKey()).append(": ").append(hash.getValue()).append(" results\n");
                 else if (hash.getValue() == 0)
-                    reports += arch.getKey() + " - " + hash.getKey() + ": Hash not valid\n";
+                    reports.append(arch.getKey()).append(" - ").append(hash.getKey()).append(": Hash not valid\n");
                 else if (hash.getValue() == -1)
-                    reports += arch.getKey() + " - " + hash.getKey() + ": No hash for this version\n";
+                    reports.append(arch.getKey()).append(" - ").append(hash.getKey()).append(": No hash for this version\n");
                 else if (hash.getValue() == -2)
-                    reports += arch.getKey() + " - " + hash.getKey() + ": File not found\n";
+                    reports.append(arch.getKey()).append(" - ").append(hash.getKey()).append(": File not found\n");
             }
         }
 
@@ -654,16 +653,14 @@ public class UnityVersionMonitor {
         }
     }
 
-    public static void runICallChecker(String unityVersion, StringBuilder stringBuilder) throws IOException {
+    public static void runICallChecker(String unityVersion, StringBuilder stringBuilder) {
 
         System.out.println("[" + unityVersion + "] Running icall check for Unity " + unityVersion);
 
-        String reportNoValidVersion = "";
+        StringBuilder reportNoValidVersion = new StringBuilder();
 
         Map<String, List<UnityICall>> assemblies = new HashMap<>();
-        for (int i = 0; i < icalls.size(); ++i) {
-            UnityICall icall = icalls.get(i);
-
+        for (UnityICall icall : icalls) {
             if (!isUnityVersionOverOrEqual(unityVersion, icall.unityVersions)) {
                 boolean found = false;
                 for (UnityICall oldICallEntry : icall.oldICalls) {
@@ -676,20 +673,18 @@ public class UnityVersionMonitor {
                 }
                 if (!found) {
                     System.out.println("[" + unityVersion + "] ICall has no valid version: " + icall.icall);
-                    reportNoValidVersion += icall.icall;
+                    reportNoValidVersion.append(icall.icall);
                     continue;
                 }
             }
 
-            List<UnityICall> icallsForAssembly = assemblies.get(icall.assemblyName);
-            if (icallsForAssembly == null)
-                assemblies.put(icall.assemblyName, icallsForAssembly = new ArrayList<UnityICall>());
+            List<UnityICall> icallsForAssembly = assemblies.computeIfAbsent(icall.assemblyName, k -> new ArrayList<>());
             icallsForAssembly.add(icall);
         }
 
-        String reportNoType = "";
-        String reportNoMethod = "";
-        String reportMismatchingParams = "";
+        StringBuilder reportNoType = new StringBuilder();
+        StringBuilder reportNoMethod = new StringBuilder();
+        StringBuilder reportMismatchingParams = new StringBuilder();
 
         for (Entry<String, List<UnityICall>> assemblyEntry : assemblies.entrySet()) {
             String assemblyName = assemblyEntry.getKey();
@@ -700,13 +695,13 @@ public class UnityVersionMonitor {
                 String[] icallParts = icall.icall.split("::", 2);
                 TypeDefinition typeDefinition = mainModule.getType(icallParts[0]);
                 if (typeDefinition == null) {
-                    reportNoType += "\n" + icall.icall;
+                    reportNoType.append("\n").append(icall.icall);
                     continue;
                 }
 
                 boolean found = false;
                 boolean foundAndMatches = false;
-                String similarMethods = "";
+                StringBuilder similarMethods = new StringBuilder();
                 for (MethodDefinition md : typeDefinition.getMethods()) {
                     if (md.getName().equals(icallParts[1])) {
                         found = true;
@@ -748,19 +743,19 @@ public class UnityVersionMonitor {
                             break;
                         }
                         else
-                            similarMethods += "\n`" + returnTypeTranslated + " <- " + String.join(", ", parameterDefsTranslated) + "`";
+                            similarMethods.append("\n`").append(returnTypeTranslated).append(" <- ").append(String.join(", ", parameterDefsTranslated)).append("`");
                         // ELSE it's valid
                     }
                 }
 
                 if (!found) {
-                    reportNoMethod += "\n" + icall.icall;
+                    reportNoMethod.append("\n").append(icall.icall);
                     System.out.println("[" + unityVersion + "] ICall method not found: " + icall.icall);
                 }
                 else if (!foundAndMatches) {
-                    reportMismatchingParams += "\n\n" + icall.icall;
-                    reportMismatchingParams += "\nExpected:\n`" + icall.returnType + " <- " + String.join(", ", icall.parameters) + "`";
-                    reportMismatchingParams += "\nFound:" + similarMethods;
+                    reportMismatchingParams.append("\n\n").append(icall.icall);
+                    reportMismatchingParams.append("\nExpected:\n`").append(icall.returnType).append(" <- ").append(String.join(", ", icall.parameters)).append("`");
+                    reportMismatchingParams.append("\nFound:").append(similarMethods);
                     System.out.println("[" + unityVersion + "] ICall parameters mismatches for " + icall.icall);
                     System.out.println("[" + unityVersion + "] Expected: " + icall.returnType + " <- " + String.join(", ", icall.parameters));
                     System.out.println("[" + unityVersion + "] Found: " + similarMethods);
@@ -776,7 +771,7 @@ public class UnityVersionMonitor {
             if (reportNoValidVersion.length() > 0) {
                 hasError = true;
                 if (stringBuilder != null)
-                    stringBuilder.append("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod);
+                    stringBuilder.append("**The following icalls have no definition for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
                 else
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
@@ -785,7 +780,7 @@ public class UnityVersionMonitor {
             if (reportNoType.length() > 0) {
                 hasError = true;
                 if (stringBuilder != null)
-                    stringBuilder.append("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType);
+                    stringBuilder.append("**Failed to find the following icall managed types for Unity ").append(unityVersion).append(":**").append(reportNoType);
                 else
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
@@ -794,7 +789,7 @@ public class UnityVersionMonitor {
             if (reportNoMethod.length() > 0) {
                 hasError = true;
                 if (stringBuilder != null)
-                    stringBuilder.append("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod);
+                    stringBuilder.append("**Failed to find the following icall managed methods for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
                 else
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
@@ -803,7 +798,7 @@ public class UnityVersionMonitor {
             if (reportMismatchingParams.length() > 0) {
                 hasError = true;
                 if (stringBuilder != null)
-                    stringBuilder.append("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams);
+                    stringBuilder.append("**The following icall methods mismatch for Unity ").append(unityVersion).append(":**").append(reportMismatchingParams);
                 else
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                     Utils.wrapMessageInEmbed("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams, Color.red)
@@ -812,7 +807,7 @@ public class UnityVersionMonitor {
 
             if (!hasError)
                 if (stringBuilder != null)
-                    stringBuilder.append("ICall check succeeded for Unity " + unityVersion);
+                    stringBuilder.append("ICall check succeeded for Unity ").append(unityVersion);
                 else
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
@@ -929,10 +924,10 @@ public class UnityVersionMonitor {
                 else {
                     msi.rows.add(msrTargetIndex, new MonoStructRow(unityVersion, fields));
 
-                    String report = msi.name + "\n```\n";
+                    StringBuilder report = new StringBuilder(msi.name + "\n```\n");
                     for (String field : fields)
-                        report += field + "\n";
-                    report += "```";
+                        report.append(field).append("\n");
+                    report.append("```");
                     if (!initialisingUnityVersions)
                         JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
@@ -943,10 +938,10 @@ public class UnityVersionMonitor {
                 // Add new row on the beginning
                 msi.rows.add(0, new MonoStructRow(unityVersion, fields));
 
-                String report = msi.name + "\n```\n";
+                StringBuilder report = new StringBuilder(msi.name + "\n```\n");
                 for (String field : fields)
-                    report += field + "\n";
-                report += "```";
+                    report.append(field).append("\n");
+                report.append("```");
                 if (!initialisingUnityVersions)
                     JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
@@ -999,14 +994,10 @@ public class UnityVersionMonitor {
         int[] leftparts = getUnityVersionNumbers(left);
         int[] rightparts = getUnityVersionNumbers(right);
 
-        long leftsum = leftparts[0] * 10000 + leftparts[1] * 100 + leftparts[2];
-        long rightsum = rightparts[0] * 10000 + rightparts[1] * 100 + rightparts[2];
+        long leftsum = leftparts[0] * 10000L + leftparts[1] * 100L + leftparts[2];
+        long rightsum = rightparts[0] * 10000L + rightparts[1] * 100L + rightparts[2];
 
-        if (leftsum > rightsum)
-            return 1;
-        if (leftsum < rightsum)
-            return -1;
-        return 0;
+        return Long.compare(leftsum, rightsum);
     }
 
     private static int[] getUnityVersionNumbers(String s) {
@@ -1098,8 +1089,7 @@ public class UnityVersionMonitor {
             this.returnType = returnType;
             this.parameters = parameters;
             if (oldICalls != null)
-                for (UnityICall oldICall : oldICalls)
-                    this.oldICalls.add(oldICall);
+                Collections.addAll(this.oldICalls, oldICalls);
         }
     }
 
@@ -1121,7 +1111,7 @@ public class UnityVersionMonitor {
         public final List<String> fields;
 
         public MonoStructRow(String unityVersion, List<String> fields) {
-            unityVersions = new ArrayList<String>(1);
+            unityVersions = new ArrayList<>(1);
             unityVersions.add(unityVersion);
             this.fields = fields;
         }
