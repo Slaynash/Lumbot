@@ -37,6 +37,8 @@ public class ServerMessagesHandler {
                 }
                 return;
             }
+            if (ABCpolice.abcPolice(event))
+                return;
             CommandManager.runAsServer(event);
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
