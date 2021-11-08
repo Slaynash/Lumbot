@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
-import java.text.Normalizer;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +14,8 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.gcardone.junidecode.Junidecode;
+
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -46,7 +47,7 @@ public class ServerMessagesHandler {
             defaultConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
             boolean[] guildConfig;
             guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
-            String message = Normalizer.normalize(event.getMessage().getContentStripped(), Normalizer.Form.NFD).replaceAll("\\p{M}", "").toLowerCase();
+            String message = Junidecode.unidecode(event.getMessage().getContentStripped()).toLowerCase();
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();

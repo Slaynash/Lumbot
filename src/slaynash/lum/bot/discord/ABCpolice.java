@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.gcardone.junidecode.Junidecode;
 
 public class ABCpolice {
     public static boolean abcPolice(MessageReceivedEvent event) {
@@ -47,6 +48,7 @@ public class ABCpolice {
     }
 
     private static char convertChar(String letter) {
+        letter = Junidecode.unidecode(letter);
         if (letter.charAt(0) == 55356) { //Unicode indicator or something like that
             if (letter.charAt(1) >= 56806 && letter.charAt(1) <= 56831) { //convert regional_indicator to lowercase letters
                 return (char) (letter.charAt(1) - 56709);
