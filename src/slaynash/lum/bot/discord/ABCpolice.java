@@ -16,8 +16,8 @@ public class ABCpolice {
         history.removeIf(m -> m.getAuthor().isBot());
         if (history.size() == 0) //new channel or wipe or bot spam
             return true;
-        char currentLetter = event.getMessage().getContentDisplay().toLowerCase().charAt(0);
-        char previousLetter = history.get(0).getContentDisplay().toLowerCase().charAt(0);
+        char currentLetter = convertChar(event.getMessage().getContentDisplay());
+        char previousLetter = convertChar(history.get(0).getContentDisplay());
         Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         boolean timing = (previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48)));
 
@@ -26,6 +26,7 @@ public class ABCpolice {
 
         if ((int) currentLetter != (int) (previousLetter) + 1) {
             System.out.println("abc does not match");
+            event.getMessage().addReaction(":bonk:907068295868477551").queue();
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
@@ -43,5 +44,14 @@ public class ABCpolice {
 
         //valid ABC
         return true;
+    }
+
+    private static char convertChar(String letter) {
+        if (letter.charAt(0) == 55356) { //Unicode indicator or something like that
+            if (letter.charAt(1) >= 56806 && letter.charAt(1) <= 56831) { //convert regional_indicator to lowercase letters
+                return (char) (letter.charAt(1) - 56709);
+            }
+        }
+        return Character.toLowerCase(letter.charAt(0));
     }
 }
