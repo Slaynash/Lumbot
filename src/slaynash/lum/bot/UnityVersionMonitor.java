@@ -983,7 +983,7 @@ public class UnityVersionMonitor {
             }
         }
         else if (version.startsWith("20")) {
-            if (compareUnityVersions(version, "2021.1.27") <= 0)
+            if (compareUnityVersions(version, "2021.2.0") <= 0)
                 monoManagedSubpath = "win64_nondevelopment_mono/Data";
         }
 
