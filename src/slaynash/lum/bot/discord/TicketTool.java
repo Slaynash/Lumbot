@@ -27,7 +27,7 @@ public class TicketTool {
             else if (channelName.contains("deletion"))
                 event.getTextChannel().sendMessage("To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nOnce you added it, please type `/vrcuser [username or UserID]` for example `/vrcuser tupper`\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.").queue();
             else if (channelName.contains("export"))
-                event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via `emmVRC Functions > Settings > Export Avatar List`\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
+                event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via emmVRC > Settings > small Export button in the upper right corner\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
         }
         else if (channelName.contains("reset") && event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getChannel().getIdLong() != 801679570863783937L/*testing*/ && event.getMessage().getEmbeds().size() > 0) {
             Thread thread = new Thread(() -> {

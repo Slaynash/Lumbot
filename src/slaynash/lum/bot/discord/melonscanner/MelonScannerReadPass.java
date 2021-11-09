@@ -141,7 +141,7 @@ public final class MelonScannerReadPass {
             else
                 context.noMods = true;
 
-            System.out.println("No mod/plugins loaded for this pass");
+            System.out.println("No " + (context.noPlugins ? "plugins" : "mods") + " loaded for this pass");
 
             return true;
         }
@@ -402,9 +402,9 @@ public final class MelonScannerReadPass {
     }
 
     public static boolean modPreListingCheck(String line, MelonScanContext context) {
-        if (!context.pre3 && (line.matches("\\[[0-9.:]+] Loading Plugins...") || line.matches("\\[[0-9.:]+] Loading Mods..."))) {
+        if (!context.pre3 && (line.matches("\\[[0-9.:]+] Loading.*Plugins...") || line.matches("\\[[0-9.:]+] Loading.*Mods..."))) {
             context.preListingMods = true;
-            System.out.println("Starting to pre-list mods/plugins");
+            System.out.println("Starting to pre-list " + (line.contains("Plugins") ? "plugins" : "mods"));
             return true;
         }
         return false;
