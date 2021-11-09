@@ -771,6 +771,7 @@ public final class MelonScanner {
     }
 
     private static boolean modsThrowingErrorsCheck(MelonScanContext context) {
+        context.modsThrowingErrors.removeAll(context.brokenMods);
         if (context.modsThrowingErrors.size() > 0 && !context.isMLOutdated && !context.isMLOutdatedVRC) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.modsThrowingErrors.size() && i < 10; ++i)
