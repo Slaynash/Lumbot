@@ -5,10 +5,13 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PermissionOverride;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.interactions.commands.privileges.CommandPrivilege;
@@ -26,6 +29,25 @@ public class Moderation {
         Long guildID = (event.getGuild().getIdLong());
         if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
             event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().removePermissionOverride(event.getMember()).queue();
+        }
+    }
+
+    public static void voiceStartup() {
+        JDA jda = JDAManager.getJDA();
+        for (Long chID : GuildConfigurations.noMicChannels.values()) {
+            TextChannel channel = jda.getTextChannelById(chID);
+            for (PermissionOverride override : channel.getMemberPermissionOverrides()) {
+                if (override.isMemberOverride()) {
+                    if (!override.getMember().getVoiceState().inVoiceChannel()) {
+                        try {
+                            override.delete().queue();
+                        }
+                        catch (Exception e) {
+                            System.out.println("Can't remove vc mute override from " + override.getMember().getEffectiveName() + e.getMessage());
+                        }
+                    }
+                }
+            }
         }
     }
 

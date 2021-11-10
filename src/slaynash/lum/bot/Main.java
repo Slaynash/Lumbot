@@ -150,6 +150,7 @@ public class Main extends ListenerAdapter {
         UnityVersionMonitor.start();
 
         //registerCommands();
+        Moderation.voiceStartup();
 
         System.out.println("LUM Started!");
     }
