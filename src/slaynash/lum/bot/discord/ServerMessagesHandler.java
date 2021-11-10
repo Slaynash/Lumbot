@@ -210,7 +210,7 @@ public class ServerMessagesHandler {
                         if (guildID == 600298024425619456L /*emmVRC*/)
                             temp = "into <#600661924010786816>";
                         else if (guildID == 439093693769711616L /*VRCMG*/)
-                            temp = "into <#440088207799877634>";
+                            temp = "into <#907819393583562843>";
                         else if (guildID == 663449315876012052L /*MelonLoader*/)
                             temp = "into <#733305093264375849>";
                         else
