@@ -74,7 +74,7 @@ public class ServerMessagesHandler {
                             mess = mess + "Please reupload this log to <#600661924010786816> instead.";
                             break;
                         case "439093693769711616": //VRCMG
-                            mess = mess + "Please reupload this log to <#440088207799877634> instead.";
+                            mess = mess + "Please reupload this log to <#801792974542471168> instead.";
                             break;
                         case "663449315876012052": //MelonLoader
                             mess = mess + "Please reupload this log to <#733305093264375849> instead.";
@@ -210,7 +210,7 @@ public class ServerMessagesHandler {
                         if (guildID == 600298024425619456L /*emmVRC*/)
                             temp = "into <#600661924010786816>";
                         else if (guildID == 439093693769711616L /*VRCMG*/)
-                            temp = "into <#907819393583562843>";
+                            temp = "into <#801792974542471168>";
                         else if (guildID == 663449315876012052L /*MelonLoader*/)
                             temp = "into <#733305093264375849>";
                         else

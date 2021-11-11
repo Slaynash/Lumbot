@@ -39,11 +39,52 @@ public class ScamShield {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new HashMap<>();
+    private static final Map<String, Integer> ssTerms = new HashMap<>() {{
+            put("@everyone", 2);
+            put("money", 1);
+            put("loot", 2);
+            put("csgo", 2);
+            put("trade", 2);
+            put("skin", 1);
+            put("knife", 1);
+            put("offer", 1);
+            put("btc", 1);
+            put("bitcoin", 1);
+            put("nitro", 1);
+            put("1month", 1);
+            put("3month", 1);
+            put("free", 1);
+            put("case", 1);
+            put("!!!", 1);
+            put("booster", 1);
+            put("dollar", 1);
+            put("download", 1);
+            put("100%", 1);
+            put("bro", 1);
+            put("checkthis", 1);
+            put("linkforyou", 1);
+            put("friendhasgiftedyou", 2);
+        }};
+    private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
+            put(".*made.*game.*", 1);
+            put(".*left.*game.*", 2);
+        }};
+    private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
+            put("http", 2);
+            put(".ru/", 1);
+            put("bit.ly", 2);
+            put("cutt.ly", 2);
+            put("mega.nz", 2);
+            put("hour", 1);
+            put("$", 1);
+            put("discord", 1);
+        }};
 
     public static int ssValue(MessageReceivedEvent event) {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
+        Map<String, Integer> ssFoundTerms = new HashMap<>();
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         String message = Junidecode.unidecode(event.getMessage().getContentStripped());
         if (event.getMessage().getEmbeds().size() > 0) {
@@ -54,7 +95,7 @@ public class ScamShield {
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
-            Set<String> nameSet = new HashSet<>();
+            Set<String> nameSet = new HashSet<>(); //used to filter one message per channel
             crossPost = allMessages.stream()
                 .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && ((m.getMessage().getAttachments().size() == 0
                     && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
@@ -63,47 +104,22 @@ public class ScamShield {
                 .count();
         }
 
-        int suspiciousValue = (int) crossPost;
-        suspiciousValue += newAccount ? 1 : 0; //add sus points if account is less than 7 days old
-        suspiciousValue += message.contains("@everyone") ? 2 : 0; //all spaces are removed
-        suspiciousValue += message.contains("money") ? 1 : 0;
-        suspiciousValue += message.contains("loot") ? 2 : 0;
-        suspiciousValue += message.contains("csgo") ? 2 : 0;
-        suspiciousValue += message.contains("trade") ? 2 : 0;
-        suspiciousValue += message.contains("skin") ? 1 : 0;
-        suspiciousValue += message.contains("knife") ? 1 : 0;
-        suspiciousValue += message.contains("offer") ? 1 : 0;
-        suspiciousValue += message.contains("btc") ? 1 : 0;
-        suspiciousValue += message.contains("bitcoin") ? 1 : 0;
-        suspiciousValue += message.contains("nitro") ? 1 : 0;
-        suspiciousValue += message.contains("1month") ? 1 : 0;
-        suspiciousValue += message.contains("3month") ? 1 : 0;
-        suspiciousValue += message.contains("free") ? 1 : 0;
-        suspiciousValue += message.contains("case") ? 1 : 0;
-        suspiciousValue += message.contains("!!!") ? 1 : 0;
-        suspiciousValue += message.contains("booster") ? 1 : 0;
-        suspiciousValue += message.contains("dollar") ? 1 : 0;
-        suspiciousValue += message.contains("download") ? 1 : 0;
-        suspiciousValue += message.contains("100%") ? 1 : 0;
-        suspiciousValue += message.contains("bro") ? 1 : 0;
-        suspiciousValue += message.contains("checkthis") ? 1 : 0;
-        suspiciousValue += message.contains("linkforyou") ? 1 : 0;
-        suspiciousValue += message.contains("friendhasgiftedyou") ? 2 : 0;
-        suspiciousValue += message.matches(".*made.*game.*") ? 1 : 0;
-        suspiciousValue += message.matches(".*left.*game.*") ? 2 : 0;
-        if (suspiciousValue > 1) {
-            suspiciousValue += message.contains("http") ? 2 : 0;
-            suspiciousValue += message.contains(".ru/") ? 1 : 0;
-            suspiciousValue += message.contains("bit.ly") ? 2 : 0;
-            suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
-            suspiciousValue += message.contains("mega.nz") ? 2 : 0;
-            suspiciousValue += message.contains("hour") ? 1 : 0;
-            suspiciousValue += message.contains("$") ? 1 : 0;
-            suspiciousValue += message.contains("discord") ? 1 : 0;
+        int suspiciousValue = newAccount ? 1 : 0; //add sus points if account is less than 7 days old
+        suspiciousValue += crossPost;
+
+        final String finalMessage = message;
+        ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+
+        if ((suspiciousValue + ssFoundTerms.values().stream().reduce(0, Integer::sum)) > 1) {
+            ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
+
+        suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
             System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted" : ""));
+            System.out.println(ssFoundTerms.keySet());
         }
 
         if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping selfbots
@@ -162,8 +178,6 @@ public class ScamShield {
     public static boolean checkForFishingPrivate(MessageReceivedEvent event) {
         String message = event.getMessage().getContentDisplay().toLowerCase();
 
-        if (event.getAuthor() == null)
-            return false;
         if (CrossServerUtils.checkIfStaff(event))
             return false;
 
@@ -244,7 +258,7 @@ public class ScamShield {
             else
                 embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-            if (!guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
+            if (member != null && !guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
                 if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
