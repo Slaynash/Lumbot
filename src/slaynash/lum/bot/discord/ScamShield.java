@@ -118,8 +118,7 @@ public class ScamShield {
         suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
-            System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted" : ""));
-            System.out.println(ssFoundTerms.keySet());
+            System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms.keySet());
         }
 
         if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping selfbots

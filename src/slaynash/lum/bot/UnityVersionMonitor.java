@@ -1073,13 +1073,13 @@ public class UnityVersionMonitor {
     }
 
     private static class UnityICall {
-        public String icall;
-        public byte[] icallUtf8;
-        public String[] unityVersions;
-        public String assemblyName;
-        public String returnType;
-        public String[] parameters;
-        public List<UnityICall> oldICalls = new ArrayList<>(0);
+        public final String icall;
+        public final byte[] icallUtf8;
+        public final String[] unityVersions;
+        public final String assemblyName;
+        public final String returnType;
+        public final String[] parameters;
+        public final List<UnityICall> oldICalls = new ArrayList<>(0);
 
         public UnityICall(String icall, String[] unityVersions, String assemblyName, String returnType, String[] parameters, UnityICall... oldICalls) {
             this.icall = icall;

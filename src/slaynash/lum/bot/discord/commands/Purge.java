@@ -7,7 +7,6 @@ import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageHistory;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
@@ -37,15 +36,13 @@ public class Purge extends Command {
                 String[] params = paramString.split(" ", 2);
 
                 Message replied = message.getReferencedMessage();
-                MessageHistory messages;
                 List<Message> messageList = new ArrayList<>();
                 List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
                 if (replied != null) {
                     messageList.add(replied); //add replied message to be removed
                     retrievedHistory.add(replied); //add replied message to start looping, this will not be added to be removed
                     do {
-                        messages = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete(); //100 is max you can get
-                        retrievedHistory = messages.getRetrievedHistory();
+                        retrievedHistory = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete().getRetrievedHistory(); //100 is max you can get
                         messageList.addAll(retrievedHistory);
                     }
                     while (!retrievedHistory.get(0).equals(message));
@@ -64,8 +61,7 @@ public class Purge extends Command {
                     int count = Integer.parseInt(params[1]);
                     messageList.add(message);
                     while (count > 0) {
-                        messages = event.getChannel().getHistoryBefore(messageList.get(messageList.size() - 1), Math.min(count, 100)).complete();
-                        retrievedHistory = messages.getRetrievedHistory();
+                        retrievedHistory = event.getChannel().getHistoryBefore(messageList.get(messageList.size() - 1), Math.min(count, 100)).complete().getRetrievedHistory();
                         messageList.addAll(retrievedHistory);
                         count = count - retrievedHistory.size();
                     }
