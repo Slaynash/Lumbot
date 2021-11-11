@@ -48,7 +48,7 @@ public class Purge extends Command {
                         retrievedHistory = messages.getRetrievedHistory();
                         messageList.addAll(retrievedHistory);
                     }
-                    while (!retrievedHistory.get(0).getContentStripped().equals(message.getContentStripped()));
+                    while (!retrievedHistory.get(0).equals(message));
 
                     if (message.getContentRaw().startsWith(getName() + "u")) {
                         messageList.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
