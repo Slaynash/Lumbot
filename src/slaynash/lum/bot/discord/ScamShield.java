@@ -44,8 +44,8 @@ public class ScamShield {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
-        String message = Junidecode.unidecode(event.getMessage().getContentStripped());
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
+        String message = Junidecode.unidecode(event.getMessage().getContentStripped());
         if (event.getMessage().getEmbeds().size() > 0) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             message = message + embed.getTitle() + embed.getDescription();
@@ -76,8 +76,8 @@ public class ScamShield {
         suspiciousValue += message.contains("btc") ? 1 : 0;
         suspiciousValue += message.contains("bitcoin") ? 1 : 0;
         suspiciousValue += message.contains("nitro") ? 1 : 0;
-        suspiciousValue += message.contains("1months") ? 1 : 0;
-        suspiciousValue += message.contains("3months") ? 1 : 0;
+        suspiciousValue += message.contains("1month") ? 1 : 0;
+        suspiciousValue += message.contains("3month") ? 1 : 0;
         suspiciousValue += message.contains("free") ? 1 : 0;
         suspiciousValue += message.contains("case") ? 1 : 0;
         suspiciousValue += message.contains("!!!") ? 1 : 0;
@@ -92,13 +92,14 @@ public class ScamShield {
         suspiciousValue += message.matches(".*made.*game.*") ? 1 : 0;
         suspiciousValue += message.matches(".*left.*game.*") ? 2 : 0;
         if (suspiciousValue > 1) {
-            suspiciousValue += message.contains("http") ? 1 : 0;
+            suspiciousValue += message.contains("http") ? 2 : 0;
             suspiciousValue += message.contains(".ru/") ? 1 : 0;
             suspiciousValue += message.contains("bit.ly") ? 2 : 0;
             suspiciousValue += message.contains("cutt.ly") ? 2 : 0;
             suspiciousValue += message.contains("mega.nz") ? 2 : 0;
             suspiciousValue += message.contains("hour") ? 1 : 0;
             suspiciousValue += message.contains("$") ? 1 : 0;
+            suspiciousValue += message.contains("discord") ? 1 : 0;
         }
 
         if (suspiciousValue > 0) {

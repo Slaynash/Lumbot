@@ -10,6 +10,11 @@ public class LumGoneCommand extends Command {
 
     @Override
     protected void onServer(String str, MessageReceivedEvent event) {
+        if (JDAManager.getJDA().getPresence().getStatus() == OnlineStatus.INVISIBLE && str.toLowerCase().contains("lum") && str.toLowerCase().contains("come back")) {
+            event.getChannel().sendMessage("Nope, I am not here <:Neko_pout:865328471102324778>").queue();
+            return;
+        }
+
         if (!includeInHelp(event))
             return;
 
@@ -26,7 +31,7 @@ public class LumGoneCommand extends Command {
 
     @Override
     protected boolean matchPattern(String str) {
-        return str.contains("lum stop");
+        return str.toLowerCase().contains("lum stop");
     }
 
     @Override
