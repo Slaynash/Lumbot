@@ -66,7 +66,6 @@ public class ChattyLum {
     };
 
     private static final String[] niceLum = new String[] {
-        "<:anime_okay:828069077875556382>",
         "<:Neko_angel:865328472539791370>",
         "<:Neko_blush:865328474326695946>",
         "<:Neko_cash:865328474130350111>",

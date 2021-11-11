@@ -31,6 +31,6 @@ public class LumGoneCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return CrossServerUtils.isLumDev(event.getMember());
+        return CrossServerUtils.isLumDev(event.getMember()) || event.getAuthor().getIdLong() == 209206057594126336L;
     }
 }
