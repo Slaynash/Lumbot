@@ -277,7 +277,7 @@
         "AGameThatDoesn'tExists_НЕТ": []
     },
     "modSpecificErrors": {
-        "AvatarStatsShowAuthor": "AvatarStatsShowAuthor has been replaced by [UserInfoExtensions](https://api.vrcmg.com/v0/mods/145/UserInfoExtensions.dll).",
+        "AvatarStatsShowAuthor": "AvatarStatsShowAuthor has been added to VRChat and can be removed.",
         "CleanConsole": "CleanConsole has been added into MelonLoader and no longer needed. Please remove CleanConsole from your Mods folder.",
         "ClearVRAM": "ClearVRAM is no longer needed as this bug is now fixed in VRChat.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
