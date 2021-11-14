@@ -545,6 +545,7 @@ public final class MelonScanner {
     }
 
     private static boolean missingModsCheck(MelonScanContext context) {
+        context.missingMods.remove("zxing"); //temporary issue with VRCQR and ignoreable TODO remove when resolved
         if (context.missingMods.size() > 0) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.missingMods.size() && i < 10; ++i) {

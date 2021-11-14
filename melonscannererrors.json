@@ -252,6 +252,10 @@
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Error with platform icon: System\\.NullReferenceException.*",
                 "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team are aware of this issue."
+            },
+            {
+                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
+                "error": "emmVRC fbt saving errored due to fbt not existing on the oculus version."
             }
         ],
         "BloonsTD6": [
