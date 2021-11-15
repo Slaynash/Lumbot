@@ -314,18 +314,6 @@ public class ServerMessagesHandler {
         if (CrossServerUtils.checkIfStaff(event))
             return true;
 
-        long guildId = event.getGuild().getIdLong();
-        boolean postedInWhitelistedServer = false;
-        for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
-            if (whitelistedGuildId == guildId) {
-                postedInWhitelistedServer = true;
-                break;
-            }
-        }
-
-        if (!postedInWhitelistedServer)
-            return true; // Not a whitelisted server
-
         boolean allowed = true;
         for (Attachment attachment : event.getMessage().getAttachments()) {
             fileExt = attachment.getFileExtension();
