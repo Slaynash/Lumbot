@@ -64,6 +64,7 @@ public class ScamShield {
             put("checkthis", 1);
             put("linkforyou", 1);
             put("friendhasgiftedyou", 2);
+            put("standoutinyourfavoritediscords", 2);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*made.*game.*", 1);
