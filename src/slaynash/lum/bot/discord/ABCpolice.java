@@ -10,10 +10,12 @@ import net.gcardone.junidecode.Junidecode;
 
 public class ABCpolice {
     public static boolean abcPolice(MessageReceivedEvent event) {
-        if (event.getChannel().getIdLong() != 815364277123940423L || event.getAuthor().isBot())
+        if (event.getChannel().getIdLong() != 815364277123940423L)
             return false;
+        if (event.getAuthor().isBot() || event.getMessage().isEdited())
+            return true;
         List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 10).complete().getRetrievedHistory());
-        boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("Start back to");
+        boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         history.removeIf(m -> m.getAuthor().isBot());
         if (history.size() == 0) //new channel or wipe or bot spam
             return true;
@@ -31,15 +33,15 @@ public class ABCpolice {
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
-        else if (event.getMessage().getContentStripped().length() == 1) {
-            System.out.println("abc hey that is cheating ");
+        else if (event.getMessage().getContentStripped().length() <= 1 || !Character.isLetterOrDigit(event.getMessage().getContentStripped().charAt(1))) {
+            System.out.println("abc hey that is cheating");
             event.getMessage().addReaction(":baka:828070018935685130").queue();
-            event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778>")/*.delay(Duration.ofSeconds(30)).flatMap(Message::delete)*/.queue();
+            event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`")/*.delay(Duration.ofSeconds(30)).flatMap(Message::delete)*/.queue();
             return true;
         }
         else if (!brokenChain && timing && history.size() > 1 && (history.get(0).getAuthor().equals(event.getAuthor()) || history.get(1).getAuthor().equals(event.getAuthor()))) {
             System.out.println("abc spacing not meet");
-            event.getChannel().sendMessage("User spacing rule was not meet <:Neko_sad:865328470652485633> Start back to `A`").queue();
+            event.getChannel().sendMessage("User spacing rule was not meet <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
             return true;
         }
 
