@@ -12,11 +12,11 @@ public class ABCpolice {
     public static boolean abcPolice(MessageReceivedEvent event) {
         if (event.getChannel().getIdLong() != 815364277123940423L)
             return false;
-        if (event.getAuthor().isBot() || event.getMessage().isEdited())
+        if (event.getAuthor().isBot() || event.getMessage().isEdited() || event.getMessage().getContentStripped().isEmpty())
             return true;
-        List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 10).complete().getRetrievedHistory());
+        List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
-        history.removeIf(m -> m.getAuthor().isBot());
+        history.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
         if (history.size() == 0) //new channel or wipe or bot spam
             return true;
         char currentLetter = convertChar(event.getMessage().getContentStripped());
