@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.Arrays;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -142,19 +143,28 @@ public class SlashConfig {
     }
 
     private void checkPerm(ButtonClickEvent event, Guild guild, boolean ban) {
+        String message = "";
         if (ban) {
             if (!guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS))
-                    event.getTextChannel().sendMessage("I don't have ban permission but I will kick scammers instead.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                    message = "I don't have ban permission but I will kick scammers instead.";
                 else
-                    event.getTextChannel().sendMessage("I don't have ban permission so I can't remove scammers should they appear.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                    message = "I don't have ban permission so I can't remove scammers should they appear.";
             }
         }
         else {
             if (!guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS))
-                event.getTextChannel().sendMessage("I don't have kick permission so I can't remove scammers should they appear.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                message = "I don't have kick permission so I can't remove scammers should they appear.";
             if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && !guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS))
-                event.getTextChannel().sendMessage("I can't clean up messages after I removed the scammer. I need either Manage Messages or Ban permission.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                message = "I can't clean up messages after I removed the scammer. I need either Manage Messages or Ban permission.";
+        }
+        if (message.isEmpty())
+            return;
+        if (event.getChannelType() == ChannelType.PRIVATE) {
+            event.getPrivateChannel().sendMessage(message).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+        }
+        else {
+            event.getTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
         }
     }
 }

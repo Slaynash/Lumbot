@@ -84,7 +84,6 @@ public final class LogCounter {
         catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while Updating Counter",
-                workingPath,
                 exception);
         }
     }

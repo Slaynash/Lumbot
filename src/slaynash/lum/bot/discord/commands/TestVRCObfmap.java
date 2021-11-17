@@ -15,7 +15,7 @@ public class TestVRCObfmap extends Command {
         String[] parts = paramString.split(" ");
 
         if (parts.length != 4) {
-            event.getMessage().reply("usage: " + getName() + " <manifestid> <branch> <map url>");
+            event.getMessage().reply("usage: " + getName() + " <manifestid> <branch> <map url>").queue();
             return;
         }
 

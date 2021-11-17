@@ -342,6 +342,9 @@ public final class MelonScanner {
                 case "Among Us":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/cGdWOch.png");
                     break;
+                case "ArizonaSunshine":
+                    context.embedBuilder.setThumbnail("https://arizona-sunshine.com/wp-content/uploads/2020/12/ArizonaSunshine_Logo_White.png");
+                    break;
                 case "Audica":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                     break;
