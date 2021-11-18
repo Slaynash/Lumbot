@@ -108,7 +108,7 @@ public final class MelonScannerReadPass {
             line.contains("Injecting coremod")
         ) {
             System.out.println("Minecraft Log detected");
-            Utils.replyStandard("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
+            Utils.replyEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
             return true;
         }
         return false;

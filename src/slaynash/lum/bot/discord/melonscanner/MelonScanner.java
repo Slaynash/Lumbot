@@ -171,7 +171,7 @@ public final class MelonScanner {
         for (Attachment attachment : attachments)
             if (isValidFileFormat(attachment)) {
                 if (hasAlreadyFound) {
-                    Utils.replyStandard(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
+                    Utils.replyEmbed(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
                     return true;
                 }
                 hasAlreadyFound = true;
@@ -181,7 +181,7 @@ public final class MelonScanner {
 
     private static boolean oldEmmVRCLogCheck(MelonScanContext context) {
         if (context.attachment.getFileName().startsWith("emmVRC")) {
-            Utils.replyStandard(Localization.get("melonscanner.vrchat.oldemmvrc", context.lang), Color.orange, context.messageReceivedEvent);
+            Utils.replyEmbed(Localization.get("melonscanner.vrchat.oldemmvrc", context.lang), Color.orange, context.messageReceivedEvent);
             return true;
         }
         return false;
@@ -814,6 +814,9 @@ public final class MelonScanner {
                 }
                 else
                     error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
+            }
+            if (context.loadedMods.containsKey("BTKCompanionLoader") && context.loadedMods.containsKey("BTKSANameplateMod")) {
+                error += "Remove BTKSANameplateMod as it is included with BTKCompanionLoader\n";
             }
             if (context.hasNonModErrors && context.errors.size() == 0) {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";

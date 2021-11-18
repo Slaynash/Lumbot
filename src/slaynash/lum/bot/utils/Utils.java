@@ -9,6 +9,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -51,10 +53,38 @@ public class Utils {
         return eb.build();
     }
 
-    public static void replyStandard(String message, Color color, MessageReceivedEvent messageReceivedEvent) {
+    public static void replyEmbed(String message, Color color, MessageReceivedEvent event) {
         MessageEmbed embed = wrapMessageInEmbed(message, color);
 
-        messageReceivedEvent.getMessage().replyEmbeds(embed).queue();
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            event.getMessage().replyEmbeds(embed).queue();
+        else {
+            event.getMessage().reply(embed.getDescription()).queue();
+        }
+    }
+    public static void replyEmbed(MessageEmbed embed, MessageReceivedEvent event) {
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            event.getMessage().replyEmbeds(embed).queue();
+        else {
+            event.getMessage().reply(embed.getDescription()).queue();
+        }
+    }
+
+    public static void sendEmbed(String message, Color color, MessageReceivedEvent event) {
+        MessageEmbed embed = wrapMessageInEmbed(message, color);
+
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            event.getChannel().sendMessageEmbeds(embed).queue();
+        else {
+            event.getChannel().sendMessage(embed.getDescription()).queue();
+        }
+    }
+    public static void sendEmbed(MessageEmbed embed, MessageReceivedEvent event) {
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            event.getChannel().sendMessageEmbeds(embed).queue();
+        else {
+            event.getChannel().sendMessage(embed.getDescription()).queue();
+        }
     }
 
     /**

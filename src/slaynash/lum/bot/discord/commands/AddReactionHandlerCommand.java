@@ -5,6 +5,7 @@ import java.awt.Color;
 import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -67,7 +68,7 @@ public class AddReactionHandlerCommand extends Command {
 
                 Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[3]);
                 if (role == null) {
-                    paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
+                    Utils.sendEmbed("Error: Role not found", Color.RED, paramMessageReceivedEvent);
                     System.out.println("Role not found");
                     return;
                 }
@@ -87,7 +88,8 @@ public class AddReactionHandlerCommand extends Command {
                     success.addReaction(params[2]).queue();
 
                 CommandManager.reactionListeners.add(react);
-                paramMessageReceivedEvent.getChannel().sendMessage("Successfully added reaction listener to the target message").queue();
+                if (paramMessageReceivedEvent.getChannelType() == ChannelType.TEXT && paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getTextChannel(), Permission.MESSAGE_WRITE))
+                    paramMessageReceivedEvent.getTextChannel().sendMessage("Successfully added reaction listener to the target message").queue();
                 System.out.println("Successfully added reaction listener to the target message");
             }
             CommandManager.saveReactions();
