@@ -25,8 +25,18 @@ public class AddReactionHandlerCommand extends Command {
             return;
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
-        if (params.length != 4 || !params[1].matches("^[0-9]+$") || (!params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") && !EmojiUtils.containsEmoji(params[2]))) {
+        if (params.length != 4) {
+            System.out.println("Bad usage");
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+            return;
+        }
+        else if (!params[1].matches("^[0-9]+$")) {
+            System.out.println("Bad MessageID permas");
+            paramMessageReceivedEvent.getChannel().sendMessage("messageID invalid Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+            return;
+        }
+        if (!params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$") && !EmojiUtils.containsEmoji(params[2])) {
+            paramMessageReceivedEvent.getChannel().sendMessage("Bad emoji Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
 
@@ -62,7 +72,7 @@ public class AddReactionHandlerCommand extends Command {
             }
             else {
                 if (!params[3].matches("^[0-9]+$")) {
-                    paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+                    paramMessageReceivedEvent.getChannel().sendMessage("Bad RoleID Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
                     return;
                 }
 
