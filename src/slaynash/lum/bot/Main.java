@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 
-import com.coder4.emoji.EmojiUtils;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.dv8tion.jda.api.JDA;
@@ -424,7 +422,7 @@ public class Main extends ListenerAdapter {
         if (event.getUser().getIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
             return;
 
-        System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + (event.getReactionEmote().isEmote() ? "isEmote id:" + event.getReactionEmote().getId() : "") + (EmojiUtils.containsEmoji(event.getReactionEmote().getName()) ? " is Emoji" : ""));
+        // System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + (event.getReactionEmote().isEmote() ? "isEmote id:" + event.getReactionEmote().getId() : "") + (EmojiUtils.containsEmoji(event.getReactionEmote().getName()) ? " is Emoji" : ""));
         for (ReactionListener rl : CommandManager.reactionListeners) {
             if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);

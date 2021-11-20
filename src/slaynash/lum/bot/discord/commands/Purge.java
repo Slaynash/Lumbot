@@ -45,7 +45,7 @@ public class Purge extends Command {
                         retrievedHistory = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete().getRetrievedHistory(); //100 is max you can get
                         messageList.addAll(retrievedHistory);
                     }
-                    while (!retrievedHistory.get(0).equals(message));
+                    while (retrievedHistory.size() > 0 && !retrievedHistory.get(0).equals(message));
 
                     if (message.getContentRaw().startsWith(getName() + "u")) {
                         messageList.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
