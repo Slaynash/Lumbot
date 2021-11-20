@@ -554,8 +554,8 @@ public final class MelonScanner {
     }
 
     private static boolean missingModsCheck(MelonScanContext context) {
-        context.missingMods.remove("zxing"); //temporary issue with VRCQR and ignoreable TODO remove when resolved
         if (context.missingMods.size() > 0) {
+            context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.missingMods.size() && i < 10; ++i) {
                 String missingModName = context.missingMods.get(i);
@@ -613,6 +613,7 @@ public final class MelonScanner {
 
     private static boolean brokenModsCheck(MelonScanContext context) {
         if (context.brokenMods.size() > 0) {
+            context.brokenMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.brokenMods.size() && i < 20; ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.brokenMods.get(i) + "\n"));
@@ -628,6 +629,7 @@ public final class MelonScanner {
 
     private static boolean oldModsCheck(MelonScanContext context) {
         if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated)) {
+            context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
@@ -694,6 +696,7 @@ public final class MelonScanner {
 
     private static boolean misplacedModsCheck(MelonScanContext context) {
         if (context.misplacedMods.size() > 0) {
+            context.misplacedMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.misplacedmods.warning", context.lang) + "\n");
             for (int i = 0; i < context.misplacedMods.size() && i < 10; ++i) {
                 String mm = context.misplacedMods.get(i);
@@ -712,6 +715,7 @@ public final class MelonScanner {
 
     private static boolean misplacedPluginsCheck(MelonScanContext context) {
         if (context.misplacedPlugins.size() > 0) {
+            context.misplacedPlugins.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.misplacedplugins.warning", context.lang) + "\n");
             for (int i = 0; i < context.misplacedPlugins.size() && i < 10; ++i) {
                 String mp = context.misplacedPlugins.get(i);
@@ -739,7 +743,10 @@ public final class MelonScanner {
                         muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
                     break;
                 case "TheLongDark":
-                    muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
+                    if (context.misplacedPlugins.contains("AutoUpdatingPlugin"))
+                        muMessage = "";
+                    else
+                        muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
                     break;
                 default:
                     muMessage = "";
@@ -783,6 +790,7 @@ public final class MelonScanner {
     private static boolean modsThrowingErrorsCheck(MelonScanContext context) {
         context.modsThrowingErrors.removeAll(context.brokenMods);
         if (context.modsThrowingErrors.size() > 0 && !context.isMLOutdated && !context.isMLOutdatedVRC) {
+            context.modsThrowingErrors.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.modsThrowingErrors.size() && i < 10; ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.modsThrowingErrors.get(i))).append("\n");
