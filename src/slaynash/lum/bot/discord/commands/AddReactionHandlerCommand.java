@@ -24,8 +24,8 @@ public class AddReactionHandlerCommand extends Command {
             paramMessageReceivedEvent.getChannel().sendMessage("Error: You need to have the Manage Role permission").queue();
             return;
         }
-        String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
-        if (params.length != 4) {
+        String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().replace("  ", " ").split(" ");
+        if (params.length != 3 && params.length != 4) {
             System.out.println("Bad usage");
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
@@ -71,8 +71,8 @@ public class AddReactionHandlerCommand extends Command {
                 CommandManager.saveReactions();
             }
             else {
-                if (!params[3].matches("^[0-9]+$")) {
-                    paramMessageReceivedEvent.getChannel().sendMessage("Bad RoleID Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+                if (params.length != 4 && !params[3].matches("^[0-9]+$")) {
+                    paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + getName() + " <messageid> <reaction> <roleid>").queue();
                     return;
                 }
 
