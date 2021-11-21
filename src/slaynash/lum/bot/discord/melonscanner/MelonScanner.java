@@ -593,6 +593,7 @@ public final class MelonScanner {
     }
 
     private static boolean corruptedModsCheck(MelonScanContext context) {
+        context.corruptedMods.removeIf(m -> context.brokenMods.contains(m.name));
         if (context.corruptedMods.size() > 0) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
