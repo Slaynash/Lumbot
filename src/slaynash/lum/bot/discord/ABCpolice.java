@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -12,34 +13,45 @@ public class ABCpolice {
     public static boolean abcPolice(MessageReceivedEvent event) {
         if (event.getChannel().getIdLong() != 815364277123940423L)
             return false;
-        if (event.getAuthor().isBot() || event.getMessage().isEdited() || event.getMessage().getContentStripped().isEmpty())
+        if (event.getAuthor().isBot() || event.getMessage().isEdited())
             return true;
+        String message = event.getMessage().getContentStripped().toLowerCase();
         List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
+        List<Message> chain = history;
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
-        history.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
-        if (history.size() == 0) //new channel or wipe or bot spam
+        Optional<Message> find = chain.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
+        if (!find.isEmpty()) {
+            chain.subList(chain.indexOf(find.get()), chain.size()).clear();
+        }
+        chain.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
+        if (chain.size() == 0) //new channel or wipe or bot spam
             return true;
-        char currentLetter = convertChar(event.getMessage().getContentStripped());
-        char previousLetter = convertChar(history.get(0).getContentStripped());
+        char currentLetter = convertChar(message);
+        char previousLetter = convertChar(chain.get(0).getContentStripped());
         Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         boolean timing = (previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48)));
 
         if (brokenChain || previousLetter == 'z')
             previousLetter = 'a' - 1;
 
-        if ((int) currentLetter != (int) (previousLetter) + 1) {
+        if (message.length() == 0) {
+            System.out.println("abc empty message");
+            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " sent an empty message, Stickers are not allowed. Start back to `A`").queue();
+            return true;
+        }
+        else if ((int) currentLetter != (int) (previousLetter) + 1) {
             System.out.println("abc does not match");
             event.getMessage().addReaction(":bonk:907068295868477551").queue();
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
-        else if (event.getMessage().getContentStripped().length() <= 1 || !Character.isLetterOrDigit(event.getMessage().getContentStripped().charAt(1))) {
+        else if (!brokenChain && message.length() == 1 || !Character.isLetterOrDigit(message.charAt(1)) && message.charAt(1) != 'a' && message.charAt(1) != 'i') {
             System.out.println("abc hey that is cheating");
             event.getMessage().addReaction(":baka:828070018935685130").queue();
             event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`")/*.delay(Duration.ofSeconds(30)).flatMap(Message::delete)*/.queue();
             return true;
         }
-        else if (!brokenChain && timing && history.size() > 1 && (history.get(0).getAuthor().equals(event.getAuthor()) || history.get(1).getAuthor().equals(event.getAuthor()))) {
+        else if (!brokenChain && timing && chain.size() > 1 && (chain.get(0).getAuthor().equals(event.getAuthor()) || chain.get(1).getAuthor().equals(event.getAuthor()))) {
             System.out.println("abc spacing not meet");
             event.getChannel().sendMessage("User spacing rule was not meet <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
             return true;
