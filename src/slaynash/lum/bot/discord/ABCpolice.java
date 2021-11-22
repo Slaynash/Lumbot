@@ -45,7 +45,7 @@ public class ABCpolice {
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
-        else if (!brokenChain && message.length() == 1 || !Character.isLetterOrDigit(message.charAt(1)) && message.charAt(1) != 'a' && message.charAt(1) != 'i') {
+        else if (!brokenChain && (message.length() == 1 || !Character.isLetterOrDigit(message.charAt(1))) && currentLetter != 'a' && currentLetter != 'i') {
             System.out.println("abc hey that is cheating");
             event.getMessage().addReaction(":baka:828070018935685130").queue();
             event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`")/*.delay(Duration.ofSeconds(30)).flatMap(Message::delete)*/.queue();
