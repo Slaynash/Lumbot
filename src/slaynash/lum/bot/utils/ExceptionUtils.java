@@ -109,8 +109,12 @@ public final class ExceptionUtils {
                     exceptionString = exceptionString.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 4) + " ...";
             }
             MessageEmbed embed = embedBuilder.setDescription(exceptionString).build();
-            if (!embed.isEmpty())
-                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
+            if (!embed.isEmpty()) {
+                if (exceptionString.contains("gotten status code"))
+                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(912757433913454612L).sendMessageEmbeds(embed).queue();
+                else
+                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
+            }
 
             if (textChannel != null) {
                 EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
