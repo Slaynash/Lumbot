@@ -40,6 +40,7 @@ public class Replies extends Command {
             }
             catch (Exception e) {
                 Utils.replyEmbed("Invalid Regex! Please use a site like regexr.com to test regex", Color.RED, event);
+                return;
             }
             if (parts.length == 1) {
                 if (regexReplies.remove(pattern) != null)
