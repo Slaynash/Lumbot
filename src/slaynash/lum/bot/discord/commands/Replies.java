@@ -1,12 +1,15 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class Replies extends Command {
     @Override
@@ -31,8 +34,15 @@ public class Replies extends Command {
         }
         else if (parts[0].startsWith(getName() + "r")) {
             parts = parts[1].split("\n", 2);
+            String pattern = parts[0].toLowerCase();
+            try {
+                Pattern.compile(pattern);
+            }
+            catch (Exception e) {
+                Utils.replyEmbed("Invalid Regex! Please use a site like regexr.com to test regex", Color.RED, event);
+            }
             if (parts.length == 1) {
-                if (regexReplies.remove(parts[0].toLowerCase()) != null)
+                if (regexReplies.remove(pattern) != null)
                     event.getMessage().reply("Removed the regex `" + parts[0] + "`").queue();
                 else {
                     event.getMessage().reply("Please do `" + getName() + "r <regex>newline<message>`").queue();
@@ -40,7 +50,7 @@ public class Replies extends Command {
                 }
             }
             else {
-                if (regexReplies.put(parts[0].toLowerCase(), parts[1].trim()) != null) {
+                if (regexReplies.put(pattern, parts[1].trim()) != null) {
                     event.getMessage().reply("Updated the regex reply `" + parts[0] + "`").queue();
                 }
                 else

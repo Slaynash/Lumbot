@@ -174,7 +174,7 @@ public class ServerMessagesHandler {
                             Utils.replyEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null, event);
                     }
                     else
-                        if (guildID == 819950183784644618L || message.contains("remod"))
+                        if (message.contains("remod"))
                             Utils.replyEmbed("You can reset your [remod pin here](https://requi.dev/remod/pin.php)", null, event);
                         else
                             Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
@@ -366,9 +366,10 @@ public class ServerMessagesHandler {
 
     private static boolean handleReplies(MessageReceivedEvent event) {
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
+        String content = event.getMessage().getContentRaw().toLowerCase();
+        if (content.startsWith("l!replies")) return true;
         Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
-        String content = event.getMessage().getContentRaw().toLowerCase();
 
         if (regexReplies != null) {
             for (String reply : regexReplies.keySet()) {
