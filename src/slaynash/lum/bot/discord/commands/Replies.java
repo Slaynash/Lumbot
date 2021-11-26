@@ -26,10 +26,10 @@ public class Replies extends Command {
                 StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
                 replies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
                 regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
-                event.getMessage().reply(sb.toString()).queue();
+                Utils.replyEmbed(sb.toString(), null, event);
             }
             else {
-                event.getMessage().reply("There are no replies in this guild").queue();
+                Utils.replyEmbed("There are no replies in this guild", null, event);
             }
         }
         else if (parts[0].startsWith(getName() + "r")) {
@@ -44,18 +44,18 @@ public class Replies extends Command {
             }
             if (parts.length == 1) {
                 if (regexReplies.remove(pattern) != null)
-                    event.getMessage().reply("Removed the regex `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Removed the regex `" + parts[0] + "`", Color.GREEN, event);
                 else {
-                    event.getMessage().reply("Please do `" + getName() + "r <regex>newline<message>`").queue();
+                    Utils.replyEmbed("Please do `" + getName() + "r <regex>newline<message>`", Color.RED, event);
                     return;
                 }
             }
             else {
                 if (regexReplies.put(pattern, parts[1].trim()) != null) {
-                    event.getMessage().reply("Updated the regex reply `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Updated the regex reply `" + parts[0] + "`", Color.GREEN, event);
                 }
                 else
-                    event.getMessage().reply("Created the regex reply `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Created the regex reply `" + parts[0] + "`", Color.GREEN, event);
             }
             if (regexReplies.size() == 0)
                 CommandManager.guildRegexReplies.remove(event.getGuild().getIdLong());
@@ -67,18 +67,18 @@ public class Replies extends Command {
             parts = parts[1].split("\n", 2);
             if (parts.length == 1) {
                 if (replies.remove(parts[0].toLowerCase()) != null)
-                    event.getMessage().reply("Removed the reply `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Removed the reply `" + parts[0] + "`", Color.GREEN, event);
                 else {
-                    event.getMessage().reply("Please do `" + getName() + " <trigger>newline<message>`").queue();
+                    Utils.replyEmbed("Please do `" + getName() + " <trigger>newline<message>`", Color.RED, event);
                     return;
                 }
             }
             else {
                 if (replies.put(parts[0].toLowerCase(), parts[1].trim()) != null) {
-                    event.getMessage().reply("Updated the reply `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Updated the reply `" + parts[0] + "`", Color.GREEN, event);
                 }
                 else
-                    event.getMessage().reply("Created the reply `" + parts[0] + "`").queue();
+                    Utils.replyEmbed("Created the reply `" + parts[0] + "`", Color.GREEN, event);
             }
             if (replies.size() == 0)
                 CommandManager.guildReplies.remove(event.getGuild().getIdLong());
