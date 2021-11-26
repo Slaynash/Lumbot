@@ -23,9 +23,16 @@ public class Replies extends Command {
 
         if (parts.length == 1) {
             if (replies.size() > 0 || regexReplies.size() > 0) {
-                StringBuilder sb = new StringBuilder("Current replies in this guild:\n");
-                replies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
-                regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
+                StringBuilder sb = new StringBuilder();
+                if (replies.size() > 0) {
+                    sb.append("Current replies in this guild:\n");
+                    replies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
+                    sb.append("\n");
+                }
+                if (regexReplies.size() > 0) {
+                    sb.append("Current regex replies in this guild:\n");
+                    regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
+                }
                 Utils.replyEmbed(sb.toString(), null, event);
             }
             else {
@@ -39,7 +46,7 @@ public class Replies extends Command {
                 Pattern.compile(pattern);
             }
             catch (Exception e) {
-                Utils.replyEmbed("Invalid Regex! Please use a site like regexr.com to test regex", Color.RED, event);
+                Utils.replyEmbed("Invalid Regex! Please use a site like [regexr.com](https://regexr.com/) to test regex", Color.RED, event);
                 return;
             }
             if (parts.length == 1) {
