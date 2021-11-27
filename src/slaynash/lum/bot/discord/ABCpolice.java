@@ -16,6 +16,7 @@ public class ABCpolice {
         if (event.getAuthor().isBot() || event.getMessage().isEdited())
             return true;
         String message = event.getMessage().getContentStripped().toLowerCase();
+        System.out.println(event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
         List<Message> chain = history;
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
@@ -62,6 +63,8 @@ public class ABCpolice {
     }
 
     private static char convertChar(String letter) {
+        if (letter.length() == 0)
+            return '\0';
         letter = Junidecode.unidecode(letter);
         if (letter.charAt(0) == 55356) { //Unicode indicator or something like that
             if (letter.charAt(1) >= 56806 && letter.charAt(1) <= 56831) { //convert regional_indicator to lowercase letters

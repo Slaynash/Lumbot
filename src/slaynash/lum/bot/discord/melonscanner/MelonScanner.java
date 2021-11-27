@@ -366,6 +366,9 @@ public final class MelonScanner {
                 case "Demeo":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
                     break;
+                case "Eco":
+                    context.embedBuilder.setThumbnail("https://wiki.play.eco/logo.png");
+                    break;
                 case "EscapeFromTarkov":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                     break;
