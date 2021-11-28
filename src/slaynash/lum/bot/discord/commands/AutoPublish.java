@@ -28,13 +28,13 @@ public class AutoPublish extends Command {
         if (CommandManager.apChannels.contains(paramMessageReceivedEvent.getChannel().getIdLong())) {
             CommandManager.apChannels.remove(paramMessageReceivedEvent.getChannel().getIdLong());
             CommandManager.saveAPChannels();
-            paramMessageReceivedEvent.getChannel().sendMessage("Successfully removed " + paramMessageReceivedEvent.getChannel().getName() + " from autopublish!").delay(Duration.ofSeconds(5)).flatMap(Message::delete).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Successfully removed " + paramMessageReceivedEvent.getChannel().getName() + " from autopublish!").delay(Duration.ofSeconds(3)).flatMap(Message::delete).queue();
             System.out.println("Successfully removed autopublish from " + paramMessageReceivedEvent.getChannel().getName());
         }
         else {
             CommandManager.apChannels.add(paramMessageReceivedEvent.getChannel().getIdLong());
             CommandManager.saveAPChannels();
-            paramMessageReceivedEvent.getChannel().sendMessage("Successfully set " + paramMessageReceivedEvent.getChannel().getName() + " to autopublish!").delay(Duration.ofSeconds(5)).flatMap(Message::delete).queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Successfully set " + paramMessageReceivedEvent.getChannel().getName() + " to autopublish!").delay(Duration.ofSeconds(3)).flatMap(Message::delete).queue();
             System.out.println("Successfully added autopublish to " + paramMessageReceivedEvent.getChannel().getName());
         }
         paramMessageReceivedEvent.getMessage().delete().queue();
