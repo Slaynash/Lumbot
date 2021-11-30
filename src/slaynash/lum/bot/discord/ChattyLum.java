@@ -174,7 +174,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid)\\b.*")) {
+        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dum)\\b.*")) {
             System.out.println("Bad Lum was detected");
             if (halloween)
                 event.getChannel().sendMessage(halloweenBadLum[random.nextInt(halloweenBadLum.length)]).queue();

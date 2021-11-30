@@ -365,6 +365,8 @@ public class ServerMessagesHandler {
     }
 
     private static boolean handleReplies(MessageReceivedEvent event) {
+        if (event.getMessage().isEdited())
+            return false;
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
         String content = event.getMessage().getContentRaw().toLowerCase();
         if (content.startsWith("l!replies")) return true;

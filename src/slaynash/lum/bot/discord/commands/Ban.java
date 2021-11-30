@@ -10,7 +10,7 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
 public class Ban extends Command {
-    //TODO DM banned user and add custom reason
+    //TODO DM banned user and add custom reason and better perms
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
         if (!includeInHelp(event))
