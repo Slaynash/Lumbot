@@ -39,7 +39,7 @@ public class ScamShield {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new HashMap<>();
-    private static final Map<String, Integer> ssTerms = new HashMap<>() {{
+    private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase
             put("@everyone", 2);
             put("money", 1);
             put("loot", 2);
@@ -93,22 +93,24 @@ public class ScamShield {
             message = message + embed.getTitle() + embed.getDescription();
         }
         message = message.toLowerCase().replace(":", "").replace(" ", "");
+        final String finalMessage = message;
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
             Set<String> nameSet = new HashSet<>(); //used to filter one message per channel
             crossPost = allMessages.stream()
-                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong() && m.getGuild().getIdLong() == event.getGuild().getIdLong() && ((m.getMessage().getAttachments().size() == 0
-                    && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
-                    || (event.getMessage().getAttachments().size() > 0 && m.getMessage().getAttachments().size() > 0 && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
-                .filter(e -> nameSet.add(e.getChannel().getId()))
+                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong())
+                .filter(m -> m.getGuild().getIdLong() == event.getGuild().getIdLong())
+                .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
+                .filter(m -> ((m.getMessage().getAttachments().size() == 0 && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s)))
+                        || (event.getMessage().getAttachments().size() > 0 && m.getMessage().getAttachments().size() > 0 && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
+                .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
         }
 
         int suspiciousValue = newAccount ? 1 : 0; //add sus points if account is less than 7 days old
         suspiciousValue += crossPost;
 
-        final String finalMessage = message;
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 

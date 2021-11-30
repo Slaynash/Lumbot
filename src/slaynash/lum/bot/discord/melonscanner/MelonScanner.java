@@ -632,7 +632,7 @@ public final class MelonScanner {
     }
 
     private static boolean oldModsCheck(MelonScanContext context) {
-        if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated)) {
+        if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated) || context.modifiedML) {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             boolean added = false;
