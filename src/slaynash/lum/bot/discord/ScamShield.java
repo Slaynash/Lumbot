@@ -39,7 +39,7 @@ public class ScamShield {
     private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
 
     private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new HashMap<>();
-    private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase
+    private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space
             put("@everyone", 2);
             put("money", 1);
             put("loot", 2);
@@ -63,12 +63,15 @@ public class ScamShield {
             put("bro", 1);
             put("checkthis", 1);
             put("linkforyou", 1);
+            put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
-            put("standoutinyourfavoritediscords", 2);
+            put("standoutinyourfavoritediscord", 2);
+            put("standoutinyourfavoritesdiscord", 2);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
+            put(".*nitro.*free.*steam.*", 2);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 2);
@@ -102,8 +105,15 @@ public class ScamShield {
                 .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong())
                 .filter(m -> m.getGuild().getIdLong() == event.getGuild().getIdLong())
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
-                .filter(m -> ((m.getMessage().getAttachments().size() == 0 && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()) && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s)))
-                        || (event.getMessage().getAttachments().size() > 0 && m.getMessage().getAttachments().size() > 0 && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
+                .filter(m -> (
+                    (
+                        m.getMessage().getAttachments().size() == 0
+                        && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
+                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s)))
+                    || (
+                        event.getMessage().getAttachments().size() > 0
+                        && m.getMessage().getAttachments().size() > 0
+                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
                 .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
         }
