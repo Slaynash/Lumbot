@@ -56,7 +56,7 @@ public class Moderation {
         adminList.add(145556654241349632L/*Slay*/);
         adminList.add(240701606977470464L/*rakosi2*/);
         for (Member member : guild.getMembers()) {
-            if (member.hasPermission(Permission.ADMINISTRATOR) || member.isOwner())
+            if (member.isOwner() || member.hasPermission(Permission.MANAGE_SERVER) || member.hasPermission(Permission.ADMINISTRATOR))
                 adminList.add(member.getIdLong());
         }
         return adminList;

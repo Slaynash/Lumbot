@@ -160,7 +160,7 @@ public class SlashConfig {
         }
         if (message.isEmpty())
             return;
-        if (event.getChannelType() == ChannelType.PRIVATE) {
+        if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
             event.getPrivateChannel().sendMessage(message).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         }
         else {

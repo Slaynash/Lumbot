@@ -102,6 +102,7 @@ public final class MelonScannerReadPass {
 
     private static boolean minecraftLogLineCheck(String line, MelonScanContext context) {
         if (
+            line.matches(".*Loading for game Minecraft.*") ||
             line.matches(".*NetQueue: Setting up.") ||
             line.matches("---- Minecraft Crash Report ----") ||
             line.contains("melon_slice") ||
