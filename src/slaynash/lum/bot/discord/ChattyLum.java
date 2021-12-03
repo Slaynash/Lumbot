@@ -3,14 +3,18 @@ package slaynash.lum.bot.discord;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.discord.commands.LumGoneCommand;
 
 public class ChattyLum {
     public static final String LOG_IDENTIFIER = "ChattyLum";
-    private static final boolean halloween = LocalDate.now().getMonthValue() == 10;
+    private static final Random random = new Random();
+    private static final int helpDuration = 6 * 60; //in seconds
+    private static final List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
 
     private static class HelpedRecentlyData {
         public final long time;
@@ -24,22 +28,22 @@ public class ChattyLum {
         }
     }
 
-    private static final String[] alreadyHelpedSentences = new String[] {
+    private static final ArrayList<String> alreadyHelpedSentences = new ArrayList<String>(Arrays.asList(
         "<:Neko_devil:865328473974374420>",
         "I already answered you <:konataCry:553690186022649858>",
         "I've already given you a response! <:MeguminEyes:852057834686119946>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
         "Why won't you read my answer <:angry:835647632843866122>"
-    };
+    ));
 
-    private static final String[] alreadyHelpedSentencesRare = new String[] {
+    private static final ArrayList<String> alreadyHelpedSentencesRare = new ArrayList<String>(Arrays.asList(
         "<https://letmegooglethat.com/?q=How+do+I+read>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>"
-    };
+    ));
 
-    private static final String[] thankedSentences = new String[] {
+    private static final ArrayList<String> thankedSentences = new ArrayList<String>(Arrays.asList(
         "<:cirHappy:829458722634858496>",
         "<:Neko_lick:865328473646825513>",
         "<:Neko_think:865328471058939947>",
@@ -50,22 +54,27 @@ public class ChattyLum {
         "Mhm of course!",
         "No problem!",
         "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>"
-    };
+    ));
 
-    private static final String[] thankedSentencesRare = new String[] {
+    private static final ArrayList<String> thankedSentencesRare = new ArrayList<String>(Arrays.asList(
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858",
         "Notices you senpai <:cirHappy:829458722634858496>"
-    };
+    ));
 
-    private static final String[] helloLum = new String[] {
+    private static final ArrayList<String> helloLum = new ArrayList<String>(Arrays.asList(
+        "<:necoNya:893316276850671657>",
+        "<:Neko_cat:865328470569385995>",
         "<:Neko_cat_owo:851938214105186304>",
         "<:Neko_cat_shrug:851938033724817428>",
         "<:Neko_cat_uwu:851938142810275852>",
         "<:Neko_cat_wave:851938087353188372>",
-        "<:Neko_hi:865328473667797012>"
-    };
+        "<:Neko_gems:865409576353660938>",
+        "<:Neko_hi:865328473667797012>",
+        "<:Neko_music:865328471018307584>",
+        "<:Neko_pounce:865328474142277662>"
+    ));
 
-    private static final String[] niceLum = new String[] {
+    private static final ArrayList<String> niceLum = new ArrayList<String>(Arrays.asList(
         "<:Neko_angel:865328472539791370>",
         "<:Neko_blush:865328474326695946>",
         "<:Neko_cash:865328474130350111>",
@@ -75,6 +84,9 @@ public class ChattyLum {
         "<:Neko_cat_royal:851935888178544660>",
         "<:Neko_cat_woah:851935805874110504>",
         "<:Neko_dab:865328473719439381>",
+        "<:Neko_excited:865328473782091796>",
+        "<:neko_hug:895078856313143366>",
+        "<:Neko_Hype:865328473895469116>",
         "<:Neko_lick:865328473646825513>",
         "<:Neko_love:865328470699147274>",
         "<:Neko_shy:865328471294083152>",
@@ -85,11 +97,12 @@ public class ChattyLum {
         "<:SagiriHeadEmpty:828070253337509918>",
         "<:Sagiri_Shy:828073525214183437>",
         "<a:HeartCat:828087151232286749>",
+        "<a:Neko_cat_HappyCry:862453203441680404>",
         "<a:Neko_cat_HeadPat:851934772959510578>",
         "<a:Neko_pet:883168394625560587>"
-    };
+    ));
 
-    private static final String[] badLum = new String[] {
+    private static final ArrayList<String> badLum = new ArrayList<String>(Arrays.asList(
         "<:baka:828070018935685130>",
         "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_drool_stupid:851936505516785715>",
@@ -97,8 +110,11 @@ public class ChattyLum {
         "<:Neko_cat_prison:851936449548255264>",
         "<:Neko_cool:865328469734719539>",
         "<:Neko_everythings_fine:865328471143088158>",
+        "<:Neko_evil:865328473701744650>",
+        "<:Neko_F:865328473895731231>",
         "<:Neko_hug_me:865328470367141909>",
         "<:Neko_ohno:865328474192216064>",
+        "<:Neko_popcorn:865328471965696011>",
         "<:Neko_pout:865328471102324778>",
         "<:Neko_rear:865327612771565619>",
         "<:Neko_reee:865328473659539467>",
@@ -107,14 +123,14 @@ public class ChattyLum {
         "<:Neko_sweat:865328470702817306>",
         "<:Neko_what:865328474238353418>",
         "<:Neko_wondering:865328471492001833>"
-    };
+    ));
 
-    private static final String[] gunLum = new String[] {
+    private static final ArrayList<String> gunLum = new ArrayList<String>(Arrays.asList(
         "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_Gun:851934721914175498>",
-        "<:Neko_Gun_Big:883168394759766046>",
         "<:Neko_cop:865328472540971058>",
         "<:Neko_dead:865328473760595999>",
+        "<:Neko_Gun_Big:883168394759766046>",
         "<:Neko_knife:865328473858113536>",
         "<:Neko_L:865328469557379116>",
         "<:Neko_LOL:865328469335867392>",
@@ -124,29 +140,24 @@ public class ChattyLum {
         "<:WhatAreYouDoingMan:828068981117943848>",
         "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746",
         "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497"
-    };
+    ));
 
-    private static final String[] halloweenHelloLum = new String[] {
-        "<:Neko_mummy:865328473761775627>",
-        "<:Neko_padoru:865328474150797342>",
-        "<:Neko_pumpkin:865328473962053683>"
-    };
-
-    private static final String[] halloweenNiceLum = new String[] {
-        "<:Neko_present:865328471232348190>",
-        "<:Neko_pumpkinlove:865328473441435649>"
-    };
-
-    private static final String[] halloweenBadLum = new String[] {
-        "<:Neko_clown:865328473732415508>",
-        "<:Neko_devil:865328473974374420>"
-    };
-
-    private static final Random random = new Random();
-
-    private static final int helpDuration = 6 * 60; //in seconds
-    private static final List<HelpedRecentlyData> helpedRecently = new ArrayList<>();
-
+    static { //on class load, nothing is removing these when the season is over other then a reboot
+        if (LocalDate.now().getMonthValue() == 10) { //halloween
+            helloLum.add("<:Neko_mummy:865328473761775627>");
+            helloLum.add("<:Neko_pumpkin:865328473962053683>");
+            niceLum.add("<:Neko_present:865328471232348190>");
+            niceLum.add("<:Neko_pumpkinlove:865328473441435649>");
+            badLum.add("<:Neko_clown:865328473732415508>");
+            badLum.add("<:Neko_devil:865328473974374420>");
+        }
+        if (LocalDate.now().getMonthValue() == 12) { //christmas
+            helloLum.add("<:Neko_padoru:865328474150797342>");
+            helloLum.add("<:Neko_snow:865328474196541440>");
+            niceLum.add("<:Neko_padoru:865328474150797342>");
+            niceLum.add("<:Neko_snow:865328474196541440>");
+        }
+    }
 
     public static boolean handle(String message, MessageReceivedEvent event) {
         if (
@@ -159,36 +170,33 @@ public class ChattyLum {
         if (!(hasLum || refLum))
             return false;
 
+        if (message.matches(".*\\bbye\\b.*")) {
+            if (!(new LumGoneCommand().includeInHelp(event)))
+                event.getChannel().sendMessage("<:Neko_sleep:865328470425862175>").queue();
+            return true;
+        }
+
         if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|sexy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
-            if (halloween)
-                event.getChannel().sendMessage(halloweenNiceLum[random.nextInt(halloweenNiceLum.length)]).queue();
-            else
-                event.getChannel().sendMessage(niceLum[random.nextInt(niceLum.length)]).queue();
+            event.getChannel().sendMessage(niceLum.get(random.nextInt(niceLum.size()))).queue();
             return true;
         }
 
         if (message.matches(".*\\b(off|fuck(ing)?|stfu|kill|gun)\\b.*")) {
             System.out.println("F off Lum was detected");
-            event.getChannel().sendMessage(gunLum[random.nextInt(gunLum.length)]).queue();
+            event.getChannel().sendMessage(gunLum.get(random.nextInt(gunLum.size()))).queue();
             return true;
         }
 
         if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dum)\\b.*")) {
             System.out.println("Bad Lum was detected");
-            if (halloween)
-                event.getChannel().sendMessage(halloweenBadLum[random.nextInt(halloweenBadLum.length)]).queue();
-            else
-                event.getChannel().sendMessage(badLum[random.nextInt(badLum.length)]).queue();
+            event.getChannel().sendMessage(badLum.get(random.nextInt(badLum.size()))).queue();
             return true;
         }
 
         if (message.matches(".*\\b(hello|hi)\\b.*")) {
             System.out.println("Hello Lum was detected");
-            if (halloween)
-                event.getChannel().sendMessage(halloweenHelloLum[random.nextInt(halloweenHelloLum.length)]).queue();
-            else
-                event.getChannel().sendMessage(helloLum[random.nextInt(helloLum.length)]).queue();
+            event.getChannel().sendMessage(helloLum.get(random.nextInt(helloLum.size()))).queue();
             return true;
         }
 
@@ -212,8 +220,8 @@ public class ChattyLum {
                 else {
                     rare = random.nextInt(10) == 9;
                     sentence = rare
-                        ? thankedSentencesRare[random.nextInt(thankedSentencesRare.length)]
-                        : thankedSentences    [random.nextInt(thankedSentences.length)];
+                        ? thankedSentencesRare.get(random.nextInt(thankedSentencesRare.size()))
+                        : thankedSentences.    get(random.nextInt(thankedSentences.size()));
                 }
                 event.getChannel().sendMessage(sentence).queue();
                 return true;
@@ -234,8 +242,8 @@ public class ChattyLum {
                 else {
                     rare = random.nextInt(10) == 9;
                     sentence = rare
-                        ? alreadyHelpedSentencesRare[random.nextInt(alreadyHelpedSentencesRare.length)]
-                        : alreadyHelpedSentences    [random.nextInt(alreadyHelpedSentences.length)];
+                        ? alreadyHelpedSentencesRare.get(random.nextInt(alreadyHelpedSentencesRare.size()))
+                        : alreadyHelpedSentences.    get(random.nextInt(alreadyHelpedSentences.size()));
                 }
                 event.getChannel().sendMessage(sentence).queue();
                 return true;

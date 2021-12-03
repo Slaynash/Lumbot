@@ -56,14 +56,18 @@ public class Utils {
     public static void replyEmbed(String message, Color color, MessageReceivedEvent event) {
         MessageEmbed embed = wrapMessageInEmbed(message, color);
 
-        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            return;
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
             event.getMessage().replyEmbeds(embed).queue();
         else {
             event.getMessage().reply(embed.getDescription()).queue();
         }
     }
     public static void replyEmbed(MessageEmbed embed, MessageReceivedEvent event) {
-        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            return;
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
             event.getMessage().replyEmbeds(embed).queue();
         else {
             event.getMessage().reply(embed.getDescription()).queue();
@@ -73,14 +77,18 @@ public class Utils {
     public static void sendEmbed(String message, Color color, MessageReceivedEvent event) {
         MessageEmbed embed = wrapMessageInEmbed(message, color);
 
-        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            return;
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
             event.getChannel().sendMessageEmbeds(embed).queue();
         else {
             event.getChannel().sendMessage(embed.getDescription()).queue();
         }
     }
     public static void sendEmbed(MessageEmbed embed, MessageReceivedEvent event) {
-        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
+            return;
+        if (event.getChannelType() == ChannelType.PRIVATE || event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
             event.getChannel().sendMessageEmbeds(embed).queue();
         else {
             event.getChannel().sendMessage(embed.getDescription()).queue();
