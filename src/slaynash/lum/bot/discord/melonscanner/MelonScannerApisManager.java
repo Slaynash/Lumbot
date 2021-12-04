@@ -52,7 +52,7 @@ public class MelonScannerApisManager {
             .version(HttpClient.Version.HTTP_2)
             .followRedirects(Redirect.ALWAYS)
             .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE))
-            .connectTimeout(Duration.ofSeconds(30))
+            .connectTimeout(Duration.ofSeconds(45))
             .build();
 
     private static final Gson gson = new Gson();
@@ -93,7 +93,7 @@ public class MelonScannerApisManager {
                             .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                             .setHeader("Pragma", "no-cache")
                             .setHeader("Expires", "-1")
-                            .timeout(Duration.ofSeconds(30));
+                            .timeout(Duration.ofSeconds(45));
 
 
                     if (api.isGZip)

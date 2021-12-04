@@ -19,7 +19,7 @@ public class VRCApiVersionScanner {
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(20))
+            .connectTimeout(Duration.ofSeconds(45))
             .build();
 
     private static String lastBVT, lastDG;
@@ -31,7 +31,7 @@ public class VRCApiVersionScanner {
                 .GET()
                 .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
                 .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0")
-                .timeout(Duration.ofSeconds(30))
+                .timeout(Duration.ofSeconds(45))
                 .build();
 
             while (true) {
