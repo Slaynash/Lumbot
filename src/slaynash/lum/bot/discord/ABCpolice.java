@@ -54,7 +54,7 @@ public class ABCpolice {
         }
         else if (!brokenChain && timing && chain.size() > 1 && (chain.get(0).getAuthor().equals(event.getAuthor()) || chain.get(1).getAuthor().equals(event.getAuthor()))) {
             System.out.println("abc spacing not meet");
-            event.getChannel().sendMessage("User spacing rule was not meet <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
+            event.getChannel().sendMessage("User spacing rule was not met <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
             return true;
         }
 

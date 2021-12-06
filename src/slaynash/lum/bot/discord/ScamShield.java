@@ -61,6 +61,7 @@ public class ScamShield {
             put("download", 1);
             put("100%", 1);
             put("bro", 1);
+            put("nigger", 1);
             put("checkthis", 1);
             put("linkforyou", 1);
             put("screenshareinhd", 2);
@@ -119,7 +120,7 @@ public class ScamShield {
         }
 
         int suspiciousValue = newAccount ? 1 : 0; //add sus points if account is less than 7 days old
-        suspiciousValue += crossPost;
+        suspiciousValue += (int) (crossPost);
 
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
@@ -158,6 +159,7 @@ public class ScamShield {
 
         if (suspiciousValue == 69420) {
             massping = true;
+            suspiciousValue = 0;
         }
 
         if (suspiciousValue < 3)
