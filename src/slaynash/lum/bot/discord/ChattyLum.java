@@ -28,7 +28,7 @@ public class ChattyLum {
         }
     }
 
-    private static final ArrayList<String> alreadyHelpedSentences = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> alreadyHelpedSentences = new ArrayList<>(Arrays.asList(
         "<:Neko_devil:865328473974374420>",
         "I already answered you <:konataCry:553690186022649858>",
         "I've already given you a response! <:MeguminEyes:852057834686119946>",
@@ -36,14 +36,14 @@ public class ChattyLum {
         "Why won't you read my answer <:angry:835647632843866122>"
     ));
 
-    private static final ArrayList<String> alreadyHelpedSentencesRare = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> alreadyHelpedSentencesRare = new ArrayList<>(Arrays.asList(
         "<https://letmegooglethat.com/?q=How+do+I+read>",
         "https://cdn.discordapp.com/attachments/657545944136417280/836231859998031932/unknown.png",
         "I wish I wasn't doing this job sometimes <:02Dead:835648208272883712>",
         "Your literacy skills test appears to have failed you. <:ram_disgusting:828070759070695425>"
     ));
 
-    private static final ArrayList<String> thankedSentences = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> thankedSentences = new ArrayList<>(Arrays.asList(
         "<:cirHappy:829458722634858496>",
         "<:Neko_lick:865328473646825513>",
         "<:Neko_think:865328471058939947>",
@@ -56,12 +56,12 @@ public class ChattyLum {
         "You're Welcome <:Neko_cat_kiss_heart:851934821080367134>"
     ));
 
-    private static final ArrayList<String> thankedSentencesRare = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> thankedSentencesRare = new ArrayList<>(Arrays.asList(
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858",
         "Notices you senpai <:cirHappy:829458722634858496>"
     ));
 
-    private static final ArrayList<String> helloLum = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> helloLum = new ArrayList<>(Arrays.asList(
         "<:necoNya:893316276850671657>",
         "<:Neko_cat:865328470569385995>",
         "<:Neko_cat_owo:851938214105186304>",
@@ -74,7 +74,7 @@ public class ChattyLum {
         "<:Neko_pounce:865328474142277662>"
     ));
 
-    private static final ArrayList<String> niceLum = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> niceLum = new ArrayList<>(Arrays.asList(
         "<:Neko_angel:865328472539791370>",
         "<:Neko_blush:865328474326695946>",
         "<:Neko_cash:865328474130350111>",
@@ -102,7 +102,7 @@ public class ChattyLum {
         "<a:Neko_pet:883168394625560587>"
     ));
 
-    private static final ArrayList<String> badLum = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> badLum = new ArrayList<>(Arrays.asList(
         "<:baka:828070018935685130>",
         "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_drool_stupid:851936505516785715>",
@@ -125,7 +125,7 @@ public class ChattyLum {
         "<:Neko_wondering:865328471492001833>"
     ));
 
-    private static final ArrayList<String> gunLum = new ArrayList<String>(Arrays.asList(
+    private static final ArrayList<String> gunLum = new ArrayList<>(Arrays.asList(
         "<:Neko_ban:865328473789693952>",
         "<:Neko_cat_Gun:851934721914175498>",
         "<:Neko_cop:865328472540971058>",

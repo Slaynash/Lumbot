@@ -126,7 +126,7 @@ public class ScamShield {
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if ((suspiciousValue + ssFoundTerms.values().stream().reduce(0, Integer::sum)) > 1) {
-            ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 
         suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);

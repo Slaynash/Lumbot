@@ -134,7 +134,7 @@ public final class MelonScanner {
                     context.embedColor = melonPink;
 
                 if (!context.unidentifiedErrors)
-                    ChattyLum.addNewHelpedRecently(messageReceivedEvent);
+                    context.addToChatty = true;
             }
             else if (context.mlVersion != null || context.modifiedML) {
                 if (context.hasErrors) {
@@ -144,16 +144,19 @@ public final class MelonScanner {
                 else {
                     context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang), false);
                     context.embedColor = Color.LIGHT_GRAY;
-                    ChattyLum.addNewHelpedRecently(messageReceivedEvent);
+                    context.addToChatty = true;
                 }
             }
 
-            if (issueFound || context.mlVersion != null) {
+            if (context.embedBuilder.getFields().size() > 0) {
                 LogCounter.addMLCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 MessageBuilder messageBuilder = new MessageBuilder();
                 messageBuilder.append(context.messageReceivedEvent.getAuthor().getAsMention());
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
+                if (context.addToChatty && !context.pirate && !(context.game.equals("Phasmophobia") || context.game.equals("Crab Game"))) {
+                    ChattyLum.addNewHelpedRecently(messageReceivedEvent);
+                }
             }
         }
         catch (Exception exception) {

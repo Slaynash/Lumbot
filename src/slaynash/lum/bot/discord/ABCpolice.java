@@ -21,7 +21,7 @@ public class ABCpolice {
         List<Message> chain = history;
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = chain.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
-        if (!find.isEmpty()) {
+        if (find.isPresent()) {
             chain.subList(chain.indexOf(find.get()), chain.size()).clear();
         }
         chain.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
