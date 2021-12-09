@@ -15,13 +15,13 @@ public class LumGoneCommand extends Command {
             return;
         }
 
-        if (!includeInHelp(event))
+        if (!(CrossServerUtils.isLumDev(event.getMember()) || event.getAuthor().getIdLong() == 209206057594126336L))
             return;
 
         event.getChannel().sendMessage("Ok I'm leaving...").queue();
         JDAManager.getJDA().getPresence().setStatus(OnlineStatus.INVISIBLE);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(15000);
         }
         catch (InterruptedException e) {
             e.printStackTrace();
@@ -36,6 +36,6 @@ public class LumGoneCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return CrossServerUtils.isLumDev(event.getMember()) || event.getAuthor().getIdLong() == 209206057594126336L;
+        return false;
     }
 }

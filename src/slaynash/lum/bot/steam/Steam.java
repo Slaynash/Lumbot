@@ -138,7 +138,7 @@ public class Steam {
                 List<ServerChannel> rchannels = reportChannels.get(app.getKey());
                 SteamAppDetails gameDetail = gameDetails.get(app.getKey());
 
-                if (gameDetail == null) {
+                if (gameDetail == null) { //for startup and first time added
                     gameDetail = new SteamAppDetails(app.getValue().getKeyValues());
                     gameDetails.put(app.getKey(), gameDetail);
                     return;
@@ -216,6 +216,10 @@ public class Steam {
         }, "Steam Thread");
         thread.setDaemon(true);
         thread.start();
+    }
+
+    public void getDetails(Integer gameID) {
+        apps.picsGetProductInfo(gameID, null, false, false);
     }
 
     private void startChangesRequesterThread() {
