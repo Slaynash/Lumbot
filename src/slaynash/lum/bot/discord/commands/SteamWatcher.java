@@ -43,15 +43,12 @@ public class SteamWatcher extends Command {
         Integer gameID = Integer.parseInt(parts[1]);
         ServerChannel sc = null;
         List<ServerChannel> rc = Steam.reportChannels.getOrDefault(gameID, new ArrayList<>());
-        if (rc.isEmpty())
-            new Steam().getDetails(gameID);
-        else
-            for (ServerChannel serverChannel : rc) {
-                if (Objects.equals(serverChannel.serverID, guildID) && Objects.equals(serverChannel.channelId, channelID)) {
-                    sc = serverChannel;
-                    break;
-                }
+        for (ServerChannel serverChannel : rc) {
+            if (Objects.equals(serverChannel.serverID, guildID) && Objects.equals(serverChannel.channelId, channelID)) {
+                sc = serverChannel;
+                break;
             }
+        }
         if (sc == null) {
             rc.add(new ServerChannel(guildID, channelID));
             event.getMessage().reply("Added gameID " + gameID + " to Steam Watch").queue();
@@ -62,6 +59,7 @@ public class SteamWatcher extends Command {
         }
         Steam.reportChannels.put(gameID, rc);
         CommandManager.saveSteamWatch();
+        new Steam().intDetails(gameID);
     }
 
     @Override

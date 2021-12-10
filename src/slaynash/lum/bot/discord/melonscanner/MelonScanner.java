@@ -747,6 +747,8 @@ public final class MelonScanner {
                 case "VRChat":
                     if (context.misplacedPlugins.contains("VRCModUpdater.Loader"))
                         muMessage = "";
+                    else if (context.loadedMods.containsKey("UpdateChecker"))
+                        muMessage = "";
                     else
                         muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
                     break;

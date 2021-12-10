@@ -218,8 +218,9 @@ public class Steam {
         thread.start();
     }
 
-    public void getDetails(Integer gameID) {
-        apps.picsGetProductInfo(gameID, null, false, false);
+    public void intDetails(Integer gameID) {
+        if (!gameDetails.containsKey(gameID))
+            apps.picsGetProductInfo(gameID, null, false, false);
     }
 
     private void startChangesRequesterThread() {

@@ -42,7 +42,7 @@ public class ScamShield {
     private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space
             put("@everyone", 2);
             put("money", 1);
-            put("loot", 2);
+            put("loot", 1);
             put("csgo", 2);
             put("trade", 2);
             put("skin", 1);
