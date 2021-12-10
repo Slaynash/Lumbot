@@ -42,6 +42,10 @@ public class GuildConfigurations {
             put(600298024425619456L /* emmVRC */,       600304115972702209L /* Members */);
             put(663449315876012052L /* MelonLoader */,  663462327022256150L /* Member */);
             put(716536783621587004L /* Totally Wholesome */, 716541223145308170L /* Member */);
+            put(737454833258201198L, 737456197925339196L);
+            put(570957154928951296L, 743410413273874494L);
+            put(550477546958094348L, 550600331482890251L);
+            put(459359136954580992L, 909025973922586645L);
         }};
 
     public static final HashMap<Long, Long> noMicChannels = new HashMap<>() {{
