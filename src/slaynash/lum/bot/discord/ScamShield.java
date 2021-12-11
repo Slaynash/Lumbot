@@ -100,9 +100,11 @@ public class ScamShield {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
-        if (checkCrasher(event))
+        if (event.getGuild().getIdLong() == 760342261967487066L && checkCrasher(event)) {
             // return 69;
-            event.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(919084218724790292L).sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName());
+            // event.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(919084218724790292L).sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName()).queue();
+            event.getChannel().sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName()).queue();
+        }
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         String message = Junidecode.unidecode(event.getMessage().getContentStripped());
@@ -386,8 +388,8 @@ public class ScamShield {
     }
     public static boolean checkForCrasher(Attachment attachment) {
         try {
-            File file = attachment.downloadToFile("/images/testvid/" + attachment.getFileName()).get();
-            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey ~/images/testvid/" + attachment.getFileName() + " | uniq");
+            File file = attachment.downloadToFile(System.getProperty("user.dir") + "/images/testvid/" + attachment.getFileName()).get();
+            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey " + System.getProperty("user.dir") + "/images/testvid/" + attachment.getFileName() + " | uniq");
             p.waitFor();
             file.delete();
             BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -409,11 +411,12 @@ public class ScamShield {
     }
     public static boolean checkForCrasher(String url) {
         try {
-            String[] parts = url.split("\\.");
-            String fileName = parts[parts.length - 1] + "." + parts[parts.length];
+            String[] parts = url.split("/");
+            parts = parts[parts.length - 1].split("\\.");
+            String fileName = parts[parts.length - 2] + "." + parts[parts.length - 1];
             InputStream in = new URL(url).openStream();
-            Files.copy(in, Paths.get("~/images/testvid/" + fileName), StandardCopyOption.REPLACE_EXISTING);
-            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey ~/images/testvid/" + fileName + " | uniq");
+            Files.copy(in, Paths.get(System.getProperty("user.dir") + "/images/testvid/" + fileName), StandardCopyOption.REPLACE_EXISTING);
+            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey " + System.getProperty("user.dir") + "/images/testvid/" + fileName + " | uniq");
             p.waitFor();
             new File("~/images/testvid/" + fileName).delete();
             BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
