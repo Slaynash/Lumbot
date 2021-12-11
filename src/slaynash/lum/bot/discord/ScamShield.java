@@ -1,5 +1,13 @@
 package slaynash.lum.bot.discord;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -11,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
@@ -23,6 +32,7 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -31,6 +41,7 @@ import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -89,6 +100,9 @@ public class ScamShield {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
+        if (checkCrasher(event))
+            // return 69;
+            event.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(919084218724790292L).sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName());
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
         String message = Junidecode.unidecode(event.getMessage().getContentStripped());
@@ -352,5 +366,71 @@ public class ScamShield {
             ExceptionUtils.reportException("Failed handleBan in SS", e);
         }
         return status;
+    }
+
+    public static boolean checkCrasher(MessageReceivedEvent event) {
+        List<Attachment> attachments = event.getMessage().getAttachments();
+        for (Attachment attachment : attachments) {
+            if (attachment.isVideo()) {
+                if (checkForCrasher(attachment))
+                    return true;
+            }
+        }
+        for (String url : Utils.extractUrls(event.getMessage().getContentRaw())) {
+            if (url.matches(".*(mp4|mkv|wmv|m4v|mov|avi|flv|webm)")) {
+                if (checkForCrasher(url))
+                    return true;
+            }
+        }
+        return false;
+    }
+    public static boolean checkForCrasher(Attachment attachment) {
+        try {
+            File file = attachment.downloadToFile("~/images/testvid/" + attachment.getFileName()).get();
+            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey ~/images/testvid/" + attachment.getFileName() + " | uniq");
+            p.waitFor();
+            file.delete();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            String previousRes = "";
+            while ((line = buf.readLine()) != null) {
+                if (line.matches(".*[A-Za-z].*"))
+                    continue;
+                if (previousRes.isBlank())
+                    previousRes = line;
+                else if (!Objects.equals(line, previousRes))
+                    return true;
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed checkForCrasher Attachment", e);
+        }
+        return false;
+    }
+    public static boolean checkForCrasher(String url) {
+        try {
+            String[] parts = url.split(".");
+            String fileName = parts[parts.length - 1] + "." + parts[parts.length];
+            InputStream in = new URL(url).openStream();
+            Files.copy(in, Paths.get("~/images/testvid/" + fileName), StandardCopyOption.REPLACE_EXISTING);
+            Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey ~/images/testvid/" + fileName + " | uniq");
+            p.waitFor();
+            new File("~/images/testvid/" + fileName).delete();
+            BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            String line = "";
+            String previousRes = "";
+            while ((line = buf.readLine()) != null) {
+                if (line.matches(".*[A-Za-z].*"))
+                    continue;
+                if (previousRes.isBlank())
+                    previousRes = line;
+                else if (!Objects.equals(line, previousRes))
+                    return true;
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed checkForCrasher URL", e);
+        }
+        return false;
     }
 }

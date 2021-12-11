@@ -25,7 +25,11 @@ public class LockDown extends Command {
         }
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        Role lockDownRole = event.getGuild().getRoleById(GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong()));
+        Long lockDownRoleID = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
+        if (lockDownRoleID == null) {
+            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").allowedMentions(Collections.emptyList()).queue();
+        }
+        Role lockDownRole = event.getGuild().getRoleById(lockDownRoleID);
         if (!event.getGuild().getSelfMember().canInteract(lockDownRole)) {
             event.getChannel().sendMessage("I can not interact with the role " + lockDownRole.getName()).queue();
             return;

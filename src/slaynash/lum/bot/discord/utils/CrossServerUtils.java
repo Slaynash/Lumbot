@@ -51,7 +51,7 @@ public final class CrossServerUtils {
     public static boolean checkIfStaff(MessageReceivedEvent event) {
         if (event.getMember() == null) //https://discord.com/channels/633588473433030666/851519891965345845/883320272982278174
             return false;
-        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE))
+        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE) || event.getMember().hasPermission(Permission.BAN_MEMBERS) || event.getMember().hasPermission(Permission.KICK_MEMBERS))
             return true;
         for (Entry<Long, long[]> whitelistedRolesServer : GuildConfigurations.whitelistedRolesServers.entrySet()) {
             Guild targetGuild;

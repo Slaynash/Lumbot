@@ -135,7 +135,7 @@ public class ChattyLum {
         "<:Neko_L:865328469557379116>",
         "<:Neko_LOL:865328469335867392>",
         "<:Neko_P:865328473786941461>",
-        "<:PaimonShock:828067937646018561>",
+        "<:PaimonShock:918946477663981568>",
         "<:Sayori_yes:828068735369478188>",
         "<:WhatAreYouDoingMan:828068981117943848>",
         "https://tenor.com/view/breathing-is-fun-stare-dead-inside-anime-kaguya-gif-19901746",
