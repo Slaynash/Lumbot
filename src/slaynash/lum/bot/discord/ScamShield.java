@@ -386,7 +386,7 @@ public class ScamShield {
     }
     public static boolean checkForCrasher(Attachment attachment) {
         try {
-            File file = attachment.downloadToFile("~/images/testvid/" + attachment.getFileName()).get();
+            File file = attachment.downloadToFile("/images/testvid/" + attachment.getFileName()).get();
             Process p = Runtime.getRuntime().exec("ffprobe -v error -show_entries frame=width -select_streams v -of csv=p=0 -skip_frame nokey ~/images/testvid/" + attachment.getFileName() + " | uniq");
             p.waitFor();
             file.delete();
@@ -409,7 +409,7 @@ public class ScamShield {
     }
     public static boolean checkForCrasher(String url) {
         try {
-            String[] parts = url.split(".");
+            String[] parts = url.split("\\.");
             String fileName = parts[parts.length - 1] + "." + parts[parts.length];
             InputStream in = new URL(url).openStream();
             Files.copy(in, Paths.get("~/images/testvid/" + fileName), StandardCopyOption.REPLACE_EXISTING);
