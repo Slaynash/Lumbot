@@ -65,7 +65,6 @@ public class ScamShield {
             put("1month", 1);
             put("3month", 1);
             put("free", 1);
-            put("case", 1);
             put("!!!", 1);
             put("booster", 1);
             put("dollar", 1);
@@ -86,7 +85,7 @@ public class ScamShield {
             put(".*nitro.*free.*steam.*", 2);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
-            put("http", 2);
+            put("http", 1);
             put(".ru/", 1);
             put("bit.ly", 2);
             put("cutt.ly", 2);
@@ -100,7 +99,7 @@ public class ScamShield {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
-        if (event.getGuild().getIdLong() == 760342261967487066L && checkCrasher(event)) {
+        if (event.isFromGuild() && event.getGuild().getIdLong() == 760342261967487066L && checkCrasher(event)) {
             // return 69;
             // event.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(919084218724790292L).sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName()).queue();
             event.getChannel().sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName()).queue();
@@ -180,7 +179,7 @@ public class ScamShield {
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue < 6) //if one message gets 6+ then it is an instant kick on first message
+        if (suspiciousValue > 3 && suspiciousValue <= 6) //if one message gets 7+ then it is an instant kick on first message
             suspiciousValue = 3;
         if (suspiciousValue > 0)
             handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages

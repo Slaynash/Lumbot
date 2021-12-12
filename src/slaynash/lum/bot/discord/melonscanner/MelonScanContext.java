@@ -36,6 +36,12 @@ public class MelonScanContext {
     public boolean pre3 = false;
     public boolean alpha = false;
 
+    // Path infos
+    public String corePath;
+    public String gamePath;
+    public String gameDataPath;
+    public String gameAppPath;
+
     // Game Infos
     public String game;
     public String gameBuild;

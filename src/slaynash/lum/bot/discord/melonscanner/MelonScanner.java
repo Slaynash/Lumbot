@@ -857,7 +857,6 @@ public final class MelonScanner {
         return false;
     }
 
-
     // Utils
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787

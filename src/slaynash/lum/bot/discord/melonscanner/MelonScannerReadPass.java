@@ -37,8 +37,6 @@ public final class MelonScannerReadPass {
                 if (minecraftLogLineCheck(line, context))
                     return false;
 
-                pirateCheck(line, context);
-
                 if ((context.preListingMods || context.listingMods) && !context.pre3)
                     if (processML03ModListing(line, context))
                         continue;
@@ -62,6 +60,7 @@ public final class MelonScannerReadPass {
                 if (
                     mlVersionCheck(line, context) ||
                     gameNameCheck(line, context) ||
+                    gamePathCheck(line, context) ||
                     mlHashCodeCheck(line, context) ||
                     modPre3EndmodCheck(line, lastLine, context) ||
                     gameVersionCheck(line, context) ||
@@ -342,6 +341,27 @@ public final class MelonScannerReadPass {
         if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? Name: .*")) {
             context.game = line.split(":", 4)[3].trim();
             System.out.println("Game: " + context.game);
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean gamePathCheck(String line, MelonScanContext context) {
+        pirateCheck(line, context);
+        if (line.contains("Core::BasePath")) {
+            context.corePath = line.split("=", 2)[1].trim();
+            return true;
+        }
+        else if (line.contains("Game::BasePath")) {
+            context.gamePath = line.split("=", 2)[1].trim();
+            return true;
+        }
+        else if (line.contains("Game::DataPath")) {
+            context.gamePath = line.split("=", 2)[1].trim();
+            return true;
+        }
+        else if (line.contains("Game::ApplicationPath")) {
+            context.gamePath = line.split("=", 2)[1].trim();
             return true;
         }
         return false;

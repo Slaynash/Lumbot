@@ -165,7 +165,7 @@ public class ServerMessagesHandler {
                     }
                 }
 
-                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches("(.*\\b(forg([oe])t|reset|lost|t remember|never).*) (.*\\b(pins?|password)\\b.*)|(.*\\b(pins?|password)\\b.*) (.*\\b(forg([oe])t|reset|lost|t remember|never).*)")) {
+                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*(forg([oe])t|reset|change|lost|t remember|never).*") && message.matches(".*(pins?|password).*")) {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/) {
                         if (message.contains("remod"))
