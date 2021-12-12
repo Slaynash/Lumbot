@@ -52,12 +52,12 @@ public class TicketTool {
                 if (channelName.contains("reset") && codeFound) {
                     event.getTextChannel().sendMessage("e.pin reset " + id).queue();
                 }
-                // else if (channelName.contains("wipe") && codeFound) {
-                //     event.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
-                // }
-                // else if (channelName.contains("deletion") && codeFound) {
-                //     event.getTextChannel().sendMessage("e.user delete " + id).queue();
-                // }
+                else if (channelName.contains("wipe") && codeFound) {
+                    event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all of your emmVRC favorites removed from your account.\nA staff member will help you further once they see your confirmation.").queue();
+                }
+                else if (channelName.contains("deletion") && codeFound) {
+                    event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all data about your emmVRC account deleted.\nA staff member will help you further once they see your confirmation.").queue();
+                }
 
                 System.out.println("Code: " + code + " ID:" + id);
             }, "Ticket");

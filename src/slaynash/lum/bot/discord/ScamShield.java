@@ -371,6 +371,7 @@ public class ScamShield {
     }
 
     public static boolean checkCrasher(MessageReceivedEvent event) {
+        System.out.println("Started checking for crasher");
         List<Attachment> attachments = event.getMessage().getAttachments();
         for (Attachment attachment : attachments) {
             if (attachment.isVideo()) {
@@ -396,6 +397,7 @@ public class ScamShield {
             String line = "";
             String previousRes = "";
             while ((line = buf.readLine()) != null) {
+                System.out.println(line);
                 if (line.matches(".*[A-Za-z].*"))
                     continue;
                 if (previousRes.isBlank())
@@ -423,6 +425,7 @@ public class ScamShield {
             String line = "";
             String previousRes = "";
             while ((line = buf.readLine()) != null) {
+                System.out.println(line);
                 if (line.matches(".*[A-Za-z].*"))
                     continue;
                 if (previousRes.isBlank())
