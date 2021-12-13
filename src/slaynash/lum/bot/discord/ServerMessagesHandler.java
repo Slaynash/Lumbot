@@ -276,6 +276,12 @@ public class ServerMessagesHandler {
                     event.getChannel().sendMessage("Please make your voice heard over at VRChat's Canny <https://vrchat.canny.io/feature-requests>").queue();
                     return;
                 }
+
+                if (message.startsWith("!tags")) {
+                    System.out.println("VRChat Tags printed");
+                    event.getChannel().sendMessage("https://vrchatapi.github.io/tutorials/tags/").queue();
+                    return;
+                }
             }
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {

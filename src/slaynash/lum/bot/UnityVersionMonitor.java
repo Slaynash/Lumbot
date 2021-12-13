@@ -257,6 +257,11 @@ public class UnityVersionMonitor {
                         // VFTables Checker
                     }
 
+                    if (new File(downloadPath).list() == null) {
+                        ExceptionUtils.reportException("Unity download path is missing");
+                        return;
+                    }
+
                     List<String> allUnityVersions = new ArrayList<>();
                     for (String version : new File(downloadPath).list())
                         if (!version.endsWith("_tmp"))
