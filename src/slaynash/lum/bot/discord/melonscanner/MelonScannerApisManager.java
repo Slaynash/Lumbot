@@ -214,7 +214,8 @@ public class MelonScannerApisManager {
                                     if (!CommandManager.brokenMods.contains(name))
                                         CommandManager.brokenMods.add(name);
                                 }
-                                else CommandManager.brokenMods.remove(name);
+                                else
+                                    CommandManager.brokenMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
                             }
 

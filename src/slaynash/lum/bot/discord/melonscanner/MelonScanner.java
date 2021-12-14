@@ -309,7 +309,7 @@ public final class MelonScanner {
             else if (CommandManager.brokenMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
+            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) != 0) {
                 context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
