@@ -166,6 +166,9 @@ public class ScamShield {
         int suspiciousValue = ssValue(event);
         boolean massping = false;
 
+        if (suspiciousValue == 0)
+            return false;
+
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
@@ -174,17 +177,13 @@ public class ScamShield {
 
         if (suspiciousValue == 69420) {
             massping = true;
-            suspiciousValue = 0;
         }
 
         if (suspiciousValue < 3)
             suspiciousValue = 0;
         if (suspiciousValue > 3 && suspiciousValue <= 6) //if one message gets 7+ then it is an instant kick on first message
             suspiciousValue = 3;
-        if (suspiciousValue > 0)
-            handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
-        else
-            return false;
+        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
@@ -192,11 +191,11 @@ public class ScamShield {
 
         int suspiciousCount = sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (massping && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+        if (massping) {
             handleMassPings(event, sameauthormessages, suspiciousCount);
             return true;
         }
-        else if (suspiciousCount > 4 && !event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+        else if (suspiciousCount > 4) {
             handleCrossBan(event, sameauthormessages, suspiciousCount);
             return true;
         }
@@ -393,7 +392,7 @@ public class ScamShield {
             p.waitFor();
             file.delete();
             BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = "";
+            String line;
             String previousRes = "";
             while ((line = buf.readLine()) != null) {
                 System.out.println(line);
@@ -421,7 +420,7 @@ public class ScamShield {
             p.waitFor();
             new File("~/images/testvid/" + fileName).delete();
             BufferedReader buf = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            String line = "";
+            String line;
             String previousRes = "";
             while ((line = buf.readLine()) != null) {
                 System.out.println(line);
