@@ -335,7 +335,7 @@ public final class MelonScanner {
     }
 
     private static void checkForPirate(MelonScanContext context) {
-        if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
+        if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.remainingModCount++; //trigger the `not edit the log` message
         }
         else if (context.game == null) {
