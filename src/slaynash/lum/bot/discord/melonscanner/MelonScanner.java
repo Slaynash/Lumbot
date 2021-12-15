@@ -338,7 +338,7 @@ public final class MelonScanner {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.remainingModCount++; //trigger the `not edit the log` message
         }
-        else if (context.game == null) {
+        else if (context.game == null || (context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0)) {
             return;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
