@@ -23,6 +23,7 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
@@ -185,8 +186,17 @@ public class Steam {
                     for (ServerChannel sc : rchannels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
-                        if (JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).canTalk())
-                            JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
+                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
+                        if (channel == null) {
+                            rchannels.remove(sc);
+                            if (rchannels.size() > 0)
+                                reportChannels.put(app.getKey(), rchannels);
+                            else
+                                reportChannels.remove(app.getKey());
+                            continue;
+                        }
+                        if (channel.canTalk())
+                            channel.sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
                         mb.setContent("");
                     }
                 }
