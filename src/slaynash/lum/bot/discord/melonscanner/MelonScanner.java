@@ -309,7 +309,7 @@ public final class MelonScanner {
             else if (CommandManager.brokenMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) != 0) {
+            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) != 0) { //TODO create a new field for newer then published mod
                 context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
@@ -334,7 +334,27 @@ public final class MelonScanner {
         reportUserModifiedML(context.messageReceivedEvent);
     }
 
+    private static void checkForPirate(MelonScanContext context) {
+        if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
+            context.remainingModCount++; //trigger the `not edit the log` message
+        }
+        else if (context.game == null) {
+            return;
+        }
+        else if (context.game.equalsIgnoreCase("BloonsTD6")) {
+            if (!context.gamePath.contains("steamapps\\\\common\\\\BloonsTD6") && !context.gamePath.contains("Program Files\\\\WindowsApps")) {
+                context.pirate = true;
+            }
+        }
+        else if (context.game.equalsIgnoreCase("BONEWORKS")) {
+            if (!context.gamePath.contains("steamapps\\\\common\\\\BONEWORKS\\\\BONEWORKS") && !context.gamePath.contains("Software\\\\stress-level-zero-inc-boneworks")) {
+                context.pirate = true;
+            }
+        }
+    }
+
     private static void prepareEmbed(MelonScanContext context) {
+        checkForPirate(context);
         context.embedBuilder = new EmbedBuilder();
         context.reportMessage = new StringBuilder();
         context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))
