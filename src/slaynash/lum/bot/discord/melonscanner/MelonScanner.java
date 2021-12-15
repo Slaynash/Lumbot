@@ -342,12 +342,12 @@ public final class MelonScanner {
             return;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\\\common\\\\BloonsTD6") && !context.gamePath.contains("Program Files\\\\WindowsApps")) {
+            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
                 context.pirate = true;
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
-            if (!context.gamePath.contains("steamapps\\\\common\\\\BONEWORKS\\\\BONEWORKS") && !context.gamePath.contains("Software\\\\stress-level-zero-inc-boneworks")) {
+            if (!context.gamePath.contains("steamapps\\common\\BONEWORKS\\BONEWORKS") && !context.gamePath.contains("Software\\stress-level-zero-inc-boneworks")) {
                 context.pirate = true;
             }
         }
