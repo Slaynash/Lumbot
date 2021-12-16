@@ -131,7 +131,7 @@ public final class MelonScannerReadPass {
         if (line.isBlank())
             return true;
 
-        else if (context.preListingMods && line.matches("\\[[0-9.:]+] -{30}"));
+        else if (context.preListingMods && line.matches("\\[[0-9.:]+] -{30}")) return true;
         else if (context.preListingMods && (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Plugins Loaded!") || line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Mods Loaded!"))) {
             context.remainingModCount = 0;
             context.preListingMods = false;

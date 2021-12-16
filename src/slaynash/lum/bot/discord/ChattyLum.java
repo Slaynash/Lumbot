@@ -165,6 +165,15 @@ public class ChattyLum {
             handleHelp(message, event))
             return true;
 
+        if (message.contains("padoru")) {
+            event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920891104281374780/Gura_Padoru.mp4").queue();
+            return true;
+        }
+        if (message.equals("nya")) {
+            event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920902875364864090/nya.mp4").queue();
+            return true;
+        }
+
         boolean hasLum = message.matches(".*\\blum\\b.*");
         boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
         if (!(hasLum || refLum))
