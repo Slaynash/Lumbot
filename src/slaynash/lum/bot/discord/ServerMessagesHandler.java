@@ -126,7 +126,7 @@ public class ServerMessagesHandler {
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
 
-            if (handleReplies(event))
+            if (handleReplies(event, message))
                 return;
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token"))) {
@@ -165,7 +165,7 @@ public class ServerMessagesHandler {
                     }
                 }
 
-                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*(forg([oe])t|reset|change|lost|t remember|never).*") && message.matches(".*(pins?|password).*")) {
+                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*\\b(forg([oe])t|reset|change|lost|t remember|never)\\b.*") && message.matches(".*\\b(pins?|password)\\b.*")) {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/) {
                         if (message.contains("remod"))
@@ -370,11 +370,15 @@ public class ServerMessagesHandler {
         }
     }
 
-    private static boolean handleReplies(MessageReceivedEvent event) {
+    public static boolean handleReplies(MessageReceivedEvent event) {
+        String content = event.getMessage().getContentRaw().toLowerCase();
+        return handleReplies(event, content);
+    }
+
+    public static boolean handleReplies(MessageReceivedEvent event, String content) {
         if (event.getMessage().isEdited())
             return false;
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
-        String content = event.getMessage().getContentRaw().toLowerCase();
         if (content.startsWith("l!replies")) return true;
         Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
         Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());

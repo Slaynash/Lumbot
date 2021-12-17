@@ -26,6 +26,7 @@ import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ArrayUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -158,6 +159,7 @@ public final class MelonScanner {
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
+                ServerMessagesHandler.handleReplies(context.messageReceivedEvent, context.embedBuilder.getDescriptionBuilder().toString());
             }
         }
         catch (Exception exception) {
@@ -422,6 +424,9 @@ public final class MelonScanner {
                     break;
                 case "raot":
                     context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
+                    break;
+                case "SCPSL":
+                    context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                     break;
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
