@@ -393,7 +393,7 @@ public class ServerMessagesHandler {
                 for (Entry<String, String> reply : regexReplies.entrySet()) {
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (content.matches("(?s)".concat(reply.getKey()))) {
-                        if (EmojiUtils.containsEmoji(value))
+                        if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
@@ -407,7 +407,7 @@ public class ServerMessagesHandler {
                 for (Entry<String, String> reply : replies.entrySet()) {
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (content.contains(reply.getKey())) {
-                        if (EmojiUtils.containsEmoji(value))
+                        if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
