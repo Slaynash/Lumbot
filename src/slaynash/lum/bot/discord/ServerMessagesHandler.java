@@ -4,13 +4,18 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -376,30 +381,46 @@ public class ServerMessagesHandler {
     }
 
     public static boolean handleReplies(MessageReceivedEvent event, String content) {
-        if (event.getMessage().isEdited())
-            return false;
-        if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
-        if (content.startsWith("l!replies")) return true;
-        Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
-        Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
+        try {
+            if (event.getMessage().isEdited())
+                return false;
+            if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
+            if (content.startsWith("l!replies")) return true;
+            Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
+            Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
 
-        if (regexReplies != null) {
-            for (String reply : regexReplies.keySet()) {
-                if (content.matches("(?s)".concat(reply))) { //maybe add a %u replacement for replied user
-                    event.getTextChannel().sendMessage(regexReplies.get(reply)).allowedMentions(Collections.emptyList()).queue();
-                    return true;
+            if (regexReplies != null) {
+                for (Entry<String, String> reply : regexReplies.entrySet()) {
+                    String value = reply.getValue().replace("%u", event.getAuthor().getName());
+                    if (content.matches("(?s)".concat(reply.getKey()))) {
+                        if (EmojiUtils.containsEmoji(value))
+                            event.getMessage().addReaction(value).queue();
+                        if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
+                            event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
+                        else
+                            event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                        return true;
+                    }
+                }
+            }
+            if (replies != null) {
+                for (Entry<String, String> reply : replies.entrySet()) {
+                    String value = reply.getValue().replace("%u", event.getAuthor().getName());
+                    if (content.contains(reply.getKey())) {
+                        if (EmojiUtils.containsEmoji(value))
+                            event.getMessage().addReaction(value).queue();
+                        if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
+                            event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
+                        else
+                            event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                        return true;
+                    }
                 }
             }
         }
-        if (replies != null) {
-            for (String reply : replies.keySet()) {
-                if (content.contains(reply)) {
-                    event.getTextChannel().sendMessage(replies.get(reply)).allowedMentions(Collections.emptyList()).queue();
-                    return true;
-                }
-            }
+        catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
     }
-
 }
