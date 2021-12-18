@@ -395,7 +395,7 @@ public class ServerMessagesHandler {
                     if (content.matches("(?s)".concat(reply.getKey()))) {
                         if (EmojiUtils.containsEmoji(value))
                             event.getMessage().addReaction(value).queue();
-                        if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
+                        else if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
                         else
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
@@ -409,7 +409,7 @@ public class ServerMessagesHandler {
                     if (content.contains(reply.getKey())) {
                         if (EmojiUtils.containsEmoji(value))
                             event.getMessage().addReaction(value).queue();
-                        if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
+                        else if (value.startsWith("<") && value.endsWith(">") && value.split("<").length == 2)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
                         else
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
