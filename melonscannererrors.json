@@ -256,6 +256,10 @@
             {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
                 "error": "emmVRC fbt saving errored due to fbt not existing on the oculus version."
+            },
+            {
+                "regex": ".*[emmVRCLoader] [ERROR] Could not load the programs JSON file. Please make sure everything is correctly formatted!",
+                "error": "emmVRC `programs.json` is not correctly formatted. Could you delete `VRChat\\UserData\\emmVRC\\programs.json` or make sure it is a valid json."
             }
         ],
         "BloonsTD6": [
