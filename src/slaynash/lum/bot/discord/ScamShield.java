@@ -4,7 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
@@ -12,6 +15,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +30,11 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -39,6 +48,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -134,20 +144,24 @@ public class ScamShield {
                 .count();
         }
 
-        int suspiciousValue = newAccount ? 1 : 0; //add sus points if account is less than 7 days old
-        suspiciousValue += (int) (crossPost);
+        int suspiciousValue = (int) (crossPost);
+        if (newAccount) //add sus points if account is less than 7 days old
+            ssFoundTerms.put("newAccount", 1);
 
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if ((suspiciousValue + ssFoundTerms.values().stream().reduce(0, Integer::sum)) > 1) {
+            int domainAge = domainAgeCheck(message);
+            if (domainAge > 0)
+                ssFoundTerms.put("domainAge", domainAge);
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 
         suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
-            System.out.println("Scam Shield points for this message: " + suspiciousValue + (newAccount ? " New Account" : "") + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms.keySet());
+            System.out.println("Scam Shield points for this message: " + suspiciousValue + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms.keySet());
         }
 
         if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping selfbots
@@ -436,5 +450,35 @@ public class ScamShield {
             ExceptionUtils.reportException("Failed checkForCrasher URL", e);
         }
         return false;
+    }
+
+    private static int domainAgeCheck(String message) {
+        int count = 0;
+        try {
+            List<String> urls = Utils.extractUrls(message);
+
+            for (String url : urls) {
+                String domain = URI.create(url).getHost();
+                while (domain.split("\\.").length > 2)
+                    domain = domain.split("\\.", 2)[1]; //remove all subdomains
+
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://rdap.arin.net/bootstrap/domain/" + domain)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").setHeader("Accept", "text/json").build();
+                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(request, "RDAP");
+                JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
+                JsonArray parsedArray = parsed.get("events").getAsJsonArray();
+                for (JsonElement element : parsedArray) {
+                    JsonObject object = element.getAsJsonObject();
+                    if (object.get("eventAction").getAsString().equals("registration")) {
+                        if (ZonedDateTime.parse(object.get("eventDate").getAsString()).isAfter(ZonedDateTime.now().minusDays(7)))
+                            count++;
+                        continue;
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to check domain age", e);
+        }
+        return count;
     }
 }
