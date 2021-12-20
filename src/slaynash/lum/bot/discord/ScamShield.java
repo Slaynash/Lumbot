@@ -105,7 +105,7 @@ public class ScamShield {
             put("discord", 1);
         }};
 
-    public static int ssValue(MessageReceivedEvent event) {
+    public static ScamResults ssValue(MessageReceivedEvent event) {
         // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
@@ -115,14 +115,14 @@ public class ScamShield {
             event.getChannel().sendMessage(event.getAuthor().getAsTag() + " just posted a crasher video in " + event.getChannel().getName()).queue();
         }
         Map<String, Integer> ssFoundTerms = new HashMap<>();
-        boolean newAccount = event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7));
+        if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
+            ssFoundTerms.put("newAccount", 1);
         String message = Junidecode.unidecode(event.getMessage().getContentStripped());
         if (event.getMessage().getEmbeds().size() > 0) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             message = message + embed.getTitle() + embed.getDescription();
         }
         message = message.toLowerCase().replace(":", "").replace(" ", "");
-        final String finalMessage = message;
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
@@ -145,9 +145,8 @@ public class ScamShield {
         }
 
         int suspiciousValue = (int) (crossPost);
-        if (newAccount) //add sus points if account is less than 7 days old
-            ssFoundTerms.put("newAccount", 1);
 
+        final String finalMessage = message;
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
@@ -161,13 +160,11 @@ public class ScamShield {
         suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
-            System.out.println("Scam Shield points for this message: " + suspiciousValue + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms.keySet());
+            System.out.println("Scam Shield points for this message: " + suspiciousValue + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms);
         }
+        boolean massPing = event.getMessage().getMentions(MentionType.USER).size() > 3; //kick mass ping selfbots
 
-        if (event.getMessage().getMentions(MentionType.USER).size() > 3) //kick mass ping selfbots
-            suspiciousValue = 69420;
-
-        return suspiciousValue;
+        return new ScamResults(suspiciousValue, ssFoundTerms, massPing);
     }
 
     public static boolean checkForFishing(MessageReceivedEvent event) {
@@ -177,10 +174,9 @@ public class ScamShield {
             return false;
 
         long guildID = event.getGuild().getIdLong();
-        int suspiciousValue = ssValue(event);
-        boolean massping = false;
+        ScamResults suspiciousResults = ssValue(event);
 
-        if (suspiciousValue == 0)
+        if (suspiciousResults.suspiciousValue == 0)
             return false;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
@@ -189,28 +185,25 @@ public class ScamShield {
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
         allMessages.add(event);
 
-        if (suspiciousValue == 69420) {
-            massping = true;
-        }
+        suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
+        if (suspiciousResults.calulatedValue < 3)
+            suspiciousResults.calulatedValue = 0;
+        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue <= 6) //if one message gets 7+ then it is an instant kick on first message
+            suspiciousResults.calulatedValue = 3;
+        handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
-        if (suspiciousValue < 3)
-            suspiciousValue = 0;
-        if (suspiciousValue > 3 && suspiciousValue <= 6) //if one message gets 7+ then it is an instant kick on first message
-            suspiciousValue = 3;
-        handledMessages.add(new HandledServerMessageContext(event, suspiciousValue, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
-
-        List<HandledServerMessageContext> sameauthormessages = handledMessages.stream()
+        suspiciousResults.sameauthormessages = handledMessages.stream()
             .filter(m -> m.messageReceivedEvent.getMember().getIdLong() == event.getMember().getIdLong() && m.guildId == guildID)
             .collect(Collectors.toList());
 
-        int suspiciousCount = sameauthormessages.stream().map(m -> m.suspiciousValue).reduce(0, Integer::sum); //this adds all points that one user collected
+        suspiciousResults.totalSuspicionCount = suspiciousResults.sameauthormessages.stream().map(m -> m.suspiciousResults.calulatedValue).reduce(0, Integer::sum); //this adds all points that one user collected
 
-        if (massping) {
-            handleMassPings(event, sameauthormessages, suspiciousCount);
+        if (suspiciousResults.massPing) {
+            handleMassPings(event, suspiciousResults);
             return true;
         }
-        else if (suspiciousCount > 4) {
-            handleCrossBan(event, sameauthormessages, suspiciousCount);
+        else if (suspiciousResults.totalSuspicionCount > 4) {
+            handleCrossBan(event, suspiciousResults);
             return true;
         }
 
@@ -223,21 +216,21 @@ public class ScamShield {
         if (CrossServerUtils.checkIfStaff(event))
             return false;
 
-        int suspiciousValue = ssValue(event);
-        if (suspiciousValue > 0)
-            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousValue + " sus points\nMutual Servers: "
+        ScamResults suspiciousResults = ssValue(event);
+        if (suspiciousResults.suspiciousValue > 0)
+            event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
                 + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()) + "\n\n" + message).queue();
-        if (suspiciousValue <= 3)
+        if (suspiciousResults.suspiciousValue <= 3)
             return false;
 
-        return handleCrossBan(event, null, suspiciousValue);
+        return handleCrossBan(event, suspiciousResults);
     }
 
-    private static boolean handleCrossBan(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
+    private static boolean handleCrossBan(MessageReceivedEvent event, ScamResults suspiciousResults) {
         System.out.println(event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()));
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
-            if (sameauthormessages != null && g == event.getGuild())
+            if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
                 return false;
             if (GuildConfigurations.configurations.get(g.getIdLong()) != null)
                 return !GuildConfigurations.configurations.get(g.getIdLong())[GuildConfigurations.ConfigurationMap.SSCROSS.ordinal()];
@@ -246,7 +239,7 @@ public class ScamShield {
         });
         boolean status = false;
         for (Guild guild : mutualGuilds) {
-            if (handleBan(event, guild.getIdLong(), suspiciousCount, sameauthormessages == null || guild.getIdLong() != event.getGuild().getIdLong(), sameauthormessages))
+            if (handleBan(event, guild.getIdLong(), suspiciousResults))
                 status = true;
         }
         if (status) {
@@ -258,26 +251,35 @@ public class ScamShield {
         return status;
     }
 
-    private static void handleMassPings(MessageReceivedEvent event, List<HandledServerMessageContext> sameauthormessages, int suspiciousCount) {
-        if (suspiciousCount == 69420) {
+    private static void handleMassPings(MessageReceivedEvent event, ScamResults suspiciousResults) {
+        int massPingCount = (int) handledMessages.stream()
+            .filter(e -> e.suspiciousResults.massPing)
+            .filter(e -> e.messageReceivedEvent.getGuild().getIdLong() == event.getGuild().getIdLong())
+            .filter(e -> e.messageReceivedEvent.getAuthor().getIdLong() == event.getAuthor().getIdLong()).count();
+        if (massPingCount <= 1) {
             event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server!").queue();
         }
         else {
-            handleBan(event, event.getGuild().getIdLong(), sameauthormessages.stream().map(m -> m.messageReceivedEvent.getMessage().getMentions(MentionType.USER).size()).reduce(0, Integer::sum), false, sameauthormessages);
+            handleBan(event, event.getGuild().getIdLong(), suspiciousResults);
             event.getTextChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
         }
     }
 
-    public static boolean handleBan(MessageReceivedEvent event, Long guildID, int suspiciousCount, Boolean cross, List<HandledServerMessageContext> sameauthormessages) {
+    public static boolean handleBan(MessageReceivedEvent event, long guildID, ScamResults suspiciousResults) {
         boolean status = false;
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
             Member member = guild.getMember(event.getAuthor());
             String sourceName;
-            if (event.getChannelType() == ChannelType.PRIVATE)
+            boolean cross;
+            if (event.getChannelType() == ChannelType.PRIVATE) {
                 sourceName = "DMs";
-            else
+                cross = true;
+            }
+            else {
                 sourceName = event.getGuild().getName();
+                cross = !sourceName.equals(guild.getName());
+            }
             String usernameWithTag = event.getAuthor().getAsTag();
             String userId = event.getAuthor().getId();
             TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
@@ -294,13 +296,13 @@ public class ScamShield {
             System.out.println("Now " + (ssBan ? "Banning " : "Kicking ") + usernameWithTag + " from " + guild.getName());
             EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTimestamp(Instant.now())
-                .setFooter("Received " + suspiciousCount + " naughty points.");
+                .setFooter("Received " + suspiciousResults.totalSuspicionCount + " naughty points.");
             if (cross)
                 embedBuilder.setAuthor("Cross " + (ssBan ? "Ban" : "Kick") + " from " + sourceName, null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
             else
                 embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-            if (member != null && !guild.getSelfMember().canInteract(member) && sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
+            if (member != null && !guild.getSelfMember().canInteract(member) && suspiciousResults.sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
                 if (guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
@@ -323,9 +325,9 @@ public class ScamShield {
                 member.kick().reason("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
 
-                if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && sameauthormessages != null) {
+                if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && suspiciousResults.sameauthormessages != null) {
                     List<Message> messagelist = new ArrayList<>();
-                    sameauthormessages.forEach(m -> {
+                    suspiciousResults.sameauthormessages.forEach(m -> {
                         if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
                             messagelist.add(m.messageReceivedEvent.getMessage());
                         }
@@ -341,7 +343,7 @@ public class ScamShield {
                     if (messagelist.size() > 0)
                         messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
                 }
-                else if (sameauthormessages != null) {
+                else if (suspiciousResults.sameauthormessages != null) {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
                     String temp = "";
                     if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
@@ -355,20 +357,20 @@ public class ScamShield {
 
             if (reportChannel != null) {
                 StringBuilder sb;
-                if (sameauthormessages == null) { //came from DMs
-                    sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam" + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
+                if (suspiciousResults.sameauthormessages == null) { //came from DMs
+                    sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam " + suspiciousResults.ssFoundTerms);
                     sb.append(event.getMessage().getContentRaw());
                 }
                 else {
-                    sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName + (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7)) ? " Additional point added for young account\n" : "\n"));
-                    sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousValue).append(" point").append(a.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append("\n"));
+                    sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName);
+                    suspiciousResults.sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousResults.suspiciousValue).append(" point").append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append(" for ").append(a.suspiciousResults.ssFoundTerms).append("\n"));
                 }
                 if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
                     ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
                 else
                     ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
             }
-            else if (sameauthormessages != null && event.getGuild() == guild) {
+            else if (suspiciousResults.sameauthormessages != null && event.getGuild() == guild) {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
@@ -471,7 +473,6 @@ public class ScamShield {
                     if (object.get("eventAction").getAsString().equals("registration")) {
                         if (ZonedDateTime.parse(object.get("eventDate").getAsString()).isAfter(ZonedDateTime.now().minusDays(7)))
                             count++;
-                        continue;
                     }
                 }
             }
@@ -480,5 +481,19 @@ public class ScamShield {
             ExceptionUtils.reportException("Failed to check domain age", e);
         }
         return count;
+    }
+
+    public static class ScamResults {
+        public ScamResults(int suspiciousValue, Map<String, Integer> ssFoundTerms, boolean massPing) {
+            this.ssFoundTerms = ssFoundTerms;
+            this.suspiciousValue = suspiciousValue;
+            this.massPing = massPing;
+        }
+        public final int suspiciousValue;
+        public int calulatedValue;
+        public int totalSuspicionCount;
+        public final Map<String, Integer> ssFoundTerms;
+        public final boolean massPing;
+        public List<HandledServerMessageContext> sameauthormessages;
     }
 }
