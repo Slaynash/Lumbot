@@ -217,6 +217,7 @@ public class ScamShield {
             return false;
 
         ScamResults suspiciousResults = ssValue(event);
+        suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.suspiciousValue > 0)
             event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
                 + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()) + "\n\n" + message).queue();
@@ -358,8 +359,9 @@ public class ScamShield {
             if (reportChannel != null) {
                 StringBuilder sb;
                 if (suspiciousResults.sameauthormessages == null) { //came from DMs
-                    sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam " + suspiciousResults.ssFoundTerms);
+                    sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam\n");
                     sb.append(event.getMessage().getContentRaw());
+                    sb.append("\n").append(suspiciousResults.ssFoundTerms);
                 }
                 else {
                     sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName);
