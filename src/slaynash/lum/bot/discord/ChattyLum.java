@@ -203,7 +203,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(hello|hi)\\b.*")) {
+        if (message.matches(".*\\b(hello|hi|hey)\\b.*")) {
             System.out.println("Hello Lum was detected");
             event.getChannel().sendMessage(helloLum.get(random.nextInt(helloLum.size()))).queue();
             return true;
