@@ -134,7 +134,7 @@ public class ServerMessagesHandler {
             if (handleReplies(event, message))
                 return;
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token"))) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[0-9.:]+] -{30}"))) {
                 System.out.println("Partial Log was printed");
 
                 boolean postedInWhitelistedServer = false;

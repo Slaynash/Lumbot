@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -155,7 +156,7 @@ public class ScamShield {
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0) {
-                ssFoundTerms.put("domainAge", domainAge);
+                ssFoundTerms.put("domainAge", domainAge * 2);
             }
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
@@ -469,7 +470,7 @@ public class ScamShield {
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
 
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://rdap.arin.net/bootstrap/domain/" + domain)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").setHeader("Accept", "text/json").build();
+                HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://rdap.arin.net/bootstrap/domain/" + domain)).timeout(Duration.ofSeconds(3)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").setHeader("Accept", "text/json").build();
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(request, "RDAP");
                 JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                 JsonArray parsedArray = parsed.get("events").getAsJsonArray();
