@@ -28,7 +28,7 @@ public class ABCpolice {
         char currentLetter = convertChar(message);
         char previousLetter = convertChar(chain.get(0).getContentStripped());
         Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
-        boolean timing = (previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48)));
+        boolean timing = previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
 
         if (brokenChain || previousLetter == 'z')
             previousLetter = 'a' - 1;
@@ -38,7 +38,7 @@ public class ABCpolice {
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " sent an empty message, Stickers are not allowed. Start back to `A`").queue();
             return true;
         }
-        else if ((int) currentLetter != (int) (previousLetter) + 1) {
+        else if ((int) currentLetter != (int) previousLetter + 1) {
             System.out.println("abc does not match");
             event.getMessage().addReaction(":bonk:907068295868477551").queue();
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();

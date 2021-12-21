@@ -113,7 +113,7 @@ public class AddReactionHandlerCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().hasPermission(Permission.MANAGE_ROLES) || CrossServerUtils.isLumDev(event.getMember()));
+        return event.getMember().hasPermission(Permission.MANAGE_ROLES) || CrossServerUtils.isLumDev(event.getMember());
     }
 
     @Override

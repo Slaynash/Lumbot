@@ -131,7 +131,7 @@ public class ScamShield {
                 .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong())
                 .filter(m -> m.getGuild().getIdLong() == event.getGuild().getIdLong())
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
-                .filter(m -> (
+                .filter(m ->
                     (
                         m.getMessage().getAttachments().size() == 0
                         && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
@@ -139,25 +139,26 @@ public class ScamShield {
                     || (
                         event.getMessage().getAttachments().size() > 0
                         && m.getMessage().getAttachments().size() > 0
-                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())))) //count crossposted files
+                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName()))) //count crossposted files
                 .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
         }
 
-        int suspiciousValue = (int) (crossPost);
+        if (crossPost > 0)
+            ssFoundTerms.put("Crossposted", (int) crossPost);
 
         final String finalMessage = message;
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
-        if ((suspiciousValue + ssFoundTerms.values().stream().reduce(0, Integer::sum)) > 1) {
+        if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             int domainAge = domainAgeCheck(message);
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge);
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 
-        suspiciousValue += ssFoundTerms.values().stream().reduce(0, Integer::sum);
+        int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
             System.out.println("Scam Shield points for this message: " + suspiciousValue + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms);
@@ -188,7 +189,7 @@ public class ScamShield {
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue < 3)
             suspiciousResults.calulatedValue = 0;
-        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue <= 6) //if one message gets 7+ then it is an instant kick on first message
+        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue <= 7) //if one message gets 8+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
@@ -202,7 +203,7 @@ public class ScamShield {
             handleMassPings(event, suspiciousResults);
             return true;
         }
-        else if (suspiciousResults.totalSuspicionCount > 4) {
+        else if (suspiciousResults.totalSuspicionCount > 5) {
             handleCrossBan(event, suspiciousResults);
             return true;
         }
@@ -316,7 +317,7 @@ public class ScamShield {
                 if (ssBan)
                     member.ban(1).reason("Banned by Lum's Scam Shield").queue();
                 else
-                    member.ban(1).reason("Kicked by Lum's Scam Shield").queue((s) -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
+                    member.ban(1).reason("Kicked by Lum's Scam Shield").queue(s -> guild.unban(event.getAuthor()).reason("Kicked by Lum's Scam Shield").queue());
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was " + (cross ? "cross " : "") + (ssBan ? "Banned" : "Kicked") + " by the Scam Shield");
                 status = true;
             }
@@ -342,7 +343,7 @@ public class ScamShield {
                     });
                     System.out.println("Removing " + messagelist.size() + " messages");
                     if (messagelist.size() > 0)
-                        messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ (f) -> System.out.println("Message failed to be deleted, most likely removed")));
+                        messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ f -> System.out.println("Message failed to be deleted, most likely removed")));
                 }
                 else if (suspiciousResults.sameauthormessages != null) {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
@@ -475,6 +476,7 @@ public class ScamShield {
                     if (object.get("eventAction").getAsString().equals("registration")) {
                         if (ZonedDateTime.parse(object.get("eventDate").getAsString()).isAfter(ZonedDateTime.now().minusDays(7)))
                             count++;
+                        System.out.println("Domain Age is " + object.get("eventDate").getAsString());
                     }
                 }
             }

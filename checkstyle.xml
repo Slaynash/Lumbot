@@ -194,6 +194,7 @@
             <property name="standardPackageRegExp" value="^(java|javax)\."/>
             <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###STATIC###SPECIAL_IMPORTS"/>
         </module>
+        <module name="UnnecessaryParentheses"/>
         <module name="MethodParamPad"/>
         <module name="WhitespaceAfter"/>
         <module name="NoWhitespaceBefore">

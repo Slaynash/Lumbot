@@ -19,7 +19,7 @@ public final class LogCounter {
 
     public static void addMLCounter(Attachment attachment) {
         try {
-            String directoryPath = workingPath + ("/MLlogs/");
+            String directoryPath = workingPath + "/MLlogs/";
 
             attachment.downloadToFile(directoryPath + Instant.now().toString().replace(":", "_") + "-" + attachment.getFileName())
                 .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));

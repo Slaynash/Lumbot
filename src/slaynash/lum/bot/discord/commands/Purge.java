@@ -135,7 +135,7 @@ public class Purge extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().hasPermission(Permission.MESSAGE_MANAGE));
+        return event.getMember().hasPermission(Permission.MESSAGE_MANAGE);
     }
 
     @Override

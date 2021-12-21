@@ -177,7 +177,7 @@ public class APIClient {
                 outputStream.write((entry.getKey() + ": " + value + "\r\n").getBytes(StandardCharsets.UTF_8));
         }
         outputStream.write(("Content-Length: " + response.data.length + "\r\n").getBytes(StandardCharsets.UTF_8));
-        outputStream.write(("\r\n").getBytes(StandardCharsets.UTF_8));
+        outputStream.write("\r\n".getBytes(StandardCharsets.UTF_8));
         outputStream.write(response.data);
         outputStream.flush();
     }

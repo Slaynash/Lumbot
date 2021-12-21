@@ -211,7 +211,7 @@ public final class MelonScanner {
 
                 boolean hasVRChat1043ReadyML = false;
                 //boolean hasNotBrokenDeobfMap = false;
-                for (MLHashPair mlHashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
+                for (MLHashPair mlHashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
                     //System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
                     //if (mlHashes.x64.equals("25881"))
                     //    hasNotBrokenDeobfMap = true;
@@ -325,7 +325,7 @@ public final class MelonScanner {
         if (CrossServerUtils.checkIfStaff(context.messageReceivedEvent))
             return;
 
-        for (MLHashPair hashes : (context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes)) {
+        for (MLHashPair hashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
             if (context.mlHashCode.equals(hashes.x64) || context.mlHashCode.equals(hashes.x86)) {
                 System.out.println("hash found in known hashes: ");
                 return;

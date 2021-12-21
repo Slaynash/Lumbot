@@ -142,7 +142,7 @@ public class SteamAppDetails {
             SteamAppDepot ret = new SteamAppDepot();
             boolean changed;
 
-            changed = (ret.name = (isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name))) != null;
+            changed = (ret.name = isStringEquals(oldDepot.name, newDepot.name) ? null : (newDepot.name != null ? newDepot.name : oldDepot.name)) != null;
 
             Map<String, Long> changeManifests = new HashMap<>();
             for (Entry<String, Long> newManifestEntries : newDepot.manifests.entrySet()) {
@@ -193,10 +193,10 @@ public class SteamAppDetails {
             SteamAppBranch ret = new SteamAppBranch();
             boolean changed;
 
-            changed = (ret.buildid = (oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1)) != -1;
-            changed |= (ret.description = (!isStringEquals(oldBranch.description, newBranch.description) ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null)) != null;
-            changed |= (ret.timeupdated = (oldBranch.timeupdated != newBranch.timeupdated ? newBranch.timeupdated : -1)) != -1;
-            changed |= (ret.pwdrequired = (oldBranch.pwdrequired != newBranch.pwdrequired ? (newBranch.pwdrequired != null ? newBranch.pwdrequired : oldBranch.pwdrequired) : null)) != null;
+            changed = (ret.buildid = oldBranch.buildid != newBranch.buildid ? newBranch.buildid : -1) != -1;
+            changed |= (ret.description = !isStringEquals(oldBranch.description, newBranch.description) ? (newBranch.description != null ? newBranch.description : oldBranch.description) : null) != null;
+            changed |= (ret.timeupdated = oldBranch.timeupdated != newBranch.timeupdated ? newBranch.timeupdated : -1) != -1;
+            changed |= (ret.pwdrequired = oldBranch.pwdrequired != newBranch.pwdrequired ? (newBranch.pwdrequired != null ? newBranch.pwdrequired : oldBranch.pwdrequired) : null) != null;
 
             return changed ? ret : null;
         }

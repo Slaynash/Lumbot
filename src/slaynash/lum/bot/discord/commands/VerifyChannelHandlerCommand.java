@@ -45,7 +45,7 @@ public class VerifyChannelHandlerCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return (event.getMember().hasPermission(Permission.ADMINISTRATOR));
+        return event.getMember().hasPermission(Permission.ADMINISTRATOR);
     }
 
     @Override
