@@ -144,17 +144,19 @@ public class ScamShield {
                 .count();
         }
 
-        if (crossPost > 0)
+        if (crossPost > 0) {
             ssFoundTerms.put("Crossposted", (int) crossPost);
+        }
 
         final String finalMessage = message;
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
-            int domainAge = domainAgeCheck(message);
-            if (domainAge > 0)
+            final int domainAge = domainAgeCheck(finalMessage);
+            if (domainAge > 0) {
                 ssFoundTerms.put("domainAge", domainAge);
+            }
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 
@@ -458,9 +460,11 @@ public class ScamShield {
     }
 
     private static int domainAgeCheck(String message) {
+        System.out.println("Checking Domain Age");
         int count = 0;
         try {
             List<String> urls = Utils.extractUrls(message);
+            System.out.println("Found " + urls.size() + " urls");
 
             for (String url : urls) {
                 String domain = URI.create(url).getHost();
@@ -471,6 +475,7 @@ public class ScamShield {
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(request, "RDAP");
                 JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                 JsonArray parsedArray = parsed.get("events").getAsJsonArray();
+                System.out.println("Found " + parsedArray.size() + " events");
                 for (JsonElement element : parsedArray) {
                     JsonObject object = element.getAsJsonObject();
                     if (object.get("eventAction").getAsString().equals("registration")) {
