@@ -153,7 +153,7 @@ public class ScamShield {
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
-            final int domainAge = domainAgeCheck(finalMessage);
+            final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0) {
                 ssFoundTerms.put("domainAge", domainAge);
             }
@@ -460,11 +460,9 @@ public class ScamShield {
     }
 
     private static int domainAgeCheck(String message) {
-        System.out.println("Checking Domain Age");
         int count = 0;
         try {
             List<String> urls = Utils.extractUrls(message);
-            System.out.println("Found " + urls.size() + " urls");
 
             for (String url : urls) {
                 String domain = URI.create(url).getHost();
@@ -475,7 +473,6 @@ public class ScamShield {
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(request, "RDAP");
                 JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                 JsonArray parsedArray = parsed.get("events").getAsJsonArray();
-                System.out.println("Found " + parsedArray.size() + " events");
                 for (JsonElement element : parsedArray) {
                     JsonObject object = element.getAsJsonObject();
                     if (object.get("eventAction").getAsString().equals("registration")) {

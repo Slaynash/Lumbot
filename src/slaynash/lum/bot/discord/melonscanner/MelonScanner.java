@@ -155,12 +155,12 @@ public final class MelonScanner {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageBuilder messageBuilder = new MessageBuilder();
-                messageBuilder.append(context.messageReceivedEvent.getAuthor().getAsMention());
+                messageBuilder.append(messageReceivedEvent.getAuthor().getAsMention());
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
-                ServerMessagesHandler.handleReplies(context.messageReceivedEvent, description);
+                ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
             }
         }
         catch (Exception exception) {

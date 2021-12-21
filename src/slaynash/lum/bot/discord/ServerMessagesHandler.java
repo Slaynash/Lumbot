@@ -382,10 +382,15 @@ public class ServerMessagesHandler {
 
     public static boolean handleReplies(MessageReceivedEvent event, String content) {
         try {
+            if (content == null || content.isBlank())
+                return false;
+            content = content.toLowerCase();
             if (event.getMessage().isEdited())
                 return false;
-            if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return true;
-            if (content.startsWith("l!replies")) return true;
+            if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
+                return true;
+            if (content.startsWith("l!replies"))
+                return true;
             Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
             Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
 
