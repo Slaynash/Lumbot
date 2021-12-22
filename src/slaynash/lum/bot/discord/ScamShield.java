@@ -154,10 +154,10 @@ public class ScamShield {
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
-            final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
-            if (domainAge > 0) {
-                ssFoundTerms.put("domainAge", domainAge * 2);
-            }
+            // final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
+            // if (domainAge > 0) {
+            //     ssFoundTerms.put("domainAge", domainAge * 2);
+            // }
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 

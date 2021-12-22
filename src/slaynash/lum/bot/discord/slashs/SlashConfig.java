@@ -123,7 +123,7 @@ public class SlashConfig {
                         break;
                     case "sscross" :
                         config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
-                        event.editButton(config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("ssban", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick"))).queue();
+                        event.editButton(config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick"))).queue();
                         break;
                     case "delete" :
                         event.getMessage().delete().queue();
