@@ -17,7 +17,7 @@ public class TicketTool {
     public static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         String channelName = event.getTextChannel().getName();
-        String pString = "To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nAfter you added it, please send either`/vrcuser [username or UserID]`or`r.vrcuser [username or UserID]`into this channel, for example`/vrcuser tupper`\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.";
+        String pString = "To confirm your identity, please add this passcode to your VRChat Status or Bio: `" + randomString(8) + "`\nAfter you added it, please send your VRChat username here as shown above your head.\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.";
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
