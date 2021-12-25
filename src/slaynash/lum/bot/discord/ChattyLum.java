@@ -151,7 +151,7 @@ public class ChattyLum {
             badLum.add("<:Neko_clown:865328473732415508>");
             badLum.add("<:Neko_devil:865328473974374420>");
         }
-        if (LocalDate.now().getMonthValue() == 12) { //christmas
+        else if (LocalDate.now().getMonthValue() == 12) { //christmas
             helloLum.add("<:Neko_padoru:865328474150797342>");
             helloLum.add("<:Neko_snow:865328474196541440>");
             niceLum.add("<:Neko_padoru:865328474150797342>");

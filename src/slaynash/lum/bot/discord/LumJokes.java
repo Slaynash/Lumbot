@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.Random;
 
 import com.google.gson.JsonObject;
@@ -31,7 +32,19 @@ public class LumJokes {
             String joke = "";
             String punchLine = "";
             HttpResponse<byte[]> response = null;
-            switch (message.contains("dad") ? 0 : message.contains("spook") ? 2 : random.nextInt(3)) {
+
+            int type = 69;
+            if (LocalDate.now().getMonthValue() == 10) { //halloween
+                type = 2;
+            }
+            else if (LocalDate.now().getMonthValue() == 12) { //christmas
+                type = 3;
+            }
+            else {
+                type =  message.contains("dad") ? 0 : (message.contains("spook") ? 2 : random.nextInt(2));
+            }
+
+            switch (type) {
                 case 0:
                     try {
                         response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
@@ -59,7 +72,7 @@ public class LumJokes {
                         ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getTextChannel());
                     }
                     break;
-                case 2: //Sorry for doing this round about way Gives a higher probability
+                case 2:
                     try {
                         response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
@@ -75,6 +88,24 @@ public class LumJokes {
                     }
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting Spooky JokeAPI:", e, event.getTextChannel());
+                    }
+                    break;
+                case 3:
+                    try {
+                        response = MelonScannerApisManager.downloadRequest(christmasjokeAPIRequest, "ChristmasJokeAPI");
+                        JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
+                        if ("single".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("joke").getAsString();
+                        }
+                        else if ("twopart".equals(parsed.get("type").getAsString())) {
+                            joke = parsed.get("setup").getAsString();
+                            punchLine = parsed.get("delivery").getAsString();
+                        }
+                        else
+                            throw new Exception("json was not as expected from JokeAPI");
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("An error has occurred while while getting Christmas JokeAPI:", e, event.getTextChannel());
                     }
                     break;
                 default:
@@ -123,6 +154,13 @@ public class LumJokes {
     private static final HttpRequest spookyjokeAPIRequest = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create("https://v2.jokeapi.dev/joke/Spooky?blacklistFlags=nsfw,religious,political,racist,sexist"))
+        .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
+        .setHeader("Accept", "text/json") //may not be needed
+        .timeout(Duration.ofSeconds(20))
+        .build();
+    private static final HttpRequest christmasjokeAPIRequest = HttpRequest.newBuilder()
+        .GET()
+        .uri(URI.create("https://v2.jokeapi.dev/joke/Christmas?blacklistFlags=nsfw,religious,political,racist,sexist"))
         .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
         .setHeader("Accept", "text/json") //may not be needed
         .timeout(Duration.ofSeconds(20))
