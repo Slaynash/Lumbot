@@ -399,6 +399,9 @@ public final class MelonScanner {
                 case "EscapeFromTarkov":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                     break;
+                case "Feign":
+                    context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
+                    break;
                 case "Ghost Hunters Corp":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                     break;

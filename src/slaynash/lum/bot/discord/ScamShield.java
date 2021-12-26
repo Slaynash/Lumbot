@@ -93,7 +93,7 @@ public class ScamShield {
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
-            put(".*nitro.*free.*steam.*", 2);
+            put(".*nitro.*free.*(steam|epic).*", 2);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 1);
@@ -261,10 +261,10 @@ public class ScamShield {
             .filter(e -> e.suspiciousResults.massPing)
             .filter(e -> e.messageReceivedEvent.getGuild().getIdLong() == event.getGuild().getIdLong())
             .filter(e -> e.messageReceivedEvent.getAuthor().getIdLong() == event.getAuthor().getIdLong()).count();
-        if (massPingCount <= 1) {
+        if (massPingCount <= 1 && suspiciousResults.massPing) {
             event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server!").queue();
         }
-        else {
+        else if (suspiciousResults.massPing) {
             handleBan(event, event.getGuild().getIdLong(), suspiciousResults);
             event.getTextChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
         }
