@@ -34,6 +34,15 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
+            if (event.getGuild().getIdLong() == 145556654241349632L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+                JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel().queue(channel -> {
+                    channel.sendMessage(event.getMessage()).queue();
+                }, error -> {
+                    event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red));
+                });
+                return;
+            }
+
             handleAP(event);
             if (event.getMessage().getType().isSystem() || event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
