@@ -34,7 +34,10 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
-            if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+            if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
+                event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
+                event.getChannel().getName().toLowerCase().startsWith("dm-"))
+            {
                 JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel().queue(channel -> {
                     channel.sendMessage(event.getMessage()).queue();
                 }, error -> {
