@@ -28,12 +28,12 @@ public class PrivateMessagesHandler {
             if (ScamShield.checkForFishingPrivate(event)) {
                 System.out.println("I was DM'd a Scam");
             }
-            
-            Guild mainguild = JDAManager.getJDA().getGuildById(145556654241349632L);
+
+            Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
             TextChannel guildchannel = mainguild.getTextChannelsByName("dm-" + event.getAuthor().getIdLong(), true).stream().findFirst().orElse(null);
             if (guildchannel == null)
-                guildchannel = mainguild.createTextChannel("dm-" + event.getAuthor().getIdLong()).complete(); // This may stuck the main thread if it takes time
-            if (guildchannel != null)
+                mainguild.createTextChannel("dm-" + event.getAuthor().getIdLong(), mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(event.getMessage())).queue();
+            else
                 guildchannel.sendMessage(event.getMessage()).queue();
         }
         // CommandManager.runAsClient(event);
