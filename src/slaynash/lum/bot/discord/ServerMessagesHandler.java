@@ -35,14 +35,13 @@ public class ServerMessagesHandler {
     public static void mainHandle(MessageReceivedEvent event) {
         try {
             if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
-                event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
-                event.getChannel().getName().toLowerCase().startsWith("dm-"))
-            {
+                    event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
+                    event.getChannel().getName().toLowerCase().startsWith("dm-")) {
                 JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel().queue(channel -> {
                     channel.sendMessage(event.getMessage()).queue();
                 }, error -> {
-                    event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red));
-                });
+                        event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red));
+                    });
                 return;
             }
 

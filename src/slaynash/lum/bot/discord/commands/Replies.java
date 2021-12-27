@@ -108,7 +108,7 @@ public class Replies extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Sets auto message replies";
+        return "Sets auto message replies\n\t**" + getName() + "regex:** use the power of regex. Must match entire message to trigger.";
     }
 
     @Override

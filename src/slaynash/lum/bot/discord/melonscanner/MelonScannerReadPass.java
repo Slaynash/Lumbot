@@ -116,7 +116,7 @@ public final class MelonScannerReadPass {
 
     private static void pirateCheck(String line, MelonScanContext context) {
         line = line.toLowerCase();
-        if (line.contains("bloons.td.6") || line.contains("bloons.td6")) {
+        if (line.contains("bloons.td.6") || line.contains("bloons.td6") || line.matches("\\[[0-9.:]+] \\[btd6e_module_helper] v[0-9.]+")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
             //reportUserPiratedBTD(event);

@@ -140,7 +140,7 @@ public class Purge extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Purge messages `" + getName() + " #` or reply to the top message - Moderators Only\n\t" + getName() + "u will only remove messages from the user replied to";
+        return "Purge messages `" + getName() + " #` or reply to the top message - Moderators Only\n\t**" + getName() + "u:** will only remove messages from the user replied to";
     }
 
     @Override
