@@ -11,7 +11,6 @@ import slaynash.lum.bot.utils.Utils;
 
 public class TicketTool {
     public static final String LOG_IDENTIFIER = "TicketTool";
-    private static final String AB = "23456789abcdefghijkmnopqrstuvwxyz";
     private static final Random random = new Random();
 
     public static void tickettool(MessageReceivedEvent event) {
@@ -65,13 +64,14 @@ public class TicketTool {
         }
     }
 
+    private static final String AB = "23456789abcdefghijkmnopqrstuvwxyz";
     private static String randomString(int len) {
         StringBuilder sb = new StringBuilder(len);
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(random.nextInt(AB.length())));
         String sbr = sb.toString();
-        if (sbr.contains("joe") || sbr.contains("red"))
-            return "lum>rubybot";
+        if (sbr.matches(".*(joe|red|sjw|[s5]hit|fuck|slut|clit).*"))
+            return randomString(len); //just generate a new one until we get a good one
         return sbr;
     }
 

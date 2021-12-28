@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +25,6 @@ import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
-import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateBoostTimeEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateMaxMembersEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -406,15 +404,6 @@ public class Main extends ListenerAdapter {
         else {
             ServerMessagesHandler.handle(event);
         }
-    }
-
-    @Override
-    public void onGuildMemberUpdateBoostTime(@NotNull GuildMemberUpdateBoostTimeEvent event) {
-        String guildName = event.getGuild().getName();
-        String memberName = event.getMember().getEffectiveName();
-        OffsetDateTime newBoost = event.getNewTimeBoosted();
-        OffsetDateTime oldBoost = event.getOldTimeBoosted();
-        event.getJDA().getGuildById(633588473433030666L).getTextChannelById(924927981581905922L).sendMessage(memberName + " boosted " + guildName + " new boost time: " + newBoost + " old boost time: " + oldBoost).queue();
     }
 
     @Override
