@@ -191,7 +191,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+] \\[VRCX_Companion] \\[ERROR] Failed to connect to VRCX IPC Server.*",
-                "error": "VRCX is not running. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
+                "error": "VRCX is not running. Make sure Natsumi-sama's latest VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
             },
             {
                 "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
