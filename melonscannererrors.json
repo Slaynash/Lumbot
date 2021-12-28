@@ -127,11 +127,11 @@
             "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
         },
         {
-            "regex": ".*Il2CppAssemblyGenerator\\\\Config\\.cfg: Tomlet.Exceptions.TomlEOFException: Found unexpected EOF on line \\d+ when parsing TOML file",
+            "regex": ".*Il2CppAssemblyGenerator\\\\Config\\.cfg: Tomlet.Exceptions.(TomlEOFException|TomlEndOfFileException): Found unexpected EOF on line \\d+ when parsing TOML file",
             "error": "Config has been corrupted or empty. Please remove MelonLoader/Dependencies/Il2CppAssemblyGenerator/Config.cfg"
         },
         {
-            "regex": ".*UserData\\\\MelonPreferences\\.\\w{3,4}: Tomlet.Exceptions.TomlEOFException: Found unexpected EOF on line \\d+ when parsing TOML file",
+            "regex": ".*UserData\\\\MelonPreferences\\.\\w{3,4}: Tomlet.Exceptions.(TomlEOFException|TomlEndOfFileException): Found unexpected EOF on line \\d+ when parsing TOML file",
             "error": "Mod config has been corrupted or empty. Please remove UserData/MelonPreferences.cfg"
         },
         {
