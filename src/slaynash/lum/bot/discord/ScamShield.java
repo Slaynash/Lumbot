@@ -172,8 +172,10 @@ public class ScamShield {
     }
 
     public static boolean checkForFishing(MessageReceivedEvent event) {
-        if (event.getMember() == null)
+        if (event.getMember() == null) {
+            System.out.println("Member is null, skipping SS");
             return false;
+        }
         if (CrossServerUtils.checkIfStaff(event))
             return false;
 
