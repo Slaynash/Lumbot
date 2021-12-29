@@ -130,8 +130,7 @@ public class ScamShield {
         if (!event.isFromType(ChannelType.PRIVATE)) {
             Set<String> nameSet = new HashSet<>(); //used to filter one message per channel
             crossPost = allMessages.stream()
-                .filter(m -> m.getMember().getIdLong() == event.getMember().getIdLong())
-                .filter(m -> m.getGuild().getIdLong() == event.getGuild().getIdLong())
+                .filter(m -> m.getAuthor().getIdLong() == event.getAuthor().getIdLong())
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .filter(m ->
                     (
