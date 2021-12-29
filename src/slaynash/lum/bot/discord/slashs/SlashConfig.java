@@ -82,11 +82,12 @@ public class SlashConfig {
                     case "ss" :
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
                         event.editButton(config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
-                        checkPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
+                        checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
                         break;
                     case "dll" :
                         config[ConfigurationMap.DLLREMOVER.ordinal()] = !config[ConfigurationMap.DLLREMOVER.ordinal()];
                         event.editButton(config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover")).queue();
+                        checkDllRemovePerm(event, guild);
                         break;
                     case "reaction" :
                         config[ConfigurationMap.LOGREACTION.ordinal()] = !config[ConfigurationMap.LOGREACTION.ordinal()];
@@ -119,7 +120,7 @@ public class SlashConfig {
                     case "ssban" :
                         config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
                         event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
-                        checkPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
+                        checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
                         break;
                     case "sscross" :
                         config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
@@ -142,7 +143,7 @@ public class SlashConfig {
         }
     }
 
-    private void checkPerm(ButtonClickEvent event, Guild guild, boolean ban) {
+    private void checkBanPerm(ButtonClickEvent event, Guild guild, boolean ban) {
         String message = "";
         if (ban) {
             if (!guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
@@ -160,11 +161,23 @@ public class SlashConfig {
         }
         if (message.isEmpty())
             return;
+        final String finalMessage = message;
         if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
-            event.getPrivateChannel().sendMessage(message).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+            event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(finalMessage)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         }
         else {
-            event.getTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            event.getTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+        }
+    }
+    private void checkDllRemovePerm(ButtonClickEvent event, Guild guild) {
+        if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
+            final String message = "I don't have manage message permission so I can't remove dll and zip files.";
+            if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+                event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+            }
+            else {
+                event.getTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            }
         }
     }
 }

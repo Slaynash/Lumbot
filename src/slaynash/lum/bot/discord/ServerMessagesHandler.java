@@ -37,11 +37,9 @@ public class ServerMessagesHandler {
             if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
                     event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                     event.getChannel().getName().toLowerCase().startsWith("dm-")) {
-                JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel().queue(channel -> {
-                    channel.sendMessage(event.getMessage()).queue();
-                }, error -> {
-                        event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red));
-                    });
+                JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel()
+                    .queue(channel -> channel.sendMessage(event.getMessage()).queue(),
+                        error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red)));
                 return;
             }
 
@@ -130,7 +128,7 @@ public class ServerMessagesHandler {
             if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
                 return;
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event)) {
+            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;

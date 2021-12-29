@@ -33,7 +33,7 @@ public class LumJokes {
             String punchLine = "";
             HttpResponse<byte[]> response = null;
 
-            int type = 69;
+            int type;
             if (LocalDate.now().getMonthValue() == 10) { //halloween
                 type = 2;
             }
