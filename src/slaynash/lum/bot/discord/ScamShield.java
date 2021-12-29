@@ -21,12 +21,13 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -57,10 +58,10 @@ import slaynash.lum.bot.utils.Utils;
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
 
-    private static final Queue<MessageReceivedEvent> allMessages = new LinkedList<>();
-    private static final Queue<HandledServerMessageContext> handledMessages = new LinkedList<>();
+    private static final Queue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
+    private static final Queue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
 
-    private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new HashMap<>();
+    private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
     private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space
             put("@everyone", 2);
             put("money", 1);

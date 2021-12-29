@@ -76,7 +76,7 @@ public class CommandManager {
         String command = event.getMessage().getContentRaw();
         synchronized (commands) {
             for (Command rcmd : commands) {
-                if (!rcmd.matchPattern(command)) continue;
+                if (!rcmd.matchPattern(command.toLowerCase())) continue;
                 try {
                     rcmd.onClient(command, event);
                 }
@@ -92,7 +92,7 @@ public class CommandManager {
         if (command.startsWith("l!ping")) command = command.substring(6).trim();
         synchronized (commands) {
             for (Command rcmd : commands) {
-                if (!rcmd.matchPattern(command)) continue;
+                if (!rcmd.matchPattern(command.toLowerCase())) continue;
                 try {
                     rcmd.onServer(command, event);
                 }

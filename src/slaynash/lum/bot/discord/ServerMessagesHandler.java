@@ -125,8 +125,8 @@ public class ServerMessagesHandler {
             if (replied != null && replied.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
                 MelonScanner.translateLog(event);
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()] && ScamShield.checkForFishing(event))
-                return;
+            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()])
+                new Thread(() -> ScamShield.checkForFishing(event)).start();
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                 event.getMessage().delete().queue();
