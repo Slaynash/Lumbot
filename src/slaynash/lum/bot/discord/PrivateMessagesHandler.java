@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
@@ -30,11 +31,15 @@ public class PrivateMessagesHandler {
             }
 
             Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
-            TextChannel guildchannel = mainguild.getTextChannelsByName("dm-" + event.getAuthor().getIdLong(), true).stream().findFirst().orElse(null);
-            if (guildchannel == null)
-                mainguild.createTextChannel("dm-" + event.getAuthor().getIdLong(), mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(event.getMessage())).queue();
-            else
+            User author = event.getAuthor();
+            String channelName = ("dm-" + author.getName() + "-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^&*()+=/*+]", "").toLowerCase();
+            TextChannel guildchannel = mainguild.getTextChannelsByName(channelName, true).stream().findFirst().orElse(null);
+            if (guildchannel == null) {
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(event.getMessage())).queue();
+            }
+            else {
                 guildchannel.sendMessage(event.getMessage()).queue();
+            }
         }
         // CommandManager.runAsClient(event);
     }

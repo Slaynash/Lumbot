@@ -36,8 +36,10 @@ public class ServerMessagesHandler {
         try {
             if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
                     event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
-                    event.getChannel().getName().toLowerCase().startsWith("dm-")) {
-                JDAManager.getJDA().getUserById(event.getChannel().getName().split("-")[1]).openPrivateChannel()
+                    event.getChannel().getName().toLowerCase().startsWith("dm-") &&
+                    !event.getMessage().getContentRaw().startsWith(".")) {
+                String[] userID = event.getChannel().getName().split("-");
+                JDAManager.getJDA().getUserById(userID[userID.length - 1]).openPrivateChannel()
                     .queue(channel -> channel.sendMessage(event.getMessage()).queue(),
                         error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red)));
                 return;
