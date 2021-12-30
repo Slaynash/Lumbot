@@ -34,14 +34,16 @@ public class LumJokes {
             HttpResponse<byte[]> response = null;
 
             int type;
-            if (LocalDate.now().getMonthValue() == 10) { //halloween
+            if (message.contains("dad"))
+                type = 0;
+            else if (LocalDate.now().getMonthValue() == 10 || message.contains("spook")) { //halloween
                 type = 2;
             }
             else if (LocalDate.now().getMonthValue() == 12) { //christmas
                 type = 3;
             }
             else {
-                type =  message.contains("dad") ? 0 : (message.contains("spook") ? 2 : random.nextInt(2));
+                type =  random.nextInt(2);
             }
 
             switch (type) {
