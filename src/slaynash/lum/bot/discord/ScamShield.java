@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -48,10 +47,10 @@ import slaynash.lum.bot.utils.Utils;
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
 
-    private static final Queue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
-    private static final Queue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
 
-    private static final Map<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
     private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space
             put("@everyone", 2);
             put("money", 1);
