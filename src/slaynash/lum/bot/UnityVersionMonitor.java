@@ -1,10 +1,6 @@
 package slaynash.lum.bot;
 
 import java.awt.Color;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpClient.Redirect;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,6 +8,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
@@ -434,7 +434,7 @@ public class UnityVersionMonitor {
                 return;
             }
 
-            boolean useNSISBIExtractor = (uv.version.startsWith("2020") && !uv.version.startsWith("2020.1")) || uv.version.startsWith("2021");
+            boolean useNSISBIExtractor = uv.version.startsWith("2020") && !uv.version.startsWith("2020.1") || uv.version.startsWith("2021");
             extractFilesFromArchive(uv, true, useNSISBIExtractor);
 
             saveInstalledVersionCache(uv.version, "windows il2cpp");

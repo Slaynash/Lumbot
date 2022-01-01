@@ -127,7 +127,7 @@ public class Utils {
             int lastValue = i;
             for (int j = 0; j <= s2.length(); j++) {
                 if (i == 0)
-                  costs[j] = j;
+                    costs[j] = j;
                 else {
                     if (j > 0) {
                         int newValue = costs[j - 1];
@@ -140,7 +140,7 @@ public class Utils {
                 }
             }
             if (i > 0)
-            costs[s2.length()] = lastValue;
+                costs[s2.length()] = lastValue;
         }
         return costs[s2.length()];
     }

@@ -7,7 +7,7 @@ public final class ArrayUtils {
             return false;
 
         for (T alias : aliases)
-            if ((alias == null && value == null) || alias.equals(value))
+            if (alias == null && value == null || alias.equals(value))
                 return true;
 
         return false;

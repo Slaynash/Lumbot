@@ -6,7 +6,8 @@ import java.sql.SQLException;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class UrlShortener {
-    private UrlShortener() {}
+    private UrlShortener() {
+    }
 
     public static String getShortenedUrl(String baseUrl) {
         String result;

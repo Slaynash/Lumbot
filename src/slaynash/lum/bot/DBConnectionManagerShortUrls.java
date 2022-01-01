@@ -13,7 +13,8 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public final class DBConnectionManagerShortUrls {
     public static final String LOG_IDENTIFIER = "DB";
 
-    private DBConnectionManagerShortUrls() {}
+    private DBConnectionManagerShortUrls() {
+    }
 
     private static final int DATABASE_TIMEOUT = 10; // in seconds
 

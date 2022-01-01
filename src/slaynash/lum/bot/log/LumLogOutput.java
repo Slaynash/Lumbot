@@ -42,7 +42,8 @@ public class LumLogOutput extends PrintStream {
                         knownLoggingElements.put(elementClass, loggingElement);
                         break;
                     }
-                    catch (Exception ignored) { }
+                    catch (Exception ignored) {
+                    }
                 }
             }
             if (loggingElement != null)

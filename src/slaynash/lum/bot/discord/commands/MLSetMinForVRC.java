@@ -40,9 +40,9 @@ public class MLSetMinForVRC extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return event.getGuild().getIdLong() == 673663870136746046L || (// Modders & Chill
+        return event.getGuild().getIdLong() == 673663870136746046L || // Modders & Chill
             event.getGuild().getIdLong() == 439093693769711616L && // VRChat Modding Group
-            event.getChannel().getIdLong() == 729855750561595405L); // #staff-bot-commands
+            event.getChannel().getIdLong() == 729855750561595405L; // #staff-bot-commands
     }
 
     @Override

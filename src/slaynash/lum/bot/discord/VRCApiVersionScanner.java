@@ -65,7 +65,8 @@ public class VRCApiVersionScanner {
                 try {
                     Thread.sleep(60 * 1000);
                 }
-                catch (Exception ignored) { }
+                catch (Exception ignored) {
+                }
             }
 
         }, "VRCApiVersionScanner");

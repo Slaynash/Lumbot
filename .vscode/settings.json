@@ -4,5 +4,6 @@
         "data",
         "base64toLowerHexString"
     ],
-    "java.checkstyle.configuration": "${workspaceFolder}\\checkstyle.xml"
+    "java.checkstyle.configuration": "${workspaceFolder}\\checkstyle.xml",
+    "java.checkstyle.version": "9.2.1"
 }

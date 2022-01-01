@@ -27,7 +27,7 @@ public class RankColorCommand extends Command {
             }
             else {
                 for (char c:arg.substring(1).toCharArray()) {
-                    if (!(('0' <= c && c <= '9') || ('a' <= c && c <= 'f') || ('A' <= c && c <= 'F'))) {
+                    if (!('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F')) {
                         event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
                         return;
                     }

@@ -9,7 +9,8 @@ public final class VersionUtils {
 
     private static final Pattern versionPattern = Pattern.compile("\\d+");
 
-    private VersionUtils() {}
+    private VersionUtils() {
+    }
 
     // left more recent: 1
     // identicals: 0

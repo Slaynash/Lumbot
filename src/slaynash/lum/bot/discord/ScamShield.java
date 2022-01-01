@@ -103,11 +103,11 @@ public class ScamShield {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
             ssFoundTerms.put("newAccount", 1);
-        String message = Junidecode.unidecode(event.getMessage().getContentStripped());
+        StringBuilder message = new StringBuilder(Junidecode.unidecode(event.getMessage().getContentStripped()));
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
-            message = message + embed.getTitle() + embed.getDescription();
+            message.append(embed.getTitle()).append(embed.getDescription());
         }
-        message = message.toLowerCase().replaceAll("[':,. \n\t]", "");
+        message = new StringBuilder(message.toString().toLowerCase().replaceAll("[':,. \n\t]", ""));
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
@@ -116,14 +116,13 @@ public class ScamShield {
                 .filter(m -> m.getAuthor().getIdLong() == event.getAuthor().getIdLong())
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .filter(m ->
-                    (
                         m.getMessage().getAttachments().size() == 0
                         && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
-                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s)))
-                    || (
+                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s))
+                    ||
                         event.getMessage().getAttachments().size() > 0
                         && m.getMessage().getAttachments().size() > 0
-                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName()))) //count crossposted files
+                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())) //count crossposted files
                 .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
         }
@@ -132,7 +131,7 @@ public class ScamShield {
             ssFoundTerms.put("Crossposted", (int) crossPost);
         }
 
-        final String finalMessage = message;
+        final String finalMessage = message.toString();
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 

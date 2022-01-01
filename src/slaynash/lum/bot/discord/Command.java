@@ -7,9 +7,11 @@ public abstract class Command {
 
     protected abstract boolean matchPattern(String paramString);
 
-    protected void onClient(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {}
+    protected void onClient(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+    }
 
-    protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {}
+    protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
+    }
 
     public String getName() {
         return null;

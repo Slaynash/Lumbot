@@ -76,6 +76,7 @@
             <message key="ws.notPreceded"
              value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
+
         <module name="OneStatementPerLine"/>
         <!-- <module name="MultipleVariableDeclarations"/> -->
         <module name="ArrayTypeStyle"/>
@@ -188,12 +189,6 @@
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
         <!-- <module name="VariableDeclarationUsageDistance"/> -->
-        <module name="CustomImportOrder">
-            <property name="sortImportsInGroupAlphabetically" value="false"/>
-            <property name="separateLineBetweenGroups" value="true"/>
-            <property name="standardPackageRegExp" value="^(java|javax)\."/>
-            <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###STATIC###SPECIAL_IMPORTS"/>
-        </module>
         <module name="UnnecessaryParentheses"/>
         <module name="MethodParamPad"/>
         <module name="WhitespaceAfter"/>

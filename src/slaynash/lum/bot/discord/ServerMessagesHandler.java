@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.gcardone.junidecode.Junidecode;
-
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -83,7 +82,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || (event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/)) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !CrossServerUtils.checkIfStaff(event)) {
+                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = memberMention + " ";
                     switch (guildIDstr) {
                         case "600298024425619456": //emmVRC

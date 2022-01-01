@@ -13,7 +13,8 @@ public class SteamAppDetails {
     SteamAppDetailsCommon common;
     SteamAppDepots depots;
 
-    private SteamAppDetails() {}
+    private SteamAppDetails() {
+    }
 
     public SteamAppDetails(KeyValue keyValues) {
         appId = keyValues.get("appid").asString();
@@ -59,7 +60,8 @@ public class SteamAppDetails {
         public Map<Integer, SteamAppDepot> elements = new HashMap<>();
         public Map<String, SteamAppBranch> branches = new HashMap<>();
 
-        private SteamAppDepots() {}
+        private SteamAppDepots() {
+        }
 
         public SteamAppDepots(KeyValue keyValues) {
             for (KeyValue element : keyValues.getChildren()) {
@@ -67,7 +69,8 @@ public class SteamAppDetails {
                     Integer key = Integer.parseInt(element.getName());
                     elements.put(key, new SteamAppDepot(element));
                 }
-                catch (Exception ignored) { }
+                catch (Exception ignored) {
+                }
             }
             KeyValue branches = keyValues.get("branches");
             for (KeyValue branch : branches.getChildren())
@@ -126,7 +129,8 @@ public class SteamAppDetails {
         public String name;
         public Map<String, Long> manifests = new HashMap<>();
 
-        private SteamAppDepot() {}
+        private SteamAppDepot() {
+        }
 
         public SteamAppDepot(KeyValue keyValues) {
             name = keyValues.get("name").asString();
@@ -178,7 +182,8 @@ public class SteamAppDetails {
         public long timeupdated;
         public Boolean pwdrequired;
 
-        private SteamAppBranch() {}
+        private SteamAppBranch() {
+        }
 
         public SteamAppBranch(KeyValue keyValues) {
             buildid = keyValues.get("buildid").asLong();

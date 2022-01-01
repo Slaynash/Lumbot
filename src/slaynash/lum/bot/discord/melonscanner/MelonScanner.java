@@ -341,7 +341,7 @@ public final class MelonScanner {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.remainingModCount++; //trigger the `not edit the log` message
         }
-        else if (context.game == null || (context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0)) {
+        else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             return;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
@@ -502,7 +502,7 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || (CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */));
+        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
 
         if (context.isMLOutdatedVRC) {
             int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
@@ -531,7 +531,7 @@ public final class MelonScanner {
     }
 
     private static boolean vrchatVersionCheck(MelonScanContext context) {
-        if ((context.gameBuild != null) && "VRChat".equals(context.game)) {
+        if (context.gameBuild != null && "VRChat".equals(context.game)) {
             String[] tempString = context.gameBuild.split("-", 3);
             context.gameBuild = tempString.length > 1 ? tempString[1] : "0"; //VRChat build number
             int compare = VersionUtils.compareVersion(context.gameBuild, CommandManager.vrchatBuild);
@@ -715,7 +715,7 @@ public final class MelonScanner {
             for (int i = 0; i < context.unknownMods.size() && i < 10; ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
-                if (md.name.equalsIgnoreCase("ReMod") && (context.messageReceivedEvent.getGuild().getIdLong() != 819950183784644618L && context.messageReceivedEvent.getGuild().getIdLong() != 673663870136746046L))
+                if (md.name.equalsIgnoreCase("ReMod") && context.messageReceivedEvent.getGuild().getIdLong() != 819950183784644618L && context.messageReceivedEvent.getGuild().getIdLong() != 673663870136746046L)
                     context.messageReceivedEvent.getMessage().delete().reason("Log not in ReMod discord").queue();
                 if (md.version != null && !md.version.isBlank())
                     unknowModOut += " " + CrossServerUtils.sanitizeInputString(md.version);

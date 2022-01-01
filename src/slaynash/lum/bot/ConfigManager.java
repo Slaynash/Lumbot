@@ -8,7 +8,8 @@ import java.util.Properties;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class ConfigManager {
-    private ConfigManager() {}
+    private ConfigManager() {
+    }
 
     private static final String SETTINGS_FILE = ".settings.conf";
     private static boolean initialized = false;
