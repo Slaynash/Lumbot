@@ -1,16 +1,15 @@
 package slaynash.lum.bot.discord;
 
 import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,12 +19,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -39,10 +35,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
+import slaynash.lum.bot.utils.Whois;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -135,11 +131,12 @@ public class ScamShield {
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
+        final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
+        if (domainAge > 0) {
+            ssFoundTerms.put("domainAge", domainAge * 2);
+        }
+
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
-            // final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
-            // if (domainAge > 0) {
-            //     ssFoundTerms.put("domainAge", domainAge * 2);
-            // }
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
 
@@ -384,18 +381,17 @@ public class ScamShield {
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
 
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create("https://rdap.arin.net/bootstrap/domain/" + domain)).timeout(Duration.ofSeconds(3)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").setHeader("Accept", "text/json").build();
-                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(request, "RDAP");
-                JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
-                JsonArray parsedArray = parsed.get("events").getAsJsonArray();
-                for (JsonElement element : parsedArray) {
-                    JsonObject object = element.getAsJsonObject();
-                    if (object.get("eventAction").getAsString().equals("registration")) {
-                        if (ZonedDateTime.parse(object.get("eventDate").getAsString()).isAfter(ZonedDateTime.now().minusDays(7)))
-                            count++;
-                        System.out.println("Domain Age is " + object.get("eventDate").getAsString());
-                    }
+                String whois = Whois.whois(domain);
+                Matcher matcher = Pattern.compile(" [0-9T\\-:]+Z").matcher(whois);
+                ArrayList<ZonedDateTime> list = new ArrayList<>();
+                DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
+                while (matcher.find()) {
+                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
+                    list.add(parsedDate);
                 }
+                ZonedDateTime mindate = Collections.min(list);
+                if (mindate.isAfter(ZonedDateTime.now().minusDays(7)))
+                    count++;
             }
         }
         catch (Exception e) {
