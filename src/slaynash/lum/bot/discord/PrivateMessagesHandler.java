@@ -32,7 +32,7 @@ public class PrivateMessagesHandler {
 
             Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
             User author = event.getAuthor();
-            String channelName = ("dm-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^&*()+=/*+]", "").toLowerCase();
+            String channelName = ("dm-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^&*()+=/]", "").toLowerCase();
             TextChannel guildchannel = mainguild.getTextChannelsByName(channelName, true).stream().findFirst().orElse(null);
             if (guildchannel == null) {
                 mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(event.getMessage())).queue();
@@ -44,6 +44,7 @@ public class PrivateMessagesHandler {
         // CommandManager.runAsClient(event);
     }
 
+    @SuppressWarnings("EmptyMethod")
     public static void handle(MessageUpdateEvent event) {
         //handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
     }
