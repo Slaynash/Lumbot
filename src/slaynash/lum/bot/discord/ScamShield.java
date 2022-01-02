@@ -382,7 +382,7 @@ public class ScamShield {
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
 
                 String whois = Whois.whois(domain);
-                Matcher matcher = Pattern.compile(" [0-9T\\-:]+Z").matcher(whois);
+                Matcher matcher = Pattern.compile(" [0-9T\\-:\\.]+Z").matcher(whois);
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
                 DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                 while (matcher.find()) {
