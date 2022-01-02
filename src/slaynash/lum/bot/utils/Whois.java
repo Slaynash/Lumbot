@@ -99,7 +99,7 @@ public class Whois {
         List<String> servers = getWhoisServers(getTLD(domain));
         int noServers = servers.size();
         String result = "";
-        for (int i = 0; i < noServers && result.equals(""); i++) {
+        for (int i = 0; i < noServers && result.isBlank(); i++) {
             result = whois(domain, servers.get(i));
         }
         return result;

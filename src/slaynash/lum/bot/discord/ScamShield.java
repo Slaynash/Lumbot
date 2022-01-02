@@ -378,14 +378,15 @@ public class ScamShield {
             List<String> urls = Utils.extractUrls(message);
 
             for (String url : urls) {
+                url = url.replace("<@", " ").replace("\\", "/");
                 String domain = URI.create(url).getHost();
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
 
-                if (domain.equalsIgnoreCase("youtu.be"))
+                if (domain.equalsIgnoreCase("youtu.be") || domain.equalsIgnoreCase("discord.gg"))
                     continue;
-                String whois = Whois.whois(domain);
-                Matcher matcher = Pattern.compile(" [0-9T\\-:.]+Z").matcher(whois);
+                String whois = Whois.whois(domain).replace("+0000", "Z");
+                Matcher matcher = Pattern.compile(" [0-9T\\-:.]+(Z|\\+[0-9:]+)").matcher(whois);
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
                 DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                 while (matcher.find()) {
