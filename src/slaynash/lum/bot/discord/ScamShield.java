@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord;
 
+import java.awt.Color;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -389,13 +390,15 @@ public class ScamShield {
                     ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
                     list.add(parsedDate);
                 }
+                if (list.isEmpty())
+                    throw new Exception("Can not find Whois Server for " + domain);
                 ZonedDateTime mindate = Collections.min(list);
                 if (mindate.isAfter(ZonedDateTime.now().minusDays(7)))
                     count++;
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check domain age", e);
+            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to check domain age\n" + e.getMessage(), Color.RED)).queue();
         }
         return count;
     }
