@@ -101,6 +101,8 @@ public class Whois {
         String result = "";
         for (int i = 0; i < noServers && result.isBlank(); i++) {
             result = whois(domain, servers.get(i));
+            if (result.trim().equalsIgnoreCase("no domain"))
+                result = "";
         }
         return result;
     }

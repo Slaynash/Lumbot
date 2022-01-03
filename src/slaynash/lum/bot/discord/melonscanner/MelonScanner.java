@@ -203,7 +203,6 @@ public final class MelonScanner {
 
 
     // Logs thinkering
-
     private static void vrcHashCheck(MelonScanContext context) {
         if ("VRChat".equals(context.game)) {
             context.isMLOutdatedVRC = true;
@@ -211,11 +210,7 @@ public final class MelonScanner {
                 System.out.println("game is vrc, checking hash");
 
                 boolean hasVRChat1043ReadyML = false;
-                //boolean hasNotBrokenDeobfMap = false;
                 for (MLHashPair mlHashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
-                    //System.out.println("x86: " + mlHashes.x86 + ", x64: " + mlHashes.x64);
-                    //if (mlHashes.x64.equals("25881"))
-                    //    hasNotBrokenDeobfMap = true;
                     if (mlHashes.x64.equals(CommandManager.melonLoaderVRCHash))
                         hasVRChat1043ReadyML = true;
 
@@ -223,8 +218,6 @@ public final class MelonScanner {
                         System.out.println("matching hash found");
                         if (hasVRChat1043ReadyML)
                             context.isMLOutdatedVRC = false;
-                        //if (!hasNotBrokenDeobfMap)
-                        //    context.isMLOutdatedVRCBrokenDeobfMap = true;
                         break;
                     }
                 }
@@ -487,10 +480,7 @@ public final class MelonScanner {
         if (context.game != null && context.mlVersion != null && !latestMLVersionAlpha.equals(latestMLVersionRelease) && context.mlVersion.equals(latestMLVersionAlpha))
             context.reportMessage.append("*").append(Localization.get("melonscanner.reportmessage.alpha", context.lang)).append("*\n");
 
-        /* TODO No hash error
-        if (context.game != null && context.checkUsingHash && !context.hasMLHashes)
-            context.reportMessage.append("*Your MelonLoader doesn't provide mod hashes (requires >0.3.0). Mod versions will not be verified.*\n");
-        else*/ if (context.game != null && context.modDetails == null)
+        if (context.game != null && context.modDetails == null)
             context.reportMessage.append("*").append(Localization.getFormat("melonscanner.reportmessage.notsupported", context.lang, context.game)).append("*\n");
 
         context.embedBuilder.setDescription(context.reportMessage);
@@ -504,7 +494,7 @@ public final class MelonScanner {
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
 
-        if (context.isMLOutdatedVRC) {
+        if (context.isMLOutdated) {
             int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
             switch (result) {
                 case 1: //left more recent
@@ -521,10 +511,6 @@ public final class MelonScanner {
                     break;
                 default:
             }
-            return true;
-        }
-        else if (context.isMLOutdated) {
-            context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
             return true;
         }
         return false;
@@ -877,7 +863,7 @@ public final class MelonScanner {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
             }
-            else if (context.mlVersion != null && context.loadedMods.size() == 0 && context.errors.size() == 0) {
+            else if (context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingMods) && context.errors.size() == 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
                 context.embedColor = Color.ORANGE;
             }

@@ -381,7 +381,7 @@ public class ScamShield {
 
             for (String url : urls) {
                 url = url.replace("<@", " ").replace("\\", "/");
-                String domain = URI.create(url).getHost();
+                String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z0-9-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
                 if (Character.isDigit(domain.split("\\.", 2)[1].charAt(0)))
@@ -390,7 +390,7 @@ public class ScamShield {
                 if (domain.equalsIgnoreCase("youtu.be") || domain.equalsIgnoreCase("discord.gg"))
                     continue;
                 String whois = Whois.whois(domain).replace("+0000", "Z");
-                Matcher matcher = Pattern.compile(" [0-9T\\-:.]+(Z|\\+[0-9:]+)").matcher(whois);
+                Matcher matcher = Pattern.compile(" [0-9-]+T[0-9-:.]+(Z|\\+[0-9:]+)").matcher(whois);
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
                 DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                 while (matcher.find()) {
@@ -402,7 +402,6 @@ public class ScamShield {
                 while (matcher2.find()) {
                     LocalDate date = LocalDate.parse(matcher2.group().strip(), f2);
                     ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
-                    System.out.println(parsedDate);
                     list.add(parsedDate);
                 }
                 if (list.isEmpty())
