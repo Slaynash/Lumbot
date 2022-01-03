@@ -85,7 +85,8 @@ public class UnityVersionMonitor {
             add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount",                new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32",           new String[] { "UnityEngine.TextGenerator" }));
             add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray",               new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
             add(new UnityICall("UnityEngine.ImageConversion::LoadImage",                    new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean",         new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
-            add(new UnityICall("UnityEngine.SystemInfo::GetGraphicsDeviceType",             new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "UnityEngine.Rendering.GraphicsDeviceType", new String[] {}));
+            add(new UnityICall("UnityEngine.SystemInfo::get_graphicsDeviceType",            new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "UnityEngine.Rendering.GraphicsDeviceType", new String[] {},
+                new UnityICall("UnityEngine.SystemInfo::GetGraphicsDeviceType",             new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "UnityEngine.Rendering.GraphicsDeviceType", new String[] {})));
         }
     };
 
