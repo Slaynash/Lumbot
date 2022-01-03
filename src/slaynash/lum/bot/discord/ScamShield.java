@@ -3,8 +3,10 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.net.URI;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -382,6 +384,8 @@ public class ScamShield {
                 String domain = URI.create(url).getHost();
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
+                if (Character.isDigit(domain.split("\\.", 2)[1].charAt(0)))
+                    continue;
 
                 if (domain.equalsIgnoreCase("youtu.be") || domain.equalsIgnoreCase("discord.gg"))
                     continue;
@@ -391,6 +395,14 @@ public class ScamShield {
                 DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                 while (matcher.find()) {
                     ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
+                    list.add(parsedDate);
+                }
+                Matcher matcher2 = Pattern.compile(" [0-9]{2}-[0-9a-zA-Z]{3}-[0-9]{4}").matcher(whois.replace(".", "-"));
+                DateTimeFormatter f2 = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
+                while (matcher2.find()) {
+                    LocalDate date = LocalDate.parse(matcher2.group().strip(), f2);
+                    ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
+                    System.out.println(parsedDate);
                     list.add(parsedDate);
                 }
                 if (list.isEmpty())
