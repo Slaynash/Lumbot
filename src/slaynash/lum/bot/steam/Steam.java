@@ -23,9 +23,11 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
+import net.dv8tion.jda.api.entities.TextChannel;
 import slaynash.lum.bot.Main;
+import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerChannel;
 
@@ -117,16 +119,18 @@ public class Steam {
 
                     List<ServerChannel> rchannels = reportChannels.get(gameID);
                     for (ServerChannel sc : rchannels) {
-                        if (JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).canTalk())
-                            JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).sendMessageEmbeds(eb.build()).queue();
+                        if (testChannel(gameID, sc))
+                            continue;
+                        Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
+                        TextChannel channel = guild.getTextChannelById(sc.channelId);
+                        if (channel.canTalk())
+                            channel.sendMessageEmbeds(eb.build()).queue();
                         else
-                            System.out.println("Lum can't talk in " + JDAManager.getJDA().getGuildById(sc.serverID).getName() + " " + JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId).getName());
+                            System.out.println("Lum can't talk in " + guild.getName() + " " + channel.getName());
                     }
-
                     apps.picsGetProductInfo(gameID, null, false, false);
                 }
             }
-
         });
         callbackManager.subscribe(PICSProductInfoCallback.class, callback -> {
             System.out.println("[PICSProductInfoCallback] apps: ");
@@ -186,15 +190,9 @@ public class Steam {
                     for (ServerChannel sc : rchannels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
-                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
-                        if (channel == null) {
-                            rchannels.remove(sc);
-                            if (rchannels.size() > 0)
-                                reportChannels.put(app.getKey(), rchannels);
-                            else
-                                reportChannels.remove(app.getKey());
+                        if (testChannel(app.getKey(), sc))
                             continue;
-                        }
+                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
                             channel.sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
                         mb.setContent("");
@@ -203,6 +201,35 @@ public class Steam {
                 gameDetails.put(app.getKey(), newAppDetails);
             }
         });
+    }
+
+    private static boolean testChannel(Integer gameID, ServerChannel sc) {
+        if (JDAManager.getJDA() == null)
+            return true;
+        List<ServerChannel> rchannels = reportChannels.get(gameID);
+        Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
+        if (guild == null) {
+            System.out.println("Steam can not find Guild " + sc.serverID);
+            rchannels.remove(sc);
+            if (rchannels.size() > 0)
+                reportChannels.put(gameID, rchannels);
+            else
+                reportChannels.remove(gameID);
+            CommandManager.saveSteamWatch();
+            return true;
+        }
+        TextChannel channel = guild.getTextChannelById(sc.channelId);
+        if (channel == null) {
+            System.out.println("Steam can not find Channel " + sc.channelId);
+            rchannels.remove(sc);
+            if (rchannels.size() > 0)
+                reportChannels.put(gameID, rchannels);
+            else
+                reportChannels.remove(gameID);
+            CommandManager.saveSteamWatch();
+            return true;
+        }
+        return false;
     }
 
     private static void printKeyValue(KeyValue keyvalue, int depth) {
