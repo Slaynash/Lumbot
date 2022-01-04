@@ -21,7 +21,6 @@ public class Purge extends Command {
             return;
         if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
             event.getMessage().reply("I need manage message permission to be able to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
-            event.getMessage().delete().queue();
             return;
         }
         Thread thread = new Thread(() -> {

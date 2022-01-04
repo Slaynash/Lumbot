@@ -317,8 +317,15 @@ public class ScamShield {
                 if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && suspiciousResults.sameauthormessages != null) {
                     List<Message> messagelist = new ArrayList<>();
                     suspiciousResults.sameauthormessages.forEach(m -> {
-                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL)) {
+                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE)) {
                             messagelist.add(m.messageReceivedEvent.getMessage());
+                        }
+                        else if (!m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                            System.out.println("Lum does not have MESSAGE_MANAGE perm in " + m.messageReceivedEvent.getTextChannel().getName());
+                            String temp = "";
+                            if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
+                                temp = embedBuilder.getDescriptionBuilder() + "\n";
+                            embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms for the channel " + m.messageReceivedEvent.getTextChannel().getName());
                         }
                         else {
                             System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getTextChannel().getName());
@@ -329,8 +336,7 @@ public class ScamShield {
                         }
                     });
                     System.out.println("Removing " + messagelist.size() + " messages");
-                    if (messagelist.size() > 0)
-                        messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ f -> System.out.println("Message failed to be deleted, most likely removed")));
+                    messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ f -> System.out.println("Message failed to be deleted, most likely removed")));
                 }
                 else if (suspiciousResults.sameauthormessages != null) {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
