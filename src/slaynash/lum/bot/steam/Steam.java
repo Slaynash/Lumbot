@@ -1,5 +1,6 @@
 package slaynash.lum.bot.steam;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Steam {
 
     private static final Map<Integer, SteamAppDetails> gameDetails = new HashMap<>();
     public static final Map<Integer, List<ServerChannel>> reportChannels = new HashMap<>();
+    private static List<ServerChannel> channels2Remove;
 
     public Steam() {
 
@@ -117,9 +119,10 @@ public class Steam {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + gameID + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
+                    channels2Remove = new ArrayList<>();
                     List<ServerChannel> rchannels = reportChannels.get(gameID);
                     for (ServerChannel sc : rchannels) {
-                        if (testChannel(gameID, sc))
+                        if (testChannel(sc))
                             continue;
                         Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
                         TextChannel channel = guild.getTextChannelById(sc.channelId);
@@ -128,6 +131,7 @@ public class Steam {
                         else
                             System.out.println("Lum can't talk in " + guild.getName() + " " + channel.getName());
                     }
+                    removeChannels(gameID);
                     apps.picsGetProductInfo(gameID, null, false, false);
                 }
             }
@@ -190,8 +194,6 @@ public class Steam {
                     for (ServerChannel sc : rchannels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
-                        if (testChannel(app.getKey(), sc))
-                            continue;
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
                             channel.sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
@@ -203,33 +205,32 @@ public class Steam {
         });
     }
 
-    private static boolean testChannel(Integer gameID, ServerChannel sc) {
+    private static boolean testChannel(ServerChannel sc) {
         if (JDAManager.getJDA() == null)
             return true;
-        List<ServerChannel> rchannels = reportChannels.get(gameID);
         Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
         if (guild == null) {
             System.out.println("Steam can not find Guild " + sc.serverID);
-            rchannels.remove(sc);
-            if (rchannels.size() > 0)
-                reportChannels.put(gameID, rchannels);
-            else
-                reportChannels.remove(gameID);
-            CommandManager.saveSteamWatch();
+            channels2Remove.add(sc);
             return true;
         }
         TextChannel channel = guild.getTextChannelById(sc.channelId);
         if (channel == null) {
-            System.out.println("Steam can not find Channel " + sc.channelId);
-            rchannels.remove(sc);
+            System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.serverID);
+            channels2Remove.add(sc);
+            return true;
+        }
+        return false;
+    }
+    private static void removeChannels(Integer gameID) {
+        List<ServerChannel> rchannels = reportChannels.get(gameID);
+        if (rchannels.removeAll(channels2Remove)) {
             if (rchannels.size() > 0)
                 reportChannels.put(gameID, rchannels);
             else
                 reportChannels.remove(gameID);
             CommandManager.saveSteamWatch();
-            return true;
         }
-        return false;
     }
 
     private static void printKeyValue(KeyValue keyvalue, int depth) {

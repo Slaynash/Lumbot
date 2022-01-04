@@ -71,3 +71,4 @@ local.properties
 .idea
 /Lumbot.iml
 *.orig
+/.VSCodeCounter/*

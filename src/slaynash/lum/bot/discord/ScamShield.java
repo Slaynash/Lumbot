@@ -404,8 +404,14 @@ public class ScamShield {
                     ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
                     list.add(parsedDate);
                 }
+                Matcher matcher3 = Pattern.compile(" [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}").matcher(whois);
+                DateTimeFormatter f3 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it
+                while (matcher3.find()) {
+                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher3.group().strip(), f3);
+                    list.add(parsedDate);
+                }
                 if (list.isEmpty())
-                    throw new Exception("Can not find Whois Server for " + domain);
+                    throw new Exception("Can not find Whois Server for " + domain + "\n" + whois);
                 ZonedDateTime mindate = Collections.min(list);
                 if (mindate.isAfter(ZonedDateTime.now().minusDays(7)))
                     count++;

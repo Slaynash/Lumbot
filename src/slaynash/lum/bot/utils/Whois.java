@@ -81,7 +81,7 @@ public class Whois {
             out.println(domain);
             String s;
             while ((s = in.readLine()) != null) {
-                result.append(s);
+                result.append(s).append("\n");
             }
         }
         catch (Exception ignored) {

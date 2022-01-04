@@ -34,11 +34,16 @@ public class PrivateMessagesHandler {
             User author = event.getAuthor();
             String channelName = ("dm-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^&*()+=/]", "").toLowerCase();
             TextChannel guildchannel = mainguild.getTextChannelsByName(channelName, true).stream().findFirst().orElse(null);
+            String message = event.getMessage().getContentRaw();
+            for (Attachment attachment : event.getMessage().getAttachments()) {
+                message = message.concat("\n").concat(attachment.getUrl());
+            }
+            String finalMessage = message.trim();
             if (guildchannel == null) {
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(event.getMessage())).queue();
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(finalMessage)).queue();
             }
             else {
-                guildchannel.sendMessage(event.getMessage()).queue();
+                guildchannel.sendMessage(finalMessage).queue();
             }
         }
         // CommandManager.runAsClient(event);
