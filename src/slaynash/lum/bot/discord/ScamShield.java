@@ -1,6 +1,8 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -41,7 +43,6 @@ import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
-import slaynash.lum.bot.utils.Whois;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
@@ -390,12 +391,20 @@ public class ScamShield {
                 String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z0-9-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
-                if (Character.isDigit(domain.split("\\.", 2)[1].charAt(0)))
+                String tld = domain.split("\\.", 2)[1];
+                if (Character.isDigit(tld.charAt(0)))
                     continue;
 
                 if (domain.equalsIgnoreCase("youtu.be") || domain.equalsIgnoreCase("discord.gg"))
                     continue;
-                String whois = Whois.whois(domain).replace("+0000", "Z");
+                Process p = Runtime.getRuntime().exec("whois " + domain);
+                StringBuilder output = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line + "\n");
+                }
+                String whois = output.toString().replace("+0000", "Z");
                 Matcher matcher = Pattern.compile(" [0-9-]+T[0-9-:.]+(Z|\\+[0-9:]+)").matcher(whois);
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
                 DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;

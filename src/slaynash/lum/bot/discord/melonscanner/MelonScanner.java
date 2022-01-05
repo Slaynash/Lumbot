@@ -35,7 +35,7 @@ import slaynash.lum.bot.utils.Utils;
 public final class MelonScanner {
     public static final String LOG_IDENTIFIER = "MelonScanner";
 
-    public static String latestMLVersionRelease = "0.4.1"; // Is this really still hard coded?
+    public static String latestMLVersionRelease = "0.4.1";
     public static String latestMLVersionAlpha = "0.3.0";
 
     private static final Color melonPink = new Color(255, 59, 106);
@@ -267,7 +267,6 @@ public final class MelonScanner {
             final String modName = entry.getKey();
             final LogsModDetails logsModDetails = entry.getValue();
             final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.getVersion(logsModDetails.version) : null;
-            //String modHash = logsModDetails.hash;
 
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
                 if (modSpecificError.regex.equals(modName)) {
@@ -332,7 +331,7 @@ public final class MelonScanner {
 
     private static void checkForPirate(MelonScanContext context) {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
-            context.remainingModCount++; //trigger the `not edit the log` message
+            context.remainingModCount++; //trigger the `dont edit the log` message
         }
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             return;
@@ -471,9 +470,6 @@ public final class MelonScanner {
     }
 
     private static void fillEmbedDescription(MelonScanContext context) {
-        //if (omittedLines > 0)
-        //    message += "*Omitted " + omittedLines + " lines of length > 1000.*\n";
-
         if (context.consoleCopyPaste)
             context.reportMessage.append("*").append(Localization.get("melonscanner.reportmessage.copy", context.lang)).append("*\n");
 

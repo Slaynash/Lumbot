@@ -25,7 +25,7 @@ public final class MelonScannerReadPass {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             String line = "";
-            String lastLine; ///String title, String comment, Throwable exception, TextChannel textChannel) {
+            String lastLine;
             isMLOutdated = false;
             while ((lastLine = line) != null && (line = br.readLine()) != null) {
 
@@ -119,7 +119,6 @@ public final class MelonScannerReadPass {
         if (line.contains("bloons.td.6") || line.contains("bloons.td6") || line.matches("\\[[0-9.:]+] \\[btd6e_module_helper] v[0-9.]+")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
-            //reportUserPiratedBTD(event);
         }
         else if (line.matches(".*\\\\boneworks.v\\d.*")) {
             System.out.println("Pirated BW detected");

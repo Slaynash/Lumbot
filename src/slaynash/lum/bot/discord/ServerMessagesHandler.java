@@ -139,7 +139,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
-                event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested
+                event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
             if (event.getAuthor().getIdLong() == 574676945183440918L) // Yuri Mamoru#6818
                 event.getMessage().addReaction("🍪").queue(); // was requested https://discord.com/channels/439093693769711616/657545944136417280/927001826497269760
 
