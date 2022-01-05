@@ -67,11 +67,10 @@ public class ScamShield {
             put("free", 1);
             put("!!!", 1);
             put("booster", 1);
-            put("dollar", 1);
             put("download", 1);
             put("100%", 1);
             put("bro", 1);
-            put("nigger", 1);
+            put("broken", -1); //temporary solution until I can thing of a better way, issue is that all spaces are removed
             put("checkthis", 1);
             put("linkforyou", 1);
             put("screenshareinhd", 2);
@@ -92,6 +91,7 @@ public class ScamShield {
             put("mega.nz", 2);
             put("hour", 1);
             put("$", 1);
+            put("dollar", 1);
             put("discord", 1);
         }};
 
