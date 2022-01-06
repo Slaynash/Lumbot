@@ -405,28 +405,28 @@ public class ScamShield {
                     output.append(line + "\n");
                 }
                 String whois = output.toString().replace("+0000", "Z");
-                Matcher matcher = Pattern.compile(" [0-9-]+T[0-9-:.]+(Z|\\+[0-9:]+)").matcher(whois);
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
-                DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
+                Matcher matcher = Pattern.compile(" [0-9-]+T[0-9-:.]+(Z|\\+[0-9:]+)").matcher(whois);
                 while (matcher.find()) {
+                    DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                     ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
                     list.add(parsedDate);
                 }
                 Matcher matcher2 = Pattern.compile(" [0-9]{2}-[0-9a-zA-Z]{3}-[0-9]{4}").matcher(whois.replace(".", "-"));
-                DateTimeFormatter f2 = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
                 while (matcher2.find()) {
-                    LocalDate date = LocalDate.parse(matcher2.group().strip(), f2);
+                    DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
+                    LocalDate date = LocalDate.parse(matcher2.group().strip(), f);
                     ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
                     list.add(parsedDate);
                 }
-                Matcher matcher3 = Pattern.compile(" [0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}").matcher(whois);
-                DateTimeFormatter f3 = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it
+                Matcher matcher3 = Pattern.compile(" [0-9]{4}-?[0-9]{2}-?[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}").matcher(whois);
                 while (matcher3.find()) {
-                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher3.group().strip(), f3);
+                    DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
+                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher3.group().strip().replace("-", ""), f);
                     list.add(parsedDate);
                 }
                 if (list.isEmpty())
-                    throw new Exception("Can not find Whois Server for " + domain + "\n" + whois);
+                    throw new Exception("Can not find any dates for " + domain + "\n" + whois);
                 ZonedDateTime mindate = Collections.min(list);
                 if (mindate.isAfter(ZonedDateTime.now().minusDays(7)))
                     count++;
