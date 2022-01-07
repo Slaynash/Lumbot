@@ -191,13 +191,13 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(off|fuck(ing)?|stfu|kill|gun)\\b.*")) {
+        if (message.matches(".*\\b(off|fuck(ing)?|stfu|kill|murder|gun)\\b.*")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage(gunLum.get(random.nextInt(gunLum.size()))).queue();
             return true;
         }
 
-        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dum)\\b.*")) {
+        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dum|baka)\\b.*")) {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage(badLum.get(random.nextInt(badLum.size()))).queue();
             return true;
@@ -212,6 +212,12 @@ public class ChattyLum {
         if (message.matches(".*\\b(credit|stole|steal(ing)?)\\b.*")) {
             System.out.println("Lum stole Credit");
             event.getChannel().sendMessage("<:Hehe:792738744057724949>").queue();
+            return true;
+        }
+
+        if (message.matches(".*\\b(poor)\\b.*")) {
+            System.out.println("Lum stole Credit");
+            event.getChannel().sendMessage("<:Nyan_sigh:740365203694420068>").queue();
             return true;
         }
 
