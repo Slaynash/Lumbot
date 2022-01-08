@@ -2,10 +2,13 @@ package slaynash.lum.bot.discord;
 
 import java.util.List;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.User.Profile;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 
@@ -28,6 +31,7 @@ public class PrivateMessagesHandler {
             }
             if (ScamShield.checkForFishingPrivate(event)) {
                 System.out.println("I was DM'd a Scam");
+                return;
             }
 
             Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
@@ -38,12 +42,13 @@ public class PrivateMessagesHandler {
             for (Attachment attachment : event.getMessage().getAttachments()) {
                 message = message.concat("\n").concat(attachment.getUrl());
             }
-            String finalMessage = message.trim();
+            Profile profile = author.retrieveProfile().complete();
+            MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(author.getAsMention() + "\n\n" + message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(finalMessage)).queue();
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessageEmbeds(eb)).queue();
             }
             else {
-                guildchannel.sendMessage(finalMessage).queue();
+                guildchannel.sendMessageEmbeds(eb).queue();
             }
         }
         // CommandManager.runAsClient(event);
