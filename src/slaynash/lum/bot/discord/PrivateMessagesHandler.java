@@ -36,7 +36,7 @@ public class PrivateMessagesHandler {
 
             Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
             User author = event.getAuthor();
-            String channelName = ("dm-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^&*()+=/]", "").toLowerCase();
+            String channelName = ("dm-" + author.getName() + "-" + author.getAsTag() + "-" + author.getIdLong()).replaceAll("[!@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").toLowerCase();
             TextChannel guildchannel = mainguild.getTextChannelsByName(channelName, true).stream().findFirst().orElse(null);
             String message = event.getMessage().getContentRaw();
             for (Attachment attachment : event.getMessage().getAttachments()) {
