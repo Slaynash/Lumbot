@@ -58,6 +58,10 @@ public class ChattyLum {
 
     private static final ArrayList<String> thankedSentencesRare = new ArrayList<>(Arrays.asList(
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858",
+        "https://tenor.com/view/obama-pew-deal-with-it-finger-pistol-gif-18056062",
+        "https://tenor.com/view/your-welcome-gif-23991412",
+        "https://tenor.com/view/sparrow-welcome-pirate-pirates-of-the-caribbean-film-series-gif-17171224",
+        "https://tenor.com/view/dance-party-dance-off-dance-moves-anime-dress-gif-13775278",
         "Notices you senpai <:cirHappy:829458722634858496>"
     ));
 

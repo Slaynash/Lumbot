@@ -218,6 +218,14 @@
                 "error": "emmVRC failed to search for avatars. Please make sure that emmvrc.com is not blocked or try a VPN."
             },
             {
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(Login\\)} failed with exception.*",
+                "error": "emmVRC failed to Login. Try turning off the network in the emmVRC setting and turning it back on."
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] There was an issue initializing the network config\\. Using defaults..*",
+                "error": "emmVRC failed to initialize network config."
+            },
+            {
                 "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: TrustFailure.*",
                 "error": "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings."
             },

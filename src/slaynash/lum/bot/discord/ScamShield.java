@@ -135,13 +135,11 @@ public class ScamShield {
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
-        final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
-        if (domainAge > 0) {
-            ssFoundTerms.put("domainAge", domainAge * 2);
-        }
-
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+            final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
+            if (domainAge > 0)
+                ssFoundTerms.put("domainAge", domainAge * 2);
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
