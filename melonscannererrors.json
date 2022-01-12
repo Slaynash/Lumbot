@@ -139,6 +139,10 @@
             "error": "Mod config has been corrupted or empty. Please remove UserData/MelonPreferences.cfg"
         },
         {
+            "regex": ".*MelonPreferences\\.cfg: Tomlet\\.Exceptions\\.TomlInvalidValueException.*",
+            "error": "Mod config has Invalid Values. Try removing UserData/MelonPreferences.cfg to regenerate config."
+        },
+        {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
             "error": "Please either delete `UserData\\MelonPreferences.cfg` which will reset mod settings or manually to replace all commas (`,`) in numbers with periods (`.`)"
         },
