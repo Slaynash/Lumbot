@@ -27,6 +27,7 @@ public class LumGoneCommand extends Command {
             e.printStackTrace();
         }
         JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
+        event.getChannel().sendMessage("JK I am not allowed to leave").queue();
     }
 
     @Override

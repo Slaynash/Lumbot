@@ -74,6 +74,8 @@ public class ScamShield {
             put("broken", -1); //temporary solution until I can thing of a better way, issue is that all spaces are removed
             put("checkthis", 1);
             put("linkforyou", 1);
+            put("takeit)", 1);
+            put("whoisfirst?)", 1);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
@@ -139,7 +141,7 @@ public class ScamShield {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
-                ssFoundTerms.put("domainAge", domainAge * 2);
+                ssFoundTerms.put("domainAge", domainAge * 3);
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
@@ -190,6 +192,7 @@ public class ScamShield {
             return true;
         }
         else if (suspiciousResults.totalSuspicionCount > 5) {
+            System.out.println("suspiciousResults.sameauthormessages.size: " + suspiciousResults.sameauthormessages.size());
             handleCrossBan(event, suspiciousResults);
             return true;
         }
