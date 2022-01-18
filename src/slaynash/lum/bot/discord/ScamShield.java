@@ -383,6 +383,7 @@ public class ScamShield {
     }
 
     private static int domainAgeCheck(String message) {
+        int age = 14; //in days, less then but not equal will count
         int count = 0;
         try {
             List<String> urls = Utils.extractUrls(message);
@@ -429,7 +430,7 @@ public class ScamShield {
                 if (list.isEmpty())
                     throw new Exception("Can not find any dates for " + domain + "\n" + whois);
                 ZonedDateTime mindate = Collections.min(list);
-                if (mindate.isAfter(ZonedDateTime.now().minusDays(7)))
+                if (mindate.isAfter(ZonedDateTime.now().minusDays(age)))
                     count++;
             }
         }
