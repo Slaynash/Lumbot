@@ -430,6 +430,9 @@ public final class MelonScanner {
                 case "SCPSL":
                     context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                     break;
+                case "Secret Neighbor":
+                    context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
+                    break;
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
                     break;

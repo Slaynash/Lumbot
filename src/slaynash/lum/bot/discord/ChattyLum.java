@@ -177,6 +177,10 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920902875364864090/nya.mp4").queue();
             return true;
         }
+        if (message.replace(" ", "").contains("welcometovrchat")) {
+            event.getMessage().reply("https://cdn.discordapp.com/attachments/757187539638550610/932623632746836018/WELCOME_TO_VRCHAT_-_TFMJonny_Bo_Burnham_Parody.mp4").queue();
+            return true;
+        }
 
         boolean hasLum = message.matches(".*\\blum\\b.*");
         boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();

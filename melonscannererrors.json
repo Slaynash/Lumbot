@@ -21,6 +21,10 @@
             "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
         },
         {
+            "regex": ".*Access to the path.*is denied.*",
+            "error": "Access is denied. Make sure that your file permissions are set correctly."
+        },
+        {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
             "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },

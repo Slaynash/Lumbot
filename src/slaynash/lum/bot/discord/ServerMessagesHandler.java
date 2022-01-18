@@ -299,6 +299,12 @@ public class ServerMessagesHandler {
                     event.getChannel().sendMessage("https://vrchatapi.github.io/tutorials/tags/").queue();
                     return;
                 }
+
+                if (message.startsWith("!vrccrash")) {
+                    System.out.println("VRChat Crash");
+                    event.getChannel().sendMessage("https://help.vrchat.com/hc/en-us/articles/1500002247921-I-crashed-can-t-launch-VRChat-other-issues").queue();
+                    return;
+                }
             }
 
             if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
