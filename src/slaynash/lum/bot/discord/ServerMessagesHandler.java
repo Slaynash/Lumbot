@@ -14,6 +14,7 @@ import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
@@ -38,9 +39,13 @@ public class ServerMessagesHandler {
                     event.getChannel().getName().toLowerCase().startsWith("dm-") &&
                     !event.getMessage().getContentRaw().startsWith(".")) {
                 String[] userID = event.getChannel().getName().split("-");
-                JDAManager.getJDA().getUserById(userID[userID.length - 1]).openPrivateChannel()
-                    .queue(channel -> channel.sendMessage(event.getMessage()).queue(),
-                        error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to send message to target user: " + error.getMessage(), Color.red)));
+                User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
+                if (user == null) {
+                    Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
+                    return;
+                }
+                user.openPrivateChannel().queue(channel -> channel.sendMessage(event.getMessage()).queue(null, e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
+                        error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
                 return;
             }
 
