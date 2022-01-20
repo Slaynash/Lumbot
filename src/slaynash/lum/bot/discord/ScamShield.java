@@ -75,7 +75,7 @@ public class ScamShield {
             put("checkthis", 1);
             put("linkforyou", 1);
             put("takeit)", 1);
-            put("whoisfirst?)", 1);
+            put("whoisfirst?)", 2);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
@@ -109,7 +109,7 @@ public class ScamShield {
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
-        message = new StringBuilder(message.toString().toLowerCase().replaceAll("[':,. \n\t]", ""));
+        message = new StringBuilder(message.toString().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", ""));
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
@@ -139,6 +139,8 @@ public class ScamShield {
 
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        }
+        if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 0) {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge * 3);
