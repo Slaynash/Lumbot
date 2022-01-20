@@ -406,7 +406,7 @@ public class ScamShield {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    output.append(line + "\n");
+                    output.append(line).append("\n");
                 }
                 String whois = output.toString().replace("+0000", "Z");
                 ArrayList<ZonedDateTime> list = new ArrayList<>();

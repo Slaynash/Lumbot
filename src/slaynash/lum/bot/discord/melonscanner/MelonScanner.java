@@ -398,6 +398,7 @@ public final class MelonScanner {
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                     break;
                 case "gunfirereborn":
+                case "Gunfire Reborn":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/868613876600680558/Gunfire_Reborn_Logo.png");
                     break;
                 case "guigubahuang":
