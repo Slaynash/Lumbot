@@ -78,7 +78,7 @@ public final class LogCounter {
 
             if (logCount != previousLogCount || sslogCount != previousSSCount)
                 JDAManager.getJDA().getPresence().setActivity(Activity.watching(sslogCount + " scammers being forcfully removed and "
-                    + logCount + " melons squashed in 24 hours. I'm in " + JDAManager.getJDA().getGuilds().size() + " guilds!"));
+                    + logCount + " melons squashed in 24 hours. In " + JDAManager.getJDA().getGuilds().size() + " guilds!"));
             previousLogCount = logCount;
             previousSSCount = sslogCount;
         }

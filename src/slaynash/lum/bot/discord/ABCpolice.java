@@ -15,23 +15,23 @@ public class ABCpolice {
             return false;
         if (event.getAuthor().isBot() || event.getMessage().isEdited())
             return true;
-        String message = event.getMessage().getContentStripped().toLowerCase();
+        String message = event.getMessage().getContentStripped().trim();
         System.out.println(event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
-        List<Message> chain = history;
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
-        Optional<Message> find = chain.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
-        find.ifPresent(value -> chain.subList(chain.indexOf(value), chain.size()).clear());
-        chain.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
-        if (chain.size() == 0) //new channel or wipe or bot spam
+        Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
+        find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());
+        history.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
+        if (history.size() == 0) //new channel or wipe or bot spam
             return true;
         char currentLetter = convertChar(message);
-        char previousLetter = convertChar(chain.get(0).getContentStripped());
+        char previousLetter = convertChar(history.get(0).getContentStripped());
         Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         boolean timing = previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
 
         if (brokenChain || previousLetter == 'z')
             previousLetter = 'a' - 1;
+        System.out.println("abc previousLetter:" + previousLetter + " currentLetter:" + currentLetter + " brokenChain:" + brokenChain);
 
         if (message.length() == 0) {
             System.out.println("abc empty message");
@@ -50,9 +50,14 @@ public class ABCpolice {
             event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`").queue();
             return true;
         }
-        else if (!brokenChain && timing && chain.size() > 1 && (chain.get(0).getAuthor().equals(event.getAuthor()) || chain.get(1).getAuthor().equals(event.getAuthor()))) {
+        else if (!brokenChain && timing && history.size() > 1 && (history.get(0).getAuthor().equals(event.getAuthor()) || history.get(1).getAuthor().equals(event.getAuthor()))) {
             System.out.println("abc spacing not meet");
             event.getChannel().sendMessage("User spacing rule was not met <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
+            return true;
+        }
+        else if (currentLetter == 'z') {
+            System.out.println("abc looped around");
+            event.getChannel().sendMessage("おめでとう。 あなたはめちゃくちゃせずにそれを作りました。<:Neko_dab:865328473719439381>").queue();
             return true;
         }
 

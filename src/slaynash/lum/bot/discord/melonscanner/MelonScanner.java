@@ -367,6 +367,9 @@ public final class MelonScanner {
                 case "Audica":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                     break;
+                case "BattleBit":
+                    context.embedBuilder.setThumbnail("https://static.wikia.nocookie.net/battlebit_gamepedia_en/images/b/b3/Bbpng.png");
+                    break;
                 case "BloonsTD6":
                     if (context.pirate)
                         context.embedBuilder.setThumbnail("https://i.redd.it/76et0pfu87e31.png"); //sad monkey
