@@ -51,7 +51,7 @@ public class ScamShield {
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
 
     private static final ConcurrentHashMap<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
-    private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space
+    private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space, do test term with Junidecode because it can cause some weird results
             put("@everyone", 2);
             put("money", 1);
             put("loot", 1);
@@ -76,7 +76,10 @@ public class ScamShield {
             put("linkforyou", 1);
             put("takeit)", 2);
             put("whoisfirst?)", 2);
-            put("тотисъeл)", 2);
+            put("toticel)", 2); //тoтиcъeл)
+            put("giftiedasubscription!", 2); //typo is from Junidecode
+            put("dissord", 2); //typo is from Junidecode
+            put("giftied", 1); //typo is from Junidecode
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
@@ -106,11 +109,11 @@ public class ScamShield {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
             ssFoundTerms.put("newAccount", 1);
-        StringBuilder message = new StringBuilder(Junidecode.unidecode(event.getMessage().getContentStripped()));
+        StringBuilder message = new StringBuilder(event.getMessage().getContentStripped());
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
-        final String finalMessage = message.toString().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
+        final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
