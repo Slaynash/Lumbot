@@ -74,8 +74,9 @@ public class ScamShield {
             put("broken", -1); //temporary solution until I can thing of a better way, issue is that all spaces are removed
             put("checkthis", 1);
             put("linkforyou", 1);
-            put("takeit)", 1);
+            put("takeit)", 2);
             put("whoisfirst?)", 2);
+            put("тотисъeл)", 2);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
@@ -109,7 +110,7 @@ public class ScamShield {
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
-        message = new StringBuilder(message.toString().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", ""));
+        final String finalMessage = message.toString().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
@@ -133,23 +134,22 @@ public class ScamShield {
             ssFoundTerms.put("Crossposted", (int) crossPost);
         }
 
-        final String finalMessage = message.toString();
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         ssFoundTerms.putAll(ssTermsMatches.entrySet().stream().filter(f -> finalMessage.matches(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
 
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
-        if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 0) {
-            final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
-            if (domainAge > 0)
-                ssFoundTerms.put("domainAge", domainAge * 3);
-        }
+
+        final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
+        if (domainAge > 0)
+            ssFoundTerms.put("domainAge", domainAge * 3);
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
         if (suspiciousValue > 0) {
             System.out.println("Scam Shield points for this message: " + suspiciousValue + (crossPost > 0 ? " Crossposted " : " ") + ssFoundTerms);
+            System.out.println("Final message: " + finalMessage);
         }
         boolean massPing = event.getMessage().getMentions(MentionType.USER).size() > 3; //kick mass ping selfbots
 
@@ -221,6 +221,7 @@ public class ScamShield {
 
     private static boolean handleCrossBan(MessageReceivedEvent event, ScamResults suspiciousResults) {
         System.out.println(event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()));
+        if (event.getAuthor().getIdLong() == 761335833307119658L) return false; //please don't cross ban my alt account, it is annoying to rejoin after every test
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
