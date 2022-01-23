@@ -382,6 +382,9 @@ public final class MelonScanner {
                     else
                         context.embedBuilder.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
                     break;
+                case "Car Mechanic Simulator 2021":
+                    context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans/29076066/86ec92aabfad0878253d3e47ef4133e3e3228471.png");
+                    break;
                 case "Crab Game":
                     context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steam/apps/1782210/header.jpg");
                     break;
@@ -445,6 +448,9 @@ public final class MelonScanner {
                     break;
                 case "The Golf Club 2019 ProTee": //has anticheats
                     context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
+                    break;
+                case "UNO":
+                    context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                     break;
                 case "VRChat":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");

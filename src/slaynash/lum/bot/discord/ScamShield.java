@@ -76,7 +76,7 @@ public class ScamShield {
             put("linkforyou", 1);
             put("takeit)", 2);
             put("whoisfirst?)", 2);
-            put("toticel)", 2); //тoтиcъeл)
+            put("totisel)", 2); //тотисъeл)
             put("giftiedasubscription!", 2); //typo is from Junidecode
             put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
