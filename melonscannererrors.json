@@ -283,7 +283,7 @@
             },
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Could not load the programs JSON file. Please make sure everything is correctly formatted!",
-                "error": "emmVRC Programs is not currently functional There is a [GitHub Ticket opened about it](https://github.com/emmVRC/emmVRC-Public/issues/1625)."
+                "error": "emmVRC Programs is not formatted correctly. Try deleting `VRChat\\UserData\\emmVRC\\programs.json` and relaunch VRChat."
             }
         ],
         "BloonsTD6": [
