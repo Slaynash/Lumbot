@@ -267,7 +267,12 @@ public class ScamShield {
         boolean status = false;
         try {
             Guild guild = event.getJDA().getGuildById(guildID);
+            assert guild != null;
             Member member = guild.getMember(event.getAuthor());
+            if (member == null) {
+                System.out.println(event.getAuthor().getAsTag() + " is no longer in " + guild.getName());
+                return false;
+            }
             String sourceName;
             boolean cross;
             if (event.getChannelType() == ChannelType.PRIVATE) {
@@ -300,7 +305,7 @@ public class ScamShield {
             else
                 embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-            if (member != null && !guild.getSelfMember().canInteract(member) && suspiciousResults.sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
+            if (!guild.getSelfMember().canInteract(member) && suspiciousResults.sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
                 if (guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();

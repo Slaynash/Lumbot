@@ -36,19 +36,13 @@ public class Purge extends Command {
 
                 Message replied = message.getReferencedMessage();
                 List<Message> messageList = new ArrayList<>();
-                List<Message> retrievedHistory = new ArrayList<>(); // set to replied to get the ball rolling
                 if (replied != null) {
+                    messageList = event.getTextChannel().getIterableHistory().takeUntilAsync(r -> r.equals(replied)).get();
                     messageList.add(replied); //add replied message to be removed
-                    retrievedHistory.add(replied); //add replied message to start looping, this will not be added to be removed
-                    do {
-                        retrievedHistory = event.getChannel().getHistoryAfter(retrievedHistory.get(0), 100).complete().getRetrievedHistory(); //100 is max you can get
-                        messageList.addAll(retrievedHistory);
-                    }
-                    while (retrievedHistory.size() > 0 && !retrievedHistory.get(0).equals(message));
 
                     if (message.getContentRaw().startsWith(getName() + "u")) {
-                        messageList.removeIf(m -> m.getAuthor().getIdLong() != replied.getAuthor().getIdLong());
-                        if (message.getAuthor().getIdLong() != replied.getAuthor().getIdLong())
+                        messageList.removeIf(m -> !m.getAuthor().equals(replied.getAuthor()));
+                        if (!message.getAuthor().equals(replied.getAuthor()))
                             messageList.add(message); // add message back to be removed
                         System.out.println("User Reply purging " + messageList.size() + " messages");
                     }
@@ -58,12 +52,7 @@ public class Purge extends Command {
                 // else if author ID #messages
                 else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
                     int count = Integer.parseInt(params[1]);
-                    messageList.add(message);
-                    while (count > 0) {
-                        retrievedHistory = event.getChannel().getHistoryBefore(messageList.get(messageList.size() - 1), Math.min(count, 100)).complete().getRetrievedHistory();
-                        messageList.addAll(retrievedHistory);
-                        count = count - retrievedHistory.size();
-                    }
+                    messageList = event.getTextChannel().getIterableHistory().takeAsync(count + 1).get();
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
