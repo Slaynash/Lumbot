@@ -448,6 +448,7 @@ public class ScamShield {
         }
         catch (Exception e) {
             JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to check domain age\n" + e.getMessage(), Color.RED)).queue();
+            e.printStackTrace();
         }
         return count;
     }

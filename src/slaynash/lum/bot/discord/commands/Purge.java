@@ -23,7 +23,7 @@ public class Purge extends Command {
             event.getMessage().reply("I need manage message permission to be able to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
             return;
         }
-        Thread thread = new Thread(() -> {
+        new Thread(() -> {
             try {
                 Message message = event.getMessage();
                 if (!event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) {
@@ -101,20 +101,7 @@ public class Purge extends Command {
             catch (Exception e) {
                 ExceptionUtils.reportException("An error has occurred while running purge:", e, event.getTextChannel());
             }
-        });
-        new Thread(() -> {
-            thread.start();
-            try {
-                Thread.sleep(20 * 60 * 1000);
-            }
-            catch (InterruptedException ignored) {
-            }
-            if (thread.isAlive()) {
-                thread.interrupt(); //stop purge if taking too long because .complete gotten stuck
-                System.out.println("Stopping purge because it took too long");
-                event.getTextChannel().sendMessage("Stopping purge, It took way too long.").queue();
-            }
-        }).start();
+        }, "Purge").start();
     }
 
     @Override
