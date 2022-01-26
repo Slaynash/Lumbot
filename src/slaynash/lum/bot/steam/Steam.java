@@ -200,7 +200,8 @@ public class Steam {
                         mb.setContent("");
                     }
                 }
-                gameDetails.put(app.getKey(), newAppDetails);
+                if (newAppDetails != null)
+                    gameDetails.put(app.getKey(), newAppDetails);
             }
         });
     }

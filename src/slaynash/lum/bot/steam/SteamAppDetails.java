@@ -78,6 +78,8 @@ public class SteamAppDetails {
         }
 
         public static SteamAppDepots compare(SteamAppDepots oldDepots, SteamAppDepots newDepots) {
+            if (oldDepots == null || newDepots == null || oldDepots.branches == null || newDepots.branches == null || oldDepots.elements == null || newDepots.elements == null)
+                return null;
             SteamAppDepots ret = new SteamAppDepots();
             boolean changed;
 
