@@ -63,15 +63,13 @@ public class MelonScannerApisManager {
     private static boolean doneFirstInit = false;
 
     static {
-        MelonScannerApi api;
-        apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json"));
-        api.compareUsingHashes = true;
-        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
-        // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
-        apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
-        apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
-        apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
-        // api.isGZip = true;
+        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true));
+        apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        // apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
+        apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
+        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
     }
 
@@ -310,7 +308,7 @@ public class MelonScannerApisManager {
         public final String name;
         public final String endpoint;
         public final boolean isGZip = false;
-        public boolean compareUsingHashes = false;
+        public final boolean compareUsingHashes;
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 
@@ -318,6 +316,13 @@ public class MelonScannerApisManager {
             this.game = game;
             this.name = name;
             this.endpoint = endpoint;
+            this.compareUsingHashes = false;
+        }
+        public MelonScannerApi(String game, String name, String endpoint, boolean compareUsingHashes) {
+            this.game = game;
+            this.name = name;
+            this.endpoint = endpoint;
+            this.compareUsingHashes = compareUsingHashes;
         }
 
         public String getScriptName() {

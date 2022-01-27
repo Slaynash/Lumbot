@@ -17,7 +17,6 @@ jobs:
       - name: Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.9.1
         with:
-          workflow_id: 10988119,6755916,6740416,10988120
           access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v2
@@ -47,25 +46,13 @@ jobs:
         with:
           args: |
             -F 'buildfile=@target/${{ env.buildname }}' \
-            -F 'melonscannererrors=@melonscannererrors.json' \
-            -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
-            -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
-            -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
-            -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
-            -F 'apiscripts/tld=@apiscripts/tld.lua' \
             https://srv1.slaynash.fr/uploadlum.php
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            python3 ~/downloadAndRestart.py ${{ env.buildname }} \
-            melonscannererrors.json \
-            apiscripts/vrcmg.lua \
-            apiscripts/btd6_inferno.lua \
-            apiscripts/btd6_gurrenm4.lua \
-            apiscripts/audica_ahriana.lua \
-            apiscripts/tld.lua
+            python3 ~/downloadAndRestart.py ${{ env.buildname }}
 
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}

@@ -397,6 +397,9 @@ public final class MelonScanner {
                 case "EscapeFromTarkov":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                     break;
+                case "Eye of the Temple":
+                    context.embedBuilder.setThumbnail("https://portforward.com/eye-of-the-temple/eye-of-the-temple-logo-large.webp");
+                    break;
                 case "Feign":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
                     break;
