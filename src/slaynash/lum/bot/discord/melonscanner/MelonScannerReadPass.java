@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,13 @@ public final class MelonScannerReadPass {
                     unknownErrorCheck(line, context);
 
             }
+        }
+        catch (SocketTimeoutException e) {
+            if (context.retryCount >= 3) {
+                throw e;
+            }
+            Thread.sleep(5000);
+            doPass(context);
         }
         finally {
             context.bufferedReader = null;

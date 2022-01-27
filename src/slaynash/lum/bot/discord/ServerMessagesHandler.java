@@ -301,7 +301,7 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!tags")) {
                     System.out.println("VRChat Tags printed");
-                    event.getChannel().sendMessage("https://vrchatapi.github.io/tutorials/tags/").queue();
+                    event.getChannel().sendMessage("https://i.imgur.com/dBoxDVG.png\nhttps://vrchatapi.github.io/tutorials/tags/").queue();
                     return;
                 }
 

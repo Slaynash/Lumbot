@@ -16,6 +16,8 @@ public class MLHashRegisterCommand extends Command {
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
         if (!includeInHelp(paramMessageReceivedEvent))
             return;
+        if (paramMessageReceivedEvent.getMessage().isEdited())
+            return;
 
         String[] split = paramString.split(" ");
         String usage = "Usage: " + getName() + " <release|alpha> <ml version> <ml hash x86> <ml hash x64>";

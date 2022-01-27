@@ -23,6 +23,7 @@ public class MelonScanContext {
     public BufferedReader bufferedReader;
 
     public int omittedLineCount = 0;
+    public int retryCount = 0;
 
     public boolean pirate = false;
     public boolean consoleCopyPaste = false;
