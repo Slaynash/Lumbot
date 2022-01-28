@@ -23,17 +23,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Upload to server
-        uses: wei/curl@v1.1.1
-        with:
-          args: |
-            -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
-            -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
-            -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
-            -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
-            -F 'apiscripts/tld=@apiscripts/tld.lua' \
-            -F 'apiscripts/uno=@apiscripts/uno.lua' \
-            -F 'apiscripts/tld=@apiscripts/thunderstore.lua' \
-            https://srv1.slaynash.fr/uploadlum.php
+        run: |
+          curl \
+          -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
+          -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
+          -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
+          -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
+          -F 'apiscripts/tld=@apiscripts/tld.lua' \
+          -F 'apiscripts/uno=@apiscripts/uno.lua' \
+          -F 'apiscripts/thunderstore=@apiscripts/thunderstore.lua' \
+          https://srv1.slaynash.fr/uploadlum.php
+        shell: bash
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release

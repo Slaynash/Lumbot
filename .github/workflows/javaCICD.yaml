@@ -42,11 +42,11 @@ jobs:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}
       - name: Upload to server
-        uses: wei/curl@v1.1.1
-        with:
-          args: |
-            -F 'buildfile=@target/${{ env.buildname }}' \
-            https://srv1.slaynash.fr/uploadlum.php
+        run: |
+          curl \
+          -F 'buildfile=@target/${{ env.buildname }}' \
+          https://srv1.slaynash.fr/uploadlum.php
+        shell: bash
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release

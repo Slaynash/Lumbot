@@ -23,11 +23,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Upload to server
-        uses: wei/curl@v1.1.1
-        with:
-          args: |
-            -F 'melonscannererrors=@melonscannererrors.json' \
-            https://srv1.slaynash.fr/uploadlum.php
+        run: |
+          curl \
+          -F 'melonscannererrors=@melonscannererrors.json' \
+          https://srv1.slaynash.fr/uploadlum.php
+        shell: bash
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
