@@ -37,6 +37,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -57,7 +58,6 @@ public class ScamShield {
             put("loot", 1);
             put("csgo", 2);
             put("trade", 2);
-            put("skin", 1);
             put("knife", 1);
             put("offer", 1);
             put("btc", 1);
@@ -451,6 +451,12 @@ public class ScamShield {
             e.printStackTrace();
         }
         return count;
+    }
+
+    public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete
+        Long mID = event.getMessageIdLong();
+        allMessages.removeIf(m -> mID == m.getMessage().getIdLong());
+        handledMessages.removeIf(m -> mID == m.messageReceivedEvent.getMessageIdLong());
     }
 
     public static class ScamResults {

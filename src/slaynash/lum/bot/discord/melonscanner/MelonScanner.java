@@ -403,6 +403,9 @@ public final class MelonScanner {
                 case "Feign":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
                     break;
+                case "GodsOfGravity":
+                    context.embedBuilder.setThumbnail("https://cdn.sidequestvr.com/file/140588/cover-art-landscape-calltoaction.png");
+                    break;
                 case "Ghost Hunters Corp":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                     break;
@@ -460,6 +463,9 @@ public final class MelonScanner {
                     break;
                 case "Wobbly Life":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/887755823038754886/Wobbly_Life.png");
+                    break;
+                case "Zenith":
+                    context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                     break;
                 default:
             }

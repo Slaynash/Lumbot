@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -47,6 +48,7 @@ import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
+import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
@@ -413,6 +415,11 @@ public class Main extends ListenerAdapter {
         else {
             ServerMessagesHandler.handle(event);
         }
+    }
+
+    @Override
+    public void onMessageDelete(MessageDeleteEvent event) {
+        ScamShield.checkDeleted(event);
     }
 
     @Override

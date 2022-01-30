@@ -126,7 +126,8 @@ public class ChattyLum {
         "<:Neko_sip:865328472560500786>",
         "<:Neko_sweat:865328470702817306>",
         "<:Neko_what:865328474238353418>",
-        "<:Neko_wondering:865328471492001833>"
+        "<:Neko_wondering:865328471492001833>",
+        "https://c.tenor.com/k5tS3My-PKcAAAAC/steve-harvey-speechless.gif"
     ));
 
     private static final ArrayList<String> gunLum = new ArrayList<>(Arrays.asList(
@@ -193,7 +194,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|sexy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
+        if (message.matches(".*\\b(good|best|nice|great(|est)|love(ly)?|nerd|sexy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum.get(random.nextInt(niceLum.size()))).queue();
             return true;
