@@ -80,6 +80,7 @@ public class ScamShield {
             put("giftiedasubscription!", 2); //typo is from Junidecode
             put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
+            put("pleasetryclaimthisquickly", 1);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
@@ -183,7 +184,7 @@ public class ScamShield {
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue < 3)
             suspiciousResults.calulatedValue = 0;
-        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue <= 7) //if one message gets 8+ then it is an instant kick on first message
+        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue < 7) //if one message gets 8+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
