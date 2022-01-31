@@ -127,6 +127,7 @@ public final class MelonScanner {
             issueFound |= misplacedModsCheck(context);
             issueFound |= misplacedPluginsCheck(context);
             issueFound |= outdatedModsCheck(context);
+            issueFound |= newerModsCheck(context);
             issueFound |= unknownModsCheck(context);
             issueFound |= modsThrowingErrorsCheck(context);
             issueFound |= minorErrorsHandling(context);
@@ -304,9 +305,12 @@ public final class MelonScanner {
             else if (CommandManager.brokenMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) != 0) { //TODO create a new field for newer then published mod
+            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
                 context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
+            }
+            else if (VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
+                context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
             }
         }
     }
@@ -822,6 +826,32 @@ public final class MelonScanner {
                 error.insert(0, muMessage + "\n");
 
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.ORANGE;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean newerModsCheck(MelonScanContext context) {
+        if (context.newerMods.size() > 0) {
+
+            StringBuilder error = new StringBuilder();
+            String nextModLine = computeOutdatedModLine(context.newerMods.get(0));
+            for (int i = 0; i < context.newerMods.size() && i < 10; ++i) {
+                error.append(nextModLine);
+
+                if (i + 1 < context.newerMods.size())
+                    nextModLine = computeOutdatedModLine(context.newerMods.get(i + 1));
+                else
+                    break; // no next outdated Mod
+
+                if (error.length() + nextModLine.length() + 18 > MessageEmbed.VALUE_MAX_LENGTH) {
+                    error.append(Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.newerMods.size() - i)).append("\n"); //length is about 17 char
+                    break;
+                }
+            }
+
+            context.embedBuilder.addField(Localization.get("melonscanner.newermods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
             return true;
         }
