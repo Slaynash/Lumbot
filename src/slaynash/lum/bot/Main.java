@@ -5,9 +5,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
@@ -53,6 +55,7 @@ import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
+import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.slashs.Slash;
@@ -152,6 +155,21 @@ public class Main extends ListenerAdapter {
 
         //registerCommands();
         Moderation.voiceStartup();
+
+        new AddMissingRoles().addMissing(null);
+
+        Timer timer = new Timer();
+        Calendar date = Calendar.getInstance();
+        date.set(Calendar.HOUR_OF_DAY, 0);
+        date.set(Calendar.MINUTE, 0);
+        date.set(Calendar.SECOND, 1);
+        date.set(Calendar.MILLISECOND, 1);
+        date.add(Calendar.DATE, 1);
+        timer.schedule(
+            new ClearDMs(),
+            date.getTime(),
+            1000 * 60 * 60 * 24 * 7
+        );
 
         System.out.println("LUM Started!");
     }
@@ -418,7 +436,7 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageDelete(MessageDeleteEvent event) {
+    public void onMessageDelete(@NotNull MessageDeleteEvent event) {
         ScamShield.checkDeleted(event);
     }
 

@@ -45,7 +45,15 @@ public class PrivateMessagesHandler {
             Profile profile = author.retrieveProfile().complete();
             MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(author.getAsMention() + "\n\n" + message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                StringBuilder sb = new StringBuilder();
+                event.getPrivateChannel().getHistoryBefore(message, 100).complete().getRetrievedHistory().forEach(m -> {
+                    sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ").append(m.getContentRaw()).append(" ");
+                    if (m.getAttachments().size() > 0) {
+                        m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
+                    }
+                    sb.append("\n");
+                });
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
             }
             else {
                 guildchannel.sendMessageEmbeds(eb).queue();
@@ -55,7 +63,7 @@ public class PrivateMessagesHandler {
     }
 
     @SuppressWarnings("EmptyMethod")
-    public static void handle(MessageUpdateEvent event) {
+    public static void handle(MessageUpdateEvent ignoredEvent) {
         //handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
     }
 }

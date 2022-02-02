@@ -17,9 +17,31 @@ public class AddMissingRoles extends Command {
         if (!includeInHelp(event))
             return;
 
-        event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
-        AtomicInteger runCount = new AtomicInteger(0);
+        addMissing(event);
+    }
 
+    @Override
+    protected boolean matchPattern(String paramString) {
+        return paramString.startsWith(getName());
+    }
+
+    @Override
+    public boolean includeInHelp(MessageReceivedEvent event) {
+        return CrossServerUtils.isLumDev(event.getMember());
+    }
+
+    @Override
+    public String getHelpDescription() {
+        return "Scans throgh all members for missing roles from screening acceptance";
+    }
+
+    @Override
+    public String getName() {
+        return "l!addmissing";
+    }
+
+    public void addMissing(MessageReceivedEvent event) {
+        AtomicInteger runCount = new AtomicInteger(0);
         CommandManager.autoScreeningRoles.forEach((k, v) -> {
             Guild guild = JDAManager.getJDA().getGuildById(k);
             if (guild == null)
@@ -44,27 +66,8 @@ public class AddMissingRoles extends Command {
                 }
             });
         });
-
-        event.getMessage().reply("Added roles to " + runCount.get() + " members").queue();
-    }
-
-    @Override
-    protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
-    }
-
-    @Override
-    public boolean includeInHelp(MessageReceivedEvent event) {
-        return CrossServerUtils.isLumDev(event.getMember());
-    }
-
-    @Override
-    public String getHelpDescription() {
-        return "Scans throgh all members for missing roles from screening acceptance";
-    }
-
-    @Override
-    public String getName() {
-        return "l!addmissing";
+        if (event != null) {
+            event.getMessage().reply("Added roles to " + runCount.get() + " members").queue();
+        }
     }
 }

@@ -455,7 +455,7 @@ public class ScamShield {
     }
 
     public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete
-        Long mID = event.getMessageIdLong();
+        long mID = event.getMessageIdLong();
         allMessages.removeIf(m -> mID == m.getMessage().getIdLong());
         handledMessages.removeIf(m -> mID == m.messageReceivedEvent.getMessageIdLong());
     }
