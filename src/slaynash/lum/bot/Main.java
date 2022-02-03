@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateMaxMembersEvent;
+import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
@@ -590,6 +591,13 @@ public class Main extends ListenerAdapter {
             else {
                 event.getGuild().getSystemChannel().sendMessage("The max guild member has been lowered to " + event.getNewMaxMembers() + " from " + event.getOldMaxMembers()).queue();
             }
+        }
+    }
+
+    @Override
+    public void onGuildUpdateOwner(GuildUpdateOwnerEvent event) {
+        if (event.getGuild().getSystemChannel().canTalk()) {
+            event.getGuild().getSystemChannel().sendMessage("Congratulations " + event.getNewOwner().getEffectiveName() + " is the new owner of " + event.getGuild().getName()).queue();
         }
     }
 }

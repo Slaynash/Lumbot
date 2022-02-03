@@ -46,7 +46,7 @@ public class PrivateMessagesHandler {
             MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(author.getAsMention() + "\n\n" + message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
                 StringBuilder sb = new StringBuilder();
-                event.getPrivateChannel().getHistoryBefore(message, 100).complete().getRetrievedHistory().forEach(m -> {
+                event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory().forEach(m -> {
                     sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ").append(m.getContentRaw()).append(" ");
                     if (m.getAttachments().size() > 0) {
                         m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));

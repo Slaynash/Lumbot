@@ -87,6 +87,7 @@ public final class MelonScannerReadPass {
             if (context.retryCount >= 3) {
                 throw e;
             }
+            context.retryCount++;
             Thread.sleep(5000);
             doPass(context);
         }
