@@ -53,10 +53,15 @@ public class PrivateMessagesHandler {
                     }
                     sb.append("\n");
                 });
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                if (sb.toString().isBlank())
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                else
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName() + ".txt").flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
             }
             else {
                 guildchannel.sendMessageEmbeds(eb).queue();
+                event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
             }
         }
         // CommandManager.runAsClient(event);

@@ -395,14 +395,29 @@ public final class MelonScanner {
                 case "Demeo":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
                     break;
+                case "DEVOUR":
+                    context.embedBuilder.setThumbnail("https://cdn.shopify.com/s/files/1/0596/5506/1664/files/solid_logo_07bfc008-42ec-4f9c-b64a-7d4dbb9073f8.png");
+                    break;
                 case "Eco":
                     context.embedBuilder.setThumbnail("https://wiki.play.eco/logo.png");
+                    break;
+                case "Eleven":
+                    context.embedBuilder.setThumbnail("https://habigames.ru/images/logo/054/logo_eleven-table-tennis-vr.png");
+                    break;
+                case "Eliatopia":
+                    context.embedBuilder.setThumbnail("https://images.crazygames.com/eliatopia/20210722142022/eliatopia-cover");
+                    break;
+                case "Enter the Gungeon":
+                    context.embedBuilder.setThumbnail("https://static.wikia.nocookie.net/vsbattles/images/1/12/Enter-the-gungeon-logo.png");
                     break;
                 case "EscapeFromTarkov":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                     break;
                 case "Eye of the Temple":
                     context.embedBuilder.setThumbnail("https://portforward.com/eye-of-the-temple/eye-of-the-temple-logo-large.webp");
+                    break;
+                case "FallGuys_client":
+                    context.embedBuilder.setThumbnail("https://seeklogo.com/images/F/fall-guys-logo-0809CCA0D8-seeklogo.com.png");
                     break;
                 case "Feign":
                     context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
@@ -420,6 +435,9 @@ public final class MelonScanner {
                 case "guigubahuang":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                     break;
+                case "Hired Ops":
+                    context.embedBuilder.setThumbnail("https://www.hiredops.com/themes/hiredops/images/logo.png");
+                    break;
                 case "Hot Dogs Horseshoes and Hand Grenades":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/871468287144390698/Hot_Dogs_Horseshoes_and_Hand_Grenades.png");
                     break;
@@ -428,6 +446,9 @@ public final class MelonScanner {
                     break;
                 case "Job Simulator":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/0kmohjK.png");
+                    break;
+                case "Karlson":
+                    context.embedBuilder.setThumbnail("https://i.redd.it/ldxbkjuziad51.png");
                     break;
                 case "Muse Dash":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
@@ -444,14 +465,26 @@ public final class MelonScanner {
                 case "raot":
                     context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
                     break;
+                case "Reventure":
+                    context.embedBuilder.setThumbnail("https://i2.wp.com/maroonersrock.com/wp-content/uploads/2019/08/logo.png");
+                    break;
+                case "Run": //what a crappy unity name, its bro falls
+                    context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
+                    break;
                 case "SCPSL":
                     context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                     break;
                 case "Secret Neighbor":
                     context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
                     break;
+                case "Stick Fight: The Game":
+                    context.embedBuilder.setThumbnail("https://toppng.com//public/uploads/preview/color-stick-fight-the-game-115629098126na96uprb2.png");
+                    break;
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
+                    break;
+                case "TheForest":
+                    context.embedBuilder.setThumbnail("https://www.logolynx.com/images/logolynx/f6/f6b42ce3f8dc299e74bd3c77bc0ec54a.png");
                     break;
                 case "TheLongDark":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
@@ -459,11 +492,17 @@ public final class MelonScanner {
                 case "The Golf Club 2019 ProTee": //has anticheats
                     context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
                     break;
+                case "ULTRAKILL":
+                    context.embedBuilder.setThumbnail("https://cdn2.steamgriddb.com/file/sgdb-cdn/logo/a295a55e7c3b2af6f363711442900b96.png");
+                    break;
                 case "UNO":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                     break;
                 case "VRChat":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
+                    break;
+                case "Wasteland 3":
+                    context.embedBuilder.setThumbnail("https://www.nicepng.com/png/full/300-3005551_wasteland-3-logo-png-image-grandmaster-flash-vs.png");
                     break;
                 case "Wobbly Life":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/887755823038754886/Wobbly_Life.png");
