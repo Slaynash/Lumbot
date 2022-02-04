@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.User.Profile;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.user.UserTypingEvent;
 
 public class PrivateMessagesHandler {
     public static final String LOG_IDENTIFIER = "PrivateMessagesHandler";
@@ -70,5 +71,12 @@ public class PrivateMessagesHandler {
     @SuppressWarnings("EmptyMethod")
     public static void handle(MessageUpdateEvent ignoredEvent) {
         //handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
+    }
+
+    public static void typingFromDM(UserTypingEvent event) {
+        Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
+        User author = event.getMember().getUser();
+        String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).replaceAll("[!@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").toLowerCase();
+        mainguild.getTextChannelsByName(channelName, true).stream().findFirst().ifPresent(guildchannel -> guildchannel.sendTyping().queue());
     }
 }

@@ -14,12 +14,13 @@ import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
@@ -154,14 +155,9 @@ public class ServerMessagesHandler {
             if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[0-9.:]+] -{30}"))) {
                 System.out.println("Partial Log was printed");
 
-                boolean postedInWhitelistedServer = false;
-                for (long whitelistedGuildId : GuildConfigurations.whitelistedRolesServers.keySet()) {
-                    if (whitelistedGuildId == guildID) {
-                        postedInWhitelistedServer = true;
-                        break;
-                    }
-                }
-                if (postedInWhitelistedServer && !CrossServerUtils.checkIfStaff(event)) {
+                if (event.getChannel().getName().contains("develo"))
+                    return;
+                if (!CrossServerUtils.checkIfStaff(event)) {
                     if (message.contains("failed to create logs folder")) {
                         event.getChannel().sendMessage(memberMention + " Please make sure your MelonLoader folder is clear of special characters like `'` or Chinese characters").queue();
                     }
@@ -450,5 +446,20 @@ public class ServerMessagesHandler {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static void typingToDM(UserTypingEvent event) {
+        if (event.getMember().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
+                event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
+                event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+            String[] userID = event.getChannel().getName().split("-");
+            User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
+            if (user == null) {
+                event.getTextChannel().sendMessage("Can not find user, maybe there are no mutual servers.").queue();
+            }
+            else {
+                user.openPrivateChannel().queue(channel -> channel.sendTyping().queue(), f -> event.getTextChannel().sendMessage("Can not open DM with user.").queue());
+            }
+        }
     }
 }
