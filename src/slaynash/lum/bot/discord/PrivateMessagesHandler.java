@@ -74,9 +74,7 @@ public class PrivateMessagesHandler {
     }
 
     public static void typingFromDM(UserTypingEvent event) {
-        Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
-        User author = event.getMember().getUser();
-        String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).replaceAll("[!@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").toLowerCase();
-        mainguild.getTextChannelsByName(channelName, true).stream().findFirst().ifPresent(guildchannel -> guildchannel.sendTyping().queue());
+        Guild mainguild = event.getJDA().getGuildById(633588473433030666L);
+        mainguild.getTextChannels().stream().filter(t -> t.getName().contains(event.getUser().getId())).findFirst().ifPresent(guildchannel -> guildchannel.sendTyping().queue());
     }
 }

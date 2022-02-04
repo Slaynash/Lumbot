@@ -510,6 +510,9 @@ public final class MelonScanner {
                 case "Zenith":
                     context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                     break;
+                case "zombieland_vr_headshot_fever":
+                    context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
+                    break;
                 default:
             }
         }

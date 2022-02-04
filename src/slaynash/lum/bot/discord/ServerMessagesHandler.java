@@ -449,11 +449,12 @@ public class ServerMessagesHandler {
     }
 
     public static void typingToDM(UserTypingEvent event) {
-        if (event.getMember().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
-                event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
+        if (event.getUser() == event.getJDA().getSelfUser())
+            return;
+        if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-")) {
             String[] userID = event.getChannel().getName().split("-");
-            User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
+            User user = event.getJDA().getUserById(userID[userID.length - 1]);
             if (user == null) {
                 event.getTextChannel().sendMessage("Can not find user, maybe there are no mutual servers.").queue();
             }
