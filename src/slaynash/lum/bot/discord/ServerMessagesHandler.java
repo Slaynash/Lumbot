@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
@@ -143,6 +142,14 @@ public class ServerMessagesHandler {
 
             if (message.startsWith("."))
                 return;
+
+            // ignore any quotes
+            StringBuilder sb = new StringBuilder();
+            for (String line : message.split(System.getProperty("line.separator"))) {
+                if (!line.startsWith("> "))
+                    sb.append(line).append(System.getProperty("line.separator"));
+            }
+            message = sb.toString().trim();
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                 event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
@@ -448,19 +455,4 @@ public class ServerMessagesHandler {
         return false;
     }
 
-    public static void typingToDM(UserTypingEvent event) {
-        if (event.getUser() == event.getJDA().getSelfUser())
-            return;
-        if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
-                event.getChannel().getName().toLowerCase().startsWith("dm-")) {
-            String[] userID = event.getChannel().getName().split("-");
-            User user = event.getJDA().getUserById(userID[userID.length - 1]);
-            if (user == null) {
-                event.getTextChannel().sendMessage("Can not find user, maybe there are no mutual servers.").queue();
-            }
-            else {
-                user.openPrivateChannel().queue(channel -> channel.sendTyping().queue(), f -> event.getTextChannel().sendMessage("Can not open DM with user.").queue());
-            }
-        }
-    }
 }

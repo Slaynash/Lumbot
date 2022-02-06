@@ -39,7 +39,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
-import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -602,13 +601,14 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    @Override
-    public void onUserTyping(UserTypingEvent event) {
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            PrivateMessagesHandler.typingFromDM(event);
-        }
-        else {
-            ServerMessagesHandler.typingToDM(event);
-        }
-    }
+    //Does not work because we need GUILD_PRESENCES along with DIRECT_MESSAGE_TYPING and GUILD_MESSAGE_TYPING
+    // @Override
+    // public void onUserTyping(UserTypingEvent event) {
+    //     if (event.isFromType(ChannelType.PRIVATE)) {
+    //         PrivateMessagesHandler.typingFromDM(event);
+    //     }
+    //     else {
+    //         ServerMessagesHandler.typingToDM(event);
+    //     }
+    // }
 }
