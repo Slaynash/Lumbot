@@ -8,8 +8,12 @@ import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
+
+import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -498,9 +502,16 @@ public final class MelonScannerReadPass {
 
     private static boolean unhollowerErrorCheck(String line, MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
-            if (line.matches(knownError.regex)) {
-                if (!context.assemblyGenerationFailed && !context.errors.contains(knownError) && !isMLOutdated)
-                    context.errors.add(knownError);
+            String errorMess = knownError.error;
+            Matcher m = Pattern.compile(knownError.regex).matcher(line);
+            if (m.namedGroups().size() > 0) {
+                for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                    errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+            }
+            MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
+            if (m.matches()) {
+                if (!context.assemblyGenerationFailed && !context.errors.contains(newerror) && !isMLOutdated)
+                    context.errors.add(newerror);
                 System.out.println("Found known unhollower error");
                 context.hasErrors = true;
                 context.assemblyGenerationFailed = true;
@@ -512,9 +523,16 @@ public final class MelonScannerReadPass {
 
     private static boolean knownErrorCheck(String line, MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownErrors()) {
-            if (line.matches(knownError.regex)) {
-                if (!context.errors.contains(knownError))
-                    context.errors.add(knownError);
+            String errorMess = knownError.error;
+            Matcher m = Pattern.compile(knownError.regex).matcher(line);
+            if (m.namedGroups().size() > 0) {
+                for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                    errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+            }
+            MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
+            if (m.matches()) {
+                if (!context.errors.contains(newerror))
+                    context.errors.add(newerror);
                 System.out.println("Found known error");
                 context.hasErrors = true;
                 return true;
@@ -523,9 +541,16 @@ public final class MelonScannerReadPass {
         Map<String, List<MelonLoaderError>> gameSpecificErrors = MelonLoaderError.getGameSpecificErrors();
         if (context.game != null && gameSpecificErrors.containsKey(context.game)) {
             for (MelonLoaderError knownGameError : gameSpecificErrors.get(context.game)) {
-                if (line.matches(knownGameError.regex)) {
-                    if (!context.errors.contains(knownGameError))
-                        context.errors.add(knownGameError);
+                String errorMess = knownGameError.error;
+                Matcher m = Pattern.compile(knownGameError.regex).matcher(line);
+                if (m.namedGroups().size() > 0) {
+                    for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                        errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+                }
+                MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex, errorMess);
+                if (m.matches()) {
+                    if (!context.errors.contains(newerror))
+                        context.errors.add(newerror);
                     System.out.println("Found known game error");
                     context.hasErrors = true;
                     return true;

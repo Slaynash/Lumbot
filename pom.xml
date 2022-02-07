@@ -78,7 +78,7 @@
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>8.0.27</version>
+      <version>8.0.28</version>
     </dependency>
     <dependency>
       <!-- for JavaSteam -->
@@ -95,7 +95,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.33</version>
+      <version>1.7.35</version>
     </dependency>
 
     <dependency>
@@ -108,6 +108,11 @@
       <groupId>net.gcardone.junidecode</groupId>
       <artifactId>junidecode</artifactId>
       <version>0.4.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tony19</groupId>
+      <artifactId>named-regexp</artifactId>
+      <version>0.2.6</version>
     </dependency>
 
   </dependencies>

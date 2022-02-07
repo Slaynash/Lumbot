@@ -78,7 +78,7 @@
         },
         {
             "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Open Preload Assembly!",
-            "error": "Missing or currupt `MelonLoader/Dependencies/SupportModules/Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
+            "error": "Missing or currupt `MelonLoader\\Dependencies\\SupportModules\\Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T]\\(Int64.*",
@@ -127,32 +127,32 @@
             "error": "MelonLoader failed to read your Unity version and game name. Please update MelonLoader to $MLRelease$ or delete UnityCrashHandler64.exe."
         },
         {
-            "regex": ".*TomlUnescapedUnicodeControlCharException.*U\\+0000.*",
-            "error": "Mod config has became nulled. Please delete `UserData/MelonPreferences.cfg`"
+            "regex": ".*\\\\(?<game>\\w+)\\\\UserData\\\\.*TomlUnescapedUnicodeControlCharException.*U\\+0000.*",
+            "error": "Mod config has became nulled. Please delete `game\\UserData\\MelonPreferences.cfg`"
         },
         {
-            "regex": ".*TomlUnescapedUnicodeControlCharException.*U\\+[0-9]*[1-9][0-9]*\\d* .*",
-            "error": "Mod config has Unescaped Char. Please fix `UserData/MelonPreferences.cfg`"
+            "regex": ".*\\\\(?<game>\\w+)\\\\UserData\\\\.*TomlUnescapedUnicodeControlCharException.*U\\+[0-9]*[1-9][0-9]*\\d* on line (?<linenumber>\\d+).*",
+            "error": "Mod config has Unescaped Char. Please fix `game\\UserData\\MelonPreferences.cfg` on line number `linenumber`"
         },
         {
             "regex": "\\[[0-9.:]+] \\[ERROR] Settings load failed: System\\.InvalidOperationException: The document has errors:.*",
-            "error": "Mod config has been corrupted. Please delete `UserData/MelonPreferences.cfg`"
+            "error": "Mod config has been corrupted. Please delete `UserData\\MelonPreferences.cfg`"
         },
         {
             "regex": ".*Tomlet\\.Exceptions\\.InvalidTomlEscapeException: Found an invalid escape sequence.*",
-            "error": "Mod config has invalid escape sequence. Please delete `UserData/MelonPreferences.cfg`"
+            "error": "Mod config has invalid escape sequence. Please delete `UserData\\MelonPreferences.cfg`"
         },
         {
             "regex": ".*Il2CppAssemblyGenerator\\\\Config\\.cfg: Tomlet.Exceptions.(TomlEOFException|TomlEndOfFileException): Found unexpected EOF on line \\d+ when parsing TOML file",
-            "error": "Config has been corrupted or empty. Please remove MelonLoader/Dependencies/Il2CppAssemblyGenerator/Config.cfg"
+            "error": "Config has been corrupted or empty. Please remove MelonLoader\\Dependencies\\Il2CppAssemblyGenerator\\Config.cfg"
         },
         {
             "regex": ".*UserData\\\\MelonPreferences\\.\\w{3,4}: Tomlet.Exceptions.(TomlEOFException|TomlEndOfFileException): Found unexpected EOF on line \\d+ when parsing TOML file",
-            "error": "Mod config has been corrupted or empty. Please remove UserData/MelonPreferences.cfg"
+            "error": "Mod config has been corrupted or empty. Please remove UserData\\MelonPreferences.cfg"
         },
         {
             "regex": ".*MelonPreferences\\.cfg: Tomlet\\.Exceptions\\.TomlInvalidValueException.*",
-            "error": "Mod config has Invalid Values. Try removing UserData/MelonPreferences.cfg to regenerate config."
+            "error": "Mod config has Invalid Values. Try removing UserData\\MelonPreferences.cfg to regenerate config."
         },
         {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",

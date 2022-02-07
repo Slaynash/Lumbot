@@ -37,11 +37,23 @@ public class MelonLoaderError {
 
 
     public final String regex;
-    private final String error;
+    public final String error;
 
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;
         this.error = error;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof MelonLoaderError)) {
+            return false;
+        }
+        MelonLoaderError me = (MelonLoaderError) o;
+        return this.regex.equals(me.regex);
     }
 
     public static boolean init() {
