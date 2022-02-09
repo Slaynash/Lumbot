@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 
 import com.coder4.emoji.EmojiUtils;
 
+import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -44,7 +45,12 @@ public class ServerMessagesHandler {
                     Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
                     return;
                 }
-                user.openPrivateChannel().queue(channel -> channel.sendMessage(event.getMessage()).queue(null, e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
+                Message message = event.getMessage();
+                MessageBuilder messageBuilder = new MessageBuilder(message);
+                for (Attachment attachment : message.getAttachments()) {
+                    messageBuilder.append("\n").append(attachment.getUrl());
+                }
+                user.openPrivateChannel().queue(channel -> channel.sendMessage(messageBuilder.build()).queue(null, e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
                         error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
                 return;
             }
