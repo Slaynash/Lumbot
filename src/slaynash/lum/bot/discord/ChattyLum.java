@@ -225,8 +225,13 @@ public class ChattyLum {
         }
 
         if (message.matches(".*\\b(poor)\\b.*")) {
-            System.out.println("Lum stole Credit");
+            System.out.println("Poor Lum");
             event.getChannel().sendMessage("<:Nyan_sigh:740365203694420068>").queue();
+            return true;
+        }
+
+        if (message.startsWith("wah")) {
+            event.getChannel().sendMessage("https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617").queue();
             return true;
         }
 

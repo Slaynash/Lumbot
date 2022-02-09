@@ -39,7 +39,7 @@ public class Replies extends Command {
                 Utils.replyEmbed("There are no replies in this guild", null, event);
             }
         }
-        else if (parts[0].startsWith(getName() + "r")) {
+        else if (parts[0].startsWith(getName() + "r") || parts[0].startsWith("l!replyr")) {
             parts = parts[1].trim().split("\n", 2);
             String pattern = parts[0].trim().toLowerCase();
             try {
@@ -98,7 +98,7 @@ public class Replies extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(getName()) || paramString.startsWith("l!reply");
     }
 
     @Override

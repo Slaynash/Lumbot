@@ -77,7 +77,7 @@ public class ScamShield {
             put("takeit)", 2);
             put("whoisfirst?)", 2);
             put("totisel)", 2); //тотисъeл)
-            put("giftiedasubscription!", 2); //typo is from Junidecode
+            put("asubscription!", 2);
             put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
             put("pleasetryclaimthisquickly", 1);
@@ -374,7 +374,7 @@ public class ScamShield {
                 }
                 else {
                     sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName);
-                    suspiciousResults.sameauthormessages.forEach(a -> sb.append("\n").append(a.messageReceivedEvent.getMessage().getContentRaw()).append("\n\n").append(a.suspiciousResults.suspiciousValue).append(" point").append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append(" for ").append(a.suspiciousResults.ssFoundTerms).append("\n"));
+                    suspiciousResults.sameauthormessages.forEach(a -> sb.append("\n").append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw())).append("\n\n").append(a.suspiciousResults.suspiciousValue).append(" point").append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append(" for ").append(a.suspiciousResults.ssFoundTerms).append("\n"));
                 }
                 if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
                     ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
