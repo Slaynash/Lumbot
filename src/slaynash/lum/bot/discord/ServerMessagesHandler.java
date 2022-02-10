@@ -428,8 +428,14 @@ public class ServerMessagesHandler {
 
             if (regexReplies != null) {
                 for (Entry<String, String> reply : regexReplies.entrySet()) {
+                    String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (content.matches("(?s)".concat(reply.getKey()))) {
+                    if (key.endsWith("-d")) {
+                        key = key.substring(0, key.length() - 2).trim();
+                        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+                            event.getMessage().delete().queue();
+                    }
+                    if (content.matches("(?s)".concat(key))) {
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
@@ -442,8 +448,14 @@ public class ServerMessagesHandler {
             }
             if (replies != null) {
                 for (Entry<String, String> reply : replies.entrySet()) {
+                    String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (content.contains(reply.getKey())) {
+                    if (key.endsWith("-d")) {
+                        key = key.substring(0, key.length() - 2).trim();
+                        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+                            event.getMessage().delete().queue();
+                    }
+                    if (content.contains(key)) {
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
