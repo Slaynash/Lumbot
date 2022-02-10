@@ -428,14 +428,17 @@ public class ServerMessagesHandler {
 
             if (regexReplies != null) {
                 for (Entry<String, String> reply : regexReplies.entrySet()) {
+                    boolean deleteMessage = false;
                     String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (key.endsWith("-d")) {
+                        deleteMessage = true;
                         key = key.substring(0, key.length() - 2).trim();
-                        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
-                            event.getMessage().delete().queue();
                     }
                     if (content.matches("(?s)".concat(key))) {
+                        if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                            event.getMessage().delete().queue();
+                        }
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
@@ -448,14 +451,17 @@ public class ServerMessagesHandler {
             }
             if (replies != null) {
                 for (Entry<String, String> reply : replies.entrySet()) {
+                    boolean deleteMessage = false;
                     String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (key.endsWith("-d")) {
+                        deleteMessage = true;
                         key = key.substring(0, key.length() - 2).trim();
-                        if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
-                            event.getMessage().delete().queue();
                     }
                     if (content.contains(key)) {
+                        if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                            event.getMessage().delete().queue();
+                        }
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
