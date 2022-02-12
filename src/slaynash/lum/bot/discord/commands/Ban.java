@@ -19,20 +19,41 @@ public class Ban extends Command {
         int delDays = 0;
         Member banMember;
         Message replied = event.getMessage().getReferencedMessage();
+        String reason = "";
         if (replied != null) {
-            String[] parts = paramString.split(" ", 2);
-            if (parts.length > 1 && parts[1].matches("^\\d{1,2}$"))
-                delDays = Math.min(Integer.parseInt(parts[1]), 7);
+            String[] parts = paramString.split(" ", 3);
+            if (parts.length > 1) {
+                if (parts[1].matches("^\\d{1,2}$")) { //l!ban 9 reason
+                    delDays = Math.min(Integer.parseInt(parts[1]), 7);
+                    if (parts.length > 2)
+                        reason = parts[2];
+                }
+                else { //l!ban reason
+                    if (parts.length == 2)
+                        reason = parts[1];
+                    else
+                        reason = parts[1] + " " + parts[2];
+                }
+            }
             banMember = replied.getMember();
         }
         else {
-            String[] parts = paramString.split(" ", 3);
-            if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
-                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days)").queue();
+            String[] parts = paramString.split(" ", 4);
+            if (parts.length < 2) {
+                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days) (reason)").queue();
                 return;
             }
-            if (parts.length == 3 && parts[2].matches("^\\d{1,2}$")) {
-                delDays = Math.min(Integer.parseInt(parts[2]), 7);
+            if (parts.length >= 3) {
+                if (parts[2].matches("^\\d{1,2}$")) { //l!ban ID 9 reason
+                    delDays = Math.min(Integer.parseInt(parts[2]), 7);
+                    reason = parts[3];
+                }
+                else { //l!ban ID reason
+                    if (parts.length == 3)
+                        reason = parts[2];
+                    else
+                        reason = parts[2] + " " + parts[3];
+                }
             }
             banMember = event.getGuild().getMemberById(parts[1]);
         }
@@ -42,7 +63,25 @@ public class Ban extends Command {
             return;
         }
 
-        banMember.ban(delDays).reason("Banned by " + event.getMember().getEffectiveName()).queue();
+        if (banMember.equals(event.getGuild().getSelfMember())) {
+            event.getMessage().reply("You don't really want to ban me... Right? <a:kanna_cry:851143700297941042>").queue();
+            return;
+        }
+
+        if (banMember.equals(event.getMember())) {
+            event.getMessage().reply("As much as want to ban you for everything you have done to me, I unfortunately can't ban you <:NotHuTao:828069127478181888>").queue();
+            return;
+        }
+
+        if (!event.getGuild().getSelfMember().canInteract(banMember)) {
+            event.getMessage().reply("Can not ban " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") because they are a higher role than my role").allowedMentions(Collections.emptyList()).queue();
+            return;
+        }
+
+        if (reason.isBlank())
+            banMember.ban(delDays).reason("Banned by " + event.getAuthor().getName()).queue();
+        else
+            banMember.ban(delDays).reason(event.getAuthor().getName() + " - " + reason).queue(); //reason limit is 512 chars
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))

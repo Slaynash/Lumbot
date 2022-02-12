@@ -17,14 +17,21 @@ public class Kick extends Command {
 
         Member kickMember;
         Message replied = event.getMessage().getReferencedMessage();
-        if (replied != null) {
+        String reason = "";
+        if (replied != null) { //l!kick reason
             kickMember = replied.getMember();
+            String[] parts = paramString.split(" ", 2);
+            if (parts.length > 1)
+                reason = parts[1];
         }
         else {
-            String[] parts = paramString.split(" ", 2);
-            if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
-                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID>").queue();
+            String[] parts = paramString.split(" ", 3); //l!kick UserID reason
+            if (parts.length < 2) {
+                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (reason)").queue();
                 return;
+            }
+            if (parts.length > 2) {
+                reason = parts[2];
             }
             kickMember = event.getGuild().getMemberById(parts[1]);
         }
@@ -34,7 +41,25 @@ public class Kick extends Command {
             return;
         }
 
-        kickMember.kick().reason("Kicked by " + event.getMember().getEffectiveName()).queue();
+        if (kickMember.equals(event.getGuild().getSelfMember())) {
+            event.getMessage().reply("Please don't kick me, I have been a good bot").queue();
+            return;
+        }
+
+        if (kickMember.equals(event.getMember())) {
+            event.getMessage().reply("https://tenor.com/view/leave-go-away-just-leave-you-are-annoying-leave-server-gif-17802417").queue();
+            return;
+        }
+
+        if (!event.getGuild().getSelfMember().canInteract(kickMember)) {
+            event.getMessage().reply("Can not kick " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") because they are a higher role than my role").allowedMentions(Collections.emptyList()).queue();
+            return;
+        }
+
+        if (reason.isBlank())
+            kickMember.kick().reason("Kicked by " + event.getMember().getEffectiveName()).queue();
+        else
+            kickMember.kick().reason(event.getAuthor().getName() + " - " + reason).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))

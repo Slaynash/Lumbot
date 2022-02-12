@@ -17,7 +17,7 @@ public class Unban extends Command {
 
         User unbanUser;
         String[] parts = paramString.split(" ", 2);
-        if (parts.length < 2 || !parts[1].matches("^\\d{18}$")) {
+        if (parts.length < 2) {
             event.getMessage().reply("Usage: " + getName() + " <UserID>").queue();
             return;
         }

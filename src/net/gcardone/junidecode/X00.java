@@ -23,38 +23,38 @@ package net.gcardone.junidecode;
 class X00 {
 
     public static final String[] map = new String[]{
-        new String("" + (char) 0x00), // 0x00
-        new String("" + (char) 0x01), // 0x01
-        new String("" + (char) 0x02), // 0x02
-        new String("" + (char) 0x03), // 0x03
-        new String("" + (char) 0x04), // 0x04
-        new String("" + (char) 0x05), // 0x05
-        new String("" + (char) 0x06), // 0x06
-        new String("" + (char) 0x07), // 0x07
-        new String("" + (char) 0x08), // 0x08
-        new String("" + (char) 0x09), // 0x09
-        new String("" + (char) 0x0a), // 0x0a
-        new String("" + (char) 0x0b), // 0x0b
-        new String("" + (char) 0x0c), // 0x0c
-        new String("" + (char) 0x0d), // 0x0d
-        new String("" + (char) 0x0e), // 0x0e
-        new String("" + (char) 0x0f), // 0x0f
-        new String("" + (char) 0x10), // 0x10
-        new String("" + (char) 0x11), // 0x11
-        new String("" + (char) 0x12), // 0x12
-        new String("" + (char) 0x13), // 0x13
-        new String("" + (char) 0x14), // 0x14
-        new String("" + (char) 0x15), // 0x15
-        new String("" + (char) 0x16), // 0x16
-        new String("" + (char) 0x17), // 0x17
-        new String("" + (char) 0x18), // 0x18
-        new String("" + (char) 0x19), // 0x19
-        new String("" + (char) 0x1a), // 0x1a
-        new String("" + (char) 0x1b), // 0x1b
-        new String("" + (char) 0x1c), // 0x1c
-        new String("" + (char) 0x1d), // 0x1d
-        new String("" + (char) 0x1e), // 0x1e
-        new String("" + (char) 0x1f), // 0x1f
+        "" + (char) 0x00, // 0x00
+        "" + (char) 0x01, // 0x01
+        "" + (char) 0x02, // 0x02
+        "" + (char) 0x03, // 0x03
+        "" + (char) 0x04, // 0x04
+        "" + (char) 0x05, // 0x05
+        "" + (char) 0x06, // 0x06
+        "" + (char) 0x07, // 0x07
+        "" + (char) 0x08, // 0x08
+        "" + (char) 0x09, // 0x09
+        "" + (char) 0x0a, // 0x0a
+        "" + (char) 0x0b, // 0x0b
+        "" + (char) 0x0c, // 0x0c
+        "" + (char) 0x0d, // 0x0d
+        "" + (char) 0x0e, // 0x0e
+        "" + (char) 0x0f, // 0x0f
+        "" + (char) 0x10, // 0x10
+        "" + (char) 0x11, // 0x11
+        "" + (char) 0x12, // 0x12
+        "" + (char) 0x13, // 0x13
+        "" + (char) 0x14, // 0x14
+        "" + (char) 0x15, // 0x15
+        "" + (char) 0x16, // 0x16
+        "" + (char) 0x17, // 0x17
+        "" + (char) 0x18, // 0x18
+        "" + (char) 0x19, // 0x19
+        "" + (char) 0x1a, // 0x1a
+        "" + (char) 0x1b, // 0x1b
+        "" + (char) 0x1c, // 0x1c
+        "" + (char) 0x1d, // 0x1d
+        "" + (char) 0x1e, // 0x1e
+        "" + (char) 0x1f, // 0x1f
         " ", // 0x20
         "!", // 0x21
         "\"", // 0x22
@@ -62,7 +62,7 @@ class X00 {
         "$", // 0x24
         "%", // 0x25
         "&", // 0x26
-        "\'", // 0x27
+        "'", // 0x27
         "(", // 0x28
         ")", // 0x29
         "*", // 0x2a
@@ -203,7 +203,7 @@ class X00 {
         "+-", // 0xb1
         "2", // 0xb2
         "3", // 0xb3
-        "\'", // 0xb4
+        "'", // 0xb4
         "u", // 0xb5
         "P", // 0xb6
         "*", // 0xb7

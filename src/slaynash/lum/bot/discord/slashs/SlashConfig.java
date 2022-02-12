@@ -19,15 +19,9 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SlashConfig {
 
     public void sendReply(SlashCommandEvent event, String guildID) {
-
-        if (!guildID.matches("^\\d{18}$")) {
-            event.reply("Invalid Guild ID. Please make sure that you are using the 18 digit ID.").queue();
-            return;
-        }
-
         Guild guild = event.getJDA().getGuildById(guildID);
         if (guild == null) {
-            event.reply("Guild not found.").queue();
+            event.reply("Guild was not found.").queue();
             return;
         }
         try {
