@@ -1,0 +1,39 @@
+Changes in version 0.5
+----------------------
+
+* Synced to Text::Unidecode 1.30.
+
+Changes in version 0.4.1
+------------------------
+
+* Set target compatibility to Java 1.7.
+
+Changes in version 0.4
+----------------------
+
+* Renamed package root to net.gcardone. I'm bad at naming.
+* Build system migrated to gradle.
+
+Changes in version 0.3
+----------------------
+
+* Renamed package root to org.gcardone.
+
+Changes in version 0.2
+----------------------
+
+Changed hosting.
+* Renamed package root to gcardone
+
+Changes in version 0.1.1
+------------------------
+
+Bugfix release.
+* Fixed 0x005B "[" translation to "]" - corrected, prints "["
+* Fixed 0x007F translation to non-printable character - corrected, prints ""
+
+
+Changes in version 0.1
+----------------------
+
+* Initial release.

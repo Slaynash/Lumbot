@@ -103,12 +103,6 @@
       <artifactId>mono.cecil</artifactId>
       <version>0.10.0.0</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/net.gcardone.junidecode/junidecode -->
-    <dependency>
-      <groupId>net.gcardone.junidecode</groupId>
-      <artifactId>junidecode</artifactId>
-      <version>0.4.1</version>
-    </dependency>
     <dependency>
       <groupId>com.github.tony19</groupId>
       <artifactId>named-regexp</artifactId>

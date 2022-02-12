@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,8 @@ import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
-import net.dv8tion.jda.api.events.guild.update.GuildUpdateMaxMembersEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -44,6 +45,7 @@ import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
@@ -583,14 +585,14 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildUpdateMaxMembers(GuildUpdateMaxMembersEvent event) {
-        if (event.getGuild().getSystemChannel().canTalk()) {
-            if (event.getNewMaxMembers() > event.getOldMaxMembers()) {
-                event.getGuild().getSystemChannel().sendMessage("Yay, the max guild member has been increased to " + event.getNewMaxMembers() + " from " + event.getOldMaxMembers()).queue();
-            }
-            else {
-                event.getGuild().getSystemChannel().sendMessage("The max guild member has been lowered to " + event.getNewMaxMembers() + " from " + event.getOldMaxMembers()).queue();
-            }
+    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
+        if (name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
+            String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+            if (report == null) return;
+            TextChannel reportchannel = event.getGuild().getTextChannelById(report);
+            if (reportchannel == null) return;
+            reportchannel.sendMessage(event.getUser().getAsMention() + " just joined with a sussy name").allowedMentions(Collections.emptyList()).queue();
         }
     }
 
