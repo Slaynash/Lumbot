@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -251,7 +252,7 @@ public class ChattyLum {
                         ? thankedSentencesRare.get(random.nextInt(thankedSentencesRare.size()))
                         : thankedSentences.    get(random.nextInt(thankedSentences.size()));
                 }
-                event.getChannel().sendMessage(sentence).queue();
+                event.getChannel().sendMessage(sentence).allowedMentions(Collections.emptyList()).queue();
                 return true;
             }
         }
