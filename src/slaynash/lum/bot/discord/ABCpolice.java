@@ -57,7 +57,7 @@ public class ABCpolice {
         }
         else if (currentLetter == 'z') {
             System.out.println("abc looped around");
-            event.getChannel().sendMessage("おめでとう。 あなたはめちゃくちゃせずにそれを作りました。<:Neko_dab:865328473719439381>").queue();
+            event.getChannel().sendMessage("おめでとう。あなたはめちゃくちゃせずにそれを出来た！<:Neko_dab:865328473719439381>").queue();
             return true;
         }
 
