@@ -201,7 +201,7 @@ public class ChattyLum {
 
         if (message.matches(".*\\bboop\\b.*")) {
             if (!(new LumGoneCommand().includeInHelp(event)))
-                event.getChannel().sendMessage("<:CuteFoxBoop:942576777509888072>").queue();
+                event.getChannel().sendMessage("<a:CuteFoxBoop:942576777509888072>").queue();
             return true;
         }
 

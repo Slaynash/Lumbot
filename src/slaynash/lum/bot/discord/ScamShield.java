@@ -74,6 +74,7 @@ public class ScamShield {
             put("broken", -1); //temporary solution until I can thing of a better way, issue is that all spaces are removed
             put("checkthis", 1);
             put("linkforyou", 1);
+            put("wronginthegame", 1);
             put("takeit)", 2);
             put("whoisfirst?)", 2);
             put("totisel)", 2); //тотисъeл)
