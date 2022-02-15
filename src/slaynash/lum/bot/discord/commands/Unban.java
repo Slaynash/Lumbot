@@ -21,7 +21,13 @@ public class Unban extends Command {
             event.getMessage().reply("Usage: " + getName() + " <UserID>").queue();
             return;
         }
-        unbanUser = event.getJDA().getUserById(parts[1]);
+        try {
+            unbanUser = event.getJDA().getUserById(parts[1]);
+        }
+        catch (Exception e) {
+            event.getMessage().reply("Invalid snowflake, User was not found!").queue();
+            return;
+        }
         if (unbanUser == null) {
             event.getMessage().reply("User was not found!").queue();
             return;

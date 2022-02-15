@@ -57,7 +57,7 @@ public class ScamShield {
             put("money", 1);
             put("loot", 1);
             put("csgo", 2);
-            put("trade", 2);
+            put("trade", 1);
             put("knife", 1);
             put("offer", 1);
             put("btc", 1);
@@ -111,7 +111,11 @@ public class ScamShield {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
             ssFoundTerms.put("newAccount", 1);
-        StringBuilder message = new StringBuilder(event.getMessage().getContentStripped());
+        String msg = event.getMessage().getContentStripped();
+        for (Member member : event.getMessage().getMentionedMembers()) {
+            msg = msg.replace("@" + member.getEffectiveName(), "");
+        }
+        StringBuilder message = new StringBuilder(msg);
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
         }

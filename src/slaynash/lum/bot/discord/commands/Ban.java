@@ -55,7 +55,13 @@ public class Ban extends Command {
                         reason = parts[2] + " " + parts[3];
                 }
             }
-            banMember = event.getGuild().getMemberById(parts[1]);
+            try {
+                banMember = event.getGuild().getMemberById(parts[1]);
+            }
+            catch (Exception e) {
+                event.getMessage().reply("Invalid snowflake, User was not found!").queue();
+                return;
+            }
         }
 
         if (banMember == null) {

@@ -33,7 +33,13 @@ public class Kick extends Command {
             if (parts.length > 2) {
                 reason = parts[2];
             }
-            kickMember = event.getGuild().getMemberById(parts[1]);
+            try {
+                kickMember = event.getGuild().getMemberById(parts[1]);
+            }
+            catch (Exception e) {
+                event.getMessage().reply("Invalid snowflake, User was not found!").queue();
+                return;
+            }
         }
 
         if (kickMember == null) {
