@@ -36,6 +36,10 @@ public class Moderation {
         JDA jda = JDAManager.getJDA();
         for (Long chID : GuildConfigurations.noMicChannels.values()) {
             TextChannel channel = jda.getTextChannelById(chID);
+            if (channel == null) {
+                System.out.println("[ERROR] Mute Voice Channel " + chID + " is null");
+                continue;
+            }
             for (PermissionOverride override : channel.getMemberPermissionOverrides()) {
                 if (override.isMemberOverride()) {
                     if (!override.getMember().getVoiceState().inVoiceChannel()) {

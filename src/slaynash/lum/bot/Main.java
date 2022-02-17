@@ -579,7 +579,7 @@ public class Main extends ListenerAdapter {
                 "Exception while handling JDA event:", event.getCause());
         }
         catch (Exception e) {
-            System.err.println("Failed to report exception:");
+            System.err.println("[ERROR] Failed to report exception:");
             e.printStackTrace();
         }
     }

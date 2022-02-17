@@ -44,12 +44,12 @@ public class TicketTool {
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
                 history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()));
                 if (history.size() == 0) {
-                    System.out.println("Can not find my messages");
+                    System.out.println("[ERROR] Can not find my messages");
                     return;
                 }
                 String[] split = history.get(history.size() - 1).getContentRaw().split("`");
                 if (split.length < 2) {
-                    System.out.println("Can not find my pin in ticket");
+                    System.out.println("[ERROR] Can not find my pin in ticket");
                     return;
                 }
                 String code = split[1].toLowerCase();
