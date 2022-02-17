@@ -240,6 +240,11 @@ public class ChattyLum {
             event.getChannel().sendMessage("<:Nyan_sigh:740365203694420068>").queue();
             return true;
         }
+        if (message.matches(".*\\b(berry)\\b.*")) {
+            System.out.println("Lum Berry");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/915063138779553872/943708494245290004/unknown.png").queue();
+            return true;
+        }
 
         return false;
     }

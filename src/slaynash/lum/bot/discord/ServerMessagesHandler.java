@@ -174,7 +174,8 @@ public class ServerMessagesHandler {
                     }
                     else {
                         event.getChannel().sendMessage(memberMention + " Please upload your `MelonLoader/Latest.log` instead of printing parts of it.\nIf you are unsure how to locate your Latest.log file, use the `!log` command in this channel.").queue();
-                        event.getMessage().delete().queue();
+                        if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+                            event.getMessage().delete().queue();
                     }
                     return;
                 }
@@ -266,7 +267,7 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!ovras")) {
                     System.out.println("OVR:AS printed");
-                    event.getChannel().sendMessage("https://youtu.be/E4ZByfPWTuM").queue();
+                    event.getChannel().sendMessage("Download it from Steam here: <https://store.steampowered.com/app/1009850/OVR_Advanced_Settings/>\nVideo guide on setting up playspacemover: https://youtu.be/E4ZByfPWTuM").queue();
                     return;
                 }
 
@@ -315,6 +316,14 @@ public class ServerMessagesHandler {
                 if (message.startsWith("!vrccrash")) {
                     System.out.println("VRChat Crash");
                     event.getChannel().sendMessage("https://help.vrchat.com/hc/en-us/articles/1500002247921-I-crashed-can-t-launch-VRChat-other-issues").queue();
+                    return;
+                }
+
+                if (message.startsWith("!dmca")) {
+                    System.out.println("DMCA");
+                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/943737387450777640/DMCA.mp4").queue();
+                    if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+                        event.getMessage().delete().queue();
                     return;
                 }
             }

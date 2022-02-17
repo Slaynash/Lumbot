@@ -170,7 +170,7 @@ public class Steam {
                         if (!oldBranches.containsKey(changedBranch.getKey())) {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
                             description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
-                            if (branchDetails.description != null)
+                            if (branchDetails.description != null || branchDetails.description.isBlank())
                                 description.append(" - Description: ").append(branchDetails.description).append("\n");
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
@@ -180,7 +180,7 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             description.append("[").append(changedBranch.getKey()).append("] Branch ").append(oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded").append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
-                            if (newBranchDetails.description != null)
+                            if (newBranchDetails.description != null || newBranchDetails.description.isBlank())
                                 description.append(" - Description: ").append(newBranchDetails.description).append("\n");
 
                             if (changedBranch.getKey().equals("public"))
