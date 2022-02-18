@@ -52,7 +52,7 @@ public class GuildConfigurations {
             put(439093693769711616L /* VRCMG */,        673955689298788376L /* no-mic */);
             put(600298024425619456L /* emmVRC */,       682379676106096678L /* no-mic */);
             put(663449315876012052L /* MelonLoader */,  701494833495408640L /* voice-chat */);
-            put(716536783621587004L /* Totally Wholesome */, 725076119623303380L /* mute-voice */);
+            // put(716536783621587004L /* Totally Wholesome */, 943694417016000552L /* mute-voice */);
         }};
 
     public enum ConfigurationMap { //only append to the end
