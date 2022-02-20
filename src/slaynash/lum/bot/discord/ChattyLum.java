@@ -183,7 +183,7 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/757187539638550610/932623632746836018/WELCOME_TO_VRCHAT_-_TFMJonny_Bo_Burnham_Parody.mp4").queue();
             return true;
         }
-        if (message.startsWith("wah")) {
+        if (message.matches("^wah\\W.*")) {
             event.getChannel().sendMessage("https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617").queue();
             return true;
         }

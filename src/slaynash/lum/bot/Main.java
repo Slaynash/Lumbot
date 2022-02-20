@@ -587,12 +587,13 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
-        if (name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
+
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("kill")) {
             String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (report == null) return;
             TextChannel reportchannel = event.getGuild().getTextChannelById(report);
             if (reportchannel == null) return;
-            reportchannel.sendMessage(event.getUser().getAsMention() + " just joined with a sussy name").allowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name").allowedMentions(Collections.emptyList()).queue();
         }
     }
 

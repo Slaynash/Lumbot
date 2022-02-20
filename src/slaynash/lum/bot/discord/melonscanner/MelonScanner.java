@@ -483,6 +483,9 @@ public final class MelonScanner {
                 case "Stick Fight: The Game":
                     context.embedBuilder.setThumbnail("https://toppng.com//public/uploads/preview/color-stick-fight-the-game-115629098126na96uprb2.png");
                     break;
+                case "Stumble Guys":
+                    context.embedBuilder.setThumbnail("https://cdn.now.gg/apps-content/com.kitkagames.fallbuddies/logo/stumble-guys-multiplayer-royale.png");
+                    break;
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
                     break;
@@ -497,6 +500,9 @@ public final class MelonScanner {
                     break;
                 case "The Golf Club 2019 ProTee": //has anticheats
                     context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
+                    break;
+                case "Townscaper":
+                    context.embedBuilder.setThumbnail("https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Townscaper_OskarStlberg_S3_2560x1440-558540cb0b62cb5520f1f9e5b4c7a204");
                     break;
                 case "ULTRAKILL":
                     context.embedBuilder.setThumbnail("https://cdn2.steamgriddb.com/file/sgdb-cdn/logo/a295a55e7c3b2af6f363711442900b96.png");
