@@ -199,13 +199,13 @@ public class ServerMessagesHandler {
                     System.out.println("Forgot pin asked");
                     if (guildID == 600298024425619456L/*emmVRC*/) {
                         if (message.contains("remod"))
-                            Utils.replyEmbed("You can reset your [remod pin here](https://requi.dev/remod/pin.php)", null, event);
+                            Utils.replyEmbed("You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.", null, event);
                         else if (!event.getMember().hasAccess(event.getJDA().getTextChannelById(658177110514597888L)))
                             Utils.replyEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null, event);
                     }
                     else
                         if (message.contains("remod"))
-                            Utils.replyEmbed("You can reset your [remod pin here](https://requi.dev/remod/pin.php)", null, event);
+                            Utils.replyEmbed("You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.", null, event);
                         else
                             Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
                     return;
