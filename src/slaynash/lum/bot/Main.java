@@ -588,7 +588,7 @@ public class Main extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("kill")) {
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
             String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (report == null) return;
             TextChannel reportchannel = event.getGuild().getTextChannelById(report);

@@ -47,6 +47,7 @@ import slaynash.lum.bot.utils.Utils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
+    private static int instaKick = 7;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -149,7 +150,8 @@ public class ScamShield {
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
-        if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 0) {
+        Integer tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
+        if (tempval > 0 && tempval < instaKick) {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge * 3);
@@ -189,7 +191,7 @@ public class ScamShield {
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue < 3)
             suspiciousResults.calulatedValue = 0;
-        if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue < 7) //if one message gets 8+ then it is an instant kick on first message
+        if (suspiciousResults.calulatedValue >= 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
