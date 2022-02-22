@@ -82,7 +82,11 @@ public class ScamShield {
             put("asubscription!", 2);
             put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
-            put("pleasetryclaimthisquickly", 1);
+            put("pleasetryclaimthisquickly", 2);
+            put("gameicreatedtoday)", 2);
+            put("whattoaddandwhattoremove", 2);
+            put("hereisthegameitselfhttp", 2);
+            put("passwordtest", 2);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
