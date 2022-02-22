@@ -23,6 +23,7 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
@@ -208,6 +209,8 @@ public class Steam {
 
     private static boolean testChannel(ServerChannel sc) {
         if (JDAManager.getJDA() == null)
+            return true;
+        if (!JDAManager.getJDA().getStatus().equals(JDA.Status.CONNECTED))
             return true;
         Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
         if (guild == null) {

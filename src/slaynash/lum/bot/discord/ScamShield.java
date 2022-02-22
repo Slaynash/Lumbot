@@ -135,7 +135,7 @@ public class ScamShield {
                 .filter(m ->
                         m.getMessage().getAttachments().size() == 0
                         && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
-                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().contains(s))
+                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "").contains(s)) //needs to match a term, prevents triggering on ticket closing command
                     ||
                         event.getMessage().getAttachments().size() > 0
                         && m.getMessage().getAttachments().size() > 0
