@@ -525,6 +525,9 @@ public final class MelonScanner {
                 case "zombieland_vr_headshot_fever":
                     context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
                     break;
+                case "デュエプレ":
+                    context.embedBuilder.setThumbnail("https://dmps.takaratomy.co.jp/common/img/logo.png");
+                    break;
                 default:
             }
         }
@@ -963,6 +966,12 @@ public final class MelonScanner {
             if (context.hasNonModErrors && context.errors.size() == 0) {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
                 context.unidentifiedErrors = true;
+            }
+            if (context.mlVersion != null && VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
+                error += "Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n";
+            }
+            if (context.line.contains("Applied USER32.dll::SetTimer patch") || context.lastLine.contains("Applied USER32.dll::SetTimer patch")) {
+                error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
             }
 
             if (error.length() > 0) {

@@ -25,7 +25,7 @@ public class SteamWatcher extends Command {
             return;
         if (parts.length == 1) {
             boolean found = false;
-            StringBuilder sb = new StringBuilder("Current Steam games being watched:\n");
+            StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game ID)\n");
             for (Entry<Integer, List<ServerChannel>> gEntry : Steam.reportChannels.entrySet()) {
                 for (ServerChannel sc : gEntry.getValue()) {
                     if (Objects.equals(sc.serverID, guildID)) {

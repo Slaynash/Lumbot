@@ -47,7 +47,7 @@ import slaynash.lum.bot.utils.Utils;
 
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
-    private static int instaKick = 7;
+    private static final int instaKick = 7;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -55,6 +55,7 @@ public class ScamShield {
     private static final ConcurrentHashMap<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
     private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space, do test term with Junidecode because it can cause some weird results
             put("@everyone", 2);
+            put("@here", 2);
             put("money", 1);
             put("loot", 1);
             put("csgo", 2);
@@ -154,7 +155,7 @@ public class ScamShield {
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
-        Integer tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
+        int tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
         if (tempval > 0 && tempval < instaKick) {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)

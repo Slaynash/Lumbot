@@ -24,6 +24,8 @@ public class MelonScanContext {
 
     public int omittedLineCount = 0;
     public int retryCount = 0;
+    public String line = "";
+    public String lastLine;
 
     public boolean pirate = false;
     public boolean consoleCopyPaste = false;
@@ -36,6 +38,8 @@ public class MelonScanContext {
     public String mlHashCode;
     public boolean pre3 = false;
     public boolean alpha = false;
+    public boolean mono = false;
+    public boolean il2Cpp = false;
 
     // Path infos
     public String corePath;
