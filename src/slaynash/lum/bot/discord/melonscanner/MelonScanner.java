@@ -513,6 +513,9 @@ public final class MelonScanner {
                 case "VRChat":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
                     break;
+                case "VSeeFace":
+                    context.embedBuilder.setThumbnail("https://www.vseeface.icu/assets/img/VSF.png");
+                    break;
                 case "Wasteland 3":
                     context.embedBuilder.setThumbnail("https://www.nicepng.com/png/full/300-3005551_wasteland-3-logo-png-image-grandmaster-flash-vs.png");
                     break;
@@ -970,7 +973,7 @@ public final class MelonScanner {
             if (context.mlVersion != null && VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
                 error += "Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n";
             }
-            if (context.line.contains("Applied USER32.dll::SetTimer patch") || context.lastLine.contains("Applied USER32.dll::SetTimer patch")) {
+            if (context.lastLine.contains("Applied USER32.dll::SetTimer patch")) {
                 error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
             }
 
