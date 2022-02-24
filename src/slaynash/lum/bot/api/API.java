@@ -9,6 +9,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.api.endpoints.ReloadMelonScannerErrorsEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadTranslationsEndpoint;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -41,7 +42,7 @@ public class API {
         }
 
         Thread thread = new Thread(() -> {
-            while (true) {
+            while (!Main.isShuttingDown) {
                 try {
                     Socket clientSocket = socket.accept();
                     new APIClient(clientSocket, totalConnectionCount++);
@@ -52,6 +53,12 @@ public class API {
                 catch (IOException e) {
                     ExceptionUtils.reportException("Failed to handle API request", e);
                 }
+            }
+            try {
+                socket.close();
+            }
+            catch (IOException e) {
+                e.printStackTrace();
             }
         }, "APIThread");
         thread.setDaemon(true);

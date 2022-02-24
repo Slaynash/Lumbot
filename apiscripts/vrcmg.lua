@@ -18,6 +18,7 @@ for i = 0, apiData:size() - 1, 1 do
         name = modDetails:get("name"):getAsString(),
         version = modDetails:get("modversion"):getAsString(),
         downloadLink = modDetails:get("downloadlink"):getAsString(),
+        modtype = modDetails:get("modtype"):getAsString(),
         aliases = aliases,
         hash = hash
     })

@@ -126,6 +126,7 @@ public final class MelonScanner {
             issueFound |= oldModsCheck(context);
             issueFound |= misplacedModsCheck(context);
             issueFound |= misplacedPluginsCheck(context);
+            issueFound |= outdatedPluginCheck(context);
             issueFound |= outdatedModsCheck(context);
             issueFound |= newerModsCheck(context);
             issueFound |= unknownModsCheck(context);
@@ -749,14 +750,20 @@ public final class MelonScanner {
                 if (context.modDetails != null) { //null check for games without an API
                     for (MelonApiMod modDetail : context.modDetails) {
                         if (modDetail.name.equals(modName)) { //I not sure if all all APIs contain the recent name in aliases like for TLD so I just do a check
-                            context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                            if (modDetail.modtype != null && modDetail.modtype.equalsIgnoreCase("plugin"))
+                                context.outdatedPlugins.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                            else
+                                context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
                             found = true;
                             break;
                         }
                         if (modDetail.aliases != null) { //null check for mods without an aliases
                             for (String alias : modDetail.aliases) {
                                 if (alias.equals(modName)) {
-                                    context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                                    if (modDetail.modtype != null && modDetail.modtype.equalsIgnoreCase("plugin"))
+                                        context.outdatedPlugins.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
+                                    else
+                                        context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
                                     found = true;
                                     break;
                                 }
@@ -886,6 +893,32 @@ public final class MelonScanner {
                 error.insert(0, muMessage + "\n");
 
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.ORANGE;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean outdatedPluginCheck(MelonScanContext context) {
+        if (context.outdatedPlugins.size() > 0) {
+
+            StringBuilder error = new StringBuilder();
+            String nextModLine = computeOutdatedModLine(context.outdatedPlugins.get(0));
+            for (int i = 0; i < context.outdatedPlugins.size() && i < 20; ++i) {
+                error.append(nextModLine);
+
+                if (i + 1 < context.outdatedPlugins.size())
+                    nextModLine = computeOutdatedModLine(context.outdatedPlugins.get(i + 1));
+                else
+                    break; // no next outdated Mod
+
+                if (error.length() + nextModLine.length() + 18 > MessageEmbed.VALUE_MAX_LENGTH) {
+                    error.append(Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.outdatedPlugins.size() - i)).append("\n"); //length is about 17 char
+                    break;
+                }
+            }
+
+            context.embedBuilder.addField(Localization.get("melonscanner.outdatedplugins.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
             return true;
         }

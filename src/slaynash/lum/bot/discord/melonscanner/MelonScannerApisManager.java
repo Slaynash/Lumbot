@@ -194,6 +194,7 @@ public class MelonScannerApisManager {
                                     approvalStatus = mod.get("approvalStatus").checkjstring();
                                 String version = mod.get("version").checkjstring();
                                 String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
+                                String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
                                 String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
                                 String[] aliases = null;
                                 LuaValue aliasesRaw = mod.get("aliases");
@@ -214,7 +215,7 @@ public class MelonScannerApisManager {
                                 }
                                 else
                                     CommandManager.brokenMods.remove(name);
-                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash));
+                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype));
                             }
 
                             api.cachedMods = apiMods;
