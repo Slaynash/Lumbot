@@ -310,7 +310,7 @@ public final class MelonScanner {
             }
             else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
                 if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
-                    context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                    context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 else
                     context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
