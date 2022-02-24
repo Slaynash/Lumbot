@@ -300,6 +300,10 @@
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Could not load the programs JSON file. Please make sure everything is correctly formatted!",
                 "error": "emmVRC Programs is not formatted correctly. Try deleting `VRChat\\UserData\\emmVRC\\programs.json` and relaunch VRChat."
+            },
+            {
+                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
+                "error": "emmVRC is having some issues because of the update. Please be patient while we fix this."
             }
         ],
         "BloonsTD6": [
