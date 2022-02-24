@@ -285,6 +285,7 @@ public final class MelonScanner {
             String latestModName = null;
             VersionUtils.VersionData latestModVersion = null;
             String latestModHash = null;
+            String latestModType = null;
             String latestModDownloadUrl = null;
             boolean deprecatedName = false;
             for (MelonApiMod modDetail : context.modDetails) {
@@ -293,6 +294,7 @@ public final class MelonScanner {
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
+                    latestModType = modDetail.modtype;
                     latestModHash = modDetail.versions[0].hash;
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
@@ -307,7 +309,10 @@ public final class MelonScanner {
                 context.brokenMods.add(modName);
             }
             else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
-                context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
+                    context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                else
+                    context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
             else if (VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
