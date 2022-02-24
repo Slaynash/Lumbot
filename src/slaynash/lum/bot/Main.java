@@ -29,6 +29,7 @@ import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -586,14 +587,27 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        if (report == null) return;
+        TextChannel reportchannel = event.getGuild().getTextChannelById(report);
+        if (reportchannel == null) return;
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
-            String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-            if (report == null) return;
-            TextChannel reportchannel = event.getGuild().getTextChannelById(report);
-            if (reportchannel == null) return;
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name").allowedMentions(Collections.emptyList()).queue();
+        }
+    }
+
+    @Override
+    public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
+        String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        if (report == null) return;
+        TextChannel reportchannel = event.getGuild().getTextChannelById(report);
+        if (reportchannel == null) return;
+        String name = Junidecode.unidecode(event.getNewNickname().toLowerCase());
+
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
+            reportchannel.sendMessage(event.getNewNickname() + " just changed their name to a sussy name from " + event.getOldNickname()).allowedMentions(Collections.emptyList()).queue();
         }
     }
 

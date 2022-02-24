@@ -1014,6 +1014,9 @@ public final class MelonScanner {
             if (context.lastLine.contains("Applied USER32.dll::SetTimer patch")) {
                 error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
             }
+            if (context.lastLine.contains("Downloading")) {
+                error += "MelonLoader Gotten stuck downloading, make sure that nothing is blocking downloads.";
+            }
 
             if (error.length() > 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);

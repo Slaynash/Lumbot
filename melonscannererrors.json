@@ -119,6 +119,10 @@
         {
             "regex": ".*MelonLoader\\.ModHandler.*",
             "error": "Outdated MelonLoader. Please update MelonLoader to $MLRelease$."
+        },
+        {
+            "regex": "\\[[0-9.:]+] \\[ERROR] System\\.IO\\.InvalidDataException: Central Directory corrupt\\. ---> System\\.IO\\.IOException: Attempted to Seek before the beginning of the stream",
+            "error": "Failed to unzip. Make sure that MelonLoader can download zips successfully, try deleting corrupted zip, and that a antivirus is not corrupting it."
         }
     ],
     "knownErrors": [
@@ -201,6 +205,10 @@
         {
             "regex": ".*NameResolutionFailure.*",
             "error": "DNS failed to resolve. Please set your Window's settings to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setup-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."
+        },
+        {
+            "regex": ".*Invalid File Extension.*\\.zip",
+            "error": "Do not leave zips in Mod/Plugin folder. Remove the zip and try again."
         }
     ],
     "gameSpecificErrors": {
