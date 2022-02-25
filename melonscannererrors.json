@@ -303,7 +303,7 @@
             },
             {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
-                "error": "emmVRC is having some issues because of the update. Please be patient while we fix this."
+                "error": "emmVRC is having some issues because of the update. Please reinstall MelonLoader $MLRelease$."
             }
         ],
         "BloonsTD6": [
@@ -337,6 +337,7 @@
         "DesktopFOV": "DesktopFOV is replaced by [NotOptifine](https://api.vrcmg.com/v0/mods/243/NotOptifine.dll) by another creator",
         "DiscordRichPresence-ML": "DiscordRichPresence-ML has been added into VRChat and also no longer works and can be removed.",
         "DownloadFix": "DownloadFix is no longer needed as this bug is now fixed in VRChat.",
+        "MenuOverrender": "MenuOverrender is no longer needed as this bug is now fixed in VRChat.",
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "MultiplayerDynamicBones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "NoSteamP2P": "NoSteamP2P has been added into VRChat and should be removed from your Mods folder.",
