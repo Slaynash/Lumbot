@@ -217,6 +217,10 @@ public class MelonScannerApisManager {
                                     CommandManager.brokenMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype));
                             }
+                            if (api.name.equals("VRChat")) {
+                                apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod"));
+                                apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod"));
+                            }
 
                             api.cachedMods = apiMods;
                         }
@@ -241,7 +245,7 @@ public class MelonScannerApisManager {
                                     currentMods.add(newMod);
                                 else {
                                     // TODO compare using aliases too
-                                    if (VersionUtils.compareVersion(newMod.versions[0].version, currentMod.versions[0].version) > 0) {
+                                    if (VersionUtils.compareVersion(newMod.versions[0].version, currentMod.versions[0].version) != 0) {
                                         // TODO merge rather than replace
                                         currentMods.remove(currentMod);
                                         currentMods.add(newMod);

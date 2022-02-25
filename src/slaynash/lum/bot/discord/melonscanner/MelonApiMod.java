@@ -19,16 +19,8 @@ public class MelonApiMod {
         this(name, new ModVersion[] {new ModVersion(version, hash)}, downloadLink, aliases, modtype);
     }
 
-    public MelonApiMod(String name, String version, String downloadLink, String[] aliases, String hash) {
-        this(name, new ModVersion[] {new ModVersion(version, hash)}, downloadLink, aliases, "");
-    }
-
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases) {
         this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases, "");
-    }
-
-    public MelonApiMod(String name, String version, String downloadLink) {
-        this(name, version, downloadLink, new String[0], null);
     }
 
     public String getName() {

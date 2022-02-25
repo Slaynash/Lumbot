@@ -302,7 +302,7 @@ public final class MelonScanner {
                 }
             }
 
-            if (latestModVersion == null && latestModHash == null) {
+            if (latestModVersion == null && latestModHash == null && latestModType == null) {
                 context.unknownMods.add(logsModDetails);
             }
             else if (CommandManager.brokenMods.contains(modName)) {
