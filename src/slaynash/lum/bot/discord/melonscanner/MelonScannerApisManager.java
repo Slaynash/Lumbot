@@ -218,7 +218,7 @@ public class MelonScannerApisManager {
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype));
                             }
                             if (api.name.equals("vrcmg")) {
-                                apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod"));
+                                //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod")); // ReMod uses Lum embed for outdated version
                                 apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod"));
                             }
 

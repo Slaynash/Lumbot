@@ -315,7 +315,7 @@ public final class MelonScanner {
                     context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
-            else if (VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
+            else if (latestModVersion != null && VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
                 context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
             }
         }
