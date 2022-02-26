@@ -495,6 +495,9 @@ public final class MelonScanner {
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
                     break;
+                case "Super Auto Pets":
+                    context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1714040/capsule_616x353.jpg");
+                    break;
                 case "SynthRiders":
                     context.embedBuilder.setThumbnail("https://synthridersvr.com/wp-content/uploads/2020/08/Synth-Riders-logo.png");
                     break;

@@ -217,7 +217,7 @@ public class MelonScannerApisManager {
                                     CommandManager.brokenMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype));
                             }
-                            if (api.name.equals("VRChat")) {
+                            if (api.name.equals("vrcmg")) {
                                 apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod"));
                                 apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod"));
                             }

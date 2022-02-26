@@ -181,9 +181,10 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             description.append("[").append(changedBranch.getKey()).append("] Branch ").append(oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded").append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
-                            if (newBranchDetails.description != null && !newBranchDetails.description.isBlank())
+                            if (newBranchDetails.description != null && !newBranchDetails.description.isBlank()) // I don't think this is ever null but nice to have
                                 description.append(" - Description: ").append(newBranchDetails.description).append("\n");
-
+                            if (newBranchDetails.pwdrequired == null || !newBranchDetails.pwdrequired)
+                                description.append(" - This is a public branch").append("\n");
                             if (changedBranch.getKey().equals("public"))
                                 isPublicBranchUpdate = true;
                         }
