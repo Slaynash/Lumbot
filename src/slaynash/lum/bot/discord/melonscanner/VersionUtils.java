@@ -16,6 +16,8 @@ public final class VersionUtils {
     // identicals: 0
     // right more recent: -1
     public static int compareVersion(VersionData left, VersionData right) {
+        if (left == null || right == null)
+            return right == null ? 1 : -1;
         if (left.getIsValidSemver() != right.getIsValidSemver())
             return left.getIsValidSemver() ? 1 : -1;
 
