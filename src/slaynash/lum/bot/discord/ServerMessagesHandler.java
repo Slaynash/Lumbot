@@ -226,6 +226,11 @@ public class ServerMessagesHandler {
                 }
 
                 if (message.startsWith("!log")) {
+                    if (message.startsWith("!loge")) {
+                        System.out.println("loge");
+                        event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/733305093264375849/835411858533515334/LOGE.mp4").queue();
+                        return;
+                    }
                     System.out.println("logs printed");
                     String sendMessage = "";
                     if (replied != null && replied.getMember() != null) {

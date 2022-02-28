@@ -72,7 +72,8 @@ public final class MelonScanner {
                 if (random.nextInt(1000) == 420)
                     lang = "sga";
                 if (LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1)
-                    lang = "sga";
+                    if (random.nextInt(2) == 1)
+                        lang = "sga";
             }
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
@@ -315,7 +316,7 @@ public final class MelonScanner {
                     context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
-            else if (latestModVersion != null && VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
+            else if (!latestModVersion.getRaw().isBlank() && VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
                 context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
             }
         }

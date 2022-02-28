@@ -246,6 +246,13 @@ public class ChattyLum {
             return true;
         }
 
+        //must be last
+        if (message.matches(".*\\b(what)\\b.*")) {
+            System.out.println("Lum What?");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/680928395399266314/832204354584182834/videoplayback_2.mp4").queue();
+            return true;
+        }
+
         return false;
     }
 
