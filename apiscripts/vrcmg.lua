@@ -19,7 +19,7 @@ for i = 0, apiData:size() - 1, 1 do
         version = modDetails:get("modversion"):getAsString(),
         downloadLink = modDetails:get("downloadlink"):getAsString(),
         modtype = modDetails:get("modtype"):getAsString(),
-        haspending = mod:get("haspending"):getAsJsonArray(),
+        haspending = mod:get("haspending"):getAsString(),
         aliases = aliases,
         hash = hash
     })
