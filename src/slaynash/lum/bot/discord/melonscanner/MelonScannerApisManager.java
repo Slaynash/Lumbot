@@ -195,6 +195,7 @@ public class MelonScannerApisManager {
                                 String version = mod.get("version").checkjstring();
                                 String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
                                 String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
+                                String haspending = mod.get("haspending") == LuaValue.NIL ? null : mod.get("haspending").checkjstring();
                                 String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
                                 String[] aliases = null;
                                 LuaValue aliasesRaw = mod.get("aliases");
@@ -215,7 +216,7 @@ public class MelonScannerApisManager {
                                 }
                                 else
                                     CommandManager.brokenMods.remove(name);
-                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype));
+                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending));
                             }
                             if (api.name.equals("vrcmg")) {
                                 //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod")); // ReMod uses Lum embed for outdated version

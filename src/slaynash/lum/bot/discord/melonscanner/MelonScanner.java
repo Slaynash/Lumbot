@@ -127,6 +127,7 @@ public final class MelonScanner {
             issueFound |= oldModsCheck(context);
             issueFound |= misplacedModsCheck(context);
             issueFound |= misplacedPluginsCheck(context);
+            issueFound |= modsHasPendingCheck(context);
             issueFound |= outdatedPluginCheck(context);
             issueFound |= outdatedModsCheck(context);
             issueFound |= newerModsCheck(context);
@@ -288,6 +289,7 @@ public final class MelonScanner {
             String latestModHash = null;
             String latestModType = null;
             String latestModDownloadUrl = null;
+            boolean latestHasPending = false;
             boolean deprecatedName = false;
             for (MelonApiMod modDetail : context.modDetails) {
                 if (modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
@@ -296,6 +298,7 @@ public final class MelonScanner {
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
                     latestModType = modDetail.modtype;
+                    latestHasPending = modDetail.haspending;
                     latestModHash = modDetail.versions[0].hash;
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
@@ -303,20 +306,24 @@ public final class MelonScanner {
                 }
             }
 
+            int compare = VersionUtils.compareVersion(latestModVersion, modVersion);
             if (latestModVersion == null && latestModHash == null && latestModType == null) {
                 context.unknownMods.add(logsModDetails);
+            }
+            else if(latestHasPending && compare == 0) {
+                context.hasPendingMods.add(modName);
             }
             else if (CommandManager.brokenMods.contains(modName)) {
                 context.brokenMods.add(modName);
             }
-            else if (deprecatedName || VersionUtils.compareVersion(latestModVersion, modVersion) > 0) {
+            else if (deprecatedName || compare > 0) {
                 if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
                     context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 else
                     context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
-            else if (!latestModVersion.getRaw().isBlank() && VersionUtils.compareVersion(latestModVersion, modVersion) < 0) {
+            else if (!latestHasPending && compare < 0 && !latestModVersion.getRaw().isBlank()) {
                 context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
             }
         }
@@ -460,6 +467,9 @@ public final class MelonScanner {
                 case "Karlson":
                     context.embedBuilder.setThumbnail("https://i.redd.it/ldxbkjuziad51.png");
                     break;
+                case "maj":
+                    context.embedBuilder.setThumbnail("https://mahjongsoul.yo-star.com/img/Mahjong_logo.d393a548.png");
+                    break;
                 case "Muse Dash":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
                     break;
@@ -480,6 +490,7 @@ public final class MelonScanner {
                     break;
                 case "Run": //what a crappy unity name, its bro falls
                     context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
+                    context.embedBuilder.addField("Dude, this game sucks", "Don't promote knockoffs, uninstall it", false);
                     break;
                 case "SCPSL":
                     context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
@@ -492,6 +503,7 @@ public final class MelonScanner {
                     break;
                 case "Stumble Guys":
                     context.embedBuilder.setThumbnail("https://cdn.now.gg/apps-content/com.kitkagames.fallbuddies/logo/stumble-guys-multiplayer-royale.png");
+                    context.embedBuilder.addField("Dude, this game sucks", "Don't promote knockoffs, uninstall it", false);
                     break;
                 case "Superliminal":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
@@ -967,6 +979,21 @@ public final class MelonScanner {
             line += " (" + outdatedMod.newName + ")";
         line += "\n";
         return line;
+    }
+
+    private static boolean modsHasPendingCheck(MelonScanContext context) {
+        if (context.hasPendingMods.size() > 0) {
+            context.hasPendingMods.sort(String.CASE_INSENSITIVE_ORDER);
+            StringBuilder error = new StringBuilder("The following mods has an update waiting for review. Please wait until the review process is finished.\n");
+            for (int i = 0; i < context.hasPendingMods.size() && i < 20; ++i)
+                error.append("- ").append(CrossServerUtils.sanitizeInputString(context.hasPendingMods.get(i))).append("\n");
+            if (context.hasPendingMods.size() > 20)
+                error.append(Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.hasPendingMods.size() - 20));
+
+            context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            return true;
+        }
+        return false;
     }
 
     private static boolean modsThrowingErrorsCheck(MelonScanContext context) {

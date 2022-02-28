@@ -106,6 +106,7 @@ public class MelonScanContext {
     public final List<MelonOutdatedMod> newerMods = new ArrayList<>();
     public final List<MelonApiMod> corruptedMods = new ArrayList<>();
     public final List<String> oldMods = new ArrayList<>();
+    public final List<String> hasPendingMods = new ArrayList<>();
     /*
     public List<String> universalMods = new ArrayList<String>();
     public Map<String, String> modAuthors = new HashMap<String, String>();

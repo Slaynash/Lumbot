@@ -436,7 +436,12 @@ public final class MelonScannerReadPass {
 
     private static boolean gameVersionCheck(MelonScanContext context) {
         if (context.line.matches("\\[[0-9.:]+] Game Version:.*")) {
-            context.gameBuild = context.line.split(":")[3].trim();
+            String[] split = context.line.split(":");
+            if (split.length == 3) {
+                context.errors.add(new MelonLoaderError("", "Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
+                return true;
+            }
+            context.gameBuild = split[3].trim();
             System.out.println("Game version " + context.gameBuild);
             return true;
         }

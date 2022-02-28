@@ -341,6 +341,7 @@
         "Multiplayer Dynamic Bones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "MultiplayerDynamicBones": "Multiplayer Dynamic Bones is replaced by [MultiplayerDynamicBonesMod](https://api.vrcmg.com/v0/mods/165/MultiplayerDynamicBonesMod.dll), please download and replace `DBMod.dll` with it.",
         "NoSteamP2P": "NoSteamP2P has been added into VRChat and should be removed from your Mods folder.",
+        "OG Sitting And Standing Icon": "OG Sitting And Standing Icon is no longer needed since it's made for the old UI",
         "Player Volume Control": "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder.",
         "PlayerVolumeControl": "Player Volume Control has been added into VRChat and will cause issues. Please remove Player Volume Control from your Mods folder.",
         "PortableMirror": "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it.",
