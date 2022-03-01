@@ -318,9 +318,9 @@ public class UnityVersionMonitor {
                     e.printStackTrace();
                 }
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
-            loadIcalls();
         }
         isRunningCheck = true;
+        loadIcalls();
 
         try {
             List<String> allUnityVersions = new ArrayList<>();
