@@ -64,31 +64,7 @@ public class UnityVersionMonitor {
 
     private static final Map<String, List<String>> installedVersions = new HashMap<>();
 
-    private static final List<UnityICall> icalls = new ArrayList<>() { // TODO Move to setting file
-        {
-            add(new UnityICall("UnityEngine.GL::get_sRGBWrite",                             new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean",         new String[] {}));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawTexture",                new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "ref UnityEngine.Internal_DrawTextureArguments" }));
-            add(new UnityICall("UnityEngine.Graphics::Internal_DrawMeshNow1_Injected",      new String[] { "2018.2.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" },
-                new UnityICall("UnityEngine.Graphics::INTERNAL_CALL_Internal_DrawMeshNow1", new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "System.Int32", "ref UnityEngine.Vector3", "ref UnityEngine.Quaternion" })));
-            add(new UnityICall("UnityEngine.Material::SetPass",                             new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Boolean",         new String[] { "UnityEngine.Material", "System.Int32" }));
-            add(new UnityICall("UnityEngine.Mesh::SetArrayForChannelImpl",                  new String[] { "2020.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "UnityEngine.Rendering.VertexAttribute", "UnityEngine.Rendering.VertexAttributeFormat", "System.Int32", "System.Array", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Rendering.MeshUpdateFlags" },
-                new UnityICall("UnityEngine.Mesh::SetArrayForChannelImpl",                  new String[] { "2019.3.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "UnityEngine.Rendering.VertexAttribute", "UnityEngine.Rendering.VertexAttributeFormat", "System.Int32", "System.Array", "System.Int32", "System.Int32", "System.Int32" }),
-                new UnityICall("UnityEngine.Mesh::SetArrayForChannelImpl",                  new String[] { "2018.3.0", "2019.1.0" }, "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "UnityEngine.Rendering.VertexAttribute", "UnityEngine.Mesh/InternalVertexChannelType", "System.Int32", "System.Array", "System.Int32" }),
-                new UnityICall("UnityEngine.Mesh::SetArrayForChannelImpl",                  new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Mesh", "UnityEngine.Mesh/InternalShaderChannel", "UnityEngine.Mesh/InternalVertexChannelType", "System.Int32", "System.Array", "System.Int32" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataWidth",                         new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetWidth",                    new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::GetDataHeight",                        new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" },
-                new UnityICall("UnityEngine.Texture::Internal_GetHeight",                   new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Int32",           new String[] { "UnityEngine.Texture" })));
-            add(new UnityICall("UnityEngine.Texture::set_filterMode",                       new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture", "UnityEngine.FilterMode" }));
-            add(new UnityICall("UnityEngine.Texture2D::SetPixelsImpl",                      new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32", "System.Int32" },
-                new UnityICall("UnityEngine.Texture2D::SetPixels",                          new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "System.Void",            new String[] { "UnityEngine.Texture2D", "System.Int32", "System.Int32", "System.Int32", "System.Int32", "UnityEngine.Color[]", "System.Int32" })));
-            add(new UnityICall("UnityEngine.TextGenerator::get_vertexCount",                new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "System.Int32",           new String[] { "UnityEngine.TextGenerator" }));
-            add(new UnityICall("UnityEngine.TextGenerator::GetVerticesArray",               new String[] { "2017.1.0" },             "UnityEngine.TextRenderingModule",   "UnityEngine.UIVertex[]", new String[] { "UnityEngine.TextGenerator" }));
-            add(new UnityICall("UnityEngine.ImageConversion::LoadImage",                    new String[] { "2017.1.0" },             "UnityEngine.ImageConversionModule", "System.Boolean",         new String[] { "UnityEngine.Texture2D", "System.Byte[]", "System.Boolean" }));
-            add(new UnityICall("UnityEngine.SystemInfo::get_graphicsDeviceType",            new String[] { "2017.1.0" },             "UnityEngine.CoreModule",            "UnityEngine.Rendering.GraphicsDeviceType", new String[] {},
-                new UnityICall("UnityEngine.SystemInfo::GetGraphicsDeviceType",             new String[] { "2018.1.0" },             "UnityEngine.CoreModule",            "UnityEngine.Rendering.GraphicsDeviceType", new String[] {})));
-        }
-    };
+    private static final List<UnityICall> icalls = new ArrayList<>();
 
     private static final List<MonoStructInfo> monoStructs = new ArrayList<>() {
         {
@@ -106,6 +82,7 @@ public class UnityVersionMonitor {
 
         loadInstalledVersionCache();
         loadMonoStructCache();
+        loadIcalls();
 
         Thread thread = new Thread(() -> {
 
@@ -238,6 +215,8 @@ public class UnityVersionMonitor {
                         else
                             initialisingUnityVersions = true;
                     }
+                    else
+                        continue;
 
                     if (isRunningCheck) {
                         while (isRunningCheck)
@@ -245,6 +224,8 @@ public class UnityVersionMonitor {
                         JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
                     }
                     isRunningCheck = true;
+                    
+                    loadIcalls();
 
                     for (UnityVersion newVersion : newVersions) {
                         downloadUnity(newVersion);
@@ -337,6 +318,7 @@ public class UnityVersionMonitor {
                     e.printStackTrace();
                 }
             JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+            loadIcalls();
         }
         isRunningCheck = true;
 
@@ -481,6 +463,19 @@ public class UnityVersionMonitor {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to load MonoStructs cache", e);
+        }
+    }
+
+    public static void loadIcalls() {
+        try {
+            System.out.println("Loading Icalls");
+            List<UnityICall> storedIcalls = gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/icalls.jsonc")), new TypeToken<ArrayList<UnityICall>>(){}.getType());
+            icalls.clear();
+            icalls.addAll(storedIcalls);
+            System.out.println("Done loading Icalls");
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to load Icalls", e);
         }
     }
 
