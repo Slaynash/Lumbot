@@ -8,21 +8,21 @@ public class MelonApiMod {
     public final String modtype;
     public final boolean haspending;
 
-    public MelonApiMod(String name, ModVersion[] versions, String downloadLink, String[] aliases, String modtype, String haspending) {
+    public MelonApiMod(String name, ModVersion[] versions, String downloadLink, String[] aliases, String modtype, boolean haspending) {
         this.name = name;
         this.versions = versions;
         this.downloadLink = downloadLink;
         this.aliases = aliases;
         this.modtype = modtype;
-        this.haspending = Boolean.parseBoolean(haspending);
+        this.haspending = haspending;
     }
 
-    public MelonApiMod(String name, String version, String downloadLink, String[] aliases, String hash, String modtype, String haspending) {
+    public MelonApiMod(String name, String version, String downloadLink, String[] aliases, String hash, String modtype, boolean haspending) {
         this(name, new ModVersion[] {new ModVersion(version, hash)}, downloadLink, aliases, modtype, haspending);
     }
 
     public MelonApiMod(String name, String version, String downloadLink, String[] aliases) {
-        this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases, "", "False");
+        this(name, new ModVersion[] {new ModVersion(version, null)}, downloadLink, aliases, "", false);
     }
 
     public String getName() {

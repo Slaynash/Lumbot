@@ -990,7 +990,8 @@ public final class MelonScanner {
             if (context.hasPendingMods.size() > 20)
                 error.append(Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.hasPendingMods.size() - 20));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.ORANGE;
+            context.embedBuilder.addField(Localization.get("melonscanner.haspendingmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             return true;
         }
         return false;
