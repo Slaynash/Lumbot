@@ -9,6 +9,7 @@ localization.json
 .metadata
 bin/
 tmp/
+logs
 *.tmp
 *.bak
 *.swp

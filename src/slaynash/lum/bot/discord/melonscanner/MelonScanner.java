@@ -727,7 +727,7 @@ public final class MelonScanner {
     private static boolean corruptedModsCheck(MelonScanContext context) {
         context.corruptedMods.removeIf(m -> context.brokenMods.contains(m.name));
         if (context.corruptedMods.size() > 0) {
-            StringBuilder error = new StringBuilder();
+            StringBuilder error = new StringBuilder(Localization.get("melonscanner.corruptedmods.warning", context.lang) + "\n");
             for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
                 if (context.corruptedMods.get(i).downloadLink != null)
                     error.append("- [").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name)).append("](").append(context.corruptedMods.get(i).downloadLink).append(")\n");
@@ -736,7 +736,6 @@ public final class MelonScanner {
             if (context.corruptedMods.size() > 10)
                 error.append(Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10));
 
-            error.append(Localization.get("melonscanner.corruptedmods.warning", context.lang));
             context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
