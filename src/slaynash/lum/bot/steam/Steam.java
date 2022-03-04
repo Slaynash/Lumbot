@@ -173,9 +173,13 @@ public class Steam {
                             description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
                             if (branchDetails.description != null && !branchDetails.description.isBlank())
                                 description.append(" - Description: ").append(branchDetails.description).append("\n");
+                            if (branchDetails.pwdrequired == null || !branchDetails.pwdrequired)
+                                description.append(" - This is a public branch").append("\n");
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
                             description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
+                            if (changedBranch.getValue() == null || !changedBranch.getValue().pwdrequired)
+                                description.append(" - This was a public branch").append("\n");
                         }
                         else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
