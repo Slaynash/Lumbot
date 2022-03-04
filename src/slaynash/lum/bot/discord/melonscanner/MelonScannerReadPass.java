@@ -357,7 +357,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean gameNameCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+]( \\[MelonLoader])? Name: .*")) {
+        if (context.line.matches("\\[[0-9.:]+]( \\[MelonLoader])?( Game)? Name: .*")) {
             context.game = context.line.split(":", 4)[3].trim();
             System.out.println("Game: " + context.game);
             return true;

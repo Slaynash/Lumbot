@@ -22,21 +22,32 @@ public class Replies extends Command {
         String[] parts = paramString.trim().split(" ", 2);
 
         if (parts.length == 1) {
-            if (replies.size() > 0 || regexReplies.size() > 0) {
+            int totalsize = replies.size() + regexReplies.size();
+            if (totalsize > 5) {
                 StringBuilder sb = new StringBuilder();
                 if (replies.size() > 0) {
                     sb.append("Current replies in this guild:\n");
-                    replies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
+                    replies.forEach((k, v) -> sb.append(k.concat("\n\t").concat(v.replace("\n", "\n\t")).concat("\n")));
                     sb.append("\n");
                 }
                 if (regexReplies.size() > 0) {
                     sb.append("Current regex replies in this guild:\n");
-                    regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
+                    regexReplies.forEach((k, v) -> sb.append(k.concat("\n\t").concat(v.replace("\n", "\n\t")).concat("\n")));
                 }
-                if (sb.length() < 1000)
-                    Utils.replyEmbed(sb.toString(), null, event);
-                else
-                    event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
+                event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
+            }
+            else if (totalsize > 0) {
+                StringBuilder sb = new StringBuilder();
+                if (replies.size() > 0) {
+                    sb.append("Current replies in this guild:\n");
+                    replies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v.replace("\n", "\n\t")).concat("`\n")));
+                    sb.append("\n");
+                }
+                if (regexReplies.size() > 0) {
+                    sb.append("Current regex replies in this guild:\n");
+                    regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v.replace("\n", "\n\t")).concat("`\n")));
+                }
+                Utils.replyEmbed(sb.toString(), null, event);
             }
             else {
                 Utils.replyEmbed("There are no replies in this guild", null, event);
