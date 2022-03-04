@@ -33,7 +33,10 @@ public class Replies extends Command {
                     sb.append("Current regex replies in this guild:\n");
                     regexReplies.forEach((k, v) -> sb.append("`".concat(k).concat("` -> `").concat(v).concat("`\n")));
                 }
-                Utils.replyEmbed(sb.toString(), null, event);
+                if (sb.length() < 1000)
+                    Utils.replyEmbed(sb.toString(), null, event);
+                else
+                    event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
             }
             else {
                 Utils.replyEmbed("There are no replies in this guild", null, event);

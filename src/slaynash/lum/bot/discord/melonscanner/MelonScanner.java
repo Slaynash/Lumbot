@@ -473,6 +473,9 @@ public final class MelonScanner {
                 case "Muse Dash":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
                     break;
+                case "My Friendly Neighborhood":
+                    context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1574260/header.jpg");
+                    break;
                 case "Night in the Woods":
                     context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/e/e5/Night_in_the_Woods_logo_black.svg");
                     break;
