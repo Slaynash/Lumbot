@@ -245,6 +245,16 @@ public class ChattyLum {
             event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/915063138779553872/943708494245290004/unknown.png").queue();
             return true;
         }
+        if (message.matches(".*\\b(world)\\b.*")) {
+            System.out.println("Lum Rules the world");
+            event.getChannel().sendMessage("<:Neko_Rule_the_World:949548832302194718>").queue();
+            return true;
+        }
+        if (message.matches(".*\\b(cookie)\\b.*")) {
+            System.out.println("Lum Cookie");
+            event.getMessage().addReaction("🍪").queue();
+            return true;
+        }
 
         //must be last
         if (message.matches(".*\\b(what)\\b.*")) {

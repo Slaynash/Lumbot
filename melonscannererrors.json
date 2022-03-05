@@ -308,6 +308,10 @@
             {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
                 "error": "emmVRC is having some issues because of the update. Please reinstall MelonLoader $MLRelease$."
+            },
+            {
+                "regex": ".*Win32 IO returned 1224\\. Path: (?<ReModCorePath>.*)",
+                "error": "IO error 1224, try deleting:\nReModCorePath"
             }
         ],
         "BloonsTD6": [
