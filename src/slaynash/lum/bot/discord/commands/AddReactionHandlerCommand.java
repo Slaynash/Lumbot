@@ -71,7 +71,7 @@ public class AddReactionHandlerCommand extends Command {
                 CommandManager.saveReactions();
             }
             else {
-                if (params.length != 4 && !params[3].matches("^[0-9]+$")) { //TODO slay can you check params[3] out of bounds error here
+                if (params.length != 4 || !params[3].matches("^[0-9]+$")) {
                     paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + getName() + " <messageid> <reaction> <roleid>").queue();
                     return;
                 }
@@ -82,9 +82,9 @@ public class AddReactionHandlerCommand extends Command {
                     System.out.println("Role not found");
                     return;
                 }
-                react = new ReactionListener(success.getId(), params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
+                react = new ReactionListener(success.getId(), params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
 
-                if (params[2].matches("^<a?:[A-Za-z0-9]+:[0-9]+>$")) {
+                if (params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$")) {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
                     Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
                     if (emote == null) {
