@@ -1,4 +1,4 @@
-﻿package slaynash.lum.bot.discord.utils;
+package slaynash.lum.bot.discord.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
