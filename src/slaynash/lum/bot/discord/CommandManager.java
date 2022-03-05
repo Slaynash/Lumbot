@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
@@ -88,6 +90,8 @@ public class CommandManager {
     }
 
     protected static void runAsServer(MessageReceivedEvent event) {
+        if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) //every command sends a message so lets require send message perms
+            return;
         String command = event.getMessage().getContentRaw();
         if (command.startsWith("l!ping")) command = command.substring(6).trim();
         synchronized (commands) {

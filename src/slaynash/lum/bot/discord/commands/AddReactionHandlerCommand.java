@@ -71,7 +71,7 @@ public class AddReactionHandlerCommand extends Command {
                 CommandManager.saveReactions();
             }
             else {
-                if (params.length != 4 && !params[3].matches("^[0-9]+$")) {
+                if (params.length != 4 && !params[3].matches("^[0-9]+$")) { //TODO slay can you check params[3] out of bounds error here
                     paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + getName() + " <messageid> <reaction> <roleid>").queue();
                     return;
                 }

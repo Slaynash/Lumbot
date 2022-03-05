@@ -195,7 +195,7 @@ public class MelonScannerApisManager {
                                 String version = mod.get("version").checkjstring();
                                 String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
                                 String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
-                                boolean haspending = mod.get("haspending") == LuaValue.NIL ? false : mod.get("haspending").checkboolean();
+                                boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
                                 String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
                                 String[] aliases = null;
                                 LuaValue aliasesRaw = mod.get("aliases");
