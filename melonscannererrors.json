@@ -311,7 +311,7 @@
             },
             {
                 "regex": ".*Win32 IO returned 1224\\. Path: (?<ReModCorePath>.*)",
-                "error": "IO error 1224, try deleting:\nReModCorePath"
+                "error": "IO error 1224, try deleting:\n`ReModCorePath`"
             }
         ],
         "BloonsTD6": [

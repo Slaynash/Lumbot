@@ -166,6 +166,7 @@ public class ChattyLum {
     }
 
     public static boolean handle(String message, MessageReceivedEvent event) {
+        //message is lowercased and unidecode
         if (
             handleThanks(message, event) ||
             handleHelp(message, event))
@@ -185,6 +186,10 @@ public class ChattyLum {
         }
         if (message.matches("^wah\\W.*")) {
             event.getChannel().sendMessage("https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617").queue();
+            return true;
+        }
+        if (message.replace(" ", "").contains("ohno") && message.contains("anyway")) {
+            event.getChannel().sendMessage("https://tenor.com/view/oh-no-oh-no-anyway-gif-18887547").queue();
             return true;
         }
 
