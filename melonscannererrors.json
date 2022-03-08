@@ -127,6 +127,10 @@
         {
             "regex": "\\[[0-9.:]+] \\[ERROR] System\\.IO\\.InvalidDataException: Central Directory corrupt\\. ---> System\\.IO\\.IOException: Attempted to Seek before the beginning of the stream",
             "error": "Failed to unzip. Make sure that MelonLoader can download zips successfully, try deleting corrupted zip, and that a antivirus is not corrupting it."
+        },
+        {
+            "regex": ".*The WOF driver encountered a corruption in the compressed file's Resource Table.",
+            "error": "WOF driver error. You may have a corrupt Windows install and you should try validing. [Article on how to](https://www.thewindowsclub.com/the-wof-driver-encountered-a-corruption-in-the-compressed-files-resource-table-dism-error) as well as a video at the bottom."
         }
     ],
     "knownErrors": [
