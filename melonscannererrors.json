@@ -212,7 +212,7 @@
         },
         {
             "regex": ".*NameResolutionFailure.*",
-            "error": "DNS failed to resolve. Please set your Window's settings to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setup-1.1.1.1/windows) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."
+            "error": "DNS failed to resolve. Please set your Window's settings to use [CloudFlare](https://developers.cloudflare.com/1.1.1.1/setup/windows/) or [Google](https://developers.google.com/speed/public-dns/docs/using#windows) DNS servers."
         },
         {
             "regex": ".*Invalid File Extension.*\\.zip",
