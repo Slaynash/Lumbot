@@ -36,15 +36,17 @@ public class UnivUCBLLIFExoGenerator {
         try {
             String exo = event.getOptions().get(0).getAsString();
             String ticket = event.getOptions().size() > 1 ? event.getOptions().get(1).getAsString() : null;
-
             String subcommandname = event.getSubcommandName();
+            System.out.println("exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
 
             if (!subcommandname.equals("create") && !subcommandname.equals("solve")) {
-                interactionhook.sendMessage("Invalid subcommand name: " + event.getSubcommandName()).queue();
+                interactionhook.sendMessage("Nom de sous-commande invalide: " + event.getSubcommandName()).queue();
                 return;
             }
-
-            System.out.println("exo: " + exo);
+            if (ticket.contains(" ")) {
+                interactionhook.sendMessage("Le billet ne peut pas avoir d'espace").queue();
+                return;
+            }
 
             HttpRequest request = HttpRequest.newBuilder()
                 .GET()
@@ -75,7 +77,8 @@ public class UnivUCBLLIFExoGenerator {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("UCBLLIF command failed", e);
-            interactionhook.sendMessageEmbeds(Utils.wrapMessageInEmbed("La commande a échouée. Cette erreur a été rapporté aux développeurs.", Color.RED)).queue();
+            if (interactionhook != null)
+                interactionhook.sendMessageEmbeds(Utils.wrapMessageInEmbed("La commande a échouée. Cette erreur a été rapporté aux développeurs.", Color.RED)).queue();
         }
     }
 }
