@@ -203,7 +203,8 @@ public final class MelonScanner {
         String fileName = attachment.getFileName().toLowerCase();
         if (strict && fileName.startsWith("message")) return true;
         return fileName.startsWith("latest") ||
-            fileName.startsWith("melonloader");
+            fileName.startsWith("melonloader") ||
+            fileName.startsWith("mlinstall");
     }
 
 
