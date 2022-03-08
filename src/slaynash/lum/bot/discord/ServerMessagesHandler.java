@@ -93,7 +93,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0)) && !CrossServerUtils.checkIfStaff(event)) {
+                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = memberMention + " ";
                     switch (guildIDstr) {
                         case "600298024425619456": //emmVRC
@@ -197,18 +197,19 @@ public class ServerMessagesHandler {
 
                 if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/ || guildID == 936064484391387256L/*Remod Dev*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*\\b(forg([oe])t|reset|change|lost|t remember)\\b.*") && message.matches(".*\\b(pins?|password)\\b.*")) {
                     System.out.println("Forgot pin asked");
+                    final String remodpinString = "You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.\nYour VRChat ID can be found by logging into the VRChat website and clicking \"Go To Profile\" on the left, upon doing so, your id will be in the URL bar.\nhttps://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png";
                     if (guildID == 600298024425619456L/*emmVRC*/) {
                         if (message.contains("remod"))
-                            Utils.replyEmbed("You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.", null, event);
+                            Utils.replyEmbed(remodpinString, null, event);
                         else if (!event.getMember().hasAccess(event.getJDA().getTextChannelById(658177110514597888L)))
                             Utils.replyEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null, event);
                     }
                     else if (guildID == 936064484391387256L/*Remod Dev*/) {
-                        Utils.replyEmbed("You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.", null, event);
+                        Utils.replyEmbed(remodpinString, null, event);
                     }
                     else
                         if (message.contains("remod"))
-                            Utils.replyEmbed("You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.", null, event);
+                            Utils.replyEmbed(remodpinString, null, event);
                         else
                             Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
                     return;

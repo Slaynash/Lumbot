@@ -87,7 +87,7 @@ public final class MelonScanner {
             if (multipleLogsCheck(attachments, messageReceivedEvent, lang)) // This should not happen, but just in case
                 return;
 
-            Attachment attachment = attachments.stream().filter(MelonScanner::isValidFileFormat).findFirst().orElse(null);
+            Attachment attachment = attachments.stream().filter(attach -> isValidFileFormat(attach, true)).findFirst().orElse(null);
             if (attachment == null)
                 return;
 
@@ -180,7 +180,7 @@ public final class MelonScanner {
     private static boolean multipleLogsCheck(List<Attachment> attachments, MessageReceivedEvent messageReceivedEvent, String lang) {
         boolean hasAlreadyFound = false;
         for (Attachment attachment : attachments)
-            if (isValidFileFormat(attachment)) {
+            if (isValidFileFormat(attachment, true)) {
                 if (hasAlreadyFound) {
                     Utils.replyEmbed(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
                     return true;
@@ -198,11 +198,12 @@ public final class MelonScanner {
         return false;
     }
 
-    public static boolean isValidFileFormat(Attachment attachment) {
-        return attachment.getFileExtension() != null && (
-            attachment.getFileExtension().equalsIgnoreCase("log") ||
-            attachment.getFileExtension().equalsIgnoreCase("txt")) ||
-            attachment.getFileName().equalsIgnoreCase("latest");
+    public static boolean isValidFileFormat(Attachment attachment, boolean strict) {
+        if (attachment.getFileName() == null) return false;
+        String fileName = attachment.getFileName().toLowerCase();
+        if (strict && fileName.startsWith("message")) return true;
+        return fileName.startsWith("latest") ||
+            fileName.startsWith("melonloader");
     }
 
 
