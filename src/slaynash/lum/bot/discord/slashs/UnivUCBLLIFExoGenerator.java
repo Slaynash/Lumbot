@@ -40,11 +40,17 @@ public class UnivUCBLLIFExoGenerator {
             System.out.println("exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
 
             if (!subcommandname.equals("create") && !subcommandname.equals("solve")) {
-                interactionhook.sendMessage("Nom de sous-commande invalide: " + event.getSubcommandName()).queue();
+                if (interactionhook != null)
+                    interactionhook.sendMessage("Nom de sous-commande invalide: " + event.getSubcommandName()).queue();
+                else
+                    event.getChannel().sendMessage("Nom de sous-commande invalide: " + event.getSubcommandName()).queue();
                 return;
             }
             if (ticket.contains(" ")) {
-                interactionhook.sendMessage("Le billet ne peut pas avoir d'espace").queue();
+                if (interactionhook != null)
+                    interactionhook.sendMessage("Le billet ne peut pas avoir d'espace").queue();
+                else
+                    event.getChannel().sendMessage("Le billet ne peut pas avoir d'espace").queue();
                 return;
             }
 
@@ -73,7 +79,10 @@ public class UnivUCBLLIFExoGenerator {
             String imageDataStr = data.split("\"data\": \"", 2)[1].split("\"}", 2)[0];
             byte[] imageData = Base64.getDecoder().decode(imageDataStr);
 
-            interactionhook.sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
+            if (interactionhook != null)
+                interactionhook.sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
+            else
+                event.getChannel().sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("UCBLLIF command failed", e);
