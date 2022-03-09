@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 
+import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import slaynash.lum.bot.discord.JDAManager;
@@ -48,6 +49,7 @@ public final class LogCounter {
 
     public static void updateCounter() {
         try {
+            if (!JDAManager.getJDA().getStatus().equals(Status.CONNECTED)) return;
             Date date = new Date();
             String directoryPath = workingPath + "/MLlogs/";
             File directory = new File(directoryPath);
