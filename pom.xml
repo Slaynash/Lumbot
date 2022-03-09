@@ -84,13 +84,13 @@
       <!-- for JavaSteam -->
       <groupId>in.dragonbra</groupId>
       <artifactId>javasteam</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.0</version>
     </dependency>
     <dependency>
       <!-- NON-ANDROID ONLY -->
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk15on</artifactId>
-      <version>1.69</version>
+      <version>1.70</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -100,7 +100,7 @@
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.10</version>
+      <version>1.2.11</version>
     </dependency>
     <dependency>
       <groupId>com.github.lastrix</groupId>
