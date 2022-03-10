@@ -1,5 +1,11 @@
 package slaynash.lum.bot.steam;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,6 +38,7 @@ import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerChannel;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Steam {
     public static final String LOG_IDENTIFIER = "Steam";
@@ -50,6 +57,16 @@ public class Steam {
     private static List<ServerChannel> channels2Remove;
 
     public Steam() {
+
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader("storage/previousSteamChange.txt"));
+            previousChangeNumber = Integer.parseInt(reader.readLine());
+            reader.close();
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to load previousSteamChange", e);
+        }
 
         client = new SteamClient();
         user = client.getHandler(SteamUser.class);
@@ -112,6 +129,13 @@ public class Steam {
             System.out.println("Changelist " + previousChangeNumber + " -> " + callback.getCurrentChangeNumber() + " (" + callback.getAppChanges().size() + " apps, " + callback.getPackageChanges().size() + " packages)");
 
             previousChangeNumber = callback.getCurrentChangeNumber();
+            
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
+                writer.write(String.valueOf(previousChangeNumber));
+            }
+            catch (IOException e) {
+                ExceptionUtils.reportException("Failed to save previousSteamChange", e);
+            }
 
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 Integer gameID = changeDataPair.getKey();

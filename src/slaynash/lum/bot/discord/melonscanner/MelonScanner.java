@@ -441,6 +441,9 @@ public final class MelonScanner {
                 case "Firewatch":
                     context.embedBuilder.setThumbnail("https://w7.pngwing.com/pngs/347/28/png-transparent-firewatch-video-game-gog-com-adventure-game-pc-game-slipknot-logo-game-text-orange.png");
                     break;
+                case "Genshin Impact":
+                    context.embedBuilder.setThumbnail("https://gmedia.playstation.com/is/image/SIEPDC/genshin-impact-logo-01-en-3sep21?$native--t$");
+                    break;
                 case "GodsOfGravity":
                     context.embedBuilder.setThumbnail("https://cdn.sidequestvr.com/file/140588/cover-art-landscape-calltoaction.png");
                     break;
