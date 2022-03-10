@@ -47,6 +47,9 @@ public class Utils {
     }
 
     public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
+        return wrapMessageInEmbed(message, color, null);
+    }
+    public static MessageEmbed wrapMessageInEmbed(String message, Color color, String imageURL) {
         EmbedBuilder eb = new EmbedBuilder();
         if (color != null)
             eb.setColor(color);
@@ -54,11 +57,16 @@ public class Utils {
             eb.setDescription(message.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 4) + " ...");
         else
             eb.setDescription(message);
+        if (imageURL != null)
+            eb.setImage(imageURL);
         return eb.build();
     }
 
     public static void replyEmbed(String message, Color color, MessageReceivedEvent event) {
-        MessageEmbed embed = wrapMessageInEmbed(message, color);
+        replyEmbed(message, color, null, event);
+    }
+    public static void replyEmbed(String message, Color color, String imageURL, MessageReceivedEvent event) {
+        MessageEmbed embed = wrapMessageInEmbed(message, color, imageURL);
 
         if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
             return;

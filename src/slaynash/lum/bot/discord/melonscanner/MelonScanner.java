@@ -463,6 +463,9 @@ public final class MelonScanner {
                 case "Hot Dogs Horseshoes and Hand Grenades":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/871468287144390698/Hot_Dogs_Horseshoes_and_Hand_Grenades.png");
                     break;
+                case "House Party":
+                    context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1186376117357305856/ZlgsB9ag_400x400.jpg");
+                    break;
                 case "IEYTD":
                     context.embedBuilder.setThumbnail("https://cdn.schellgames.com/images/Media-Kits/i-expect-you-to-die/IEYTD_Logo_Square.png");
                     break;
