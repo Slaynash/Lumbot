@@ -1059,6 +1059,9 @@ public final class MelonScanner {
             if (context.lastLine.contains("Downloading")) {
                 error += "MelonLoader Gotten stuck downloading, make sure that nothing is blocking downloads.";
             }
+            if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod")) {
+                context.embedBuilder.addField("You don't have ReMod", "ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", false);
+            }
 
             if (error.length() > 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);

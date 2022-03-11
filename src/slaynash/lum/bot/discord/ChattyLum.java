@@ -10,6 +10,7 @@ import java.util.Random;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.LumGoneCommand;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class ChattyLum {
     public static final String LOG_IDENTIFIER = "ChattyLum";
@@ -197,6 +198,11 @@ public class ChattyLum {
         boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
         if (!(hasLum || refLum))
             return false;
+
+        if (CrossServerUtils.isLumDev(event.getMember()) && message.matches(".*\\bdab\\b.*")) {
+            event.getChannel().sendMessage("<:Neko_dab:865328473719439381>").queue();
+            return true;
+        }
 
         if (message.matches(".*\\bbye\\b.*")) {
             if (!(new LumGoneCommand().includeInHelp(event)))

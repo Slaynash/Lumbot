@@ -436,9 +436,9 @@ public class ServerMessagesHandler {
             content = content.toLowerCase();
             if (event.getMessage().isEdited())
                 return false;
-            if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
+            if (event.getMember().equals(event.getGuild().getSelfMember()))
                 return true;
-            if (content.startsWith("l!replies"))
+            if (content.startsWith("l!repl"))
                 return true;
             Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
             Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());

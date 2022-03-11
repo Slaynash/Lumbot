@@ -277,6 +277,11 @@ public final class MelonScannerReadPass {
                 context.oldMods.add(oldName);
             return true;
         }
+
+        if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
+            context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if VRChat does not restart."));
+            return true;
+        }
         return false;
     }
 
