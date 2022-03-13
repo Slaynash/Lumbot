@@ -316,6 +316,10 @@
             {
                 "regex": ".*Win32 IO returned 1224\\. Path: (?<ReModCorePath>.*)",
                 "error": "IO error 1224, try deleting:\n`ReModCorePath`"
+            },
+            {
+                "regex": ".*VRC.UI.Elements.UIPage.set_field_Private_MenuStateController_0(VRC.UI.Elements.MenuStateController).*",
+                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\ReMod.Core.dll`"
             }
         ],
         "BloonsTD6": [
