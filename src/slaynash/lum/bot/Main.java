@@ -94,6 +94,7 @@ public class Main extends ListenerAdapter {
         ConfigManager.init();
         Localization.init();
 
+        DBConnectionManagerLum.init();
         DBConnectionManagerShortUrls.init();
 
         loadSteamWatch();

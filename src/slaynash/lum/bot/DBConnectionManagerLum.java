@@ -10,10 +10,10 @@ import java.util.Map;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public final class DBConnectionManagerShortUrls {
-    public static final String LOG_IDENTIFIER = "DBSHORT";
+public final class DBConnectionManagerLum {
+    public static final String LOG_IDENTIFIER = "DBLUM";
 
-    private DBConnectionManagerShortUrls() {
+    private DBConnectionManagerLum() {
     }
 
     private static final int DATABASE_TIMEOUT = 10; // in seconds
@@ -26,7 +26,7 @@ public final class DBConnectionManagerShortUrls {
         try {
             System.out.println("Connecting to Database...");
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
-            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseShortURL, ConfigManager.dbLogin, ConfigManager.dbPassword);
+            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum, ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("Connection to Database initialised");
         }
         catch (Exception e) {

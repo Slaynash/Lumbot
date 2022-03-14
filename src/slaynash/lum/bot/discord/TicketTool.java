@@ -1,7 +1,5 @@
 package slaynash.lum.bot.discord;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -9,6 +7,7 @@ import java.util.Random;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.Utils;
 
 public class TicketTool {
@@ -18,27 +17,32 @@ public class TicketTool {
     public static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         String channelName = event.getTextChannel().getName();
-        //The code needs to be the first ` in pString
-        String pString = "";
-        try {
-            pString = Files.readString(Paths.get("storage", "TTmessage.txt")).replace("$randomString$", randomString(8));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
+        if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            if (channelName.contains("reset"))
+            if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
+                //The code needs to be the first ` in pString
+                String pString = "";
+                try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='emmTTmessage'").getString("value").replace("$randomString$", randomString(8));}
+                catch (Exception e) {e.printStackTrace();}
+                if (channelName.contains("reset"))
+                    event.getTextChannel().sendMessage(pString).queue();
+                else if (channelName.contains("wipe"))
+                    event.getTextChannel().sendMessage(pString).queue();
+                else if (channelName.contains("deletion"))
+                    event.getTextChannel().sendMessage(pString).queue();
+                else if (channelName.contains("export"))
+                    event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via emmVRC > Settings > small Export button in the upper right corner\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
+            }
+            else if (event.getGuild().getIdLong() == 600298024425619456L /* TW */) {
+                //The code needs to be the first ` in pString
+                String pString = "";
+                try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='twTTmessage'").getString("value").replace("$randomString$", randomString(8));}
+                catch (Exception e) {e.printStackTrace();}
                 event.getTextChannel().sendMessage(pString).queue();
-            else if (channelName.contains("wipe"))
-                event.getTextChannel().sendMessage(pString).queue();
-            else if (channelName.contains("deletion"))
-                event.getTextChannel().sendMessage(pString).queue();
-            else if (channelName.contains("export"))
-                event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via emmVRC > Settings > small Export button in the upper right corner\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
+            }
         }
-        else if (event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ && event.getMessage().getEmbeds().size() > 0) {
+        else if ((event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ || event.getAuthor().getIdLong() == 150562159196241920L /*Karren-sama*/) && event.getMessage().getEmbeds().size() > 0) {
             Thread thread = new Thread(() -> {
                 System.out.println("Receved embed from Rubybot");
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
@@ -53,21 +57,25 @@ public class TicketTool {
                     return;
                 }
                 String code = split[1].toLowerCase();
-                List<Field> embed = event.getMessage().getEmbeds().get(0).getFields();
-                boolean codeFound = checkForCode(embed, code);
-                String id = embed.get(0).getValue(); //assume that ID is always in the first field
-
-                if (channelName.contains("reset") && codeFound) {
-                    event.getTextChannel().sendMessage("e.pin reset " + id).queue();
-                }
-                else if (channelName.contains("wipe") && codeFound) {
-                    event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all of your emmVRC favorites removed from your account.\nA staff member will help you further once they see your confirmation.").queue();
-                }
-                else if (channelName.contains("deletion") && codeFound) {
-                    event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all data about your emmVRC account deleted.\nA staff member will help you further once they see your confirmation.").queue();
-                }
-
+                List<Field> embedFields = event.getMessage().getEmbeds().get(0).getFields();
+                boolean codeFound = checkForCode(embedFields, code);
+                String id = embedFields.get(0).getValue(); //assume that ID is always in the first field
                 System.out.println("Code: " + code + " ID:" + id);
+
+                if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ && codeFound) {
+                    if (channelName.contains("reset")) {
+                        event.getTextChannel().sendMessage("e.pin reset " + id).queue();
+                    }
+                    else if (channelName.contains("wipe")) {
+                        event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all of your emmVRC favorites removed from your account.\nA staff member will help you further once they see your confirmation.").queue();
+                    }
+                    else if (channelName.contains("deletion")) {
+                        event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all data about your emmVRC account deleted.\nA staff member will help you further once they see your confirmation.").queue();
+                    }
+                }
+                else if (event.getGuild().getIdLong() == 600298024425619456L /* TW */ && codeFound) {
+                    event.getTextChannel().sendMessage("tw.deletion " + id).queue();
+                }
             }, "Ticket");
             thread.start();
         }
@@ -84,8 +92,8 @@ public class TicketTool {
         return sbr;
     }
 
-    private static boolean checkForCode(List<Field> embed, String code) {
-        for (Field field : embed) {
+    private static boolean checkForCode(List<Field> embedFields, String code) {
+        for (Field field : embedFields) {
             for (String line : field.getValue().split("\n")) {
                 line = line.replaceAll("[^a-zA-Z0-9]", " ").replace("  ", " ").strip();
                 for (String word : line.split(" ")) {

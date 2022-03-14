@@ -67,7 +67,8 @@ public final class MelonScanner {
             else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
                 lang = "de";
 
-            if (messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
+            long guildID = messageReceivedEvent.getGuild().getIdLong();
+            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
                 Random random = new Random();
                 if (random.nextInt(1000) == 420)
                     lang = "sga";
@@ -502,6 +503,9 @@ public final class MelonScanner {
                 case "Run": //what a crappy unity name, its bro falls
                     context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
                     context.embedBuilder.addField("Dude, this game sucks", "Don't promote knockoffs, uninstall it", false);
+                    break;
+                case "Sable":
+                    context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/en/4/4c/Sable_cover_art.jpg");
                     break;
                 case "SCPSL":
                     context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");

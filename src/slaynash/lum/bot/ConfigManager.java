@@ -19,7 +19,8 @@ public final class ConfigManager {
 
     public static String dbAddress;
     public static String dbPort;
-    public static String dbDatabase;
+    public static String dbDatabaseLum;
+    public static String dbDatabaseShortURL;
     public static String dbLogin;
     public static String dbPassword;
 
@@ -45,7 +46,8 @@ public final class ConfigManager {
 
             dbAddress = properties.getProperty("DB_ADDRESS");
             dbPort = properties.getProperty("DB_PORT");
-            dbDatabase = properties.getProperty("DB_DATABASE");
+            dbDatabaseLum = properties.getProperty("DB_DATABASELUM");
+            dbDatabaseShortURL = properties.getProperty("DB_DATABASESHORTURL");
             dbLogin = properties.getProperty("DB_LOGIN");
             dbPassword = properties.getProperty("DB_PASSWORD");
 
