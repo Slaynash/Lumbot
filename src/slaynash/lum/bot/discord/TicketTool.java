@@ -22,9 +22,9 @@ public class TicketTool {
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                 //The code needs to be the first ` in pString
-                String pString = "";
-                try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='emmTTmessage'").getString("value").replace("$randomString$", randomString(8));}
-                catch (Exception e) {e.printStackTrace();}
+                String pString = "To confirm your identity, please complete the following steps:\n1) add this passcode to your VRChat Status or Bio: `$randomString$`\n2) send either`/vrcuser [username or UserID]`or`r.vrcuser [username or UserID]`into this channel, for example`r.vrcuser tupper`\n3) push the button with your username if the bot asks\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.";
+                // try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='emmTTmessage'").getString("value").replace("$randomString$", randomString(8));}
+                // catch (Exception e) {e.printStackTrace();}
                 if (channelName.contains("reset"))
                     event.getTextChannel().sendMessage(pString).queue();
                 else if (channelName.contains("wipe"))
