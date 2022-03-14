@@ -1,7 +1,5 @@
 package slaynash.lum.bot.discord;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,7 +14,7 @@ public class TicketTool {
     public static final String LOG_IDENTIFIER = "TicketTool";
     private static final Random random = new Random();
 
-    public static void tickettool(MessageReceivedEvent event) throws SQLException {
+    public static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         String channelName = event.getTextChannel().getName();
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
@@ -24,10 +22,7 @@ public class TicketTool {
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                 //The code needs to be the first ` in pString
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string = 'emmTTmessage'");
-                rs.next();
-                String pString = rs.getString("value").replace("$randomString$", randomString(8));
-                rs.close();
+                String pString = DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8));
                 if (channelName.contains("reset"))
                     event.getTextChannel().sendMessage(pString).queue();
                 else if (channelName.contains("wipe"))
@@ -37,12 +32,9 @@ public class TicketTool {
                 else if (channelName.contains("export"))
                     event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via emmVRC > Settings > small Export button in the upper right corner\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
             }
-            else if (event.getGuild().getIdLong() == 600298024425619456L /* TW */) {
+            else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
                 //The code needs to be the first ` in pString
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string = 'twTTmessage'");
-                rs.next();
-                String pString = rs.getString("value").replace("$randomString$", randomString(8));
-                rs.close();
+                String pString = DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8));
                 event.getTextChannel().sendMessage(pString).queue();
             }
         }
@@ -77,7 +69,7 @@ public class TicketTool {
                         event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all data about your emmVRC account deleted.\nA staff member will help you further once they see your confirmation.").queue();
                     }
                 }
-                else if (event.getGuild().getIdLong() == 600298024425619456L /* TW */ && codeFound) {
+                else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {
                     event.getTextChannel().sendMessage("tw.deletion " + id).queue();
                 }
             }, "Ticket");

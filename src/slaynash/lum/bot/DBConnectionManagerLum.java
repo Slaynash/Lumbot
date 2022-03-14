@@ -71,6 +71,20 @@ public final class DBConnectionManagerLum {
         return rs;
     }
 
+    public static String getString(String table, String keycolumn, String valuecolumn, String keyrow) {
+        String pString = "";
+        ResultSet rs;
+        try {
+            rs = DBConnectionManagerLum.sendRequest("SELECT " + valuecolumn + " FROM `" + table + "` WHERE " + keycolumn + " = '" + keyrow + "'");
+            if (rs.next());
+                pString = rs.getString(valuecolumn);
+            rs.close();
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("Exception while fetching SQL string", e);
+        }
+        return pString;
+    }
+
     public static int sendUpdate(String statement, Object... args) throws SQLException {
         updateCount++;
         PreparedStatement ps = getConnection().prepareStatement(statement);
