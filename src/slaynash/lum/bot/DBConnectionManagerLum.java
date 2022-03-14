@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -20,7 +22,10 @@ public final class DBConnectionManagerLum {
 
     private static Connection connection;
     private static final Map<ResultSet, PreparedStatement> requests = new HashMap<>();
-    private static volatile int requestCount, updateCount, requestClosedCount, updateClosedCount;
+    private static final AtomicInteger requestCount = new AtomicInteger(0);
+    private static final AtomicInteger updateCount = new AtomicInteger(0);
+    private static final AtomicInteger requestClosedCount = new AtomicInteger(0);
+    private static final AtomicInteger updateClosedCount = new AtomicInteger(0);
 
     public static void init() {
         try {
@@ -49,8 +54,8 @@ public final class DBConnectionManagerLum {
     }
 
     public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
-        requestCount++;
-        PreparedStatement ps = getConnection().prepareStatement(statement);
+        requestCount.incrementAndGet();
+        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
@@ -76,9 +81,9 @@ public final class DBConnectionManagerLum {
         ResultSet rs;
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT " + valuecolumn + " FROM `" + table + "` WHERE " + keycolumn + " = '" + keyrow + "'");
-            if (rs.next());
+            if (rs.next())
                 pString = rs.getString(valuecolumn);
-            rs.close();
+            closeRequest(rs);
         } catch (SQLException e) {
             ExceptionUtils.reportException("Exception while fetching SQL string", e);
         }
@@ -86,8 +91,8 @@ public final class DBConnectionManagerLum {
     }
 
     public static int sendUpdate(String statement, Object... args) throws SQLException {
-        updateCount++;
-        PreparedStatement ps = getConnection().prepareStatement(statement);
+        updateCount.incrementAndGet();
+        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
@@ -103,7 +108,7 @@ public final class DBConnectionManagerLum {
         }
         int r = ps.executeUpdate();
         ps.close();
-        updateClosedCount++;
+        updateClosedCount.incrementAndGet();
         return r;
     }
 
@@ -115,23 +120,23 @@ public final class DBConnectionManagerLum {
         resultSet.close();
         if (ps != null) {
             ps.close();
-            requestClosedCount++;
+            requestClosedCount.incrementAndGet();
         }
     }
 
     public static int getRequestCount() {
-        return requestCount;
+        return requestCount.get();
     }
 
     public static int getUpdateCount() {
-        return updateCount;
+        return updateCount.get();
     }
 
     public static int getRequestClosedCount() {
-        return requestClosedCount;
+        return requestClosedCount.get();
     }
 
     public static int getUpdateClosedCount() {
-        return updateClosedCount;
+        return updateClosedCount.get();
     }
 }

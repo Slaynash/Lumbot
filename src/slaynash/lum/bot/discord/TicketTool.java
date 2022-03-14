@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -19,7 +20,7 @@ public class TicketTool {
         String channelName = event.getTextChannel().getName();
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
-        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
+        if ((event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                 //The code needs to be the first ` in pString
                 String pString = DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8));
@@ -42,7 +43,10 @@ public class TicketTool {
             Thread thread = new Thread(() -> {
                 System.out.println("Receved embed from Rubybot");
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
-                history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()));
+                Role emmadmin = event.getJDA().getGuildById(600298024425619456L).getRoleById(748392927365169233L);
+                Role emmnetwork = event.getJDA().getGuildById(600298024425619456L).getRoleById(801670419723452487L);
+                history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()) && !m.getMember().getRoles().contains(emmadmin) && !m.getMember().getRoles().contains(emmnetwork));
+                history.removeIf(m -> !m.getContentRaw().toLowerCase().contains("status"));
                 if (history.size() == 0) {
                     System.out.println("[ERROR] Can not find my messages");
                     return;
