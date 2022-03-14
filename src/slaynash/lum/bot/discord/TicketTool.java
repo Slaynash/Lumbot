@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -14,7 +16,7 @@ public class TicketTool {
     public static final String LOG_IDENTIFIER = "TicketTool";
     private static final Random random = new Random();
 
-    public static void tickettool(MessageReceivedEvent event) {
+    public static void tickettool(MessageReceivedEvent event) throws SQLException {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         String channelName = event.getTextChannel().getName();
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
@@ -22,9 +24,10 @@ public class TicketTool {
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                 //The code needs to be the first ` in pString
-                String pString = "To confirm your identity, please complete the following steps:\n1) add this passcode to your VRChat Status or Bio: `$randomString$`\n2) send either`/vrcuser [username or UserID]`or`r.vrcuser [username or UserID]`into this channel, for example`r.vrcuser tupper`\n3) push the button with your username if the bot asks\n\nTo edit your Bio navigate to the Social menu, select yourself, then choose \"Edit Bio\".\nYou can also sign in to <https://www.vrchat.com/home> and add it to your Bio there.";
-                // try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='emmTTmessage'").getString("value").replace("$randomString$", randomString(8));}
-                // catch (Exception e) {e.printStackTrace();}
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string = 'emmTTmessage'");
+                rs.next();
+                String pString = rs.getString("value").replace("$randomString$", randomString(8));
+                rs.close();
                 if (channelName.contains("reset"))
                     event.getTextChannel().sendMessage(pString).queue();
                 else if (channelName.contains("wipe"))
@@ -36,9 +39,10 @@ public class TicketTool {
             }
             else if (event.getGuild().getIdLong() == 600298024425619456L /* TW */) {
                 //The code needs to be the first ` in pString
-                String pString = "";
-                try {pString = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string='twTTmessage'").getString("value").replace("$randomString$", randomString(8));}
-                catch (Exception e) {e.printStackTrace();}
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT value FROM `strings` WHERE string = 'twTTmessage'");
+                rs.next();
+                String pString = rs.getString("value").replace("$randomString$", randomString(8));
+                rs.close();
                 event.getTextChannel().sendMessage(pString).queue();
             }
         }
