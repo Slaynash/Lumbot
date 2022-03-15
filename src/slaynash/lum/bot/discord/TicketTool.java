@@ -22,21 +22,19 @@ public class TicketTool {
             return;
         if ((event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
-                //The code needs to be the first ` in pString
-                String pString = DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8));
+                //The code needs to be the first ` in message
                 if (channelName.contains("reset"))
-                    event.getTextChannel().sendMessage(pString).queue();
+                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                 else if (channelName.contains("wipe"))
-                    event.getTextChannel().sendMessage(pString).queue();
+                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                 else if (channelName.contains("deletion"))
-                    event.getTextChannel().sendMessage(pString).queue();
+                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                 else if (channelName.contains("export"))
-                    event.getTextChannel().sendMessage("Avatar Favorite Exporting is also available via emmVRC > Settings > small Export button in the upper right corner\nIt would be exported to `VRChat\\UserData\\emmVRC\\ExportedList.json`\nIf you are unable to use the automatic export, please let say so otherwise have a wonderful day and you can close this ticket.").queue();
+                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexport").replace("$randomString$", randomString(8))).queue();
             }
             else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
-                //The code needs to be the first ` in pString
-                String pString = DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8));
-                event.getTextChannel().sendMessage(pString).queue();
+                //The code needs to be the first ` in message
+                event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8))).queue();
             }
         }
         else if ((event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ || event.getAuthor().getIdLong() == 150562159196241920L /*Karren-sama*/) && event.getMessage().getEmbeds().size() > 0) {
@@ -59,7 +57,7 @@ public class TicketTool {
                 String code = split[1].toLowerCase();
                 List<Field> embedFields = event.getMessage().getEmbeds().get(0).getFields();
                 boolean codeFound = checkForCode(embedFields, code);
-                String id = embedFields.get(0).getValue(); //assume that ID is always in the first field
+                String id = embedFields.get(0).getValue().replace("`", ""); //assume that ID is always in the first field
                 System.out.println("Code: " + code + " ID:" + id);
 
                 if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ && codeFound) {
@@ -74,7 +72,7 @@ public class TicketTool {
                     }
                 }
                 else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {
-                    event.getTextChannel().sendMessage("tw.deletion " + id).queue();
+                    event.getTextChannel().sendMessage("tw!deletion " + id).queue();
                 }
             }, "Ticket");
             thread.start();
