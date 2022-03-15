@@ -406,6 +406,9 @@ public final class MelonScanner {
                 case "Car Mechanic Simulator 2021":
                     context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans/29076066/86ec92aabfad0878253d3e47ef4133e3e3228471.png");
                     break;
+                case "Cloudpunk ":
+                    context.embedBuilder.setThumbnail("https://i0.wp.com/gameoctane.com/wp-content/uploads/2021/03/CPlogo-1.png");
+                    break;
                 case "Crab Game":
                     context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steam/apps/1782210/header.jpg");
                     break;
@@ -759,6 +762,7 @@ public final class MelonScanner {
     }
 
     private static boolean brokenModsCheck(MelonScanContext context) {
+        context.brokenMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex).toList());
         if (context.brokenMods.size() > 0) {
             context.brokenMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
