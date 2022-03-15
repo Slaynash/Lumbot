@@ -72,7 +72,7 @@ public class TicketTool {
                     }
                 }
                 else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {
-                    event.getTextChannel().sendMessage("tw!deletion " + id).queue();
+                    event.getTextChannel().sendMessage("tw!deluser " + id).queue();
                 }
             }, "Ticket");
             thread.start();

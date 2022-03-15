@@ -55,7 +55,7 @@ public class AddMissingRoles extends Command {
                 return;
             }
             guild.loadMembers(m -> {
-                if (!m.isPending() && !m.getRoles().contains(role)) {
+                if (!m.getUser().isBot() && !m.isPending() && !m.getRoles().contains(role)) {
                     try {
                         guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, z -> System.out.println("Failed to regive role to " + m.getUser().getAsTag() + " in " + guild.getName()));
                         System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
