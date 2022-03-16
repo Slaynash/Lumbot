@@ -48,9 +48,9 @@ public class UnivUCBLLIFExoGenerator {
             }
             if (ticket.contains(" ")) {
                 if (interactionhook != null)
-                    interactionhook.sendMessage("Le billet ne peut pas avoir d'espace").queue();
+                    interactionhook.sendMessage("Le ticket ne peut pas avoir d'espace").queue();
                 else
-                    event.getChannel().sendMessage("Le billet ne peut pas avoir d'espace").queue();
+                    event.getChannel().sendMessage("Le ticket ne peut pas avoir d'espace").queue();
                 return;
             }
 
