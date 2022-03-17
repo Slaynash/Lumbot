@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 
 public class ABCpolice {
+    public static final String LOG_IDENTIFIER = "ABCpolice";
     public static boolean abcPolice(MessageReceivedEvent event) {
         if (event.getChannel().getIdLong() != 815364277123940423L)
             return false;
@@ -21,8 +22,8 @@ public class ABCpolice {
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
         find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());
-        history.removeIf(m -> m.getAuthor().isBot() || m.getContentStripped().isBlank());
-        if (history.size() == 0) //new channel or wipe or bot spam
+        history.removeIf(m -> m.getAuthor().isBot());
+        if (history.size() == 0 && !brokenChain) //new channel or wipe or bot spam
             return true;
         char currentLetter = convertChar(message);
         char previousLetter = convertChar(history.get(0).getContentStripped());
@@ -41,7 +42,7 @@ public class ABCpolice {
         else if ((int) currentLetter != (int) previousLetter + 1) {
             System.out.println("abc does not match");
             event.getMessage().addReaction(":bonk:907068295868477551").queue();
-            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain <:Neko_sad:865328470652485633> Start back to `A`").queue();
+            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been " + (previousLetter + 1) + " <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
         else if (!brokenChain && message.length() == 1) {
@@ -68,12 +69,12 @@ public class ABCpolice {
     private static char convertChar(String letter) {
         if (letter.length() == 0)
             return '\0';
-        letter = Junidecode.unidecode(letter);
+        letter = Junidecode.unidecode(letter.toLowerCase());
         if (letter.charAt(0) == 55356) { //Unicode indicator or something like that
             if (letter.charAt(1) >= 56806 && letter.charAt(1) <= 56831) { //convert regional_indicator to lowercase letters
                 return (char) (letter.charAt(1) - 56709);
             }
         }
-        return Character.toLowerCase(letter.charAt(0));
+        return letter.replace(":", "").charAt(0);
     }
 }

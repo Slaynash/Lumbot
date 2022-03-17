@@ -592,6 +592,10 @@ public class Main extends ListenerAdapter {
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
+        if (event.getUser().getName() == null) {
+            reportchannel.sendMessage(event.getUser().getId() + " just joined with a sussy name of NULL").queue();
+            return;
+        }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
@@ -605,6 +609,10 @@ public class Main extends ListenerAdapter {
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
+        if (event.getNewNickname() == null) {
+            reportchannel.sendMessage(event.getUser().getId() + " just changed their name to a sussy name of NULL").queue();
+            return;
+        }
         String name = Junidecode.unidecode(event.getNewNickname().toLowerCase());
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
