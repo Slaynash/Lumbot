@@ -46,7 +46,7 @@ public class UnivUCBLLIFExoGenerator {
                     event.getChannel().sendMessage("Nom de sous-commande invalide: " + event.getSubcommandName()).queue();
                 return;
             }
-            if (ticket.contains(" ")) {
+            else if (ticket != null && ticket.contains(" ")) {
                 if (interactionhook != null)
                     interactionhook.sendMessage("Le ticket ne peut pas avoir d'espace").queue();
                 else

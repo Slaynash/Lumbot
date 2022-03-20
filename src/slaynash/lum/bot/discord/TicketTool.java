@@ -85,7 +85,7 @@ public class TicketTool {
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(random.nextInt(AB.length())));
         String sbr = sb.toString();
-        if (sbr.matches(".*(joe|red|sjw|[s5]hit|fuck|slut|clit|xxx).*"))
+        if (sbr.matches(".*(joe|red|sjw|[s5]hit|fuck|sex|xxx|cum|nazi|kkk|ass|tit|fag|fap|gay).*"))
             return randomString(len); //just generate a new one until we get a good one
         return sbr;
     }

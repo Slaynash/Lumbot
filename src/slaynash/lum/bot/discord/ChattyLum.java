@@ -35,7 +35,10 @@ public class ChattyLum {
         "I already answered you <:konataCry:553690186022649858>",
         "I've already given you a response! <:MeguminEyes:852057834686119946>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
-        "Why won't you read my answer <:angry:835647632843866122>"
+        "Why won't you read my answer <:angry:835647632843866122>",
+        "https://tenor.com/view/exultant-what-anime-gif-16881880",
+        "https://tenor.com/view/obama-what-dafuq-gif-7447350",
+        "https://tenor.com/view/cute-pouting-pout-anime-girl-gif-14739721"
     ));
 
     private static final ArrayList<String> alreadyHelpedSentencesRare = new ArrayList<>(Arrays.asList(

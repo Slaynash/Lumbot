@@ -328,6 +328,10 @@
             {
                 "regex": "\\[[0-9.:]+] \\[Advanced_Safety] \\[ERROR] Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.MissingMethodException: bool Il2CppSystem.Object.ReferenceEquals\\(Il2CppSystem.Object,Il2CppSystem.Object\\)",
                 "error": "Advanced Safety can get spammy in the console. Disabling \"Enforce default sorting layer\" in settings fixes that for now."
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[WholesomeLoader] \\[ERROR] Newtonsoft.Json.JsonReaderException: Error reading JObject from JsonReader.*",
+                "error": "Your TotallyWholesomeConfig.json is corrupted, you can delete it from `VRChat/UserData/TotallyWholesomeConfig.json`"
             }
         ],
         "BloonsTD6": [
