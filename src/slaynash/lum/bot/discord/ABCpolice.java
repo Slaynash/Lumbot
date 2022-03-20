@@ -25,10 +25,10 @@ public class ABCpolice {
         history.removeIf(m -> m.getAuthor().isBot());
         if (history.size() == 0 && !brokenChain) //new channel or wipe or bot spam
             return true;
-        Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
+        Message previousAuthorMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         char currentLetter = convertChar(message);
-        char previousLetter = previousMessage != null ? convertChar(previousMessage.getContentStripped()) : 0;
-        boolean timing = previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
+        char previousLetter = history.size() > 0 ? convertChar(history.get(0).getContentStripped()) : 0;
+        boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
 
         if (brokenChain || previousLetter == 0 || previousLetter == 'z')
             previousLetter = 'a' - 1;
