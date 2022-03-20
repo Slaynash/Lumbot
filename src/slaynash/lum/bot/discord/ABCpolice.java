@@ -25,12 +25,12 @@ public class ABCpolice {
         history.removeIf(m -> m.getAuthor().isBot());
         if (history.size() == 0 && !brokenChain) //new channel or wipe or bot spam
             return true;
-        char currentLetter = convertChar(message);
-        char previousLetter = convertChar(history.get(0).getContentStripped());
         Message previousMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
+        char currentLetter = convertChar(message);
+        char previousLetter = previousMessage != null ? convertChar(previousMessage.getContentStripped()) : 0;
         boolean timing = previousMessage != null && previousMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
 
-        if (brokenChain || previousLetter == 'z')
+        if (brokenChain || previousLetter == 0 || previousLetter == 'z')
             previousLetter = 'a' - 1;
         System.out.println("abc previousLetter:" + previousLetter + " currentLetter:" + currentLetter + " brokenChain:" + brokenChain);
 
@@ -42,7 +42,7 @@ public class ABCpolice {
         else if ((int) currentLetter != (int) previousLetter + 1) {
             System.out.println("abc does not match");
             event.getMessage().addReaction(":bonk:907068295868477551").queue();
-            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been " + (previousLetter + 1) + " <:Neko_sad:865328470652485633> Start back to `A`").queue();
+            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been " + (char) (previousLetter + 1) + " <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
         else if (!brokenChain && message.length() == 1) {
