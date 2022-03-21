@@ -19,12 +19,16 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SlashConfig {
 
     public void sendReply(SlashCommandEvent event, String guildID) {
-        Guild guild = event.getJDA().getGuildById(guildID);
-        if (guild == null) {
-            event.reply("Guild was not found.").queue();
-            return;
-        }
         try {
+            if (!guildID.matches("^\\d{18,}$")) {
+                event.reply("Invalid Guild ID. Please make sure that you are using the digit ID. https://support.discord.com/hc/en-us/articles/206346498").setEphemeral(true).queue();
+                return;
+            }
+            Guild guild = event.getJDA().getGuildById(guildID);
+            if (guild == null) {
+                event.reply("Guild was not found.").queue();
+                return;
+            }
             boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
             if (config == null) {
                 config = new boolean[GuildConfigurations.ConfigurationMap.values().length];

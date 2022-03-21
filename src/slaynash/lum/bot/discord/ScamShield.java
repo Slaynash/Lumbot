@@ -118,8 +118,10 @@ public class ScamShield {
         if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
             ssFoundTerms.put("newAccount", 1);
         String msg = event.getMessage().getContentStripped();
-        for (Member member : event.getMessage().getMentionedMembers()) {
-            msg = msg.replace("@" + member.getEffectiveName(), "");
+        if(event.isFromGuild()) {
+            for (Member member : event.getMessage().getMentionedMembers()) {
+                msg = msg.replace("@" + member.getEffectiveName(), "");
+            }
         }
         StringBuilder message = new StringBuilder(msg);
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
