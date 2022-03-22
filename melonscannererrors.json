@@ -135,6 +135,10 @@
         {
             "regex": ".*System.MissingMethodException.*AssetsManager.*",
             "error": "We are investigating this issue. Can you please upload a screenshot of your root Game's folder."
+        },
+        {
+            "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.",
+            "error": "Failed virus check. Please reinstall MelonLoader and do not edit any MelonLoader files."
         }
     ],
     "knownErrors": [

@@ -42,7 +42,7 @@ public class ABCpolice {
         else if ((int) currentLetter != (int) previousLetter + 1) {
             System.out.println("abc does not match");
             event.getMessage().addReaction(":bonk:907068295868477551").queue();
-            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been " + (char) (previousLetter + 1) + " <:Neko_sad:865328470652485633> Start back to `A`").queue();
+            event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been `" + Character.toUpperCase((char) (previousLetter + 1)) + "`  <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
         else if (!brokenChain && message.length() == 1) {

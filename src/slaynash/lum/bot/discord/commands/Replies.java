@@ -72,7 +72,7 @@ public class Replies extends Command {
                 }
             }
             else {
-                if (regexReplies.put(pattern, parts[1].trim()) != null) {
+                if (regexReplies.put(pattern, parts[1]) != null) {
                     Utils.replyEmbed("Updated the regex reply `" + pattern + "`", Color.GREEN, event);
                 }
                 else
@@ -96,7 +96,7 @@ public class Replies extends Command {
                 }
             }
             else {
-                if (replies.put(pattern, parts[1].trim()) != null) {
+                if (replies.put(pattern, parts[1]) != null) {
                     Utils.replyEmbed("Updated the reply `" + pattern + "`", Color.GREEN, event);
                 }
                 else
