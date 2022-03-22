@@ -479,6 +479,9 @@ public final class MelonScanner {
                 case "Karlson":
                     context.embedBuilder.setThumbnail("https://i.redd.it/ldxbkjuziad51.png");
                     break;
+                case "Kill the King":
+                    context.embedBuilder.setThumbnail("https://kill-the-king.com/imgs/KTK_Logos/logo_KTK-hamburger.png");
+                    break;
                 case "maj":
                     context.embedBuilder.setThumbnail("https://mahjongsoul.yo-star.com/img/Mahjong_logo.d393a548.png");
                     break;

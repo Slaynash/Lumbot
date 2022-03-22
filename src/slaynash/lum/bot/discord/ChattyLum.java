@@ -281,7 +281,7 @@ public class ChattyLum {
     }
 
     private static boolean handleThanks(String message, MessageReceivedEvent event) {
-        if (message.matches(".*\\b(th(ank|x)|neat|cool|nice|(?<!(not|n'?t) )help|epic|work(s|ed)|ty(|sm)|fixed|rad.*|th(at|is) bot|awesome|wow)\\b.*")) {
+        if (message.matches(".*\\b(th(ank|x)|neat|cool|nice|(?<!(not|n'?t|get) )help|epic|work(s|ed)|ty(|sm)|fixed|rad.*|th(at|is) bot|awesome|wow)\\b.*")) {
             if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event) || message.matches(".*\\blum\\b.*")) {
                 System.out.println("Thanks was detected");
                 String sentence;

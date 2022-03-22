@@ -22,7 +22,7 @@
         },
         {
             "regex": ".*Access to the path .* is denied.*",
-            "error": "Access is denied. Make sure that your file permissions are set correctly."
+            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC or reinstall MelonLoader."
         },
         {
             "regex": ".*System\\.UnauthorizedAccessException: Access to the path is denied\\.",
@@ -131,6 +131,10 @@
         {
             "regex": ".*The WOF driver encountered a corruption in the compressed file's Resource Table.",
             "error": "WOF driver error. You may have a corrupt Windows install and you should try validing. [Article on how to](https://www.thewindowsclub.com/the-wof-driver-encountered-a-corruption-in-the-compressed-files-resource-table-dism-error) as well as a video at the bottom."
+        },
+        {
+            "regex": ".*System.MissingMethodException.*AssetsManager.*",
+            "error": "We are investigating this issue. Can you please upload a screenshot of your root Game's folder."
         }
     ],
     "knownErrors": [
@@ -332,6 +336,10 @@
             {
                 "regex": "\\[[0-9.:]+] \\[WholesomeLoader] \\[ERROR] Newtonsoft.Json.JsonReaderException: Error reading JObject from JsonReader.*",
                 "error": "Your TotallyWholesomeConfig.json is corrupted, you can delete it from `VRChat/UserData/TotallyWholesomeConfig.json`"
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[WholesomeLoader] \\[ERROR] Your WholesomeLoader mod is not up to date.*",
+                "error": "Your WholesomeLoader mod is not up to date"
             }
         ],
         "BloonsTD6": [

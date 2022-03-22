@@ -409,6 +409,16 @@ public class ScamShield {
         return status;
     }
 
+    private static final List<String> whitelist = List.of(
+        "youtu.be",
+        "discord.gg",
+        ".jp",
+        ".edu",
+        "telegra.ph",
+        "robydrinks.be",
+        "bxlblog.be"
+    );
+
     private static int domainAgeCheck(String message) {
         int age = 14; //in days, less then but not equal will count
         int count = 0;
@@ -423,8 +433,8 @@ public class ScamShield {
                 String tld = domain.split("\\.", 2)[1];
                 if (Character.isDigit(tld.charAt(0)))
                     continue;
-
-                if (domain.equalsIgnoreCase("youtu.be") || domain.equalsIgnoreCase("discord.gg"))
+                String domainLower = domain.toLowerCase();
+                if (whitelist.stream().anyMatch(domainLower::contains))
                     continue;
                 Process p = Runtime.getRuntime().exec("whois " + domain);
                 StringBuilder output = new StringBuilder();
