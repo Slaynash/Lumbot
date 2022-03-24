@@ -379,6 +379,9 @@ public final class MelonScanner {
 
         if (context.game != null) {
             switch (context.game) {
+                case "Albion Online Client":
+                    context.embedBuilder.setThumbnail("https://assets.albiononline.com/assets/images/header/logo.png");
+                    break;
                 case "Among Us":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/cGdWOch.png");
                     break;
@@ -1072,6 +1075,8 @@ public final class MelonScanner {
             }
             if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod")) {
                 context.embedBuilder.addField("You don't have ReMod", "ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", false);
+                if (context.embedColor == Color.BLUE)
+                    context.embedColor = Color.ORANGE;
             }
 
             if (error.length() > 0) {

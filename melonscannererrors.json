@@ -139,6 +139,10 @@
         {
             "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.",
             "error": "Failed virus check. Please reinstall MelonLoader and do not edit any MelonLoader files."
+        },
+        {
+            "regex": ".*System.TypeInitializationException: The type initializer for 'HarmonyLib.AccessTools' threw an exception.*",
+            "error": "IPA is conflicting with MelonLoader. Please remove it or check for an update."
         }
     ],
     "knownErrors": [
@@ -327,7 +331,11 @@
             },
             {
                 "regex": ".*VRC.*set_field_Private_MenuStateController_0.*",
-                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\ReMod.Core.dll`"
+                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
+            },
+            {
+                "regex": ".*Could not resolve type.*ReMod.Core.*",
+                "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {
                 "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",

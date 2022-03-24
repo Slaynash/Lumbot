@@ -152,6 +152,11 @@ public class ChattyLum {
         "https://tenor.com/view/comic-girls-dying-suffering-crying-sob-gif-15759497"
     ));
 
+    private static final ArrayList<String> wah = new ArrayList<>(Arrays.asList(
+        "https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617",
+        "https://tenor.com/view/raiden-shogun-gif-23244583"
+    ));
+
     static { //on class load, nothing is removing these when the season is over other then a reboot
         if (LocalDate.now().getMonthValue() == 10) { //halloween
             helloLum.add("<:Neko_mummy:865328473761775627>");
@@ -188,8 +193,8 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/757187539638550610/932623632746836018/WELCOME_TO_VRCHAT_-_TFMJonny_Bo_Burnham_Parody.mp4").queue();
             return true;
         }
-        if (message.matches("^wah\\W.*")) {
-            event.getChannel().sendMessage("https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617").queue();
+        if (message.matches("^wah\\b.*")) {
+            event.getChannel().sendMessage(wah.get(random.nextInt(wah.size()))).queue();
             return true;
         }
         if (message.replace(" ", "").contains("ohno") && message.contains("anyway")) {
@@ -219,7 +224,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(good|best|nice|great(|est)|(be)?love(d|ly)?|nerd|sexy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
+        if (message.matches(".*\\b(good|best|nice|great(|est)|(be)?love(d|ly)?|nerd|s(hm|)exy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum.get(random.nextInt(niceLum.size()))).queue();
             return true;
