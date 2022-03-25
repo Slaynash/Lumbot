@@ -371,11 +371,15 @@ public final class MelonScanner {
 
     private static void prepareEmbed(MelonScanContext context) {
         checkForPirate(context);
+        String footer = "Lum Log Scanner";
+        if (context.loadedMods.size() > 0) {
+            footer += " | " + context.loadedMods.size() + " mods loaded";
+        }
         context.embedBuilder = new EmbedBuilder();
         context.reportMessage = new StringBuilder();
         context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))
                             .setTimestamp(Instant.now())
-                            .setFooter("Lum Log Scanner");
+                            .setFooter(footer);
 
         if (context.game != null) {
             switch (context.game) {
@@ -684,7 +688,12 @@ public final class MelonScanner {
         if (context.errors.size() > 0) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.errors.size(); ++i) {
-                error.append("- ").append(context.errors.get(i).error(context.lang)).append("\n");
+                String errorString = context.errors.get(i).error(context.lang);
+                if (errorString.contains("$cleanunity$")) {
+                    errorString = errorString.replace("$cleanunity$", "");
+                    context.embedBuilder.setImage("https://cdn.discordapp.com/attachments/600661924010786816/956088486220431400/unknown.png");
+                }
+                error.append("- ").append(errorString).append("\n");
             }
             context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
@@ -1073,7 +1082,7 @@ public final class MelonScanner {
             if (context.lastLine.contains("Downloading")) {
                 error += "MelonLoader Gotten stuck downloading, make sure that nothing is blocking downloads.";
             }
-            if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod")) {
+            if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
                 context.embedBuilder.addField("You don't have ReMod", "ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", false);
                 if (context.embedColor == Color.BLUE)
                     context.embedColor = Color.ORANGE;

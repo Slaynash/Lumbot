@@ -134,7 +134,7 @@
         },
         {
             "regex": ".*System.MissingMethodException.*AssetsManager.*",
-            "error": "We are investigating this issue. Can you please upload a screenshot of your root Game's folder."
+            "error": "Some foreign files are causing issues. Please remove everything that you don't see in the image below.$cleanunity$"
         },
         {
             "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.",
@@ -142,7 +142,7 @@
         },
         {
             "regex": ".*System.TypeInitializationException: The type initializer for 'HarmonyLib.AccessTools' threw an exception.*",
-            "error": "IPA is conflicting with MelonLoader. Please remove it or check for an update."
+            "error": "IPA or something else is conflicting with MelonLoader. Please remove it or check for an update."
         }
     ],
     "knownErrors": [
