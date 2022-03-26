@@ -352,6 +352,10 @@
             {
                 "regex": "\\[[0-9.:]+] \\[WholesomeLoader] \\[ERROR] Your WholesomeLoader mod is not up to date.*",
                 "error": "Your WholesomeLoader mod is not up to date"
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[PrivateServer] \\[ERROR] System.ArgumentException: The specified path is not of a legal form \\(empty\\).",
+                "error": "PrivateServer mod is not yet setup, Please follow [these step to set PrivateServer up](https://gitlab.com/george/privateservermod#configuration)"
             }
         ],
         "BloonsTD6": [

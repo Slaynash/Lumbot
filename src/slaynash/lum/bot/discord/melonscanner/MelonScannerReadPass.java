@@ -58,7 +58,7 @@ public final class MelonScannerReadPass {
                     if (processIncompatibilityListing(context))
                         continue;
 
-                if (context.line.isBlank() && context.lastLine.isBlank()) {
+                if (context.line.isBlank() && context.lastLine.isBlank() && context.secondlastLine.isBlank()) {
                     context.editedLog = true;
                     continue;
                 }
@@ -608,7 +608,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ");
         if (context.line.startsWith("  at ") && !(errorTerms.stream().anyMatch(context.lastLine::contains) || errorTerms.stream().anyMatch(context.secondlastLine::contains))) {
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
             //TODO:
