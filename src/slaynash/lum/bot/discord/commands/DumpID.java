@@ -6,6 +6,7 @@ import java.util.List;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.Command;
 
 public class DumpID extends Command {
@@ -18,12 +19,17 @@ public class DumpID extends Command {
             event.getMessage().reply("Usage: " + getName() + " <Regex>").queue();
             return;
         }
-        String regex = parts[1];
+        String regex = Junidecode.unidecode(parts[1]).toLowerCase();
         List<Member> members = new ArrayList<>();
         event.getGuild().loadMembers(m -> {
-            if (m.getEffectiveName().matches(regex))
+            if (Junidecode.unidecode(m.getEffectiveName()).toLowerCase().matches(regex))
                 members.add(m);
         });
+        if (members.size() == 0) {
+            event.getMessage().reply("No users found.").queue();
+            return;
+        }
+        members.sort((m1, m2) -> m1.getUser().getId().compareTo(m2.getUser().getId()));
         StringBuilder sb = new StringBuilder();
         for (Member m : members) {
             sb.append(m.getUser().getId()).append(" ").append(m.getEffectiveName()).append("\n");

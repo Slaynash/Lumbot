@@ -598,7 +598,7 @@ public class Main extends ListenerAdapter {
         }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
     }
@@ -615,7 +615,7 @@ public class Main extends ListenerAdapter {
         }
         String name = Junidecode.unidecode(event.getNewNickname().toLowerCase());
 
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad")) {
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their name to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
     }
