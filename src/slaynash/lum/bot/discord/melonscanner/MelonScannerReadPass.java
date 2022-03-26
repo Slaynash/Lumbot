@@ -173,6 +173,7 @@ public final class MelonScannerReadPass {
                 context.editedLog = true;
             }
             System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");
+            context.bufferedReader.readLine(); // Skip line separator
             if (context.vrcmuMods != -1 && context.vrcmuMods != context.remainingModCount) {
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
                 //TODO:
