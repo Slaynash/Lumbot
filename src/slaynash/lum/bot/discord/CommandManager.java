@@ -19,6 +19,7 @@ import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.AutoPublish;
 import slaynash.lum.bot.discord.commands.Ban;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
+import slaynash.lum.bot.discord.commands.DumpID;
 import slaynash.lum.bot.discord.commands.HelpCommand;
 import slaynash.lum.bot.discord.commands.Kick;
 import slaynash.lum.bot.discord.commands.LockDown;
@@ -133,6 +134,7 @@ public class CommandManager {
 
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new Purge());
+        CommandManager.registerCommand(new DumpID());
         CommandManager.registerCommand(new Ban());
         CommandManager.registerCommand(new Unban());
         CommandManager.registerCommand(new Kick());
