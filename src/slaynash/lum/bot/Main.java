@@ -19,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
@@ -601,6 +602,10 @@ public class Main extends ListenerAdapter {
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+            event.getGuild().kick(event.getMember(), "Lum: Scammer joined").queue();
+        }
     }
 
     @Override
@@ -617,6 +622,10 @@ public class Main extends ListenerAdapter {
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their name to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+        }
+        if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+            event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
         }
     }
 

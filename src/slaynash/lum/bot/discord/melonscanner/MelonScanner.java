@@ -352,7 +352,7 @@ public final class MelonScanner {
 
     private static void checkForPirate(MelonScanContext context) {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
-            context.remainingModCount++; //trigger the `dont edit the log` message
+            context.editedLog = true; //trigger the `dont edit the log` message
         }
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             return;
@@ -620,7 +620,7 @@ public final class MelonScanner {
 
         context.embedBuilder.setDescription(context.reportMessage);
 
-        if (context.remainingModCount != 0) {
+        if (context.remainingModCount != 0 || context.editedLog) {
             context.embedBuilder.addField(Localization.get("melonscanner.readerror.fieldname", context.lang), Localization.get("melonscanner.readerror.field", context.lang), false);
             context.embedColor = Color.RED;
         }

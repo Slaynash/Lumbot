@@ -30,7 +30,7 @@ public final class MelonScannerReadPass {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             isMLOutdated = false;
-            while ((context.lastLine = context.line) != null && (context.line = br.readLine()) != null) {
+            while ((context.secondlastLine = context.lastLine) != null && (context.lastLine = context.line) != null && (context.line = br.readLine()) != null) {
 
                 if (shouldOmitLineCheck(context)) {
                     context.line = "";
@@ -57,6 +57,11 @@ public final class MelonScannerReadPass {
                 if (context.readingIncompatibility)
                     if (processIncompatibilityListing(context))
                         continue;
+
+                if (context.line.isBlank() && context.lastLine.isBlank()) {
+                    context.editedLog = true;
+                    continue;
+                }
 
                 if (context.line.isBlank()) continue;
 
@@ -164,9 +169,15 @@ public final class MelonScannerReadPass {
             context.remainingModCount = Integer.parseInt(line.split(" ")[1]);
             context.preListingMods = false;
             context.listingMods = true;
+            if (context.remainingModCount == 0) {
+                context.editedLog = true;
+            }
             System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");
-            context.bufferedReader.readLine(); // Skip line separator
-
+            if (context.vrcmuMods != -1 && context.vrcmuMods != context.remainingModCount) {
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+                //TODO:
+                //context.editedLog = true;
+            }
             return true;
         }
         else if (context.listingMods && context.tmpModName == null) {
@@ -179,7 +190,7 @@ public final class MelonScannerReadPass {
             */
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? by .*")) { // Skip author
+        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? by .*")) {
             String[] temp = line.split(" ", 3);
             if (temp.length > 2)
                 context.tmpModAuthor = temp[2];
@@ -208,15 +219,12 @@ public final class MelonScannerReadPass {
             context.tmpModAuthor = null;
             context.tmpModHash = null;
 
-            --context.remainingModCount;
-
-            if (context.remainingModCount == 0) {
+            if (--context.remainingModCount == 0) {
                 context.preListingMods = false;
                 context.listingMods = false;
                 System.out.println("Done scanning mods");
-
-                return true;
             }
+            return true;
         }
 
         return false;
@@ -243,6 +251,9 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
         if (line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
+            if (context.vrcmuMods != -1) {
+                context.vrcmuMods--;
+            }
             if (line.contains("Could not load file or assembly '")) {
                 String missingName = line.split("Could not load file or assembly '")[1].split(",")[0];
                 if (!context.missingMods.contains(missingName))
@@ -473,6 +484,10 @@ public final class MelonScannerReadPass {
             System.out.println("Starting to pre-list " + (context.line.contains("Plugins") ? "plugins" : "mods"));
             return true;
         }
+        Matcher m = Pattern.compile("\\[[0-9.:]+] Found (?<vrcmumods>\\d+) unique non-dev mods installed").matcher(context.line);
+        if (m.namedGroups().size() > 0) {
+            context.vrcmuMods = Integer.parseInt(m.namedGroups().get(0).get("vrcmumods"));
+        }
         return false;
     }
 
@@ -591,6 +606,12 @@ public final class MelonScannerReadPass {
                     return true;
                 }
             }
+        }
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ");
+        if (context.line.startsWith("  at ") && !(errorTerms.stream().anyMatch(context.lastLine::contains) || errorTerms.stream().anyMatch(context.secondlastLine::contains))) {
+            context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+            //TODO:
+            //context.editedLog = true;
         }
         return false;
     }

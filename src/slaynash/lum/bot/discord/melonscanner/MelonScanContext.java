@@ -1,7 +1,6 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
-
 import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,9 +24,11 @@ public class MelonScanContext {
     public int omittedLineCount = 0;
     public int retryCount = 0;
     public String line = "";
-    public String lastLine;
+    public String lastLine = "";
+    public String secondlastLine = "";
 
     public boolean pirate = false;
+    public boolean editedLog = false;
     public boolean consoleCopyPaste = false;
     public boolean modifiedML = false;
     public boolean addToChatty = false;
@@ -54,6 +55,7 @@ public class MelonScanContext {
     // VRChat / emmVRC
     public String emmVRCVRChatBuild;
     public String emmVRCVersion;
+    public int vrcmuMods = -1;
 
     // Mod listing - temp
     public boolean preListingMods = false;
