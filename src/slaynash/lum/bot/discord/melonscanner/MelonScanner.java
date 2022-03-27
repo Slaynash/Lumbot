@@ -526,6 +526,9 @@ public final class MelonScanner {
                 case "Secret Neighbor":
                     context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
                     break;
+                case "Shredders":
+                    context.embedBuilder.setThumbnail("https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2022/03/shredders-hero-image-01.jpg");
+                    break;
                 case "Stick Fight: The Game":
                     context.embedBuilder.setThumbnail("https://toppng.com//public/uploads/preview/color-stick-fight-the-game-115629098126na96uprb2.png");
                     break;

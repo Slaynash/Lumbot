@@ -77,57 +77,56 @@ public class SlashConfig {
             boolean[] config = GuildConfigurations.configurations.get(guildID);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 switch (event.getComponentId()) {
-                    case "ss" :
+                    case "ss" -> {
                         config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
                         event.editButton(config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
                         checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
-                        break;
-                    case "dll" :
+                    }
+                    case "dll" -> {
                         config[ConfigurationMap.DLLREMOVER.ordinal()] = !config[ConfigurationMap.DLLREMOVER.ordinal()];
                         event.editButton(config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover")).queue();
                         checkDllRemovePerm(event, guild);
-                        break;
-                    case "reaction" :
+                    }
+                    case "reaction" -> {
                         config[ConfigurationMap.LOGREACTION.ordinal()] = !config[ConfigurationMap.LOGREACTION.ordinal()];
                         event.editButton(config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions")).queue();
-                        break;
-                    case "thanks" :
+                    }
+                    case "thanks" -> {
                         config[ConfigurationMap.LUMREPLIES.ordinal()] = !config[ConfigurationMap.LUMREPLIES.ordinal()];
                         event.editButton(config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum")).queue();
-                        break;
-                    case "dad" :
+                    }
+                    case "dad" -> {
                         config[ConfigurationMap.DADJOKES.ordinal()] = !config[ConfigurationMap.DADJOKES.ordinal()];
                         event.editButton(config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
-                        break;
-                    case "partial" :
+                    }
+                    case "partial" -> {
                         config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] = !config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()];
                         event.editButton(config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover")).queue();
-                        break;
-                    case "general" :
+                    }
+                    case "general" -> {
                         config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] = !config[ConfigurationMap.GENERALLOGREMOVER.ordinal()];
                         event.editButton(config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
-                        break;
-                    case "log" :
+                    }
+                    case "log" -> {
                         config[ConfigurationMap.LOGSCAN.ordinal()] = !config[ConfigurationMap.LOGSCAN.ordinal()];
                         event.editButton(config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner")).queue();
-                        break;
-                    case "mlr" :
+                    }
+                    case "mlr" -> {
                         config[ConfigurationMap.MLREPLIES.ordinal()] = !config[ConfigurationMap.MLREPLIES.ordinal()];
                         event.editButton(config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
-                        break;
-                    case "ssban" :
+                    }
+                    case "ssban" -> {
                         config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
                         event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
                         checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
-                        break;
-                    case "sscross" :
+                    }
+                    case "sscross" -> {
                         config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
                         event.editButton(config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick"))).queue();
-                        break;
-                    case "delete" :
-                        event.getMessage().delete().queue();
-                        break;
-                    default :
+                    }
+                    case "delete" -> event.getMessage().delete().queue();
+                    default -> {
+                    }
                 }
                 GuildConfigurations.configurations.put(guildID, config); // update Values
                 CommandManager.saveGuildConfigs(); // backup values

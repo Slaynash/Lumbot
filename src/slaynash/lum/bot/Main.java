@@ -603,7 +603,7 @@ public class Main extends ListenerAdapter {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
             event.getGuild().kick(event.getMember(), "Lum: Scammer joined").queue();
         }
     }
@@ -624,7 +624,7 @@ public class Main extends ListenerAdapter {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their name to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
             event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
         }
     }

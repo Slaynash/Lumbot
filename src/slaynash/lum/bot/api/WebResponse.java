@@ -38,13 +38,14 @@ public class WebResponse {
     public static WebResponse getBadRequestResponse() {
         WebResponse r = new WebResponse();
         r.returnCode = 400;
-        r.setData("<html>\r\n" +
-                "<head><title>400 Bad Request</title></head>\r\n" +
-                "<body bgcolor=\"white\">\r\n" +
-                "<center><h1>400 Bad Request</h1></center>\r\n" +
-                "<hr><center>Slaynash's Server</center>\r\n" +
-                "</body>\r\n" +
-                "</html>");
+        r.setData("""
+                <html>\r
+                <head><title>400 Bad Request</title></head>\r
+                <body bgcolor="white">\r
+                <center><h1>400 Bad Request</h1></center>\r
+                <hr><center>Slaynash's Server</center>\r
+                </body>\r
+                </html>""");
         return r;
     }
 

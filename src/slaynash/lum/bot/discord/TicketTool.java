@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.Utils;
@@ -65,10 +65,10 @@ public class TicketTool {
                         event.getTextChannel().sendMessage("e.pin reset " + id).queue();
                     }
                     else if (channelName.contains("wipe")) {
-                        event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all of your emmVRC favorites removed from your account.\nA staff member will help you further once they see your confirmation.").queue();
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTwipecomplete")).queue();
                     }
                     else if (channelName.contains("deletion")) {
-                        event.getTextChannel().sendMessage("Thank you for verifying your account!\nPlease confirm that you want all data about your emmVRC account deleted.\nA staff member will help you further once they see your confirmation.").queue();
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue();
                     }
                 }
                 else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {

@@ -49,10 +49,9 @@ public class MelonLoaderError {
         if (o == this) {
             return true;
         }
-        if (!(o instanceof MelonLoaderError)) {
+        if (!(o instanceof MelonLoaderError me)) {
             return false;
         }
-        MelonLoaderError me = (MelonLoaderError) o;
         return this.regex.equals(me.regex);
     }
 

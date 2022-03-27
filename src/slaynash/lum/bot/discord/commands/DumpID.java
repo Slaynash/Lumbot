@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
@@ -29,7 +30,7 @@ public class DumpID extends Command {
             event.getMessage().reply("No users found.").queue();
             return;
         }
-        members.sort((m1, m2) -> m1.getUser().getId().compareTo(m2.getUser().getId()));
+        members.sort(Comparator.comparing(m -> m.getUser().getId()));
         StringBuilder sb = new StringBuilder();
         for (Member m : members) {
             sb.append(m.getUser().getId()).append(" ").append(m.getEffectiveName()).append("\n");

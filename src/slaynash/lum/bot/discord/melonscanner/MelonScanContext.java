@@ -18,9 +18,7 @@ public class MelonScanContext {
     public final String lang;
 
     // Read pass
-
     public BufferedReader bufferedReader;
-
     public int omittedLineCount = 0;
     public int retryCount = 0;
     public String line = "";
@@ -41,6 +39,8 @@ public class MelonScanContext {
     public boolean alpha = false;
     public boolean mono = false;
     public boolean il2Cpp = false;
+    public boolean isMLOutdated;
+    public boolean unidentifiedErrors;
 
     // Path infos
     public String corePath;
@@ -96,11 +96,10 @@ public class MelonScanContext {
     public final List<String> misplacedPlugins = new ArrayList<>();
 
     // Thinkering pass
-
     public boolean isMLOutdatedVRC = false;
-
+    public boolean vrcmuModsMismatch = false;
+    public boolean missingErrorHeader = false;
     public List<MelonApiMod> modDetails;
-
     public final List<LogsModDetails> unknownMods = new ArrayList<>();
     public final List<String> brokenMods = new ArrayList<>();
     public final List<MelonOutdatedMod> outdatedMods = new ArrayList<>();
@@ -110,16 +109,13 @@ public class MelonScanContext {
     public final List<String> oldMods = new ArrayList<>();
     public final List<String> hasPendingMods = new ArrayList<>();
     /*
-    public List<String> universalMods = new ArrayList<String>();
-    public Map<String, String> modAuthors = new HashMap<String, String>();
+    public List<String> universalMods = new ArrayList<>();
+    public Map<String, String> modAuthors = new HashMap<>();
     */
 
     public EmbedBuilder embedBuilder;
     public StringBuilder reportMessage;
     public Color embedColor = Color.BLUE;
-
-    public boolean isMLOutdated;
-    public boolean unidentifiedErrors;
 
     public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent, String lang) {
         this.attachment = attachment;

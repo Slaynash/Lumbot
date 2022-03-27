@@ -30,7 +30,7 @@ public final class MelonScannerReadPass {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             isMLOutdated = false;
-            while ((context.secondlastLine = context.lastLine) != null && (context.lastLine = context.line) != null && (context.line = br.readLine()) != null) {
+            while ((context.lastLine = context.line) != null && (context.line = br.readLine()) != null) {
 
                 if (shouldOmitLineCheck(context)) {
                     context.line = "";
@@ -58,12 +58,9 @@ public final class MelonScannerReadPass {
                     if (processIncompatibilityListing(context))
                         continue;
 
-                if (context.line.isBlank() && context.lastLine.isBlank() && context.secondlastLine.isBlank()) {
-                    context.editedLog = true;
-                    continue;
-                }
-
                 if (context.line.isBlank()) continue;
+
+                context.secondlastLine = context.lastLine;
 
                 if (
                     mlVersionCheck(context) ||
@@ -174,7 +171,8 @@ public final class MelonScannerReadPass {
             }
             System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");
             context.bufferedReader.readLine(); // Skip line separator
-            if (context.vrcmuMods != -1 && context.vrcmuMods != context.remainingModCount) {
+            if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
+                context.vrcmuModsMismatch = true;
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
                 //TODO:
                 //context.editedLog = true;
@@ -197,6 +195,9 @@ public final class MelonScannerReadPass {
                 context.tmpModAuthor = temp[2];
             else
                 context.tmpModAuthor = "Broken Author";
+            if (context.tmpModName == null) {
+                context.editedLog = true;
+            }
             return true;
         }
         else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? SHA256 Hash: [a-zA-Z0-9]+")) {
@@ -252,7 +253,7 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
         if (line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
-            if (context.vrcmuMods != -1) {
+            if (context.vrcmuMods > 0) {
                 context.vrcmuMods--;
             }
             if (line.contains("Could not load file or assembly '")) {
@@ -518,6 +519,9 @@ public final class MelonScannerReadPass {
             String tmpModName = line.substring(line.lastIndexOf(":") + 2);
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
+            if (context.vrcmuMods > 0) {
+                context.vrcmuMods--;
+            }
             return true;
         }
         else if (line.matches("\\[[0-9.:]+] \\[(WARNING|ERROR)] Duplicate (File|Mod|Plugin).*")) {
@@ -525,6 +529,9 @@ public final class MelonScannerReadPass {
             String tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
+            if (context.vrcmuMods > 0) {
+                context.vrcmuMods--;
+            }
             return true;
         }
         return false;
@@ -608,8 +615,9 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ");
-        if (context.line.startsWith("  at ") && !(errorTerms.stream().anyMatch(context.lastLine::contains) || errorTerms.stream().anyMatch(context.secondlastLine::contains))) {
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ", "Parameter name:");
+        if (!context.missingErrorHeader && context.line.startsWith("  at ") && !(errorTerms.stream().anyMatch(context.lastLine::contains) || errorTerms.stream().anyMatch(context.secondlastLine::contains))) {
+            context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
             //TODO:
             //context.editedLog = true;

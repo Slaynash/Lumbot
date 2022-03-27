@@ -94,30 +94,21 @@ public class ServerMessagesHandler {
 
             if (!event.getMessage().isEdited()) { //log handler
                 if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
-                    String mess = memberMention + " ";
-                    switch (guildIDstr) {
-                        case "600298024425619456": //emmVRC
-                            mess = mess + "Please reupload this log to <#600661924010786816> instead.";
-                            break;
-                        case "439093693769711616": //VRCMG
-                            mess = mess + "Please reupload this log to <#801792974542471168> instead.";
-                            break;
-                        case "663449315876012052": //MelonLoader
-                            mess = mess + "Please reupload this log to <#733305093264375849> instead.";
-                            break;
-                        case "563139253542846474": //BoneWorks
-                            mess = mess + "Please reupload this log to <#675024565277032449> instead.";
-                            break;
-                        case "322211727192358914": //TLDModding
-                            mess = mess + "Please reupload this log to <#827601339672035408> instead.";
-                            break;
-                        case "758553724226109480": //1330 Studios
-                            mess = mess + "Please reupload this log to <#832441046750330920> instead.";
-                            break;
-                        default:
-                            mess = mess + "Please reupload this log to help and support or log scanning channel instead.";
-                            break;
-                    }
+                    String mess = switch (guildIDstr) {
+                        case "600298024425619456" -> //emmVRC
+                                memberMention + " Please reupload this log to <#600661924010786816> instead.";
+                        case "439093693769711616" -> //VRCMG
+                                memberMention + " Please reupload this log to <#801792974542471168> instead.";
+                        case "663449315876012052" -> //MelonLoader
+                                memberMention + " Please reupload this log to <#733305093264375849> instead.";
+                        case "563139253542846474" -> //BoneWorks
+                                memberMention + " Please reupload this log to <#675024565277032449> instead.";
+                        case "322211727192358914" -> //TLDModding
+                                memberMention + " Please reupload this log to <#827601339672035408> instead.";
+                        case "758553724226109480" -> //1330 Studios
+                                memberMention + " Please reupload this log to <#832441046750330920> instead.";
+                        default -> memberMention + " Please reupload this log to help and support or log scanning channel instead.";
+                    };
                     event.getChannel().sendMessage(mess).queue();
                     if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
                         event.getMessage().delete().queue();
