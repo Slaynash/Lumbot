@@ -42,6 +42,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -626,6 +627,30 @@ public class Main extends ListenerAdapter {
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
         if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
             event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
+        }
+    }
+
+    @Override
+    public void onUserUpdateName(UserUpdateNameEvent event) {
+        List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
+        mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.keySet().contains(g.getIdLong()));
+        for (Guild guild : mutualGuilds) {
+            String report = CommandManager.mlReportChannels.get(guild.getIdLong());
+            TextChannel reportchannel = guild.getTextChannelById(report);
+            if (reportchannel == null) return;
+            if (event.getNewName() == null) {
+                reportchannel.sendMessage(event.getUser().getId() + " just changed their name to NULL").queue();
+                return;
+            }
+            String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
+            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff"))) {
+                reportchannel.sendMessage("Scammer started scamming" + event.getUser().getAsTag() + "(" + event.getUser().getId() + ") Now trying to kick!").allowedMentions(Collections.emptyList()).queue();
+                guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
+                return;
+            }
+            if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
+                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+            }
         }
     }
 

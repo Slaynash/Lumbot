@@ -3,6 +3,8 @@ package slaynash.lum.bot.discord.commands;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -21,6 +23,12 @@ public class DumpID extends Command {
             return;
         }
         String regex = Junidecode.unidecode(parts[1]).toLowerCase();
+        try {
+            Pattern.compile(regex);
+        } catch (PatternSyntaxException exception) {
+            event.getMessage().reply("Invalid Regex, please check your regex and try again").queue();
+            return;
+        }
         List<Member> members = new ArrayList<>();
         event.getGuild().loadMembers(m -> {
             if (Junidecode.unidecode(m.getEffectiveName()).toLowerCase().matches(regex))

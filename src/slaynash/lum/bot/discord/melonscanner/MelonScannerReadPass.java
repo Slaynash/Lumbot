@@ -29,9 +29,15 @@ public final class MelonScannerReadPass {
             return false;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
-            isMLOutdated = false;
-            while ((context.lastLine = context.line) != null && (context.line = br.readLine()) != null) {
+            String readLine;
+            while ((readLine = br.readLine()) != null) {
+                if (readLine.isBlank())
+                    continue;
 
+                context.secondlastLine = context.lastLine;
+                context.lastLine = context.line;
+                context.line = readLine;
+                    
                 if (shouldOmitLineCheck(context)) {
                     context.line = "";
                     continue;
@@ -57,10 +63,6 @@ public final class MelonScannerReadPass {
                 if (context.readingIncompatibility)
                     if (processIncompatibilityListing(context))
                         continue;
-
-                if (context.line.isBlank()) continue;
-
-                context.secondlastLine = context.lastLine;
 
                 if (
                     mlVersionCheck(context) ||
@@ -368,7 +370,7 @@ public final class MelonScannerReadPass {
             context.mlVersion = line.split("v")[1].split(" ")[0].trim();
             context.alpha = line.toLowerCase().contains("alpha");
             System.out.println("ML " + context.mlVersion + " (>= 0.3.0). Alpha: " + context.alpha);
-            isMLOutdated = context.mlVersion != null && !(context.mlVersion.equals(MelonScanner.latestMLVersionRelease) || context.mlVersion.equals(MelonScanner.latestMLVersionAlpha) && VersionUtils.compareVersion(MelonScanner.latestMLVersionAlpha, MelonScanner.latestMLVersionRelease) == 1/* If Alpha is more recent */);
+            context.isMLOutdated = context.mlVersion != null && !(context.mlVersion.equals(MelonScanner.latestMLVersionRelease) || context.mlVersion.equals(MelonScanner.latestMLVersionAlpha) && VersionUtils.compareVersion(MelonScanner.latestMLVersionAlpha, MelonScanner.latestMLVersionRelease) == 1/* If Alpha is more recent */);
             return true;
         }
         return false;
@@ -556,8 +558,6 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean isMLOutdated;
-
     private static boolean unhollowerErrorCheck(MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
             String errorMess = knownError.error;
@@ -568,7 +568,7 @@ public final class MelonScannerReadPass {
             }
             MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
             if (m.matches()) {
-                if (!context.assemblyGenerationFailed && !context.errors.contains(newerror) && !isMLOutdated)
+                if (!context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated)
                     context.errors.add(newerror);
                 System.out.println("Found known unhollower error");
                 context.hasErrors = true;
@@ -615,8 +615,8 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ", "Parameter name:");
-        if (!context.missingErrorHeader && context.line.startsWith("  at ") && !(errorTerms.stream().anyMatch(context.lastLine::contains) || errorTerms.stream().anyMatch(context.secondlastLine::contains))) {
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ", "Parameter name:", "File name:");
+        if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
             //TODO:
