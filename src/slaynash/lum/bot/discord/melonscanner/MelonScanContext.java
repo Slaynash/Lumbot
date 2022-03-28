@@ -21,6 +21,7 @@ public class MelonScanContext {
     public BufferedReader bufferedReader;
     public int omittedLineCount = 0;
     public int retryCount = 0;
+    public String readLine = "";
     public String line = "";
     public String lastLine = "";
     public String secondlastLine = "";

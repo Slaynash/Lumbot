@@ -29,19 +29,16 @@ public final class MelonScannerReadPass {
             return false;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
-            String readLine;
-            while ((readLine = br.readLine()) != null) {
-                if (readLine.isBlank())
+            while ((context.readLine = br.readLine()) != null) {
+                if (context.readLine.isBlank())
                     continue;
 
+                if (shouldOmitLineCheck(context))
+                    continue;
+                
                 context.secondlastLine = context.lastLine;
                 context.lastLine = context.line;
-                context.line = readLine;
-                    
-                if (shouldOmitLineCheck(context)) {
-                    context.line = "";
-                    continue;
-                }
+                context.line = context.readLine;
 
                 if (minecraftLogLineCheck(context))
                     return false;
@@ -106,7 +103,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean shouldOmitLineCheck(MelonScanContext context) {
-        int linelength = context.line.length();
+        int linelength = context.readLine.length();
         if (linelength > 1000) {
             ++context.omittedLineCount;
             System.out.println("Omitted one line of length " + linelength);
@@ -175,7 +172,7 @@ public final class MelonScannerReadPass {
             context.bufferedReader.readLine(); // Skip line separator
             if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
                 context.vrcmuModsMismatch = true;
-                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.vrcmuMods).queue();
                 //TODO:
                 //context.editedLog = true;
             }
@@ -623,6 +620,10 @@ public final class MelonScannerReadPass {
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
             //TODO:
             //context.editedLog = true;
+            return true;
+        }
+        if (context.line.contains("No Support Module")) {
+            context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("No Support Module\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
         }
         return false;
     }
