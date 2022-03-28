@@ -284,8 +284,10 @@ public final class MelonScannerReadPass {
             return true;
         }
 
-        if (line.matches("\\[[0-9.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*")) {
+        if (line.matches("\\[[0-9.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*") || line.matches("\\[[0-9.:]+] \\[WARNING] No Compatibility Layer for.*")) {
             String oldName = splitName(line);
+            if (oldName.equalsIgnoreCase("ReMod Core"))
+                context.errors.add(new MelonLoaderError("", "ReMod.Core.dll goes in the root folder. Please move it up one folder."));
             if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
                 context.errors.add(new MelonLoaderError("", "Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
@@ -294,7 +296,7 @@ public final class MelonScannerReadPass {
         }
 
         if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
-            context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if VRChat does not restart."));
+            context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));
             return true;
         }
         return false;
@@ -615,10 +617,10 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "Trace:   ", "Parameter name:", "File name:");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "   --- ", "---> ", "Trace:   ", "Parameter name:", "File name:");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
-            context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+            context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
             //TODO:
             //context.editedLog = true;
         }
