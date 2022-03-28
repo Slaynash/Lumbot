@@ -625,6 +625,9 @@ public final class MelonScannerReadPass {
         if (context.line.contains("No Support Module")) {
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("No Support Module\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
         }
+        if (context.lastLine.matches("\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.contains(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
+            context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner in not removing files."));
+        }
         return false;
     }
 

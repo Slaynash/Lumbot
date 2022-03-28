@@ -504,6 +504,9 @@ public final class MelonScanner {
                 case "Phasmophobia":
                     context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/866926713761431562/Phasmophobia_Logo.png");
                     break;
+                case "Pipe":
+                    context.embedBuilder.setThumbnail("http://bmxstreets.com/wp-content/uploads/2017/12/pipe_black_1080-cropped-300x169.png");
+                    break;
                 case "Pistol Whip":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
                     break;
@@ -1079,13 +1082,13 @@ public final class MelonScanner {
             if (context.mlVersion != null && VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
                 error += "Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n";
             }
-            if (context.lastLine.contains("Applied USER32.dll::SetTimer patch")) {
+            if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
                 error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
             }
-            if (context.lastLine.contains("Downloading")) {
+            if (context.line.contains("Downloading")) {
                 error += "MelonLoader Gotten stuck downloading, make sure that nothing is blocking downloads.";
             }
-            if (context.lastLine.contains("Contacting RemoteAPI...")) {
+            if (context.line.contains("Contacting RemoteAPI...")) {
                 error += "Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.";
             }
             if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
