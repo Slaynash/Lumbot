@@ -143,6 +143,10 @@
         {
             "regex": ".*System.TypeInitializationException: The type initializer for 'HarmonyLib.AccessTools' threw an exception.*",
             "error": "IPA or something else is conflicting with MelonLoader. Please remove it or check for an update."
+        },
+        {
+            "regex": ".*[ERROR] No Support Module Loaded!",
+            "error": "No Support Module Loaded. Assembly Generation most likely failed. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         }
     ],
     "knownErrors": [
