@@ -180,12 +180,17 @@ public final class MelonScannerReadPass {
         }
         else if (context.listingMods && context.tmpModName == null) {
             String[] split = line.split(" ", 2)[1].split(" v", 2);
-            context.tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0];
+            context.tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0].trim();
             context.tmpModVersion = split.length > 1 ? split[1] : null;
             /*
             String matchedName = MelonLoaderScanner.modNameMatcher.get(context.tmpModName.trim());
             context.tmpModName = (matchedName != null) ? matchedName : context.tmpModName;
             */
+            long guildid = context.messageReceivedEvent.getGuild().getIdLong();
+            if (context.tmpModName.equalsIgnoreCase("ReMod") && (guildid == 439093693769711616L || guildid == 600298024425619456L || guildid == 663449315876012052L || guildid == 716536783621587004L)) {
+                System.out.println("ReMod detected out of the ReMod Discord server");
+                context.messageReceivedEvent.getMessage().delete().reason("Log not in ReMod discord").queue();
+            }
             return true;
         }
         else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? by .*")) {
@@ -625,8 +630,9 @@ public final class MelonScannerReadPass {
         if (context.line.contains("No Support Module")) {
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("No Support Module\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
         }
-        if (context.lastLine.matches("\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.contains(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
+        if (context.lastLine.matches("\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
             context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner in not removing files."));
+            return true;
         }
         return false;
     }

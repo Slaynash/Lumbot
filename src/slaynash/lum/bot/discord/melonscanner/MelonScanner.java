@@ -510,6 +510,9 @@ public final class MelonScanner {
                 case "Pistol Whip":
                     context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
                     break;
+                case "Rec Room":
+                    context.embedBuilder.setThumbnail("https://images.squarespace-cdn.com/content/v1/582e7271bebafbd72792bd97/1571873579729-YGLX8EAT3EP2LIFJ7EZQ/RecRoomLogo_Shadow.png");
+                    break;
                 case "raot":
                     context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
                     break;
@@ -853,9 +856,6 @@ public final class MelonScanner {
             for (int i = 0; i < context.unknownMods.size() && i < 10; ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
-                long guildid = context.messageReceivedEvent.getGuild().getIdLong();
-                if (md.name.equalsIgnoreCase("ReMod") && (guildid == 439093693769711616L || guildid == 600298024425619456L || guildid == 663449315876012052L || guildid == 716536783621587004L))
-                    context.messageReceivedEvent.getMessage().delete().reason("Log not in ReMod discord").queue();
                 if (md.version != null && !md.version.isBlank())
                     unknowModOut += " " + CrossServerUtils.sanitizeInputString(md.version);
                 if (md.author != null)

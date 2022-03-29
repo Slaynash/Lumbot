@@ -330,6 +330,10 @@
                 "error": "Image cache trim failed"
             },
             {
+                "regex": "'MoarBones: I hear you like bones~' *",
+                "error": "MoarBones is enabled. It is most likely the cause of your issues as it is an April fools joke."
+            },
+            {
                 "regex": ".*Win32 IO returned 1224\\. Path: (?<ReModCorePath>.*)",
                 "error": "IO error 1224, try deleting:\n`ReModCorePath`"
             },
