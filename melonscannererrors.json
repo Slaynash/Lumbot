@@ -14,7 +14,7 @@
         },
         {
             "regex": "System.IO.IOException: The process cannot access the file '(?<filename>[\\w\\.]+)'.*",
-            "error": "Access to a file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and amke sure your Virus scanner isn't interfering."
+            "error": "Access to file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and amke sure your Virus scanner isn't interfering."
         },
         {
             "regex": "\\[[0-9.:]+] System.IO.IOException: The process cannot access the file.*",
@@ -145,7 +145,7 @@
             "error": "IPA or something else is conflicting with MelonLoader. Please remove it or check for an update."
         },
         {
-            "regex": ".*[ERROR] No Support Module Loaded!",
+            "regex": ".*\\[ERROR] No Support Module Loaded!",
             "error": "No Support Module Loaded. Assembly Generation most likely failed. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         }
     ],
@@ -243,7 +243,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+] \\[VRCX_Companion] \\[ERROR] Failed to connect to VRCX IPC Server.*",
-                "error": "VRCX is not running. Make sure Natsumi-sama's latest VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
+                "error": "VRCX is not running. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
             },
             {
                 "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
