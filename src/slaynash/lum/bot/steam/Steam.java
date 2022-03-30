@@ -99,9 +99,22 @@ public class Steam {
         });
         callbackManager.subscribe(LoggedOnCallback.class, callback -> {
             if (callback.getResult() != EResult.OK) {
-                System.err.println("[Steam] Failed to login: " + callback.getResult());
-                client.disconnect();
-                return;
+                if (callback.getResult() == EResult.ServiceUnavailable) {
+                    ExceptionUtils.reportException("Steam Service unavailable. Retrying in 5min...");
+                    try {
+                        Thread.sleep(5 * 60 * 1000);
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    client.connect();
+                    return;
+                }
+                else {
+                    ExceptionUtils.reportException("Failed to login to Steam: " + callback.getResult());
+                    client.disconnect();
+                    return;
+                }
             }
 
             isLoggedOn = true;
