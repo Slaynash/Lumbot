@@ -13,8 +13,8 @@
             "error": "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges."
         },
         {
-            "regex": "System.IO.IOException: The process cannot access the file.*",
-            "error": "The access to a file has been blocked. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges or your Virus scanner isn't scanning."
+            "regex": "System.IO.IOException: The process cannot access the file '(?<filename>[\\w\\.]+)'.*",
+            "error": "Access to a file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and amke sure your Virus scanner isn't interfering."
         },
         {
             "regex": "\\[[0-9.:]+] System.IO.IOException: The process cannot access the file.*",
@@ -61,7 +61,7 @@
             "error": "The storage space is full. Please free some space and try your game again. You need at least 500MB free."
         },
         {
-            "regex": "\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.AggregateException: One or more errors occurred. ---> System.IO.IOException: There is not enough space on the disk.",
+            "regex": ".*---> System.IO.IOException: There is not enough space on the disk.",
             "error": "The storage space is full. Please free some space and try your game again. You need at least 450MB free."
         },
         {
@@ -352,6 +352,10 @@
             {
                 "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",
                 "error": "An internal error occurred. If this keeps happening, please contact Requi"
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[ReModCE] \\[ERROR] Could not login to ReModCE API:.*",
+                "error": "Failed to log into ReModCE API. Try restarting VRChat and log into ReModCE again."
             },
             {
                 "regex": "\\[[0-9.:]+] \\[Advanced_Safety] \\[ERROR] Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.MissingMethodException: bool Il2CppSystem.Object.ReferenceEquals\\(Il2CppSystem.Object,Il2CppSystem.Object\\)",
