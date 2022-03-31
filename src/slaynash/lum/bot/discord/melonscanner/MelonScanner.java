@@ -1097,7 +1097,7 @@ public final class MelonScanner {
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += "Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.";
             }
-            if (context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
+            if (context.mlVersion != null && context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
                 context.embedBuilder.addField("You don't have ReMod", "ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", false);
                 if (context.embedColor == Color.BLUE)
                     context.embedColor = Color.ORANGE;

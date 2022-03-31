@@ -230,7 +230,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(off|fuck(ing)?|stfu|kill|murder|gun)\\b.*")) {
+        if (message.matches(".*\\b(off|fuck(ing)?|stfu|kill|murder|gun|knife)\\b.*")) {
             System.out.println("F off Lum was detected");
             event.getChannel().sendMessage(gunLum.get(random.nextInt(gunLum.size()))).queue();
             return true;
@@ -272,6 +272,11 @@ public class ChattyLum {
         if (message.matches(".*\\b(cookie)\\b.*")) {
             System.out.println("Lum Cookie");
             event.getMessage().addReaction("🍪").queue();
+            return true;
+        }
+        if (message.matches(".*\\b(handcuf).*")) {
+            System.out.println("Lum handcuff");
+            event.getChannel().sendMessage("<:Neko_cop:865328472540971058>").queue();
             return true;
         }
 

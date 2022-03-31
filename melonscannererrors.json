@@ -147,6 +147,10 @@
         {
             "regex": ".*\\[ERROR] No Support Module Loaded!",
             "error": "No Support Module Loaded. Assembly Generation most likely failed. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
+        },
+        {
+            "regex": ".*\\[ERROR] System.OutOfMemoryException: Out of memory",
+            "error": "Out of RAM. This is likely a DDR3 memory issue. Maybe try an older version of MelonLoader."
         }
     ],
     "knownErrors": [
