@@ -117,42 +117,48 @@ public final class MelonScanner {
 
 
             boolean issueFound;
-            issueFound  = mlOutdatedCheck(context);
-            issueFound |= vrchatVersionCheck(context);
-            issueFound |= knownErrorsCheck(context);
-            issueFound |= duplicatedModsCheck(context);
-            issueFound |= missingModsCheck(context);
-            issueFound |= incompatibleModsCheck(context);
-            issueFound |= corruptedModsCheck(context);
-            issueFound |= brokenModsCheck(context);
-            issueFound |= oldModsCheck(context);
-            issueFound |= misplacedModsCheck(context);
-            issueFound |= misplacedPluginsCheck(context);
-            issueFound |= modsHasPendingCheck(context);
-            issueFound |= outdatedPluginCheck(context);
-            issueFound |= outdatedModsCheck(context);
-            issueFound |= newerModsCheck(context);
-            issueFound |= unknownModsCheck(context);
-            issueFound |= modsThrowingErrorsCheck(context);
-            issueFound |= minorErrorsHandling(context);
+            if  (!context.pirate) {
+                issueFound  = mlOutdatedCheck(context);
+                issueFound |= vrchatVersionCheck(context);
+                issueFound |= knownErrorsCheck(context);
+                issueFound |= duplicatedModsCheck(context);
+                issueFound |= missingModsCheck(context);
+                issueFound |= incompatibleModsCheck(context);
+                issueFound |= corruptedModsCheck(context);
+                issueFound |= brokenModsCheck(context);
+                issueFound |= oldModsCheck(context);
+                issueFound |= misplacedModsCheck(context);
+                issueFound |= misplacedPluginsCheck(context);
+                issueFound |= modsHasPendingCheck(context);
+                issueFound |= outdatedPluginCheck(context);
+                issueFound |= outdatedModsCheck(context);
+                issueFound |= newerModsCheck(context);
+                issueFound |= unknownModsCheck(context);
+                issueFound |= modsThrowingErrorsCheck(context);
+                issueFound |= minorErrorsHandling(context);
 
-            if (issueFound) {
-                if (context.isMLOutdatedVRC || context.isMLOutdated)
-                    context.embedColor = melonPink;
+                if (issueFound) {
+                    if (context.isMLOutdatedVRC || context.isMLOutdated)
+                        context.embedColor = melonPink;
 
-                if (!context.unidentifiedErrors)
-                    context.addToChatty = true;
+                    if (!context.unidentifiedErrors)
+                        context.addToChatty = true;
+                }
+                else if (context.mlVersion != null || context.modifiedML) {
+                    if (context.hasErrors) {
+                        context.embedBuilder.addField(Localization.get("melonscanner.unidentifiederrors.fieldname", lang), Localization.get("melonscanner.unidentifiederrors.field", lang), false);
+                        context.embedColor = Color.RED;
+                    }
+                    else {
+                        context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang), false);
+                        context.embedColor = Color.LIGHT_GRAY;
+                        context.addToChatty = true;
+                    }
+                }
             }
-            else if (context.mlVersion != null || context.modifiedML) {
-                if (context.hasErrors) {
-                    context.embedBuilder.addField(Localization.get("melonscanner.unidentifiederrors.fieldname", lang), Localization.get("melonscanner.unidentifiederrors.field", lang), false);
-                    context.embedColor = Color.RED;
-                }
-                else {
-                    context.embedBuilder.addField(Localization.get("melonscanner.noissue.fieldname", lang), Localization.get("melonscanner.noissue.field", lang), false);
-                    context.embedColor = Color.LIGHT_GRAY;
-                    context.addToChatty = true;
-                }
+            else {
+                context.embedBuilder.addField(Localization.get("melonscanner.pirate.fieldname", lang), Localization.get("melonscanner.pirate.field", lang), false);
+                context.embedColor = Color.RED;
             }
 
             if (context.embedBuilder.getFields().size() > 0) {

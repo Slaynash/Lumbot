@@ -99,9 +99,6 @@ public class Main extends ListenerAdapter {
         DBConnectionManagerLum.init();
         DBConnectionManagerShortUrls.init();
 
-        loadSteamWatch();
-        new Steam().start();
-
         loadLogchannelList();
         loadVerifychannelList();
         loadReactionsList();
@@ -162,6 +159,9 @@ public class Main extends ListenerAdapter {
 
         //registerCommands();
         Moderation.voiceStartup();
+
+        loadSteamWatch();
+        new Steam().start();
 
         new AddMissingRoles().addMissing(null);
 
@@ -633,7 +633,7 @@ public class Main extends ListenerAdapter {
     @Override
     public void onUserUpdateName(UserUpdateNameEvent event) {
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
-        mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.keySet().contains(g.getIdLong()));
+        mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
         for (Guild guild : mutualGuilds) {
             String report = CommandManager.mlReportChannels.get(guild.getIdLong());
             TextChannel reportchannel = guild.getTextChannelById(report);
