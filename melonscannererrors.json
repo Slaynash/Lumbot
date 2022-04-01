@@ -334,6 +334,10 @@
                 "error": "emmVRC is having some issues because of the update. Please reinstall MelonLoader $MLRelease$."
             },
             {
+                "regex": "  at VRChatUtilityKit.Utilities.VRCUtils.EndEmmCheck \\(System.IAsyncResult asyncResult\\) \\[0x00022].*",
+                "error": "emmVRC servers is having some issues. Please wait while we work on it."
+            },
+            {
                 "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
                 "error": "Image cache trim failed"
             },
