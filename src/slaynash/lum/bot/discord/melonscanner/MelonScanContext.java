@@ -35,6 +35,7 @@ public class MelonScanContext {
     // MelonLoader infos
     public String mlName;
     public String mlVersion;
+    public String osType;
     public String mlHashCode;
     public boolean pre3 = false;
     public boolean alpha = false;

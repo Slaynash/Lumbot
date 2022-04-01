@@ -122,8 +122,10 @@ public final class MelonScannerReadPass {
             line.contains("Injecting coremod")
         ) {
             System.out.println("Minecraft Log detected");
-            Utils.replyEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
-            return true;
+            if (context.messageReceivedEvent.getGuild().getIdLong() == 663449315876012052L) {
+                Utils.replyEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
+                return true;
+            }
         }
         return false;
     }
@@ -435,6 +437,11 @@ public final class MelonScannerReadPass {
             System.out.println("Hash Code: " + context.mlHashCode);
             return true;
         }
+        if (context.line.matches("\\[[0-9.:]+] OS: .*")) {
+            context.osType = context.line.split(":", 4)[3].trim();
+            System.out.println("OS: " + context.osType);
+            return true;
+        }
         return false;
     }
 
@@ -631,7 +638,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         if (context.lastLine.matches("\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
-            context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner in not removing files."));
+            context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."));
             return true;
         }
         return false;

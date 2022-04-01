@@ -1105,6 +1105,9 @@ public final class MelonScanner {
                     context.embedColor = Color.ORANGE;
             }
 
+            if (context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
+            context.embedBuilder.addField("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", "Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", false);
+
             if (error.length() > 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
