@@ -19,6 +19,13 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class Utils {
+    public static String translate(String langFrom, String langTo, String text, int maxLength) {
+        String translation = translate(langFrom, langTo, text);
+        if (translation.length() > maxLength) {
+            translation = translation.substring(0, maxLength);
+        }
+        return translation;
+    }
     public static String translate(String langFrom, String langTo, String text) {
         if (langFrom == null || langTo == null || text == null)
             return "";

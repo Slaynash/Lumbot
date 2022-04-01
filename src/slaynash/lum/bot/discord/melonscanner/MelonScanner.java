@@ -72,9 +72,6 @@ public final class MelonScanner {
                 Random random = new Random();
                 if (random.nextInt(1000) == 420)
                     lang = "sga";
-                if (LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1)
-                    if (random.nextInt(2) == 1)
-                        lang = "sga";
             }
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
@@ -1131,26 +1128,30 @@ public final class MelonScanner {
     }
 
     public static void translateLog(MessageReceivedEvent event) {
-        System.out.println("Translating Log Results Checks in " + event.getGuild().getName());
-        String message = event.getMessage().getContentStripped().toLowerCase();
-        Message referenced = event.getMessage().getReferencedMessage();
-        if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
-            return;
-        MessageEmbed embed = referenced.getEmbeds().get(0);
-        if (embed == null || embed.getFooter() == null || !"Lum Log Scanner".equals(embed.getFooter().getText()))
-            return;
-        String lan = message.substring(3).trim();
-        System.out.println("Passed validations, translating to " + lan);
-        EmbedBuilder editEmbed = new EmbedBuilder(embed);
-        editEmbed.setTitle(Utils.translate("en", lan, embed.getTitle()));
-        editEmbed.setDescription(Utils.translate("en", lan, embed.getDescription()));
-        editEmbed.clearFields();
-        for (Field field : embed.getFields()) {
-            String name = Utils.translate("en", lan, field.getName());
-            String value = Utils.translate("en", lan, field.getValue());
-            editEmbed.addField(name, value, field.isInline());
+        try {
+            System.out.println("Translating Log Results Checks in " + event.getGuild().getName());
+            String message = event.getMessage().getContentStripped().toLowerCase();
+            Message referenced = event.getMessage().getReferencedMessage();
+            if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
+                return;
+            MessageEmbed embed = referenced.getEmbeds().get(0);
+            if (embed == null || embed.getFooter() == null || !"Lum Log Scanner".equals(embed.getFooter().getText()))
+                return;
+            String lan = message.substring(3).trim();
+            System.out.println("Passed validations, translating to " + lan);
+            EmbedBuilder editEmbed = new EmbedBuilder(embed);
+            editEmbed.setTitle(Utils.translate("en", lan, embed.getTitle(), MessageEmbed.TITLE_MAX_LENGTH));
+            editEmbed.setDescription(Utils.translate("en", lan, embed.getDescription(), MessageEmbed.DESCRIPTION_MAX_LENGTH));
+            editEmbed.clearFields();
+            for (Field field : embed.getFields()) {
+                String name = Utils.translate("en", lan, field.getName(), MessageEmbed.TITLE_MAX_LENGTH);
+                String value = Utils.translate("en", lan, field.getValue(), MessageEmbed.VALUE_MAX_LENGTH);
+                editEmbed.addField(name, value, field.isInline());
+            }
+            System.out.println("Done Translating Log Results");
+            referenced.editMessageEmbeds(editEmbed.build()).queue();
+        } catch (Exception e) {
+            ExceptionUtils.reportException("Exception while translating log:", e, event.getTextChannel());
         }
-        System.out.println("Done Translating Log Results");
-        referenced.editMessageEmbeds(editEmbed.build()).queue();
     }
 }
