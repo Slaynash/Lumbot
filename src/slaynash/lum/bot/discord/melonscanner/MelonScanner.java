@@ -560,6 +560,9 @@ public final class MelonScanner {
                 case "TheLongDark":
                     context.embedBuilder.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
                     break;
+                case "The Sandbox Maker":
+                    context.embedBuilder.setThumbnail("https://www.sandbox.game/img/13_Create/GameMaker/game-maker-iso.png");
+                    break;
                 case "The Golf Club 2019 ProTee": //has anticheats
                     context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
                     break;
@@ -920,6 +923,8 @@ public final class MelonScanner {
             switch (context.game) {
                 case "VRChat":
                     if (context.misplacedPlugins.contains("VRCModUpdater.Loader"))
+                        muMessage = "";
+                    else if (context.loadedMods.containsKey("VRCModUpdater.Loader"))
                         muMessage = "";
                     else if (context.loadedMods.containsKey("UpdateChecker"))
                         muMessage = "";

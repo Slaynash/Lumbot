@@ -294,6 +294,9 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("", "Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
+            if (context.vrcmuMods > 0) {
+                context.vrcmuMods--;
+            }
             return true;
         }
 
@@ -619,7 +622,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();

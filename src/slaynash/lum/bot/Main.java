@@ -595,7 +595,7 @@ public class Main extends ListenerAdapter {
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
         if (event.getUser().getName() == null) {
-            reportchannel.sendMessage(event.getUser().getId() + " just joined with a sussy name of NULL").queue();
+            ExceptionUtils.reportException("Member joined with null name");
             return;
         }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
@@ -615,14 +615,13 @@ public class Main extends ListenerAdapter {
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
-        if (event.getNewNickname() == null) {
-            reportchannel.sendMessage(event.getUser().getId() + " just changed their name to a sussy name of NULL").queue();
+        if (event.getNewNickname() == null) { //removed nickname
             return;
         }
         String name = Junidecode.unidecode(event.getNewNickname().toLowerCase());
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getNewNickname() + " just changed their name to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
         if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
@@ -639,7 +638,7 @@ public class Main extends ListenerAdapter {
             TextChannel reportchannel = guild.getTextChannelById(report);
             if (reportchannel == null) return;
             if (event.getNewName() == null) {
-                reportchannel.sendMessage(event.getUser().getId() + " just changed their name to NULL").queue();
+                ExceptionUtils.reportException("Member changed their name to null");
                 return;
             }
             String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();

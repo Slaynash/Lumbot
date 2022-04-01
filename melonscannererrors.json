@@ -339,7 +339,11 @@
             },
             {
                 "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
-                "error": "Image cache trim failed"
+                "error": "FavCat Image cache trim failed. Maybe try refeatching favorites."
+            },
+            {
+                "regex": ".*InstanceHistory.json file is corrupted and will need to be manually deleted.*",
+                "error": "It is likely that your `InstanceHistory.json` file is corrupted and will need to be manually deleted. Find it in the `VRChat/UserData` folder."
             },
             {
                 "regex": "'MoarBones: I hear you like bones~' *",
