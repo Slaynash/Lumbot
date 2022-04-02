@@ -3,7 +3,6 @@ package slaynash.lum.bot.discord;
 import java.util.HashMap;
 
 public class GuildConfigurations {
-    public static HashMap<Long, boolean[]> configurations;
 
     public static final HashMap<Long, long[]> whitelistedRolesServers = new HashMap<>() {{
                 put(439093693769711616L /* VRCMG */, new long[] {
@@ -54,18 +53,4 @@ public class GuildConfigurations {
             put(663449315876012052L /* MelonLoader */,  701494833495408640L /* voice-chat */);
             // put(716536783621587004L /* Totally Wholesome */, 943694417016000552L /* mute-voice */);
         }};
-
-    public enum ConfigurationMap { //only append to the end
-        SCAMSHIELD(),
-        DLLREMOVER(),
-        LOGREACTION(),
-        LUMREPLIES(),
-        PARTIALLOGREMOVER(),
-        GENERALLOGREMOVER(),
-        DADJOKES(),
-        LOGSCAN(),
-        MLREPLIES(),
-        SSBAN(),
-        SSCROSS()
-    }
 }

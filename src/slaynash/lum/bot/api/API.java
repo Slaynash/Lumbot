@@ -39,6 +39,7 @@ public class API {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to start up API", e);
+            return;
         }
 
         Thread thread = new Thread(() -> {
@@ -55,13 +56,14 @@ public class API {
                 }
             }
             try {
+                System.out.print("Closing API socket...");
                 socket.close();
             }
             catch (IOException e) {
                 e.printStackTrace();
             }
         }, "APIThread");
-        thread.setDaemon(true);
+        thread.setDaemon(false);
         thread.start();
     }
 

@@ -22,7 +22,7 @@
         },
         {
             "regex": ".*Access to the path .* is denied.*",
-            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC or reinstall MelonLoader."
+            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": ".*System\\.UnauthorizedAccessException: Access to the path is denied\\.",

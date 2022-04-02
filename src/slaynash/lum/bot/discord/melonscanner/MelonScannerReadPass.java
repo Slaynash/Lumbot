@@ -301,6 +301,12 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
+        if (line.matches("\\[[0-9.:]+] Failed to read assembly .*\\.dll")) {
+            if (context.vrcmuMods > 0) {
+                context.vrcmuMods++;
+            }
+            return true;
+        }
 
         if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
             context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));

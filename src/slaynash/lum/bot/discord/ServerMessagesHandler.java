@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -69,10 +70,7 @@ public class ServerMessagesHandler {
             CommandManager.runAsServer(event);
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
-            boolean[] defaultConfig = new boolean[GuildConfigurations.ConfigurationMap.values().length];
-            defaultConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
-            boolean[] guildConfig;
-            guildConfig = GuildConfigurations.configurations.get(guildID) == null ? defaultConfig : GuildConfigurations.configurations.get(guildID);
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             String message = Junidecode.unidecode(event.getMessage().getContentStripped()).toLowerCase();
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
@@ -93,7 +91,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
+                if (guildconfig.MLGeneralRemover() && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = switch (guildIDstr) {
                         case "600298024425619456" -> //emmVRC
                                 memberMention + " Please reupload this log to <#600661924010786816> instead.";
@@ -113,7 +111,7 @@ public class ServerMessagesHandler {
                     if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
                         event.getMessage().delete().queue();
                 }
-                else if (guildConfig[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()]) {
+                else if (guildconfig.MLLogScan()) {
                     new Thread(() -> {
                         try {
                             MelonScanner.scanMessage(event);
@@ -128,10 +126,10 @@ public class ServerMessagesHandler {
             if (replied != null && replied.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
                 MelonScanner.translateLog(event);
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.SCAMSHIELD.ordinal()])
+            if (guildconfig.ScamShield())
                 new Thread(() -> ScamShield.checkForFishing(event)).start();
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.DLLREMOVER.ordinal()] && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
@@ -154,7 +152,7 @@ public class ServerMessagesHandler {
             if (handleReplies(event, message))
                 return;
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.PARTIALLOGREMOVER.ordinal()] && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[0-9.:]+] -{30}"))) {
+            if (guildconfig.MLPartialRemover() && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[0-9.:]+] -{30}"))) {
                 System.out.println("Partial Log was printed");
 
                 if (event.getChannel().getName().contains("develo"))
@@ -172,7 +170,7 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.MLREPLIES.ordinal()]) {
+            if (guildconfig.MLReplies()) {
                 long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
 
                 if (guildID == 663449315876012052L /* MelonLoader */) {
@@ -237,7 +235,7 @@ public class ServerMessagesHandler {
                         return;
                     }
                     String temp;
-                    if (guildConfig[GuildConfigurations.ConfigurationMap.GENERALLOGREMOVER.ordinal()] && event.getChannel().getName().toLowerCase().contains("general")) {
+                    if (guildconfig.MLGeneralRemover() && event.getChannel().getName().toLowerCase().contains("general")) {
                         if (guildID == 600298024425619456L /*emmVRC*/)
                             temp = "into <#600661924010786816>";
                         else if (guildID == 439093693769711616L /*VRCMG*/)
@@ -329,11 +327,11 @@ public class ServerMessagesHandler {
                 }
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.DADJOKES.ordinal()] && LumJokes.sendJoke(event)) {
+            if (guildconfig.DadJokes() && LumJokes.sendJoke(event)) {
                 return;
             }
 
-            if (guildConfig[GuildConfigurations.ConfigurationMap.LUMREPLIES.ordinal()] && ChattyLum.handle(message, event))
+            if (guildconfig.LumReplies() && ChattyLum.handle(message, event))
                 return;
         }
         catch (Exception e) {

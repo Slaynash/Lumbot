@@ -40,6 +40,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -245,8 +246,9 @@ public class ScamShield {
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
                 return false;
-            if (GuildConfigurations.configurations.get(g.getIdLong()) != null)
-                return !GuildConfigurations.configurations.get(g.getIdLong())[GuildConfigurations.ConfigurationMap.SSCROSS.ordinal()];
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(g.getIdLong());
+            if (guildconfig != null)
+                return !guildconfig.ScamShieldCross();
             else
                 return true;
         });
@@ -302,8 +304,9 @@ public class ScamShield {
             String userId = event.getAuthor().getId();
             TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
             boolean ssBan;
-            if (GuildConfigurations.configurations.get(guildID) != null) {
-                ssBan = GuildConfigurations.configurations.get(guildID)[GuildConfigurations.ConfigurationMap.SSBAN.ordinal()];
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
+            if (guildconfig != null) {
+                ssBan = guildconfig.ScamShieldBan();
             }
             else {
                 ssBan = false;

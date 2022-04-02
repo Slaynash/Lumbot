@@ -1,7 +1,6 @@
 package slaynash.lum.bot.discord.slashs;
 
 import java.time.Duration;
-import java.util.Arrays;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -10,9 +9,8 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.components.Button;
-import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.GuildConfigurations;
-import slaynash.lum.bot.discord.GuildConfigurations.ConfigurationMap;
+import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.discord.GuildConfiguration;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -29,32 +27,25 @@ public class SlashConfig {
                 event.reply("Guild was not found.").queue();
                 return;
             }
-            boolean[] config = GuildConfigurations.configurations.get(Long.valueOf(guildID));
-            if (config == null) {
-                config = new boolean[GuildConfigurations.ConfigurationMap.values().length];
-                config[GuildConfigurations.ConfigurationMap.LOGSCAN.ordinal()] = true;
-                GuildConfigurations.configurations.put(Long.valueOf(guildID), config);
-                CommandManager.saveGuildConfigs();
-            }
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 System.out.println("Sent config for " + guild.getName());
-                System.out.println(Arrays.toString(config));
                 event.reply("Server Config for " + guild.getName() + ": " + guildID)
                     .addActionRow(// Buttons can be in a 5x5
-                        config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
-                        config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
-                        config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")))
+                        guildconfig.ScamShield() ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
+                        guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
+                        guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")))
                     .addActionRow(
-                        config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
-                        config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
-                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
+                        guildconfig.DLLRemover() ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
+                        guildconfig.MLPartialRemover() ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
+                        guildconfig.MLGeneralRemover() ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover"))
                     .addActionRow(
-                        config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner"),
-                        config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"),
-                        config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
+                        guildconfig.MLLogScan() ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner"),
+                        guildconfig.MLReplies() ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies"),
+                        guildconfig.MLLogReaction() ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
                     .addActionRow(
-                        config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
-                        config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
+                        guildconfig.LumReplies() ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
+                        guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
@@ -72,64 +63,62 @@ public class SlashConfig {
                 event.deferEdit().queue();
                 return;
             }
-            Long guildID = Long.valueOf(message[message.length - 1]);
+            String guildID = message[message.length - 1];
             Guild guild = event.getJDA().getGuildById(guildID);
-            boolean[] config = GuildConfigurations.configurations.get(guildID);
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 switch (event.getComponentId()) {
                     case "ss" -> {
-                        config[ConfigurationMap.SCAMSHIELD.ordinal()] = !config[ConfigurationMap.SCAMSHIELD.ordinal()];
-                        event.editButton(config[ConfigurationMap.SCAMSHIELD.ordinal()] ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
-                        checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SCAMSHIELD.string, !guildconfig.ScamShield());
+                        event.editButton(!guildconfig.ScamShield() ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
+                        checkBanPerm(event, guild, guildconfig.ScamShieldBan());
                     }
                     case "dll" -> {
-                        config[ConfigurationMap.DLLREMOVER.ordinal()] = !config[ConfigurationMap.DLLREMOVER.ordinal()];
-                        event.editButton(config[ConfigurationMap.DLLREMOVER.ordinal()] ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.DLLREMOVER.string, !guildconfig.DLLRemover());
+                        event.editButton(!guildconfig.DLLRemover() ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover")).queue();
                         checkDllRemovePerm(event, guild);
                     }
                     case "reaction" -> {
-                        config[ConfigurationMap.LOGREACTION.ordinal()] = !config[ConfigurationMap.LOGREACTION.ordinal()];
-                        event.editButton(config[ConfigurationMap.LOGREACTION.ordinal()] ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LOGREACTION.string, !guildconfig.MLLogReaction());
+                        event.editButton(!guildconfig.MLLogReaction() ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions")).queue();
                     }
                     case "thanks" -> {
-                        config[ConfigurationMap.LUMREPLIES.ordinal()] = !config[ConfigurationMap.LUMREPLIES.ordinal()];
-                        event.editButton(config[ConfigurationMap.LUMREPLIES.ordinal()] ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LUMREPLIES.string, !guildconfig.LumReplies());
+                        event.editButton(!guildconfig.LumReplies() ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum")).queue();
                     }
                     case "dad" -> {
-                        config[ConfigurationMap.DADJOKES.ordinal()] = !config[ConfigurationMap.DADJOKES.ordinal()];
-                        event.editButton(config[ConfigurationMap.DADJOKES.ordinal()] ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.DADJOKES.string, !guildconfig.DadJokes());
+                        event.editButton(!guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
                     }
                     case "partial" -> {
-                        config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] = !config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()];
-                        event.editButton(config[ConfigurationMap.PARTIALLOGREMOVER.ordinal()] ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.PARTIALLOGREMOVER.string, !guildconfig.MLPartialRemover());
+                        event.editButton(!guildconfig.MLPartialRemover() ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover")).queue();
                     }
                     case "general" -> {
-                        config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] = !config[ConfigurationMap.GENERALLOGREMOVER.ordinal()];
-                        event.editButton(config[ConfigurationMap.GENERALLOGREMOVER.ordinal()] ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.GENERALLOGREMOVER.string, !guildconfig.MLGeneralRemover());
+                        event.editButton(!guildconfig.MLGeneralRemover() ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
                     }
                     case "log" -> {
-                        config[ConfigurationMap.LOGSCAN.ordinal()] = !config[ConfigurationMap.LOGSCAN.ordinal()];
-                        event.editButton(config[ConfigurationMap.LOGSCAN.ordinal()] ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LOGSCAN.string, !guildconfig.MLLogScan());
+                        event.editButton(!guildconfig.MLLogScan() ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner")).queue();
                     }
                     case "mlr" -> {
-                        config[ConfigurationMap.MLREPLIES.ordinal()] = !config[ConfigurationMap.MLREPLIES.ordinal()];
-                        event.editButton(config[ConfigurationMap.MLREPLIES.ordinal()] ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.MLREPLIES.string, !guildconfig.MLReplies());
+                        event.editButton(!guildconfig.MLReplies() ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
                     }
                     case "ssban" -> {
-                        config[ConfigurationMap.SSBAN.ordinal()] = !config[ConfigurationMap.SSBAN.ordinal()];
-                        event.editButton(config[ConfigurationMap.SSBAN.ordinal()] ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
-                        checkBanPerm(event, guild, config[ConfigurationMap.SSBAN.ordinal()]);
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SSBAN.string, !guildconfig.ScamShield());
+                        event.editButton(!guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
+                        checkBanPerm(event, guild, !guildconfig.ScamShieldBan());
                     }
                     case "sscross" -> {
-                        config[ConfigurationMap.SSCROSS.ordinal()] = !config[ConfigurationMap.SSCROSS.ordinal()];
-                        event.editButton(config[ConfigurationMap.SSCROSS.ordinal()] ? Button.success("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (config[ConfigurationMap.SSBAN.ordinal()] ? "Ban" : "Kick"))).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SSCROSS.string, !guildconfig.ScamShield());
+                        event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan()? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                     }
                     case "delete" -> event.getMessage().delete().queue();
                     default -> {
                     }
                 }
-                GuildConfigurations.configurations.put(guildID, config); // update Values
-                CommandManager.saveGuildConfigs(); // backup values
             }
             else {
                 event.deferEdit().queue();

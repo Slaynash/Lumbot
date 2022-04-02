@@ -51,7 +51,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
-import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
@@ -108,7 +107,6 @@ public class Main extends ListenerAdapter {
         loadMLVRCHash();
         loadMLReportChannels();
         loadVRCBuild();
-        loadGuildConfigs();
         loadAPChannels();
         loadReplies();
         CrossServerUtils.loadGuildCount();
@@ -334,27 +332,6 @@ public class Main extends ListenerAdapter {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
-        }
-    }
-
-    private static void loadGuildConfigs() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/guildconfigurations.txt"));
-            String line;
-            HashMap<Long, boolean[]> tempMap = new HashMap<>();
-            while ((line = reader.readLine()) != null) {
-                String[] broke = line.split(" ");
-                boolean[] tempBooleans = new boolean[GuildConfigurations.ConfigurationMap.values().length];
-                for (int i = 1; i < broke.length; i++)
-                    tempBooleans[i - 1] = Boolean.parseBoolean(broke[i]);
-                tempMap.put(Long.parseLong(broke[0]), tempBooleans);
-            }
-            reader.close();
-            GuildConfigurations.configurations = tempMap;
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load Guild Configs", e);
         }
     }
 
@@ -604,7 +581,7 @@ public class Main extends ListenerAdapter {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events")) {
             event.getGuild().kick(event.getMember(), "Lum: Scammer joined").queue();
         }
     }
@@ -624,7 +601,7 @@ public class Main extends ListenerAdapter {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff")) {
+        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events")) {
             event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
         }
     }
@@ -642,7 +619,7 @@ public class Main extends ListenerAdapter {
                 return;
             }
             String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
-            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff"))) {
+            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events"))) {
                 reportchannel.sendMessage("Scammer started scamming" + event.getUser().getAsTag() + "(" + event.getUser().getId() + ") Now trying to kick!").allowedMentions(Collections.emptyList()).queue();
                 guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
                 return;

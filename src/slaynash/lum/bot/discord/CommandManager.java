@@ -238,21 +238,6 @@ public class CommandManager {
         }
     }
 
-    public static void saveGuildConfigs() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/guildconfigurations.txt"))) {
-            for (Entry<Long, boolean[]> saveconfigurations : GuildConfigurations.configurations.entrySet()) {
-                writer.write(saveconfigurations.getKey().toString());
-                for (Boolean bool : saveconfigurations.getValue()) {
-                    writer.write(" " + bool.toString());
-                }
-                writer.write("\n");
-            }
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save Guild Configs", e);
-        }
-    }
-
     public static void saveAPChannels() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/autopublishchannels.txt"))) {
             for (Long channel : apChannels) {

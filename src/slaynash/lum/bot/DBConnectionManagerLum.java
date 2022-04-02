@@ -5,11 +5,13 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import slaynash.lum.bot.discord.GuildConfiguration;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class DBConnectionManagerLum {
@@ -88,6 +90,69 @@ public final class DBConnectionManagerLum {
             ExceptionUtils.reportException("Exception while fetching SQL string", e);
         }
         return pString;
+    }
+
+    public static GuildConfiguration getGuildConfig(Long guildID) {
+        return getGuildConfig(guildID.toString());
+    }
+
+    public static GuildConfiguration getGuildConfig(String guildID) {
+        Timestamp ts;
+        boolean scamShield;
+        boolean scamShieldBan;
+        boolean scamShieldCross;
+        boolean mLLogScan;
+        boolean mLLogReaction;
+        boolean mLReplies;
+        boolean mLPartialRemover;
+        boolean mLGeneralRemover;
+        boolean dLLRemover;
+        boolean lumReplies;
+        boolean dadJokes;
+        ResultSet rs;
+        try {
+            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "'");
+            if (rs.next()) {
+                ts = rs.getTimestamp(GuildConfiguration.setting.TS.string);
+                scamShield = rs.getBoolean(GuildConfiguration.setting.SCAMSHIELD.string);
+                scamShieldBan = rs.getBoolean(GuildConfiguration.setting.SSBAN.string);
+                scamShieldCross = rs.getBoolean(GuildConfiguration.setting.SSCROSS.string);
+                mLLogScan = rs.getBoolean(GuildConfiguration.setting.LOGSCAN.string);
+                mLLogReaction = rs.getBoolean(GuildConfiguration.setting.LOGREACTION.string);
+                mLReplies = rs.getBoolean(GuildConfiguration.setting.MLREPLIES.string);
+                mLPartialRemover = rs.getBoolean(GuildConfiguration.setting.PARTIALLOGREMOVER.string);
+                mLGeneralRemover = rs.getBoolean(GuildConfiguration.setting.GENERALLOGREMOVER.string);
+                dLLRemover = rs.getBoolean(GuildConfiguration.setting.DLLREMOVER.string);
+                lumReplies = rs.getBoolean(GuildConfiguration.setting.LUMREPLIES.string);
+                dadJokes = rs.getBoolean(GuildConfiguration.setting.DADJOKES.string);
+            }
+            else {
+                System.out.println("No guild configuration found for guild and creating " + guildID);
+                PreparedStatement ps = getConnection().prepareStatement("INSERT INTO `GuildConfigurations` (`GuildID`) VALUES ('" + guildID + "');");
+                ps.executeUpdate();
+                ps.close();
+                return getGuildConfig(guildID);
+            }
+            closeRequest(rs);
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("Exception while fetching Guild Config", e);
+            return null;
+        }
+        return new GuildConfiguration(guildID, ts, scamShield, scamShieldBan, scamShieldCross, mLLogScan, mLLogReaction, mLReplies, mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes);
+    }
+
+    public static void setGuildSetting(Long guildID, String setting, boolean value) {
+        setGuildSetting(guildID.toString(), setting, value);
+    }
+
+    public static void setGuildSetting(String guildID, String setting, boolean value) {
+        try { //TODO currently ignores any changes if guildID is not in database
+            PreparedStatement ps = getConnection().prepareStatement("UPDATE `GuildConfigurations` SET `" + setting + "` = '" + (value ? "1" : "0") + "' WHERE `GuildID` = '" + guildID + "'");
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("Exception while setting Guild Config", e);
+        }
     }
 
     public static int sendUpdate(String statement, Object... args) throws SQLException {

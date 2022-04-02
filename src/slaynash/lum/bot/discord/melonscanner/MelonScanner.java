@@ -204,6 +204,8 @@ public final class MelonScanner {
 
     public static boolean isValidFileFormat(Attachment attachment, boolean strict) {
         if (attachment.getFileName() == null) return false;
+        if (attachment.getFileExtension() == null) return false;
+        if (!attachment.getFileExtension().equalsIgnoreCase("log") && !attachment.getFileExtension().equalsIgnoreCase("txt")) return false;
         String fileName = attachment.getFileName().toLowerCase();
         if (strict && fileName.startsWith("message")) return true;
         return fileName.startsWith("latest") ||
@@ -1105,7 +1107,7 @@ public final class MelonScanner {
                     context.embedColor = Color.ORANGE;
             }
 
-            if (context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
+            if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
             context.embedBuilder.addField("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", "Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", false);
 
             if (error.length() > 0) {
