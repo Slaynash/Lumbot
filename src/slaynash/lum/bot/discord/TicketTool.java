@@ -70,6 +70,9 @@ public class TicketTool {
                     else if (channelName.contains("deletion")) {
                         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue();
                     }
+                    else if (channelName.contains("export")) {
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexportcomplete")).queue();
+                    }
                 }
                 else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {
                     event.getTextChannel().sendMessage("tw!deluser " + id).queue();

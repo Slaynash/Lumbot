@@ -73,6 +73,9 @@ import slaynash.lum.bot.utils.Utils;
 
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
+    List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
+        "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api",
+        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "discord api intents", "hypesquad events discord");
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
@@ -581,7 +584,7 @@ public class Main extends ListenerAdapter {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events")) {
+        if (scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
             event.getGuild().kick(event.getMember(), "Lum: Scammer joined").queue();
         }
     }
@@ -595,13 +598,13 @@ public class Main extends ListenerAdapter {
         if (event.getNewNickname() == null) { //removed nickname
             return;
         }
-        String name = Junidecode.unidecode(event.getNewNickname().toLowerCase());
+        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase();
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events")) {
+        if (scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
             event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
         }
     }
@@ -619,7 +622,7 @@ public class Main extends ListenerAdapter {
                 return;
             }
             String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
-            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && (name.equals("moderators academy") || name.equals("discord moderators recruitments") || name.equals("moderators academy recruitments") || name.equals("discord academy recruitments") || name.equals("discord staff") || name.equals("hype squad events"))) {
+            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
                 reportchannel.sendMessage("Scammer started scamming" + event.getUser().getAsTag() + "(" + event.getUser().getId() + ") Now trying to kick!").allowedMentions(Collections.emptyList()).queue();
                 guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
                 return;

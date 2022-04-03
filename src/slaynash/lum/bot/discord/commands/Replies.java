@@ -55,7 +55,7 @@ public class Replies extends Command {
         }
         else if (parts[0].startsWith(getName() + "r") || parts[0].startsWith("l!replyr")) {
             parts = parts[1].trim().split("\n", 2);
-            String pattern = parts[0].trim().toLowerCase();
+            String pattern = parts[0].trim();
             try {
                 Pattern.compile(pattern);
             }
@@ -77,6 +77,12 @@ public class Replies extends Command {
                 }
                 else
                     Utils.replyEmbed("Created the regex reply `" + pattern + "`", Color.GREEN, event);
+                if (pattern.contains("%delete") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+                    Utils.replyEmbed("I don't have the `MESSAGE_MANAGE` permission in this channel. I won't be able to delete the triggered message.", Color.RED, event);
+                if (pattern.contains("%kick") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS))
+                    Utils.replyEmbed("I don't have the `KICK_MEMBERS` permission in this guild. Please give me this permission or remove `%kick` from the regex reply", Color.RED, event);
+                if (pattern.contains("%ban") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS))
+                    Utils.replyEmbed("I don't have the `BAN_MEMBERS` permission in this guild. Please give me this permission or remove `%ban` from the regex reply", Color.RED, event);
             }
             if (regexReplies.size() == 0)
                 CommandManager.guildRegexReplies.remove(event.getGuild().getIdLong());
@@ -101,6 +107,12 @@ public class Replies extends Command {
                 }
                 else
                     Utils.replyEmbed("Created the reply `" + pattern + "`", Color.GREEN, event);
+                if (pattern.contains("%delete") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE))
+                    Utils.replyEmbed("I don't have the `MESSAGE_MANAGE` permission in this channel. I won't be able to delete the triggered message.", Color.RED, event);
+                if (pattern.contains("%kick") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS))
+                    Utils.replyEmbed("I don't have the `KICK_MEMBERS` permission in this guild. Please give me this permission or remove `%kick` from the reply", Color.RED, event);
+                if (pattern.contains("%ban") && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS))
+                    Utils.replyEmbed("I don't have the `BAN_MEMBERS` permission in this guild. Please give me this permission or remove `%ban` from the reply", Color.RED, event);
             }
             if (replies.size() == 0)
                 CommandManager.guildReplies.remove(event.getGuild().getIdLong());
