@@ -436,21 +436,37 @@ public class ServerMessagesHandler {
             if (regexReplies != null) {
                 for (Entry<String, String> reply : regexReplies.entrySet()) {
                     boolean deleteMessage = false;
+                    boolean kickmember = false;
+                    boolean banmember = false;
                     String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (key.endsWith("-d")) {
+                    if (key.contains("%delete")) {
                         deleteMessage = true;
-                        key = key.substring(0, key.length() - 2).trim();
+                        key = key.replace("%delete ", "").replace("%delete", "");
+                    }
+                    if (key.contains("%kick")) {
+                        kickmember = true;
+                        key = key.replace("%kick ", "").replace("%kick", "");
+                    }
+                    if (key.contains("%ban")) {
+                        banmember = true;
+                        key = key.replace("%ban ", "").replace("%ban", "");
                     }
                     if (content.matches("(?s)".concat(key))) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                             event.getMessage().delete().queue();
                         }
+                        if (kickmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
+                            event.getMember().kick().queue();
+                        }
+                        if (banmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
+                            event.getMember().ban(0).queue();
+                        }
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
-                        else
+                        else if (!value.equals("."))
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                         return true;
                     }
@@ -459,21 +475,37 @@ public class ServerMessagesHandler {
             if (replies != null) {
                 for (Entry<String, String> reply : replies.entrySet()) {
                     boolean deleteMessage = false;
+                    boolean kickmember = false;
+                    boolean banmember = false;
                     String key = reply.getKey();
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (key.endsWith("-d")) {
+                    if (key.contains("%delete")) {
                         deleteMessage = true;
-                        key = key.substring(0, key.length() - 2).trim();
+                        key = key.replace("%delete ", "").replace("%delete", "");
+                    }
+                    if (key.contains("%kick")) {
+                        kickmember = true;
+                        key = key.replace("%kick ", "").replace("%kick", "");
+                    }
+                    if (key.contains("%ban")) {
+                        banmember = true;
+                        key = key.replace("%ban ", "").replace("%ban", "");
                     }
                     if (content.contains(key)) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                             event.getMessage().delete().queue();
                         }
+                        if (kickmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
+                            event.getMember().kick().queue();
+                        }
+                        if (banmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
+                            event.getMember().ban(0).queue();
+                        }
                         if (EmojiUtils.isOneEmoji(value))
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
-                        else
+                        else if (!value.equals("."))
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                         return true;
                     }

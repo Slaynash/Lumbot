@@ -175,7 +175,7 @@ public final class MelonScannerReadPass {
             if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
                 context.vrcmuModsMismatch = true;
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.vrcmuMods).queue();
-                //TODO:
+                //TODO: Uncomment when ready
                 //context.editedLog = true;
             }
             return true;
@@ -302,7 +302,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         if (line.matches("\\[[0-9.:]+] Failed to read assembly .*\\.dll")) {
-            if (context.vrcmuMods > 0) {
+            if (context.vrcmuMods >= 0) {
                 context.vrcmuMods++;
             }
             return true;
@@ -338,11 +338,11 @@ public final class MelonScannerReadPass {
             context.currentMissingDependenciesMods = line.split("'", 3)[1];
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) { //TODO check if warning is all caps
+        else if (line.matches("(?i)\\[[0-9.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) {
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
             context.bufferedReader.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
-            context.bufferedReader.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader.
+            context.bufferedReader.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader. TODO This will break Lum when ML does it
         }
         else {
             System.out.println("Done listing missing dependencies on line: " + line);
