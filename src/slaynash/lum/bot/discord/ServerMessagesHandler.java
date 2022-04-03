@@ -442,15 +442,15 @@ public class ServerMessagesHandler {
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (key.contains("%delete")) {
                         deleteMessage = true;
-                        key = key.replace("%delete ", "").replace("%delete", "");
+                        key = key.replace("%delete ", "").replace(" %delete", "").replace("%delete", "");
                     }
                     if (key.contains("%kick")) {
                         kickmember = true;
-                        key = key.replace("%kick ", "").replace("%kick", "");
+                        key = key.replace("%kick ", "").replace(" %kick", "").replace("%kick", "");
                     }
                     if (key.contains("%ban")) {
                         banmember = true;
-                        key = key.replace("%ban ", "").replace("%ban", "");
+                        key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
                     }
                     if (content.matches("(?s)".concat(key))) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
@@ -481,15 +481,15 @@ public class ServerMessagesHandler {
                     String value = reply.getValue().replace("%u", event.getAuthor().getName());
                     if (key.contains("%delete")) {
                         deleteMessage = true;
-                        key = key.replace("%delete ", "").replace("%delete", "");
+                        key = key.replace("%delete ", "").replace(" %delete", "").replace("%delete", "");
                     }
                     if (key.contains("%kick")) {
                         kickmember = true;
-                        key = key.replace("%kick ", "").replace("%kick", "");
+                        key = key.replace("%kick ", "").replace(" %kick", "").replace("%kick", "");
                     }
                     if (key.contains("%ban")) {
                         banmember = true;
-                        key = key.replace("%ban ", "").replace("%ban", "");
+                        key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
                     }
                     if (content.contains(key)) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
