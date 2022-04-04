@@ -243,7 +243,7 @@
         "VRChat": [
             {
                 "regex": "\\[[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}] \\[OculusPlayspaceMover] \\[ERROR] OVRCameraRig not found, this mod only work (i|o)n Oculus( for now!|! If u are using SteamVR, use the OVR Advanced Settings!)",
-                "error": "OculusPlayspaceMover does not work in SteamVR. It is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."
+                "error": "OculusPlayspaceMover does not work in SteamVR. Instead, it is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."
             },
             {
                 "regex": "\\[[0-9.:]+] \\[VRCX_Companion] \\[ERROR] Failed to connect to VRCX IPC Server.*",
@@ -404,6 +404,12 @@
             {
                 "regex": ".*No .melon files found in UserData\\\\CustomItems\\\\",
                 "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
+            }
+        ],
+        "Demeo": [
+            {
+                "regex": "HouseRules.*Could not load file or assembly 'Newtonsoft.*",
+                "error": "Missing Newtonsoft. Please make sure to extract the entire HouseRules zip."
             }
         ],
         "AGameThatDoesn'tExists_НЕТ": []

@@ -98,8 +98,9 @@ public class Steam {
             client.connect();
         });
         callbackManager.subscribe(LoggedOnCallback.class, callback -> {
-            if (callback.getResult() != EResult.OK) {
-                if (callback.getResult() == EResult.ServiceUnavailable) {
+            EResult result = callback.getResult();
+            if (result != EResult.OK) {
+                if (result == EResult.ServiceUnavailable || result == EResult.Timeout || result == EResult.TryAnotherCM) {
                     ExceptionUtils.reportException("Steam Service unavailable. Retrying in 5min...");
                     try {
                         Thread.sleep(5 * 60 * 1000);
@@ -111,7 +112,7 @@ public class Steam {
                     return;
                 }
                 else {
-                    ExceptionUtils.reportException("Failed to login to Steam: " + callback.getResult());
+                    ExceptionUtils.reportException("Failed to login to Steam: " + result);
                     client.disconnect();
                     return;
                 }
