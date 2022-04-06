@@ -101,7 +101,8 @@ public class Steam {
             EResult result = callback.getResult();
             if (result != EResult.OK) {
                 if (result == EResult.ServiceUnavailable || result == EResult.Timeout || result == EResult.TryAnotherCM) {
-                    ExceptionUtils.reportException("Steam Service unavailable. Retrying in 5min...");
+                    ExceptionUtils.reportException("Steam: " + result + " Retrying in 5min...");
+                    client.disconnect();
                     try {
                         Thread.sleep(5 * 60 * 1000);
                     }
@@ -123,7 +124,7 @@ public class Steam {
 
             startChangesRequesterThread();
 
-            for (Integer gameID : reportChannels.keySet()) {
+            for (Integer gameID : reportChannels.keySet()) { //initialize all depos
                 if (gameDetails.get(gameID) == null)
                     apps.picsGetProductInfo(gameID, null, false, false);
             }

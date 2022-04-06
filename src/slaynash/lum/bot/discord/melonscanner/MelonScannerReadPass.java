@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 
+import net.dv8tion.jda.api.Permission;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
@@ -78,7 +79,6 @@ public final class MelonScannerReadPass {
                 ) continue;
 
                 if (compromisedMLCheck(context)) {
-                    context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
                     return true;
                 }
 
@@ -296,7 +296,7 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("", "Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
-            if (context.vrcmuMods > 0) {
+            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer")) {
                 context.vrcmuMods--;
             }
             return true;
@@ -556,6 +556,10 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
+        else if (context.vrcmuMods > 0 && line.matches(".* - Moving to Broken folder")) {
+            context.vrcmuMods--;
+            return true;
+        }
         return false;
     }
 
@@ -570,9 +574,14 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean compromisedMLCheck(MelonScanContext context) {
-        if (context.line.contains("<Transmtn.Get GET api/1/auth/user>") || context.line.startsWith("authcookie_")) {
+        if (context.line.contains("<Transmtn.Get GET api") || context.line.startsWith("authcookie_")) {
+            System.out.println("COMPROMISED ML");
             if (!context.errors.contains(MelonLoaderError.mlCompromised))
                 context.errors.add(MelonLoaderError.mlCompromised);
+            if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getTextChannel(), Permission.MESSAGE_MANAGE))
+                context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
+            else
+                context.messageReceivedEvent.getTextChannel().sendMessage("I can not remove that log, please delete that log for your own safety").queue();
             return true;
         }
         return false;
