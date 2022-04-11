@@ -36,7 +36,7 @@ public final class MelonScannerReadPass {
 
                 if (shouldOmitLineCheck(context))
                     continue;
-                
+
                 context.secondlastLine = context.lastLine;
                 context.lastLine = context.line;
                 context.line = context.readLine;
@@ -149,7 +149,10 @@ public final class MelonScannerReadPass {
             return true;
 
         else if (context.preListingMods && line.matches("\\[[0-9.:]+] -{30}")) return true;
-        else if (line.matches("\\[[0-9.:]+] -{30}") && context.lastLine.matches("\\[[0-9.:]+] -{30}")) return true; // If some idiot removes a mod but keeps the separator 
+        else if (line.matches("\\[[0-9.:]+] -{30}") && context.lastLine.matches("\\[[0-9.:]+] -{30}")) { // If some idiot removes a mod but keeps the separator
+            context.editedLog = true;
+            return true;
+        }
         else if (context.preListingMods && (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Plugins Loaded!") || line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Mods Loaded!"))) {
             context.remainingModCount = 0;
             context.preListingMods = false;
@@ -169,7 +172,7 @@ public final class MelonScannerReadPass {
             context.remainingModCount = Integer.parseInt(split[1]);
             context.preListingMods = false;
             context.listingMods = true;
-            if (context.remainingModCount == 0) {
+            if (context.remainingModCount <= 0) {
                 context.editedLog = true;
             }
             System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");

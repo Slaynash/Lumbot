@@ -831,7 +831,7 @@ public final class MelonScanner {
                     break;
                 }
             }
-            if (context.outdatedMods.size() >= 3)
+            if (context.outdatedMods.size() >= 2)
                 error.insert(0, muMessage + "\n");
 
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);

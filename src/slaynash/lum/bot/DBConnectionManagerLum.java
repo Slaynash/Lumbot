@@ -98,17 +98,8 @@ public final class DBConnectionManagerLum {
 
     public static GuildConfiguration getGuildConfig(String guildID) {
         Timestamp ts;
-        boolean scamShield;
-        boolean scamShieldBan;
-        boolean scamShieldCross;
-        boolean mLLogScan;
-        boolean mLLogReaction;
-        boolean mLReplies;
-        boolean mLPartialRemover;
-        boolean mLGeneralRemover;
-        boolean dLLRemover;
-        boolean lumReplies;
-        boolean dadJokes;
+        boolean scamShield, scamShieldBan, scamShieldCross, mLLogScan, mLLogReaction, mLReplies,
+            mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes;
         ResultSet rs;
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "'");
@@ -146,10 +137,15 @@ public final class DBConnectionManagerLum {
     }
 
     public static void setGuildSetting(String guildID, String setting, boolean value) {
-        try { //TODO currently ignores any changes if guildID is not in database
+        try {
             PreparedStatement ps = getConnection().prepareStatement("UPDATE `GuildConfigurations` SET `" + setting + "` = '" + (value ? "1" : "0") + "' WHERE `GuildID` = '" + guildID + "'");
-            ps.executeUpdate();
+            int rowsedited = ps.executeUpdate();
             ps.close();
+            if (rowsedited == 0) {
+                PreparedStatement ps2 = getConnection().prepareStatement("INSERT INTO `GuildConfigurations` (`GuildID`, `" + setting + "`) VALUES ('" + guildID + "', '" + (value ? "1" : "0") + "');");
+                ps2.executeUpdate();
+                ps2.close();
+            }
         } catch (SQLException e) {
             ExceptionUtils.reportException("Exception while setting Guild Config", e);
         }
