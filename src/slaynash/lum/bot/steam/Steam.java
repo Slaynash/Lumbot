@@ -1,11 +1,10 @@
 package slaynash.lum.bot.steam;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,8 +33,8 @@ import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.TextChannel;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
-import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -53,8 +52,6 @@ public class Steam {
     private int previousChangeNumber;
 
     private static final Map<Integer, SteamAppDetails> gameDetails = new HashMap<>();
-    public static final Map<Integer, List<ServerChannel>> reportChannels = new HashMap<>();
-    private static List<ServerChannel> channels2Remove;
 
     public Steam() {
 
@@ -124,9 +121,16 @@ public class Steam {
 
             startChangesRequesterThread();
 
-            for (Integer gameID : reportChannels.keySet()) { //initialize all depos
-                if (gameDetails.get(gameID) == null)
+            try { //initialize all depos
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT `GameID` FROM `SteamWatch` WHERE 1");
+                while (rs.next()) {
+                    Integer gameID = rs.getInt("GameID");
+                    if (gameDetails.get(gameID) == null)
                     apps.picsGetProductInfo(gameID, null, false, false);
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to initialize all steam depos", e);
             }
         });
         callbackManager.subscribe(LoggedOffCallback.class, callback -> {
@@ -144,24 +148,25 @@ public class Steam {
             System.out.println("Changelist " + previousChangeNumber + " -> " + callback.getCurrentChangeNumber() + " (" + callback.getAppChanges().size() + " apps, " + callback.getPackageChanges().size() + " packages)");
 
             previousChangeNumber = callback.getCurrentChangeNumber();
-            
-            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
-                writer.write(String.valueOf(previousChangeNumber));
-            }
-            catch (IOException e) {
-                ExceptionUtils.reportException("Failed to save previousSteamChange", e);
-            }
 
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 Integer gameID = changeDataPair.getKey();
+                List<ServerChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
-                if (reportChannels.containsKey(gameID)) {
+                try {
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
+                    while (rs.next()) {
+                        channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                    }
+                    DBConnectionManagerLum.closeRequest(rs);
+                } catch (SQLException e) {
+                    ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                }
+                if (channels.size() != 0) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + gameID + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
-                    channels2Remove = new ArrayList<>();
-                    List<ServerChannel> rchannels = reportChannels.get(gameID);
-                    for (ServerChannel sc : rchannels) {
+                    for (ServerChannel sc : channels) {
                         if (testChannel(sc))
                             continue;
                         Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
@@ -171,7 +176,6 @@ public class Steam {
                         else
                             System.out.println("Lum can't talk in " + guild.getName() + " " + channel.getName());
                     }
-                    removeChannels(gameID);
                     apps.picsGetProductInfo(gameID, null, false, false);
                 }
             }
@@ -180,11 +184,21 @@ public class Steam {
             System.out.println("[PICSProductInfoCallback] apps: ");
             for (Entry<Integer, PICSProductInfo> app : callback.getApps().entrySet()) {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
-                if (!reportChannels.containsKey(app.getKey()))
+                Integer gameID = app.getKey();
+                List<ServerChannel> channels = new ArrayList<>();
+                try {
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
+                    while (rs.next()) {
+                        channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                    }
+                    DBConnectionManagerLum.closeRequest(rs);
+                } catch (SQLException e) {
+                    ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                }
+                if (channels.size() == 0)
                     return;
 
                 printKeyValue(app.getValue().getKeyValues(), 1);
-                List<ServerChannel> rchannels = reportChannels.get(app.getKey());
                 SteamAppDetails gameDetail = gameDetails.get(app.getKey());
 
                 if (gameDetail == null) { //for startup and first time added
@@ -236,7 +250,7 @@ public class Steam {
                     MessageBuilder mb = new MessageBuilder();
                     mb.setEmbeds(eb.build());
 
-                    for (ServerChannel sc : rchannels) {
+                    for (ServerChannel sc : channels) {
                         if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
                             mb.setContent("@everyone");
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
@@ -259,26 +273,24 @@ public class Steam {
         Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
         if (guild == null) {
             System.out.println("Steam can not find Guild " + sc.serverID);
-            channels2Remove.add(sc);
+            try {
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = " + sc.serverID);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         TextChannel channel = guild.getTextChannelById(sc.channelId);
         if (channel == null) {
             System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.serverID);
-            channels2Remove.add(sc);
+            try {
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = " + sc.channelId);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
             return true;
         }
         return false;
-    }
-    private static void removeChannels(Integer gameID) {
-        List<ServerChannel> rchannels = reportChannels.get(gameID);
-        if (rchannels.removeAll(channels2Remove)) {
-            if (rchannels.size() > 0)
-                reportChannels.put(gameID, rchannels);
-            else
-                reportChannels.remove(gameID);
-            CommandManager.saveSteamWatch();
-        }
     }
 
     private static void printKeyValue(KeyValue keyvalue, int depth) {

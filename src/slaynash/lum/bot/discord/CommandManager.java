@@ -42,7 +42,6 @@ import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
-import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
@@ -259,19 +258,6 @@ public class CommandManager {
             for (Entry<Long, Map<String, String>> guilds : guildRegexReplies.entrySet()) {
                 for (Entry<String, String> reply : guilds.getValue().entrySet()) {
                     writer.write("regex".concat(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n"))));
-                }
-            }
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save Replies", e);
-        }
-    }
-
-    public static void saveSteamWatch() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/steamwatch.txt"))) {
-            for (Entry<Integer, List<ServerChannel>> reportChannel : Steam.reportChannels.entrySet()) {
-                for (ServerChannel sc : reportChannel.getValue()) {
-                    writer.write(reportChannel.getKey().toString().concat(",").concat(sc.serverID).concat(",").concat(sc.channelId).concat("\n"));
                 }
             }
         }

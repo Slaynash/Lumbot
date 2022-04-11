@@ -1,16 +1,17 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.Command;
-import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.steam.Steam;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class SteamWatcher extends Command {
 
@@ -24,42 +25,46 @@ public class SteamWatcher extends Command {
         if (!event.getTextChannel().canTalk())
             return;
         if (parts.length == 1) {
-            boolean found = false;
-            StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game ID)\n");
-            for (Entry<Integer, List<ServerChannel>> gEntry : Steam.reportChannels.entrySet()) {
-                for (ServerChannel sc : gEntry.getValue()) {
-                    if (Objects.equals(sc.serverID, guildID)) {
-                        sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(gEntry.getKey()).append("\n"); //maybe look into sorting by channels
-                        found = true;
-                    }
-                }
+            List<ServerChannel> channels = new ArrayList<>();
+            try {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = '" + guildID + "'");
+                while (rs.next())
+                    channels.add(new ServerChannel(rs.getString("GameID"), rs.getString("ChannelID")));
+                DBConnectionManagerLum.closeRequest(rs);
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getTextChannel());
             }
-            if (found)
+
+            if (channels.size() != 0) {
+                StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game ID)\n");
+                for (ServerChannel sc : channels)
+                    sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(sc.serverID).append("\n"); //maybe look into sorting by channels
                 event.getMessage().reply(sb.toString()).queue();
+            }
             else
-                event.getMessage().reply("Usage: " + getName() + " <GameID>").queue();
+                event.getMessage().reply("No games being watched. Usage: " + getName() + " <GameID>").queue();
             return;
         }
         Integer gameID = Integer.parseInt(parts[1]);
-        ServerChannel sc = null;
-        List<ServerChannel> rc = Steam.reportChannels.getOrDefault(gameID, new ArrayList<>());
-        for (ServerChannel serverChannel : rc) {
-            if (Objects.equals(serverChannel.serverID, guildID) && Objects.equals(serverChannel.channelId, channelID)) {
-                sc = serverChannel;
-                break;
-            }
+        Integer found = 0;
+        try {
+            found = DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `GameID` = '" + gameID + "' AND `ServerID` = '" + guildID + "' AND `ChannelID` = '" + channelID + "'");
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("Failed to remove steam watch", e, event.getTextChannel());
         }
-        if (sc == null) {
-            rc.add(new ServerChannel(guildID, channelID));
-            event.getMessage().reply("Added gameID " + gameID + " to Steam Watch").queue();
+
+        if (found == 0) {
+            try {
+                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `TS`) VALUES ('" + gameID + "', '" + guildID + "', ' " + channelID + "', CURRENT_TIMESTAMP);");
+                event.getMessage().reply("Added gameID " + gameID + " to Steam Watch").queue();
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to add steam watch", e, event.getTextChannel());
+            }
+            new Steam().intDetails(gameID);
         }
         else {
-            rc.remove(sc);
             event.getMessage().reply("Removed gameID " + gameID + " from Steam Watch").queue();
         }
-        Steam.reportChannels.put(gameID, rc);
-        CommandManager.saveSteamWatch();
-        new Steam().intDetails(gameID);
     }
 
     @Override

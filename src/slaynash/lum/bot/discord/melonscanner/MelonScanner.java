@@ -439,22 +439,18 @@ public final class MelonScanner {
                 case "Phasmophobia" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/866926713761431562/Phasmophobia_Logo.png");
                 case "Pipe" -> context.embedBuilder.setThumbnail("http://bmxstreets.com/wp-content/uploads/2017/12/pipe_black_1080-cropped-300x169.png");
                 case "Pistol Whip" -> context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
+                case "Polytoria" -> context.embedBuilder.setThumbnail("https://polytoria.com/assets/img/logo-light.png");
                 case "Rec Room" -> context.embedBuilder.setThumbnail("https://images.squarespace-cdn.com/content/v1/582e7271bebafbd72792bd97/1571873579729-YGLX8EAT3EP2LIFJ7EZQ/RecRoomLogo_Shadow.png");
                 case "raot" -> context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
                 case "Reventure" -> context.embedBuilder.setThumbnail("https://i2.wp.com/maroonersrock.com/wp-content/uploads/2019/08/logo.png");
-                case "Run" -> { //what a crappy unity name, its bro falls
-                    context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
-                    context.embedBuilder.addField("Dude, this game sucks", "Don't promote knockoffs, uninstall it", false);
-                }
+                //what a crappy unity name, its bro falls
+                case "Run" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
                 case "Sable" -> context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/en/4/4c/Sable_cover_art.jpg");
                 case "SCPSL" -> context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                 case "Secret Neighbor" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
                 case "Shredders" -> context.embedBuilder.setThumbnail("https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2022/03/shredders-hero-image-01.jpg");
                 case "Stick Fight: The Game" -> context.embedBuilder.setThumbnail("https://toppng.com//public/uploads/preview/color-stick-fight-the-game-115629098126na96uprb2.png");
-                case "Stumble Guys" -> {
-                    context.embedBuilder.setThumbnail("https://cdn.now.gg/apps-content/com.kitkagames.fallbuddies/logo/stumble-guys-multiplayer-royale.png");
-                    context.embedBuilder.addField("Dude, this game sucks", "Don't promote knockoffs, uninstall it", false);
-                }
+                case "Stumble Guys" -> context.embedBuilder.setThumbnail("https://cdn.now.gg/apps-content/com.kitkagames.fallbuddies/logo/stumble-guys-multiplayer-royale.png");
                 case "Superliminal" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
                 case "Super Auto Pets" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1714040/capsule_616x353.jpg");
                 case "SynthRiders" -> context.embedBuilder.setThumbnail("https://synthridersvr.com/wp-content/uploads/2020/08/Synth-Riders-logo.png");
