@@ -474,7 +474,7 @@ public class Main extends ListenerAdapter {
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
         CrossServerUtils.checkGuildCount(event);
         try {
-            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>";
+            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>\nUse the command `l!help` to see the list of commands.";
             if (event.getGuild().getSystemChannel() != null && event.getGuild().getSystemChannel().canTalk()) {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
@@ -601,7 +601,7 @@ public class Main extends ListenerAdapter {
             }
             String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
             if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
-                reportchannel.sendMessage("Scammer started scamming" + event.getUser().getAsTag() + "(" + event.getUser().getId() + ") Now trying to kick!").allowedMentions(Collections.emptyList()).queue();
+                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow trying to kick!").allowedMentions(Collections.emptyList()).queue();
                 guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
                 return;
             }

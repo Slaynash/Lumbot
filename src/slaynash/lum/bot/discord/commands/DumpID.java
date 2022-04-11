@@ -31,7 +31,11 @@ public class DumpID extends Command {
         }
         List<Member> members = new ArrayList<>();
         event.getGuild().loadMembers(m -> {
-            if (Junidecode.unidecode(m.getEffectiveName()).toLowerCase().matches(regex))
+            if (m.getNickname() != null && Junidecode.unidecode(m.getNickname()).toLowerCase().matches(regex)) {
+                members.add(m);
+                return;
+            }
+            if (Junidecode.unidecode(m.getUser().getName()).toLowerCase().matches(regex))
                 members.add(m);
         });
         if (members.size() == 0) {
@@ -41,7 +45,7 @@ public class DumpID extends Command {
         members.sort(Comparator.comparing(m -> m.getUser().getId()));
         StringBuilder sb = new StringBuilder();
         for (Member m : members) {
-            sb.append(m.getUser().getId()).append(" ").append(m.getEffectiveName()).append("\n");
+            sb.append(m.getUser().getId()).append(" ").append(m.getUser().getName()).append(m.getNickname() != null ? " nickname: " + m.getNickname() : "").append("\n");
         }
         event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " " + regex + ".txt").queue();
     }
