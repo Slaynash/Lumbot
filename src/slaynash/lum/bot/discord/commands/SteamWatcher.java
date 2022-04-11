@@ -46,7 +46,7 @@ public class SteamWatcher extends Command {
             return;
         }
         Integer gameID = Integer.parseInt(parts[1]);
-        Integer found = 0;
+        int found = 0;
         try {
             found = DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `GameID` = '" + gameID + "' AND `ServerID` = '" + guildID + "' AND `ChannelID` = '" + channelID + "'");
         } catch (SQLException e) {

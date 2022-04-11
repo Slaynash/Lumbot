@@ -1,8 +1,5 @@
 package slaynash.lum.bot.steam;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -55,14 +52,13 @@ public class Steam {
 
     public Steam() {
 
-        BufferedReader reader;
         try {
-            reader = new BufferedReader(new FileReader("storage/previousSteamChange.txt"));
-            previousChangeNumber = Integer.parseInt(reader.readLine());
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load previousSteamChange", e);
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `value` FROM `Config` WHERE `setting` = 'LastSteamChange'");
+            rs.next();
+            previousChangeNumber = rs.getInt("value");
+            DBConnectionManagerLum.closeRequest(rs);
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("Failed to initialize last steam depos change#", e);
         }
 
         client = new SteamClient();
@@ -107,13 +103,12 @@ public class Steam {
                         e.printStackTrace();
                     }
                     client.connect();
-                    return;
                 }
                 else {
                     ExceptionUtils.reportException("Failed to login to Steam: " + result);
                     client.disconnect();
-                    return;
                 }
+                return;
             }
 
             isLoggedOn = true;
