@@ -50,6 +50,8 @@ public class VRCApiVersionScanner {
                         eb.setTitle("VRCAPI Updated");
                         eb.addField("Old Build Version Tag", "[" + lastDG + "] " + lastBVT, false);
                         eb.addField("New Build Version Tag", "[" + config.deploymentGroup + "] " + config.buildVersionTag, false);
+                        if (lastDG.equals(config.deploymentGroup))
+                            eb.addField("WTF VRChat <:latina_pout:828090216732295228>", "Reusing Deployment Groups I see", false);
                         MessageEmbed embed = eb.build();
 
                         JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();

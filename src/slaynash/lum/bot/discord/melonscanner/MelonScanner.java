@@ -435,6 +435,7 @@ public final class MelonScanner {
                 case "Karlson" -> context.embedBuilder.setThumbnail("https://i.redd.it/ldxbkjuziad51.png");
                 case "Kill the King" -> context.embedBuilder.setThumbnail("https://kill-the-king.com/imgs/KTK_Logos/logo_KTK-hamburger.png");
                 case "maj" -> context.embedBuilder.setThumbnail("https://mahjongsoul.yo-star.com/img/Mahjong_logo.d393a548.png");
+                case "MuseDash" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
                 case "Muse Dash" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
                 case "My Friendly Neighborhood" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1574260/header.jpg");
                 case "Night in the Woods" -> context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/commons/e/e5/Night_in_the_Woods_logo_black.svg");

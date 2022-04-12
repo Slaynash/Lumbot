@@ -36,8 +36,8 @@ public class PrivateMessagesHandler {
 
             Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
             User author = event.getAuthor();
-            String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).replaceAll("[!@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").replace(" ", "-").toLowerCase();
-            TextChannel guildchannel = mainguild.getTextChannelsByName(channelName, true).stream().findFirst().orElse(null);
+            String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).replaceAll("[!ǃ@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").replace(" ", "-").toLowerCase();
+            TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
             String message = event.getMessage().getContentRaw();
             for (Attachment attachment : event.getMessage().getAttachments()) {
                 message = message.concat("\n").concat(attachment.getUrl());
@@ -45,6 +45,7 @@ public class PrivateMessagesHandler {
             Profile profile = author.retrieveProfile().complete();
             MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(author.getAsMention() + "\n\n" + message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
+                System.out.println("Creating DM Channel " + channelName);
                 StringBuilder sb = new StringBuilder();
                 event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory().forEach(m -> {
                     sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ").append(m.getContentRaw()).append(" ");
