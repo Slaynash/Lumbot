@@ -299,6 +299,7 @@ public final class MelonScanner {
             String latestModDownloadUrl = null;
             boolean latestHasPending = false;
             boolean deprecatedName = false;
+            boolean latestModBroken = false;
             for (MelonApiMod modDetail : context.modDetails) {
                 if (modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
                     System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
@@ -308,6 +309,7 @@ public final class MelonScanner {
                     latestModType = modDetail.modtype;
                     latestHasPending = modDetail.haspending;
                     latestModHash = modDetail.versions[0].hash;
+                    latestModBroken = modDetail.isbroken;
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
                     break;
@@ -321,7 +323,7 @@ public final class MelonScanner {
             else if(latestHasPending && compare == 0) {
                 context.hasPendingMods.add(modName);
             }
-            else if (CommandManager.brokenMods.contains(modName)) {
+            else if (CommandManager.brokenMods.contains(modName) || latestModBroken) {
                 context.brokenMods.add(modName);
             }
             else if (deprecatedName || compare > 0) {

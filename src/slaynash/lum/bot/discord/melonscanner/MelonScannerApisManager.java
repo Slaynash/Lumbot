@@ -71,6 +71,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
+        apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
     }
 
     public static void startFetchingThread() {
@@ -198,6 +199,7 @@ public class MelonScannerApisManager {
                                 boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
                                 String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
                                 String[] aliases = null;
+                                boolean isbroken = mod.get("isbroken") != LuaValue.NIL && mod.get("isbroken").checkboolean();
                                 LuaValue aliasesRaw = mod.get("aliases");
                                 if (aliasesRaw != LuaValue.NIL) {
                                     LuaTable aliasesTable = aliasesRaw.checktable();
@@ -216,11 +218,11 @@ public class MelonScannerApisManager {
                                 }
                                 else
                                     CommandManager.brokenMods.remove(name);
-                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending));
+                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
                             }
                             if (api.name.equals("vrcmg")) {
                                 //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
-                                apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod", false));
+                                apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod", false, false));
                             }
 
                             api.cachedMods = apiMods;
