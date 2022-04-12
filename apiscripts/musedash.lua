@@ -8,7 +8,7 @@ for i = 0, apiData:size() - 1, 1 do
         name = mod:get("name"):getAsString(),
         version = mod:get("version"):getAsString(),
         downloadLink = "https://mdmc.moe/api/v5/download/mod/" .. mod:get("id"):getAsString(),
-        isbroken = ~mod:get("functional"):getAsBoolean(),
+        isbroken = not mod:get("functional"):getAsBoolean(),
     })
 end
 
