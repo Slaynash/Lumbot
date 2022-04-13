@@ -53,6 +53,10 @@
             "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/vrchat) and tell us if it loads."
         },
         {
+            "regex": "\\[[0-9.:]+] \\[INTERNAL FAILURE] Failed to Load GameAssembly!",
+            "error": "GameAssembly is missing. Please verify the integrity of your game, and try again."
+        },
+        {
             "regex": "\\[[0-9.:]+] \\[Error] Assembly Generator exited with code -2",
             "error": "The assembly generation failed. Please update MelonLoader to $MLRelease$."
         },
@@ -368,6 +372,10 @@
             {
                 "regex": "\\[[0-9.:]+] \\[ReModCE] \\[ERROR] Could not login to ReModCE API:.*",
                 "error": "Failed to log into ReModCE API. Try restarting VRChat and log into ReModCE again."
+            },
+            {
+                "regex": "\\[[0-9.:]+] \\[ReModCE] \\[ERROR] .*without having set a pin or being logged in.*",
+                "error": "No pin set for ReModCE. Open ReModCE's Avatar submenu and click on the set or enter your pin button."
             },
             {
                 "regex": "\\[[0-9.:]+] \\[Advanced_Safety] \\[ERROR] Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.MissingMethodException: bool Il2CppSystem.Object.ReferenceEquals\\(Il2CppSystem.Object,Il2CppSystem.Object\\)",
