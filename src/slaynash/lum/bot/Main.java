@@ -558,12 +558,12 @@ public class Main extends ListenerAdapter {
         }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+        if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+            event.getMember().kick("Lum: Scammer joined").queue();
         }
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
-            event.getGuild().kick(event.getMember(), "Lum: Scammer joined").queue();
+        else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
     }
 
@@ -583,7 +583,7 @@ public class Main extends ListenerAdapter {
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
         if (scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
-            event.getGuild().kick(event.getMember(), "Lum: User changed nickname to known Scam").queue();
+            event.getMember().kick("Lum: User changed nickname to known Scam").queue();
         }
     }
 
@@ -601,7 +601,7 @@ public class Main extends ListenerAdapter {
             }
             String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
             if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
-                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow trying to kick!").allowedMentions(Collections.emptyList()).queue();
+                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").allowedMentions(Collections.emptyList()).queue();
                 guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
                 return;
             }

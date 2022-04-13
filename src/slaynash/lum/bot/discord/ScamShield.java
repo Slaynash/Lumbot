@@ -7,7 +7,6 @@ import java.net.URI;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -119,8 +118,6 @@ public class ScamShield {
         //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
 
         Map<String, Integer> ssFoundTerms = new HashMap<>();
-        if (event.getAuthor().getTimeCreated().isAfter(OffsetDateTime.now().minusDays(7))) //add sus points if account is less than 7 days old
-            ssFoundTerms.put("newAccount", 1);
         String msg = event.getMessage().getContentStripped();
         if(event.isFromGuild()) {
             for (Member member : event.getMessage().getMentionedMembers()) {
@@ -200,8 +197,8 @@ public class ScamShield {
         allMessages.add(event);
 
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
-        if (suspiciousResults.calulatedValue < 3)
-            suspiciousResults.calulatedValue = 0;
+        if (suspiciousResults.calulatedValue < 3 && suspiciousResults.calulatedValue > 0)
+            suspiciousResults.calulatedValue--;
         if (suspiciousResults.calulatedValue >= 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages

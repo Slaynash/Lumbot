@@ -297,7 +297,7 @@ public final class MelonScannerReadPass {
             }
         }
 
-        if (line.matches(".*BloonsTD6.*No Compatibility Layer Found!")) {
+        if ("BloonsTD6".equalsIgnoreCase(context.game) && !context.loadedMods.containsKey("BloonsTD6 Mod Helper") && line.matches(".*No Compatibility Layer Found!")) {
             if (!context.errors.contains(MelonLoaderError.btd6mh))
                 context.errors.add(MelonLoaderError.btd6mh);
             return true;
@@ -494,11 +494,11 @@ public final class MelonScannerReadPass {
             String[] split2 = modnameversionauthor.split(" by ", 2);
             String author = split2.length > 1 ? split2[1] : null;
             String[] split3 = split2[0].split(" v", 2);
-            String name = split3[0].isBlank() ? "" : split3[0];
+            String name = split3[0].isBlank() ? "" : split3[0].trim();
             name = String.join("", name.split(".*[a-zA-Z0-9]\\.[a-zA-Z]{2,4}"));
             String version = split3.length > 1 ? split3[1] : null;
 
-            context.loadedMods.put(name.trim(), new LogsModDetails(name, version, author, null));
+            context.loadedMods.put(name, new LogsModDetails(name, version, author, null));
 
             split = context.line.split("\\[[0-9.:]+]( \\[MelonLoader])? Game Compatibility: ", 2);
             if (split.length < 2) return true;
@@ -507,7 +507,7 @@ public final class MelonScannerReadPass {
             //if (!compatibility.equals("Compatible") && !compatibility.equals("Universal"))
             //    context.incompatibleMods.add(name);
 
-            System.out.println("Found mod " + name.trim() + ", version is " + version + ", compatibility is " + compatibility);
+            System.out.println("Found mod " + name + ", version is " + version + ", compatibility is " + compatibility);
             return true;
         }
         return false;
