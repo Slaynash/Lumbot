@@ -155,6 +155,10 @@
         {
             "regex": ".*\\[ERROR] System.OutOfMemoryException: Out of memory",
             "error": "Out of RAM. This is likely a DDR3 memory issue. Maybe try an older version of MelonLoader."
+        },
+        {
+            "regex": "\\[[0-9.:]+] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.",
+            "error": "Something failed to download. Make sure nothing is blocking downloads and try again later."
         }
     ],
     "knownErrors": [
@@ -254,7 +258,7 @@
                 "error": "VRCX is not running. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
             },
             {
-                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (404) Not Found.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.*",
                 "error": "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder."
             },
             {
@@ -286,7 +290,7 @@
                 "error": "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings."
             },
             {
-                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: (502) Bad Gateway.*",
+                "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(502\\) Bad Gateway.*",
                 "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection. Type `!proxy` if you need more help."
             },
             {
