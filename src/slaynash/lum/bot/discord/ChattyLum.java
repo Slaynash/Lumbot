@@ -201,6 +201,10 @@ public class ChattyLum {
             event.getChannel().sendMessage("https://tenor.com/view/oh-no-oh-no-anyway-gif-18887547").queue();
             return true;
         }
+        if (message.contains("obese")) {
+            event.getMessage().reply("<:Neko_sad:865328470652485633>").queue();
+            return true;
+        }
 
         boolean hasLum = message.matches(".*\\blum\\b.*");
         boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();

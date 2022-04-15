@@ -395,6 +395,7 @@ public final class MelonScanner {
                 case "ArizonaSunshine" -> context.embedBuilder.setThumbnail("https://arizona-sunshine.com/wp-content/uploads/2020/12/ArizonaSunshine_Logo_White.png");
                 case "Audica" -> context.embedBuilder.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                 case "BattleBit" -> context.embedBuilder.setThumbnail("https://static.wikia.nocookie.net/battlebit_gamepedia_en/images/b/b3/Bbpng.png");
+                case "Bloons Adventure Time TD" -> context.embedBuilder.setThumbnail("https://hisgames.org/images/logo/183/logo_bloons-adventure-time-td.png");
                 case "BloonsTD6" -> {
                     if (context.pirate)
                         context.embedBuilder.setThumbnail("https://i.redd.it/76et0pfu87e31.png"); //sad monkey
@@ -521,7 +522,7 @@ public final class MelonScanner {
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
 
-        if (context.isMLOutdated) {
+        if (context.isMLOutdated || context.modifiedML) {
             int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
             switch (result) {
                 case 1: //left more recent

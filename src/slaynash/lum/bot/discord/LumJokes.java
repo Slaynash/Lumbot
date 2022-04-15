@@ -42,6 +42,9 @@ public class LumJokes {
             else if (LocalDate.now().getMonthValue() == 12) { //christmas
                 type = 3;
             }
+            else if (random.nextInt(420) == 69) {
+                type = 69;
+            }
             else {
                 type =  random.nextInt(2);
             }
@@ -109,6 +112,9 @@ public class LumJokes {
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting Christmas JokeAPI:", e, event.getTextChannel());
                     }
+                    break;
+                case 69:
+                    joke = "https://cdn.discordapp.com/attachments/509655431787053057/963596823858135100/Dad_jokes.mp4";
                     break;
                 default:
                     joke = "<@240701606977470464> OOPSIE WOOPSIE!! Uwu I make a fucky wucky!!";
