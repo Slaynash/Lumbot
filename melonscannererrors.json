@@ -424,6 +424,12 @@
                 "error": "Missing Newtonsoft. Please make sure to extract the entire HouseRules zip."
             }
         ],
+        "TheLongDark": [
+            {
+                "regex": "\\[[0-9.:]+] \\[CraftingRevisions] \\[ERROR] System.ArgumentException: (?<blueprint>Validation of blueprint.*)",
+                "error": "blueprint"
+            }
+        ],
         "AGameThatDoesn'tExists_НЕТ": []
     },
     "modSpecificErrors": {

@@ -34,11 +34,11 @@ public final class MelonScannerReadPass {
                 if (context.readLine.isBlank())
                     continue;
 
+                context.secondlastLine = context.lastLine;
+                context.lastLine = context.line;
                 if (shouldOmitLineCheck(context))
                     continue;
 
-                context.secondlastLine = context.lastLine;
-                context.lastLine = context.line;
                 context.line = context.readLine;
 
                 if (minecraftLogLineCheck(context))
@@ -104,7 +104,7 @@ public final class MelonScannerReadPass {
 
     private static boolean shouldOmitLineCheck(MelonScanContext context) {
         int linelength = context.readLine.length();
-        if (linelength > 1000) {
+        if (linelength > 1200) {
             ++context.omittedLineCount;
             System.out.println("Omitted one line of length " + linelength);
             return true;
@@ -554,6 +554,12 @@ public final class MelonScannerReadPass {
         Matcher m = Pattern.compile("\\[[0-9.:]+] Found (?<vrcmumods>\\d+) unique non-dev mods installed").matcher(context.line);
         if (m.namedGroups().size() > 0) {
             context.vrcmuMods = Integer.parseInt(m.namedGroups().get(0).get("vrcmumods"));
+            return true;
+        }
+        Matcher m2 = Pattern.compile("\\[[0-9.:]+] Found (?<outdated>\\d+) outdated mods | (?<broken>\\d+) broken mods | (?<fixed>\\d+) fixed mods").matcher(context.line);
+        if (m2.namedGroups().size() > 0) {
+            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(0).get("fixed"));
+            return true;
         }
         return false;
     }
@@ -691,7 +697,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
