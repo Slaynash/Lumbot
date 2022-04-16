@@ -223,10 +223,6 @@
             "error": "An invalid/broken mod attempted to load."
         },
         {
-            "regex": ".*The system cannot find the file specified.",
-            "error": "File not found. Make sure the file path is clear of special characters like `'` or try reinstalling MelonLoader $MLRelease$."
-        },
-        {
             "regex": "\\[[0-9.:]+] \\[ERROR] Source Code ZIP Detected.*",
             "error": "Please do not put the source zip in the Mods/Plugins folder. Either use the provided dll or compile the source yourself."
         },
@@ -255,7 +251,7 @@
             },
             {
                 "regex": "\\[[0-9.:]+] \\[VRCX_Companion] \\[ERROR] Failed to connect to VRCX IPC Server.*",
-                "error": "VRCX is not running. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
+                "error": "VRCX Companion can not find VRCX. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
             },
             {
                 "regex": "\\[[0-9.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.*",

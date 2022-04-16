@@ -453,6 +453,9 @@ public final class MelonScannerReadPass {
         if (split.length < 2) return false;
         if (line.contains("Core::BasePath")) {
             context.corePath = split[1].trim();
+            if (context.corePath.contains("'")) {
+                context.errors.add(new MelonLoaderError("", "Your path contains `'` and is know to break MelonLoader. Please move your game to a different directory without `'` in it."));
+            }
             return true;
         }
         else if (line.contains("Game::BasePath")) {
