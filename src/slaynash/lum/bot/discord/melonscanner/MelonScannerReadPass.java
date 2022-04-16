@@ -558,7 +558,7 @@ public final class MelonScannerReadPass {
         }
         Matcher m2 = Pattern.compile("\\[[0-9.:]+] Found (?<outdated>\\d+) outdated mods | (?<broken>\\d+) broken mods | (?<fixed>\\d+) fixed mods").matcher(context.line);
         if (m2.namedGroups().size() > 0) {
-            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(0).get("fixed"));
+            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(2).get("fixed"));
             return true;
         }
         return false;
