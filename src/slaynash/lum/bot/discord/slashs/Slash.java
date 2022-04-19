@@ -29,6 +29,6 @@ public class Slash {
         if (message.startsWith("Server Config"))
             new SlashConfig().buttonClick(event);
         else
-            event.deferEdit().queue();
+            event.reply("Unknown button click").queue();
     }
 }

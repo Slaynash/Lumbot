@@ -43,7 +43,7 @@ public class PrivateMessagesHandler {
                 message = message.concat("\n").concat(attachment.getUrl());
             }
             Profile profile = author.retrieveProfile().complete();
-            MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(author.getAsMention() + "\n\n" + message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
+            MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
                 System.out.println("Creating DM Channel " + channelName);
                 StringBuilder sb = new StringBuilder();
@@ -55,9 +55,9 @@ public class PrivateMessagesHandler {
                     sb.append("\n");
                 });
                 if (sb.toString().isBlank())
-                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
                 else
-                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage("Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName() + ".txt").flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName() + ".txt").flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
                 event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
             }
             else {

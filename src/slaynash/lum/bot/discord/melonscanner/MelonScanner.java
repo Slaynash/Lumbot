@@ -348,7 +348,7 @@ public final class MelonScanner {
 
         for (MLHashPair hashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
             if (context.mlHashCode.equals(hashes.x64) || context.mlHashCode.equals(hashes.x86)) {
-                System.out.println("hash found in known hashes: ");
+                System.out.println("ML hash found in known hashes");
                 return;
             }
         }

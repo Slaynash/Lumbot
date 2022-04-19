@@ -43,6 +43,8 @@ public final class MelonScannerReadPass {
 
                 if (minecraftLogLineCheck(context))
                     return false;
+                if (compromisedMLCheck(context))
+                    return true;
 
                 if ((context.preListingMods || context.listingMods) && !context.pre3)
                     if (processML03ModListing(context))
@@ -74,13 +76,9 @@ public final class MelonScannerReadPass {
                     modPreListingCheck(context) ||
                     misplacedCheck(context) ||
                     duplicateCheck(context) ||
-                    missingMLFileCheck(context) ||
-                    oldModCheck(context)
+                    oldModCheck(context) ||
+                    missingMLFileCheck(context)
                 ) continue;
-
-                if (compromisedMLCheck(context)) {
-                    return true;
-                }
 
                 if (!(unhollowerErrorCheck(context) || knownErrorCheck(context) || incompatibleAssemblyErrorCheck(context)))
                     unknownErrorCheck(context);
@@ -175,7 +173,7 @@ public final class MelonScannerReadPass {
             if (context.remainingModCount <= 0) {
                 context.editedLog = true;
             }
-            System.out.println(context.remainingModCount + " mods or plugins loaded on this pass");
+            System.out.println(context.remainingModCount + " " + (line.contains("Plugin") ? "plugins" : "mods") + " loaded on this pass");
             context.bufferedReader.readLine(); // Skip line separator
             if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
                 context.vrcmuModsMismatch = true;
@@ -559,9 +557,9 @@ public final class MelonScannerReadPass {
             context.vrcmuMods = Integer.parseInt(m.namedGroups().get(0).get("vrcmumods"));
             return true;
         }
-        Matcher m2 = Pattern.compile("\\[[0-9.:]+] Found (?<outdated>\\d+) outdated mods | (?<broken>\\d+) broken mods | (?<fixed>\\d+) fixed mods").matcher(context.line);
+        Matcher m2 = Pattern.compile("\\[[0-9.:]+] Found (?<outdated>\\d+) outdated mods \\| (?<broken>\\d+) broken mods \\| (?<fixed>\\d+) fixed mods").matcher(context.line);
         if (m2.namedGroups().size() > 0) {
-            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(2).get("fixed"));
+            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(0).get("fixed"));
             return true;
         }
         return false;
@@ -637,7 +635,7 @@ public final class MelonScannerReadPass {
             if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getTextChannel(), Permission.MESSAGE_MANAGE))
                 context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
             else
-                context.messageReceivedEvent.getTextChannel().sendMessage("I can not remove that log, please delete that log for your own safety").queue();
+                context.messageReceivedEvent.getTextChannel().sendMessage("This is a compromised MelonLoader log. I can not remove that log, please delete that log for your own safety").queue();
             return true;
         }
         return false;
@@ -700,7 +698,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();

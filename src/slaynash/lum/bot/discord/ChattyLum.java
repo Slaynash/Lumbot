@@ -132,7 +132,8 @@ public class ChattyLum {
         "<:Neko_sweat:865328470702817306>",
         "<:Neko_what:865328474238353418>",
         "<:Neko_wondering:865328471492001833>",
-        "https://c.tenor.com/k5tS3My-PKcAAAAC/steve-harvey-speechless.gif"
+        "https://c.tenor.com/k5tS3My-PKcAAAAC/steve-harvey-speechless.gif",
+        "https://tenor.com/view/anime-blob-pout-mean-upset-gif-22834109"
     ));
 
     private static final ArrayList<String> gunLum = new ArrayList<>(Arrays.asList(
@@ -201,15 +202,16 @@ public class ChattyLum {
             event.getChannel().sendMessage("https://tenor.com/view/oh-no-oh-no-anyway-gif-18887547").queue();
             return true;
         }
-        if (message.contains("obese")) {
-            event.getMessage().reply("<:Neko_sad:865328470652485633>").queue();
-            return true;
-        }
 
         boolean hasLum = message.matches(".*\\blum\\b.*");
         boolean refLum = event.getMessage().getReferencedMessage() != null && event.getMessage().getReferencedMessage().getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong();
         if (!(hasLum || refLum))
             return false;
+
+        if (message.contains("obese")) {
+            event.getMessage().reply("<:Neko_sad:865328470652485633>").queue();
+            return true;
+        }
 
         if (CrossServerUtils.isLumDev(event.getMember()) && message.matches(".*\\bdab\\b.*")) {
             event.getChannel().sendMessage("<:Neko_dab:865328473719439381>").queue();

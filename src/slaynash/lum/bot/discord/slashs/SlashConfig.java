@@ -60,7 +60,7 @@ public class SlashConfig {
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
-                event.deferEdit().queue();
+                event.reply("Can not find Guild ID. Please resend the config command.").setEphemeral(true).queue();
                 return;
             }
             String guildID = message[message.length - 1];
@@ -121,7 +121,7 @@ public class SlashConfig {
                 }
             }
             else {
-                event.deferEdit().queue();
+                event.reply("You do not have permission to use this command.").setEphemeral(true).queue();
             }
         }
         catch (Exception e) {
