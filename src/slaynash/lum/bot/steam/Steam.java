@@ -121,7 +121,7 @@ public class Steam {
                 while (rs.next()) {
                     Integer gameID = rs.getInt("GameID");
                     if (gameDetails.get(gameID) == null)
-                    apps.picsGetProductInfo(gameID, null, false, false);
+                        apps.picsGetProductInfo(gameID, null, false, false);
                 }
                 DBConnectionManagerLum.closeRequest(rs);
             } catch (SQLException e) {

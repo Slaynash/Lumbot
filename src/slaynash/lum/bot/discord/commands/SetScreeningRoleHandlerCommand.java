@@ -19,7 +19,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
             return;
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
-        if (params.length > 2 || params.length == 2 && !params[1].matches("^[0-9]+$")) {
+        if (params.length > 2 || params.length == 2 && !params[1].matches("^\\d+$")) {
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " [roleid]").queue();
             return;
         }

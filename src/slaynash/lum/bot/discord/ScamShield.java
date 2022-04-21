@@ -430,7 +430,7 @@ public class ScamShield {
 
             for (String url : urls) {
                 url = url.replace("<@", " ").replace("\\", "/");
-                String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z0-9-._~/?#:%]", "");
+                String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z\\d-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
                 String tld = domain.split("\\.", 2)[1];
@@ -448,20 +448,20 @@ public class ScamShield {
                 }
                 String whois = output.toString().replace("+0000", "Z");
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
-                Matcher matcher = Pattern.compile(" [0-9-]+T[0-9-:.]+(Z|\\+[0-9:]+)").matcher(whois);
+                Matcher matcher = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
                 while (matcher.find()) {
                     DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
                     ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
                     list.add(parsedDate);
                 }
-                Matcher matcher2 = Pattern.compile(" [0-9]{2}-[0-9a-zA-Z]{3}-[0-9]{4}").matcher(whois.replace(".", "-"));
+                Matcher matcher2 = Pattern.compile(" \\d{2}-[\\da-zA-Z]{3}-\\d{4}").matcher(whois.replace(".", "-"));
                 while (matcher2.find()) {
                     DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
                     LocalDate date = LocalDate.parse(matcher2.group().strip(), f);
                     ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
                     list.add(parsedDate);
                 }
-                Matcher matcher3 = Pattern.compile(" [0-9]{4}-?[0-9]{2}-?[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}").matcher(whois);
+                Matcher matcher3 = Pattern.compile(" \\d{4}-?\\d{2}-?\\d{2} \\d{2}:\\d{2}:\\d{2}").matcher(whois);
                 while (matcher3.find()) {
                     DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
                     ZonedDateTime parsedDate = ZonedDateTime.parse(matcher3.group().strip().replace("-", ""), f);

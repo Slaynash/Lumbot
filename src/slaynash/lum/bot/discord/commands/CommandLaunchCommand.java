@@ -15,10 +15,10 @@ public class CommandLaunchCommand extends Command {
 
     @Override
     protected void onServer(String command, MessageReceivedEvent event) {
-        System.out.println("loading lua file commands/" + event.getMessage().getContentRaw().split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_"));
+        System.out.println("loading lua file commands/" + event.getMessage().getContentRaw().split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z\\d.-]", "_"));
         Globals m_globals = LuaPackages.createCommandGlobals(event);
         try {
-            File rom = new File("commands/" + command.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_") + ".lua");
+            File rom = new File("commands/" + command.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z\\d.-]", "_") + ".lua");
             m_globals.get("dofile").call(LuaValue.valueOf(rom.toString()));
         }
         catch (LuaError e) {
@@ -28,7 +28,7 @@ public class CommandLaunchCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.startsWith("l!") && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z0-9.-]", "_") + ".lua").exists() && !pattern.substring(2).split(" ")[0].isBlank();
+        return pattern.startsWith("l!") && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z\\d.-]", "_") + ".lua").exists() && !pattern.substring(2).split(" ")[0].isBlank();
     }
 
     @Override

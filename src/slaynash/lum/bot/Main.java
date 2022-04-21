@@ -72,9 +72,9 @@ import slaynash.lum.bot.utils.Utils;
 
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
-    List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
+    final List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
         "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api",
-        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "discord api intents", "hypesquad events discord");
+        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "discord api intents", "hypesquad events discord", "discord hype squad events");
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
@@ -128,7 +128,7 @@ public class Main extends ListenerAdapter {
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully !", Color.green))
+                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
                 .queue();
 
         try {
@@ -176,6 +176,11 @@ public class Main extends ListenerAdapter {
             date.getTime(),
             1000 * 60 * 60 * 24 * 7
         );
+
+        //chunk members for mutuals after loading to prevent Lum from being unresponsive
+        for (Guild guild : JDAManager.getJDA().getGuilds()) {
+            guild.loadMembers();
+        }
 
         System.out.println("LUM Started!");
     }

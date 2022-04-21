@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +84,7 @@ public final class MelonScannerReadPass {
 
             }
         }
-        catch (SocketTimeoutException e) {
+        catch (Exception e) {
             if (context.retryCount >= 3) {
                 throw e;
             }
@@ -131,7 +130,7 @@ public final class MelonScannerReadPass {
     private static void pirateCheck(MelonScanContext context) {
         String line = context.line;
         line = line.toLowerCase();
-        if (line.contains("bloons.td.6") || line.contains("bloons.td6") || line.matches("\\[[0-9.:]+] \\[btd6e_module_helper] v[0-9.]+")) {
+        if (line.contains("bloons.td.6") || line.contains("bloons.td6") || line.matches("\\[[\\d.:]+] \\[btd6e_module_helper] v[\\d.]+")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
         }
@@ -146,12 +145,12 @@ public final class MelonScannerReadPass {
         if (line.isBlank())
             return true;
 
-        else if (context.preListingMods && line.matches("\\[[0-9.:]+] -{30}")) return true;
-        else if (line.matches("\\[[0-9.:]+] -{30}") && context.lastLine.matches("\\[[0-9.:]+] -{30}")) { // If some idiot removes a mod but keeps the separator
+        else if (context.preListingMods && line.matches("\\[[\\d.:]+] -{30}")) return true;
+        else if (line.matches("\\[[\\d.:]+] -{30}") && context.lastLine.matches("\\[[\\d.:]+] -{30}")) { // If some idiot removes a mod but keeps the separator
             context.editedLog = true;
             return true;
         }
-        else if (context.preListingMods && (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Plugins Loaded!") || line.matches("\\[[0-9.:]+]( \\[MelonLoader])? No Mods Loaded!"))) {
+        else if (context.preListingMods && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? No Plugins Loaded!") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? No Mods Loaded!"))) {
             context.remainingModCount = 0;
             context.preListingMods = false;
             context.listingMods = false;
@@ -164,7 +163,7 @@ public final class MelonScannerReadPass {
 
             return true;
         }
-        else if (context.preListingMods && (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? [0-9]+ Plugins? Loaded") || line.matches("\\[[0-9.:]+]( \\[MelonLoader])? [0-9]+ Mods? Loaded"))) {
+        else if (context.preListingMods && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Plugins? Loaded") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Mods? Loaded"))) {
             String[] split = line.split(" ");
             if (split.length < 2) return true;
             context.remainingModCount = Integer.parseInt(split[1]);
@@ -200,7 +199,7 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? by .*")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? by .*")) {
             String[] split = line.split(" ", 3);
             if (split.length > 2)
                 context.tmpModAuthor = split[2];
@@ -211,13 +210,13 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? SHA256 Hash: [a-zA-Z0-9]+")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? SHA256 Hash: [a-zA-Z\\d]+")) {
             String[] split = line.split(" ");
             if (split.length < 4) return true;
             context.tmpModHash = split[3];
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? -{30}")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? -{30}")) {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
 
@@ -269,7 +268,7 @@ public final class MelonScannerReadPass {
 
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
+        if (line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
             if (context.vrcmuMods > 0) {
                 context.vrcmuMods--;
             }
@@ -301,7 +300,7 @@ public final class MelonScannerReadPass {
             return true;
         }
 
-        if (line.matches("\\[[0-9.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[0-9.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*") || line.matches("\\[[0-9.:]+] \\[WARNING] No Compatibility Layer for.*")) {
+        if (line.matches("\\[[\\d.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*") || line.matches("\\[[\\d.:]+] \\[WARNING] No Compatibility Layer for.*")) {
             String oldName = splitName(line);
             if (oldName.equalsIgnoreCase("ReMod Core"))
                 context.errors.add(new MelonLoaderError("", "ReMod.Core.dll goes in the root folder. Please move it up one folder."));
@@ -314,7 +313,7 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        if (line.matches("\\[[0-9.:]+] Failed to read assembly .*\\.dll")) {
+        if (line.matches("\\[[\\d.:]+] Failed to read assembly .*\\.dll")) {
             if (context.vrcmuMods >= 0) {
                 context.vrcmuMods++;
             }
@@ -355,7 +354,7 @@ public final class MelonScannerReadPass {
             context.currentMissingDependenciesMods = split[1];
             return true;
         }
-        else if (line.matches("(?i)\\[[0-9.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) {
+        else if (line.matches("(?i)\\[[\\d.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) {
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
             context.bufferedReader.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
@@ -394,7 +393,7 @@ public final class MelonScannerReadPass {
 
     private static boolean mlVersionCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? Using v0\\..*")) {
+        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Using v0\\..*")) {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
@@ -403,7 +402,7 @@ public final class MelonScannerReadPass {
             System.out.println("ML " + context.mlVersion + " (< 0.3.0)");
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? MelonLoader v0\\..*")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? MelonLoader v0\\..*")) {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
@@ -417,7 +416,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean gameNameCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+]( \\[MelonLoader])?( Game)? Name: .*")) {
+        if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])?( Game)? Name: .*")) {
             String[] split = context.line.split(":", 4);
             if (split.length < 4) return true;
             context.game = split[3].trim();
@@ -428,7 +427,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean gameTypeCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+] Game Type: .*")) {
+        if (context.line.matches("\\[[\\d.:]+] Game Type: .*")) {
             String[] split = context.line.split(":", 4);
             if (split.length < 4) return true;
             String type = split[3].trim();
@@ -474,12 +473,12 @@ public final class MelonScannerReadPass {
     private static boolean mlHashCodeCheck(MelonScanContext context) {
         String[] split = context.line.split(":", 4);
         if (split.length < 4) return false;
-        if (context.line.matches("\\[[0-9.:]+]( \\[MelonLoader])? Hash Code: .*")) {
+        if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Hash Code: .*")) {
             context.mlHashCode = split[3].trim();
             System.out.println("Hash Code: " + context.mlHashCode);
             return true;
         }
-        if (context.line.matches("\\[[0-9.:]+] OS: .*")) {
+        if (context.line.matches("\\[[\\d.:]+] OS: .*")) {
             context.osType = split[3].trim();
             System.out.println("OS: " + context.osType);
             return true;
@@ -488,20 +487,20 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean modPre3EndmodCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+]( \\[MelonLoader])? Game Compatibility: .*")) {
-            String[] split = context.lastLine.split("\\[[0-9.:]+]( \\[MelonLoader])? ", 2);
+        if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Game Compatibility: .*")) {
+            String[] split = context.lastLine.split("\\[[\\d.:]+]( \\[MelonLoader])? ", 2);
             if (split.length < 2) return true;
-            String modnameversionauthor = split[1].split("\\((http[s]?://)?[a-zA-Z0-9\\-]+\\.[a-zA-Z]{2,4}", 2)[0];
+            String modnameversionauthor = split[1].split("\\((https?://)?[a-zA-Z\\d\\-]+\\.[a-zA-Z]{2,4}", 2)[0];
             String[] split2 = modnameversionauthor.split(" by ", 2);
             String author = split2.length > 1 ? split2[1] : null;
             String[] split3 = split2[0].split(" v", 2);
             String name = split3[0].isBlank() ? "" : split3[0].trim();
-            name = String.join("", name.split(".*[a-zA-Z0-9]\\.[a-zA-Z]{2,4}"));
+            name = String.join("", name.split(".*[a-zA-Z\\d]\\.[a-zA-Z]{2,4}"));
             String version = split3.length > 1 ? split3[1] : null;
 
             context.loadedMods.put(name, new LogsModDetails(name, version, author, null));
 
-            split = context.line.split("\\[[0-9.:]+]( \\[MelonLoader])? Game Compatibility: ", 2);
+            split = context.line.split("\\[[\\d.:]+]( \\[MelonLoader])? Game Compatibility: ", 2);
             if (split.length < 2) return true;
             String compatibility = split[1];
             // TODO incompatible mod check
@@ -515,7 +514,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean gameVersionCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+] Game Version:.*")) {
+        if (context.line.matches("\\[[\\d.:]+] Game Version:.*")) {
             String[] split = context.line.split(":");
             if (split.length == 3) {
                 context.errors.add(new MelonLoaderError("", "Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
@@ -529,14 +528,14 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean emmVRCVersionCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+] \\[emmVRCLoader] VRChat build is.*")) {
+        if (context.line.matches("\\[[\\d.:]+] \\[emmVRCLoader] VRChat build is.*")) {
             String[] split = context.line.split(":", 4);
             if (split.length < 4) return true;
             context.emmVRCVRChatBuild = split[3].trim();
             System.out.println("VRChat " + context.emmVRCVRChatBuild);
             return true;
         }
-        else if (context.line.matches("\\[[0-9.:]+] \\[emmVRCLoader] You are running version .*")) {
+        else if (context.line.matches("\\[[\\d.:]+] \\[emmVRCLoader] You are running version .*")) {
             String[] split = context.line.split("version", 2);
             if (split.length < 2) return true;
             context.emmVRCVersion = split[1].trim();
@@ -547,7 +546,7 @@ public final class MelonScannerReadPass {
     }
 
     public static boolean modPreListingCheck(MelonScanContext context) {
-        if (!context.pre3 && (context.line.matches("\\[[0-9.:]+] Loading.*Plugins...") || context.line.matches("\\[[0-9.:]+] Loading.*Mods..."))) {
+        if (!context.pre3 && (context.line.matches("\\[[\\d.:]+] Loading.*Plugins...") || context.line.matches("\\[[\\d.:]+] Loading.*Mods..."))) {
             context.preListingMods = true;
             System.out.println("Starting to pre-list " + (context.line.contains("Plugins") ? "plugins" : "mods"));
             return true;
@@ -590,7 +589,7 @@ public final class MelonScannerReadPass {
 
     private static boolean duplicateCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[0-9.:]+] \\[ERROR] An item with the same key has already been added.*")) {
+        if (line.matches("\\[[\\d.:]+] \\[ERROR] An item with the same key has already been added.*")) {
             System.out.println("Duplicate in Mods and Plugins");
             String tmpModName = line.substring(line.lastIndexOf(":") + 2);
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
@@ -600,7 +599,7 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[0-9.:]+] \\[(WARNING|ERROR)] Duplicate (File|Mod|Plugin).*")) {
+        else if (line.matches("\\[[\\d.:]+] \\[(WARNING|ERROR)] Duplicate (File|Mod|Plugin).*")) {
             System.out.println("Duplicate in Mods");
             String tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
@@ -698,7 +697,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�", "garbage collected");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
@@ -706,7 +705,7 @@ public final class MelonScannerReadPass {
             //context.editedLog = true;
             return true;
         }
-        if (context.lastLine.matches("\\[[0-9.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
+        if (context.lastLine.matches("\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
             context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."));
             return true;
         }
@@ -714,7 +713,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean incompatibleAssemblyErrorCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+] \\[ERROR] System.BadImageFormatException:.*")) {
+        if (context.line.matches("\\[[\\d.:]+] \\[ERROR] System.BadImageFormatException:.*")) {
             if (!context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 context.errors.add(MelonLoaderError.incompatibleAssemblyError);
             return true;
@@ -724,8 +723,8 @@ public final class MelonScannerReadPass {
 
     private static void unknownErrorCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[0-9.:]+] \\[MelonLoader] \\[(Error|ERROR)].*")) {
-            String[] split = line.split("\\[[0-9.:]+]( \\[MelonLoader])? \\[", 2);
+        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[\\d.:]+] \\[MelonLoader] \\[(Error|ERROR)].*")) {
+            String[] split = line.split("\\[[\\d.:]+]( \\[MelonLoader])? \\[", 2);
             if (split.length < 2) return;
             String mod = split[1].split("]", 2)[0].replace("_", " ");
             if (!context.modsThrowingErrors.contains(mod))
@@ -733,7 +732,7 @@ public final class MelonScannerReadPass {
             //System.out.println("Found mod error, caused by " + mod + ": " + line);
             context.hasErrors = true;
         }
-        else if (line.matches("\\[[0-9.:]+]( \\[MelonLoader])? \\[(Error|ERROR)].*")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[(Error|ERROR)].*")) {
             context.hasErrors = true;
             context.hasNonModErrors = true;
             //System.out.println("Found non-mod error: " + line);
@@ -759,7 +758,7 @@ public final class MelonScannerReadPass {
     }
 
     private static void consoleCopypasteCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[0-9.:]+] \\[MelonLoader] .*"))
+        if (context.line.matches("\\[[\\d.:]+] \\[MelonLoader] .*"))
             context.consoleCopyPaste = true;
     }
 }

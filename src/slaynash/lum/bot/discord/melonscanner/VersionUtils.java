@@ -49,7 +49,7 @@ public final class VersionUtils {
             return new VersionData();
 
         Matcher matcher = versionPattern.matcher(versionString);
-        boolean isValidSemver = versionString.matches("^v?[0-9][\\d.-_]*[^\\s]*$");
+        boolean isValidSemver = versionString.matches("^v?\\d[\\d.-_]*\\S*$");
         //System.out.println("SEMVER \"" + versionString + "\": " + isValidSemver);
 
         return new VersionData(versionString, matcher, isValidSemver);

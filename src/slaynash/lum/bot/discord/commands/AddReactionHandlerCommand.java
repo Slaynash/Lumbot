@@ -30,12 +30,12 @@ public class AddReactionHandlerCommand extends Command {
             paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
-        else if (!params[1].matches("^[0-9]+$")) {
+        else if (!params[1].matches("^\\d+$")) {
             System.out.println("Bad MessageID permas");
             paramMessageReceivedEvent.getChannel().sendMessage("messageID invalid Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
-        if (!params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$") && !EmojiUtils.containsEmoji(params[2])) {
+        if (!params[2].matches("^<a?:\\w+:\\d+>$") && !EmojiUtils.containsEmoji(params[2])) {
             paramMessageReceivedEvent.getChannel().sendMessage("Bad emoji Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
@@ -71,7 +71,7 @@ public class AddReactionHandlerCommand extends Command {
                 CommandManager.saveReactions();
             }
             else {
-                if (params.length != 4 || !params[3].matches("^[0-9]+$")) {
+                if (params.length != 4 || !params[3].matches("^\\d+$")) {
                     paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + getName() + " <messageid> <reaction> <roleid>").queue();
                     return;
                 }
@@ -82,9 +82,9 @@ public class AddReactionHandlerCommand extends Command {
                     System.out.println("Role not found");
                     return;
                 }
-                react = new ReactionListener(success.getId(), params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
+                react = new ReactionListener(success.getId(), params[2].matches("^<a?:\\w+:\\d+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2], params[3]);
 
-                if (params[2].matches("^<a?:[A-Za-z0-9_]+:[0-9]+>$")) {
+                if (params[2].matches("^<a?:\\w+:\\d+>$")) {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
                     Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
                     if (emote == null) {

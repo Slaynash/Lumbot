@@ -33,7 +33,7 @@ public final class CrossServerUtils {
         .replace("`", "\\`");
 
         input = Pattern.compile("(nigg(er|a)|porn|penis)", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
-        input = Pattern.compile("(https?://)(www.)?([a-z0-9]+\\.)+[a-z]{2,63}(/[a-zA-Z0-9#.]+/?)*", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
+        input = Pattern.compile("(https?://)(www.)?([a-z\\d]+\\.)+[a-z]{2,63}(/[a-zA-Z\\d#.]+/?)*", Pattern.CASE_INSENSITIVE).matcher(input).replaceAll(Matcher.quoteReplacement("{REDACTED}"));
 
         input = input.substring(0, Math.min(input.length(), 50)); // limit inputs to 50 chars
 

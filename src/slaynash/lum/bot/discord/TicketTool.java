@@ -96,7 +96,7 @@ public class TicketTool {
     private static boolean checkForCode(List<Field> embedFields, String code) {
         for (Field field : embedFields) {
             for (String line : field.getValue().split("\n")) {
-                line = line.replaceAll("[^a-zA-Z0-9]", " ").replace("  ", " ").strip();
+                line = line.replaceAll("[^a-zA-Z\\d]", " ").replace("  ", " ").strip();
                 for (String word : line.split(" ")) {
                     if (Utils.editDistance(word, code) <= 2) { //allow swapping two chars
                         return true;

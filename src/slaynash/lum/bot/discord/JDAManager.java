@@ -23,7 +23,7 @@ public class JDAManager {
         else return;
         jda = JDABuilder.createDefault(token)
                 .addEventListeners(new Main())
-                .setChunkingFilter(ChunkingFilter.ALL)
+                .setChunkingFilter(ChunkingFilter.NONE)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                 .build();

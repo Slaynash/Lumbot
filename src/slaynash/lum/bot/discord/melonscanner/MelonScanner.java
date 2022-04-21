@@ -420,6 +420,7 @@ public final class MelonScanner {
                 case "EscapeFromTarkov" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                 case "Eye of the Temple" -> context.embedBuilder.setThumbnail("https://portforward.com/eye-of-the-temple/eye-of-the-temple-logo-large.webp");
                 case "FallGuys_client" -> context.embedBuilder.setThumbnail("https://seeklogo.com/images/F/fall-guys-logo-0809CCA0D8-seeklogo.com.png");
+                case "Fe" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202010/2621/CU5vdYEq51HmaGuE7ktHjXtW.png");
                 case "Feign" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
                 case "Firewatch" -> context.embedBuilder.setThumbnail("https://w7.pngwing.com/pngs/347/28/png-transparent-firewatch-video-game-gog-com-adventure-game-pc-game-slipknot-logo-game-text-orange.png");
                 case "Genshin Impact" -> context.embedBuilder.setThumbnail("https://gmedia.playstation.com/is/image/SIEPDC/genshin-impact-logo-01-en-3sep21?$native--t$");
@@ -480,7 +481,7 @@ public final class MelonScanner {
     }
 
     private static void fileAgeCheck(MelonScanContext context) {
-        if (context.attachment.getFileName().matches("MelonLoader_[0-9]{2}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}\\.[0-9]{3}.*\\.log")) {
+        if (context.attachment.getFileName().matches("MelonLoader_\\d{2}-\\d{2}-\\d{2}_\\d{2}-\\d{2}-\\d{2}\\.\\d{3}.*\\.log")) {
             String fileDateString = context.attachment.getFileName().split("_", 3)[1];
             long ageDays = 0;
             try {
@@ -984,7 +985,7 @@ public final class MelonScanner {
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
-            context.embedBuilder.addField("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", "Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", false);
+                context.embedBuilder.addField("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", "Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", false);
 
             if (error.length() > 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);

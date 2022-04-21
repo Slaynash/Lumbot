@@ -42,7 +42,7 @@ public class MLHashRegisterCommand extends Command {
             return;
         }
 
-        if (!(hash64.matches("^[0-9]{5,}$") && hash86.matches("^[0-9]{5,}$"))) {
+        if (!(hash64.matches("^\\d{5,}$") && hash86.matches("^\\d{5,}$"))) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + usage).queue();
             return;
         }
