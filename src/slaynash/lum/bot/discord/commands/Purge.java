@@ -85,12 +85,14 @@ public class Purge extends Command {
                     else { // greater than 100 messages
                         try {
                             int i = 0;
-                            while (i < messageList.size() - 1) {
-                                event.getTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size() - 1))).queue();
+                            while (i < messageList.size()) {
+                                if (i == messageList.size() - 1) { // on the very rare chance that there is only one message left
+                                    messageList.get(i).delete().queue();
+                                    return;
+                                }
+                                event.getTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size()))).queue();
                                 i = i + 100;
                             }
-                            if (i == messageList.size() - 1) // on the very rare chance that there is only one message left
-                                messageList.get(messageList.size() - 1).delete().queue();
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("An error has occurred while purging messages:", e, event.getTextChannel());

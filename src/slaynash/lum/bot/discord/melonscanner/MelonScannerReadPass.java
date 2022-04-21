@@ -280,8 +280,9 @@ public final class MelonScannerReadPass {
                     context.missingMods.add(missingName);
                 return true;
             }
-            else if (line.toLowerCase().contains("exception")) {
+            else if (line.toLowerCase().contains("exception") && !line.toLowerCase().contains("typeloadexception")) {
                 String erroringName = splitName(line);
+                //TODO check if broken
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
                 return true;

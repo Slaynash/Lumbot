@@ -41,6 +41,9 @@ public class Junidecode {
      * @return 7-bit ASCII valid string.
      */
     public static String unidecode(final String s) {
+        if (s == null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
         String[] map;
         for (int i = 0; i < s.length(); i++) {

@@ -430,6 +430,8 @@ public class ScamShield {
 
             for (String url : urls) {
                 url = url.replace("<@", " ").replace("\\", "/");
+                if (URI.create(url).getHost() == null)
+                    continue;
                 String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z\\d-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains

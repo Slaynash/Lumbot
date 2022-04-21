@@ -114,8 +114,6 @@ public class Steam {
             isLoggedOn = true;
             System.out.println("Logged in, current valve time is " + callback.getServerTime() + " UTC");
 
-            startChangesRequesterThread();
-
             try { //initialize all depos
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT `GameID` FROM `SteamWatch` WHERE 1");
                 while (rs.next()) {
@@ -127,6 +125,7 @@ public class Steam {
             } catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to initialize all steam depos", e);
             }
+            startChangesRequesterThread();
         });
         callbackManager.subscribe(LoggedOffCallback.class, callback -> {
             if (isLoggedOn) {
@@ -179,10 +178,9 @@ public class Steam {
             System.out.println("[PICSProductInfoCallback] apps: ");
             for (Entry<Integer, PICSProductInfo> app : callback.getApps().entrySet()) {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
-                Integer gameID = app.getKey();
                 List<ServerChannel> channels = new ArrayList<>();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + app.getKey() + ")");
                     while (rs.next()) {
                         channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
                     }
@@ -226,7 +224,7 @@ public class Steam {
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
                             description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
-                            if (changedBranch.getValue() == null || !changedBranch.getValue().pwdrequired)
+                            if (changedBranch.getValue().pwdrequired == null || !changedBranch.getValue().pwdrequired)
                                 description.append(" - This was a public branch").append("\n");
                         }
                         else {
