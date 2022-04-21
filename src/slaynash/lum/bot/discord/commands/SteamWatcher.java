@@ -45,6 +45,10 @@ public class SteamWatcher extends Command {
                 event.getMessage().reply("No games being watched. Usage: " + getName() + " <GameID>").queue();
             return;
         }
+        if (!parts[1].matches("^\\d+$")) {
+            event.getMessage().reply("Invalid GameID, please check your game ID and try again. For example, use `438100` for VRChat.").queue();
+            return;
+        }
         Integer gameID = Integer.parseInt(parts[1]);
         int found = 0;
         try {

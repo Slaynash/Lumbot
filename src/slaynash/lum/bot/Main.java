@@ -180,6 +180,7 @@ public class Main extends ListenerAdapter {
         //chunk members for mutuals after loading to prevent Lum from being unresponsive
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
             guild.loadMembers();
+            Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom for funny number
         }
 
         System.out.println("LUM Started!");
