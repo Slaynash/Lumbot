@@ -320,6 +320,14 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
+        if (line.matches("\\[[\\d.:]+] \\[ERROR] Incompatible Platform Domain for Mod: .*\\\\(?<modname>\\w+).dll")) {
+            String modname = splitName(line);
+            context.errors.add(new MelonLoaderError("", modname + " is incompatible with this game type. Are sure sure this is a mod for this game?"));
+            if (context.vrcmuMods > 0) {
+                context.vrcmuMods--;
+            }
+            return true;
+        }
 
         if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
             context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));
@@ -698,7 +706,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�", "garbage collected");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�", "garbage collected", "SocketException");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();

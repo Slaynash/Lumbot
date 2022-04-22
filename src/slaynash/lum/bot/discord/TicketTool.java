@@ -55,27 +55,43 @@ public class TicketTool {
                     return;
                 }
                 String code = split[1].toLowerCase();
+                String codeNotFound = "`" + code + "` was not found. If this is your account, please make sure to save it in your bio or status.";
                 List<Field> embedFields = event.getMessage().getEmbeds().get(0).getFields();
                 boolean codeFound = checkForCode(embedFields, code);
                 String id = embedFields.get(0).getValue().replace("`", ""); //assume that ID is always in the first field
                 System.out.println("Code: " + code + " ID:" + id);
 
-                if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */ && codeFound) {
+                if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                     if (channelName.contains("reset")) {
-                        event.getTextChannel().sendMessage("e.pin reset " + id).queue();
+                        if (codeFound)
+                            event.getTextChannel().sendMessage("e.pin reset " + id).queue();
+                        else
+                            event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
                     else if (channelName.contains("wipe")) {
-                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTwipecomplete")).queue();
+                        if (codeFound)
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTwipecomplete")).queue();
+                        else
+                            event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
                     else if (channelName.contains("deletion")) {
-                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue();
+                        if (codeFound)
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue();
+                        else
+                            event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
                     else if (channelName.contains("export")) {
-                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexportcomplete")).queue();
+                        if (codeFound)
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexportcomplete")).queue();
+                        else
+                            event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
                 }
                 else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */ && codeFound) {
-                    event.getTextChannel().sendMessage("tw!deluser " + id).queue();
+                    if (codeFound)
+                        event.getTextChannel().sendMessage("tw!deluser " + id).queue();
+                    else
+                        event.getTextChannel().sendMessage(codeNotFound).queue();
                 }
             }, "Ticket");
             thread.start();

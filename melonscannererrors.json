@@ -81,6 +81,10 @@
             "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
         },
         {
+            "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Open Mono Assembly!",
+            "error": "Failed to Open Mono Assembly. Please make sure that the path is free of special characters and `'`."
+        },
+        {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] MelonLoader.dll Does Not Exist!",
             "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."
         },
@@ -241,10 +245,6 @@
         {
             "regex": ".*Invalid File Extension.*\\.zip",
             "error": "Do not leave zips in Mod/Plugin folder. Remove the zip and try again."
-        },
-        {
-            "regex": "\\[[\\d.:]+] \\[ERROR] Incompatible Platform Domain for Mod: .*\\\\(?<mod>\\w+).dll",
-            "error": "mod is incompatible with this games type. Are sure sure this is a mod for this game?"
         }
     ],
     "gameSpecificErrors": {

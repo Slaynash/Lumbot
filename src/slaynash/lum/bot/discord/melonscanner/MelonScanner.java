@@ -973,7 +973,7 @@ public final class MelonScanner {
                 error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
             }
             if (context.line.contains("Downloading")) {
-                error += "MelonLoader Gotten stuck downloading, make sure that nothing is blocking downloads.";
+                error += "MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.";
             }
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += "Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.";
