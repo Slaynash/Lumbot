@@ -217,6 +217,10 @@ public class ChattyLum {
             event.getChannel().sendMessage("<:Neko_dab:865328473719439381>").queue();
             return true;
         }
+        if (message.contains("dab dab")) {
+            event.getChannel().sendMessage("<:Neko_dab:865328473719439381>").queue();
+            return true;
+        }
 
         if (message.matches(".*\\bbye\\b.*")) {
             if (!(new LumGoneCommand().includeInHelp(event)))

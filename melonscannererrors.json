@@ -366,6 +366,10 @@
                 "error": "ReMod.Core is outdated. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {
+                "regex": "\\[[\\d.:]+] \\[ReMod] \\[ERROR] System.MissingMethodException.*",
+                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
+            },
+            {
                 "regex": ".*Could not resolve type.*ReMod.Core.*",
                 "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },

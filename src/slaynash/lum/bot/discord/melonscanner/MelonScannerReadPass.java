@@ -751,6 +751,8 @@ public final class MelonScannerReadPass {
             if (modt.length == 0 || context.game == null)
                 return;
             String mod = modt[0];
+            if (context.loadedMods.get(mod) == null)
+                return; // not a loaded mod
             List<MelonApiMod> mods = MelonScannerApisManager.getMods(context.game);
             if (mods != null) {
                 if (mods.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod))) {

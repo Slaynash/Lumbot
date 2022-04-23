@@ -212,9 +212,9 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!loggif")) {
                     System.out.println("log GIF printed");
-                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/600661924010786816/807099652611899402/Ke4nJYRBK5.gif").queue();
-                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/600661924010786816/807070239644450836/4qJBVv68ZN.gif").queue();
-                    event.getChannel().sendMessage("https://media.discordapp.net/attachments/440088207799877634/807857275498790912/S6yvAxnMkE.gif").queue();
+                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/967195754504519680/loggif1.gif").queue();
+                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/967195766923878450/loggif2.gif").queue();
+                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/967195931529326602/loggif3.gif").queue();
                     event.getChannel().sendMessage("The file will either be named Latest or Latest.log depending on your system settings").queue();
                     return;
                 }

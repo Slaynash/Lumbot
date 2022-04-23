@@ -910,7 +910,7 @@ public final class MelonScanner {
     private static boolean modsHasPendingCheck(MelonScanContext context) {
         if (context.hasPendingMods.size() > 0) {
             context.hasPendingMods.sort(String.CASE_INSENSITIVE_ORDER);
-            StringBuilder error = new StringBuilder("The following mods has an update waiting for review. Please wait until the review process is finished.\n");
+            StringBuilder error = new StringBuilder("The following mods have an update waiting for review. This may bring new features or bug fixes, but it does not mean the below mods are broken.\n");
             for (int i = 0; i < context.hasPendingMods.size() && i < 20; ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.hasPendingMods.get(i))).append("\n");
             if (context.hasPendingMods.size() > 20)
