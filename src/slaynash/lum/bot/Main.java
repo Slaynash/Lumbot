@@ -478,6 +478,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
+        event.getGuild().loadMembers();
         CrossServerUtils.checkGuildCount(event);
         try {
             String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>\nUse the command `l!help` to see the list of commands.";
@@ -485,7 +486,8 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
             else {
-                event.getGuild().getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
+                net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner(false).complete();
+                owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
             }
             event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
                 .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server

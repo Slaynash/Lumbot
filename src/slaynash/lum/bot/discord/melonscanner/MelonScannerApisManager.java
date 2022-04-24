@@ -40,6 +40,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -222,7 +223,7 @@ public class MelonScannerApisManager {
                             }
                             if (api.name.equals("vrcmg")) {
                                 //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
-                                apiMods.add(new MelonApiMod("WholesomeLoader", null, null, null, null, "Mod", false, false));
+                                apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), null, null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
                             }
 
                             api.cachedMods = apiMods;
