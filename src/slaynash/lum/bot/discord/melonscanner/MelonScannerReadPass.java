@@ -46,7 +46,7 @@ public final class MelonScannerReadPass {
                 br.mark(omitLineCount);
                 do {
                     context.nextLine = br.readLine();
-                } while (context.nextLine.isBlank());
+                } while (context.nextLine != null && context.nextLine.isBlank());
                 br.reset();
 
                 if (minecraftLogLineCheck(context))
