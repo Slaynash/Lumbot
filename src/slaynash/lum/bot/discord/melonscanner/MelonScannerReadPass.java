@@ -27,8 +27,10 @@ public final class MelonScannerReadPass {
             ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
             return false;
         }
-        if (context.attachment.getSize() > 15000000)
+        if (context.attachment.getSize() > 15000000) {
+            Utils.replyEmbed("Log size is too large. Not reading anything over 15MB", null, context.messageReceivedEvent);
             return false;
+        }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
             while ((context.readLine = br.readLine()) != null) {
@@ -42,7 +44,9 @@ public final class MelonScannerReadPass {
 
                 context.line = context.readLine;
                 br.mark(omitLineCount);
-                context.nextLine = br.readLine();
+                do {
+                    context.nextLine = br.readLine();
+                } while (context.nextLine.isBlank());
                 br.reset();
 
                 if (minecraftLogLineCheck(context))
