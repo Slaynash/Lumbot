@@ -234,7 +234,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(good|best|nice|great(|est)|(be)?love(d|ly)?|nerd|s(hm|)exy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
+        if (message.matches(".*\\b(g(oo|u)d|best|nice|great(|est)|(be)?love(d|ly)?|nerd|s(hm|)exy|hugs?|beautiful|cool|cuti?e(st)?|adorable|amaz(e|ing)|helped|thanks*|p([ea])ts*|dab)\\b.*")) {
             System.out.println("Nice Lum was detected");
             event.getChannel().sendMessage(niceLum.get(random.nextInt(niceLum.size()))).queue();
             return true;
@@ -246,7 +246,7 @@ public class ChattyLum {
             return true;
         }
 
-        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dum|baka|gay)\\b.*")) {
+        if (message.matches(".*\\b(bad|shu(t|sh)|smh|hush|stupid|dumb?|baka|gay)\\b.*")) {
             System.out.println("Bad Lum was detected");
             event.getChannel().sendMessage(badLum.get(random.nextInt(badLum.size()))).queue();
             return true;

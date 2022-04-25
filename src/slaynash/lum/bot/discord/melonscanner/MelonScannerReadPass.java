@@ -20,6 +20,8 @@ import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
 
+    private static int omitLineCount = 1200;
+
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
         if (context.attachment.getUrl().contains("/%")) {
             ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
@@ -39,6 +41,9 @@ public final class MelonScannerReadPass {
                     continue;
 
                 context.line = context.readLine;
+                br.mark(omitLineCount);
+                context.nextLine = br.readLine();
+                br.reset();
 
                 if (minecraftLogLineCheck(context))
                     return false;
@@ -101,7 +106,7 @@ public final class MelonScannerReadPass {
 
     private static boolean shouldOmitLineCheck(MelonScanContext context) {
         int linelength = context.readLine.length();
-        if (linelength > 1200) {
+        if (linelength > omitLineCount) {
             ++context.omittedLineCount;
             System.out.println("Omitted one line of length " + linelength);
             return true;
@@ -304,12 +309,12 @@ public final class MelonScannerReadPass {
         if (line.matches("\\[[\\d.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*") || line.matches("\\[[\\d.:]+] \\[WARNING] No Compatibility Layer for.*")) {
             String oldName = splitName(line);
             if (oldName.equalsIgnoreCase("ReMod Core"))
-                context.errors.add(new MelonLoaderError("", "ReMod.Core.dll goes in the root folder. Please move it up one folder."));
+                context.errors.add(new MelonLoaderError("ReMod.Core.dll goes in the root folder. Please move it up one folder."));
             if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
-                context.errors.add(new MelonLoaderError("", "Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
+                context.errors.add(new MelonLoaderError("Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
-            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer")) {
+            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer") && !line.contains("Load Assembly")) {
                 context.vrcmuMods--;
             }
             return true;
@@ -322,7 +327,7 @@ public final class MelonScannerReadPass {
         }
         if (line.matches("\\[[\\d.:]+] \\[ERROR] Incompatible Platform Domain for Mod: .*\\\\(?<modname>\\w+).dll")) {
             String modname = splitName(line);
-            context.errors.add(new MelonLoaderError("", modname + " is incompatible with this game type. Are sure sure this is a mod for this game?"));
+            context.errors.add(new MelonLoaderError(modname + " is incompatible with this game type. Are sure sure this is a mod for this game?"));
             if (context.vrcmuMods > 0) {
                 context.vrcmuMods--;
             }
@@ -330,7 +335,7 @@ public final class MelonScannerReadPass {
         }
 
         if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
-            context.errors.add(new MelonLoaderError("", "You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));
+            context.errors.add(new MelonLoaderError("You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));
             return true;
         }
         return false;
@@ -460,7 +465,7 @@ public final class MelonScannerReadPass {
         if (line.contains("Core::BasePath")) {
             context.corePath = split[1].trim();
             if (context.corePath.contains("'")) {
-                context.errors.add(new MelonLoaderError("", "Your path contains `'` and is know to break MelonLoader. Please move your game to a different directory without `'` in it."));
+                context.errors.add(new MelonLoaderError("Your path contains `'` and is know to break MelonLoader. Please move your game to a different directory without `'` in it."));
             }
             return true;
         }
@@ -526,7 +531,7 @@ public final class MelonScannerReadPass {
         if (context.line.matches("\\[[\\d.:]+] Game Version:.*")) {
             String[] split = context.line.split(":");
             if (split.length == 3) {
-                context.errors.add(new MelonLoaderError("", "Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
+                context.errors.add(new MelonLoaderError("Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
                 return true;
             } else if (split.length < 3) return true;
             context.gameBuild = split[3].trim();
@@ -649,8 +654,11 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean unhollowerErrorCheck(MelonScanContext context) {
+    private static boolean unhollowerErrorCheck(MelonScanContext context) throws IOException {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
+            if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
+                continue;
+            }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.namedGroups().size() > 0) {
@@ -670,8 +678,11 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean knownErrorCheck(MelonScanContext context) {
+    private static boolean knownErrorCheck(MelonScanContext context) throws IOException {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownErrors()) {
+            if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
+                continue;
+            }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.namedGroups().size() > 0) {
@@ -690,6 +701,9 @@ public final class MelonScannerReadPass {
         Map<String, List<MelonLoaderError>> gameSpecificErrors = MelonLoaderError.getGameSpecificErrors();
         if (context.game != null && gameSpecificErrors.containsKey(context.game)) {
             for (MelonLoaderError knownGameError : gameSpecificErrors.get(context.game)) {
+                if (knownGameError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownGameError.nextLineRegex)) {
+                    continue;
+                }
                 String errorMess = knownGameError.error;
                 Matcher m = Pattern.compile(knownGameError.regex).matcher(context.line);
                 if (m.namedGroups().size() > 0) {
@@ -706,7 +720,7 @@ public final class MelonScannerReadPass {
                 }
             }
         }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```�", "garbage collected", "SocketException", "Trace:");
+        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```", "garbage collected", "SocketException", "Trace:");
         if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
             context.missingErrorHeader = true;
             context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
@@ -715,7 +729,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         if (context.lastLine.matches("\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
-            context.errors.add(new MelonLoaderError("", "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."));
+            context.errors.add(new MelonLoaderError("AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."));
             return true;
         }
         return false;

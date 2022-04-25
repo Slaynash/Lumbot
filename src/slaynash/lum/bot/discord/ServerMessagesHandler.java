@@ -424,8 +424,6 @@ public class ServerMessagesHandler {
             if (content == null || content.isBlank())
                 return false;
             content = content.toLowerCase();
-            if (event.getMessage().isEdited())
-                return false;
             if (event.getMember().equals(event.getGuild().getSelfMember()))
                 return true;
             if (content.startsWith("l!repl"))

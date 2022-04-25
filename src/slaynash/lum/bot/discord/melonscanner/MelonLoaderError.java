@@ -26,22 +26,34 @@ public class MelonLoaderError {
     private static final Map<String, List<MelonLoaderError>> gameSpecificErrors = new HashMap<>();
     private static final List<MelonLoaderError> modSpecificErrors = new ArrayList<>();
 
-    public static final MelonLoaderError nkh6 = new MelonLoaderError("", "A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
-    public static final MelonLoaderError btd6mh = new MelonLoaderError("", "A mod is missing BTD Mod Helper. Please unzip [this zip](https://github.com/gurrenm3/BTD-Mod-Helper/releases/latest/) into your Mods folder.");
-    public static final MelonLoaderError mlMissing = new MelonLoaderError("", "A mod is missing a MelonLoader file. Add to your Virus scanner exception list and reinstall MelonLoader.");
-    public static final MelonLoaderError mlCompromised = new MelonLoaderError("", "MelonLoader is in a compromised state and is displaying sensitive information. Please reinstall MelonLoader.");
+    public static final MelonLoaderError nkh6 = new MelonLoaderError("A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
+    public static final MelonLoaderError btd6mh = new MelonLoaderError("A mod is missing BTD Mod Helper. Please unzip [this zip](https://github.com/gurrenm3/BTD-Mod-Helper/releases/latest/) into your Mods folder.");
+    public static final MelonLoaderError mlMissing = new MelonLoaderError("A mod is missing a MelonLoader file. Add to your Virus scanner exception list and reinstall MelonLoader.");
+    public static final MelonLoaderError mlCompromised = new MelonLoaderError("MelonLoader is in a compromised state and is displaying sensitive information. Please reinstall MelonLoader.");
 
     public static final MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(
             "\\[[0-9.:]+\\] \\[ERROR\\] System.BadImageFormatException:.*",
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
 
 
+    public final String nextLineRegex;
     public final String regex;
     public final String error;
 
+    public MelonLoaderError(String error) {
+        this.error = error;
+        this.regex = null;
+        this.nextLineRegex = null;
+    }
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;
         this.error = error;
+        this.nextLineRegex = null;
+    }
+    public MelonLoaderError(String regex, String error, String nextLineRegex) {
+        this.regex = regex;
+        this.error = error;
+        this.nextLineRegex = nextLineRegex;
     }
 
     @Override
@@ -52,7 +64,7 @@ public class MelonLoaderError {
         if (!(o instanceof MelonLoaderError me)) {
             return false;
         }
-        return this.regex.equals(me.regex);
+        return this.regex.equals(me.regex) && this.error.equals(me.error);
     }
 
     public static boolean init() {

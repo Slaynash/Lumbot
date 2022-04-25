@@ -346,6 +346,11 @@
                 "error": "emmVRC servers is having some issues. Please wait while we work on it."
             },
             {
+                "regex": ".*Exception in IL2CPP-to-Managed trampoline.*NullReferenceException.*",
+                "nextLineRegex": "  at emmVRC.*",
+                "error": "emmVRC is throwing some harmless errors."
+            },
+            {
                 "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
                 "error": "FavCat Image cache trim failed. Maybe try refeatching favorites."
             },
