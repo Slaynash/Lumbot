@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -44,10 +43,6 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
@@ -124,35 +119,35 @@ public class Main extends ListenerAdapter {
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
                 .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
                 .queue();
 
-        try {
-            OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
-                new Command.Choice("Conversions binaire", "binconv"),
-                new Command.Choice("Boucles", "loops"),
-                new Command.Choice("Master Theorem", "mthm"),
-                new Command.Choice("Tas", "heap"),
-                new Command.Choice("AVL", "avl"),
-                new Command.Choice("Table de vérité", "bintable"));
-            JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
-                .addSubcommands(
-                    new SubcommandData("create", "Génère un exercice")
-                        .addOptions(optionUCBLLIF)
-                    .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
-                .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
-                    .addOptions(optionUCBLLIF)
-                    .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
-                .setDefaultEnabled(true)
-                .queue();
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
-        }
+        // try {
+        //     OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
+        //         new Command.Choice("Conversions binaire", "binconv"),
+        //         new Command.Choice("Boucles", "loops"),
+        //         new Command.Choice("Master Theorem", "mthm"),
+        //         new Command.Choice("Tas", "heap"),
+        //         new Command.Choice("AVL", "avl"),
+        //         new Command.Choice("Table de vérité", "bintable"));
+        //     JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
+        //         .addSubcommands(
+        //             new SubcommandData("create", "Génère un exercice")
+        //                 .addOptions(optionUCBLLIF)
+        //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
+        //         .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
+        //             .addOptions(optionUCBLLIF)
+        //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
+        //         .setDefaultEnabled(true)
+        //         .queue();
+        // }
+        // catch (Exception e) {
+        //     ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
+        // }
 
         VRCApiVersionScanner.init();
         UnityVersionMonitor.start();
@@ -163,18 +158,13 @@ public class Main extends ListenerAdapter {
         new Steam().start();
 
         new AddMissingRoles().addMissing(null);
+        }
 
         Timer timer = new Timer();
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.HOUR_OF_DAY, 0);
-        date.set(Calendar.MINUTE, 0);
-        date.set(Calendar.SECOND, 1);
-        date.set(Calendar.MILLISECOND, 1);
-        date.add(Calendar.DATE, 1);
         timer.schedule(
             new ClearDMs(),
-            date.getTime(),
-            1000 * 60 * 60 * 24 * 7
+            java.util.Calendar.getInstance().getTime(),
+            1000 * 60 * 60
         );
 
         //chunk members for mutuals after loading to prevent Lum from being unresponsive

@@ -20,7 +20,7 @@ import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
 
-    private static int omitLineCount = 1200;
+    private static final int omitLineCount = 1200;
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
         if (context.attachment.getUrl().contains("/%")) {
@@ -33,21 +33,25 @@ public final class MelonScannerReadPass {
         }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
             context.bufferedReader = br;
-            while ((context.readLine = br.readLine()) != null) {
-                if (context.readLine.isBlank())
+            context.nextLine = "";
+            context.line = "";
+            while (context.nextLine != null) {
+                context.readLine = br.readLine();
+                if (context.readLine != null && context.readLine.isBlank())
                     continue;
 
                 context.secondlastLine = context.lastLine;
                 context.lastLine = context.line;
+                context.line = context.nextLine;
+                context.nextLine = context.readLine;
+                if (context.linesToSkip > 0) {
+                    context.linesToSkip--;
+                    continue;
+                }
                 if (shouldOmitLineCheck(context))
                     continue;
-
-                context.line = context.readLine;
-                br.mark(omitLineCount);
-                do {
-                    context.nextLine = br.readLine();
-                } while (context.nextLine != null && context.nextLine.isBlank());
-                br.reset();
+                if (context.line.isBlank())
+                    continue;
 
                 if (minecraftLogLineCheck(context))
                     return false;
@@ -109,7 +113,7 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean shouldOmitLineCheck(MelonScanContext context) {
-        int linelength = context.readLine.length();
+        int linelength = context.line.length();
         if (linelength > omitLineCount) {
             ++context.omittedLineCount;
             System.out.println("Omitted one line of length " + linelength);
@@ -149,7 +153,7 @@ public final class MelonScannerReadPass {
         }
     }
 
-    private static boolean processML03ModListing(MelonScanContext context) throws IOException {
+    private static boolean processML03ModListing(MelonScanContext context) {
         String line = context.line;
         if (line.isBlank())
             return true;
@@ -182,10 +186,10 @@ public final class MelonScannerReadPass {
                 context.editedLog = true;
             }
             System.out.println(context.remainingModCount + " " + (line.contains("Plugin") ? "plugins" : "mods") + " loaded on this pass");
-            context.bufferedReader.readLine(); // Skip line separator
+            context.linesToSkip += 1; // Skip line separator
             if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
                 context.vrcmuModsMismatch = true;
-                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.vrcmuMods).queue();
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\nvrcmuMods: " + context.vrcmuMods + " remainingModCount:" + context.remainingModCount).queue();
                 //TODO: Uncomment when ready
                 //context.editedLog = true;
             }
@@ -352,7 +356,7 @@ public final class MelonScannerReadPass {
         return String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces;
     }
 
-    private static boolean processMissingDependenciesListing(MelonScanContext context) throws IOException {
+    private static boolean processMissingDependenciesListing(MelonScanContext context) {
         String line = context.line;
         if (line.matches(" {4}- '.*'.*")) {
             String[] split = line.split("'", 3);
@@ -375,8 +379,9 @@ public final class MelonScannerReadPass {
         else if (line.matches("(?i)\\[[\\d.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) {
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
-            context.bufferedReader.readLine(); // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
-            context.bufferedReader.readLine(); // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader. TODO This will break Lum when ML does it
+            context.linesToSkip += 2;
+            // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
+            // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader. TODO This will break Lum when ML does it
         }
         else {
             System.out.println("Done listing missing dependencies on line: " + line);
@@ -658,7 +663,7 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean unhollowerErrorCheck(MelonScanContext context) throws IOException {
+    private static boolean unhollowerErrorCheck(MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownUnhollowerErrors()) {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;
@@ -682,7 +687,7 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean knownErrorCheck(MelonScanContext context) throws IOException {
+    private static boolean knownErrorCheck(MelonScanContext context) {
         for (MelonLoaderError knownError : MelonLoaderError.getKnownErrors()) {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;

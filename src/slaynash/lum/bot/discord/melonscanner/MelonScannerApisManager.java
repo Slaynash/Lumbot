@@ -190,7 +190,7 @@ public class MelonScannerApisManager {
                                 }
 
                                 String name = mod.get("name").checkjstring();
-                                System.out.println("Processing mod " + name);
+                                // System.out.println("Processing mod " + name);
                                 String approvalStatus = "0";
                                 if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
                                     approvalStatus = mod.get("approvalStatus").checkjstring();

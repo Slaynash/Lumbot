@@ -26,6 +26,7 @@ public class MelonScanContext {
     public String line = "";
     public String lastLine = "";
     public String secondlastLine = "";
+    public int linesToSkip = 0;
 
     public boolean pirate = false;
     public boolean editedLog = false;

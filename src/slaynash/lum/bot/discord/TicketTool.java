@@ -6,7 +6,6 @@ import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.Utils;
@@ -41,9 +40,9 @@ public class TicketTool {
             Thread thread = new Thread(() -> {
                 System.out.println("Receved embed from Rubybot");
                 List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
-                Role emmadmin = event.getJDA().getGuildById(600298024425619456L).getRoleById(748392927365169233L);
-                Role emmnetwork = event.getJDA().getGuildById(600298024425619456L).getRoleById(801670419723452487L);
-                history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()) && !m.getMember().getRoles().contains(emmadmin) && !m.getMember().getRoles().contains(emmnetwork));
+                // Role emmadmin = event.getJDA().getGuildById(600298024425619456L).getRoleById(748392927365169233L);
+                // Role emmnetwork = event.getJDA().getGuildById(600298024425619456L).getRoleById(801670419723452487L);
+                // history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()) && !m.getMember().getRoles().contains(emmadmin) && !m.getMember().getRoles().contains(emmnetwork)); had a member is null error
                 history.removeIf(m -> !m.getContentRaw().toLowerCase().contains("status"));
                 if (history.size() == 0) {
                     System.out.println("[ERROR] Can not find my messages");

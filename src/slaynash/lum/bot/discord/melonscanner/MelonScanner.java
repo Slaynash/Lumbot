@@ -382,6 +382,9 @@ public final class MelonScanner {
         if (context.loadedMods.size() > 0) {
             footer += " | " + context.loadedMods.size() + " mods loaded";
         }
+        if (context.omittedLineCount > 0) {
+            footer += " | omitted " + context.omittedLineCount + " line" + (context.omittedLineCount > 1 ? "s" : "");
+        }
         context.embedBuilder = new EmbedBuilder();
         context.reportMessage = new StringBuilder();
         context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))

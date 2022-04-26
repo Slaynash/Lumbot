@@ -73,3 +73,6 @@ local.properties
 /Lumbot.iml
 *.orig
 /.VSCodeCounter/*
+/MLlogs/
+/commands/
+/storage/
