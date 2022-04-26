@@ -320,7 +320,7 @@ public final class MelonScanner {
             if (latestModVersion == null && latestModHash == null && latestModType == null) {
                 context.unknownMods.add(logsModDetails);
             }
-            else if(latestHasPending && compare == 0) {
+            else if (latestHasPending && compare == 0) {
                 context.hasPendingMods.add(modName);
             }
             else if (CommandManager.brokenMods.contains(modName) || latestModBroken) {
@@ -478,7 +478,7 @@ public final class MelonScanner {
                 case "Zenith" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                 case "zombieland_vr_headshot_fever" -> context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
                 case "デュエプレ" -> context.embedBuilder.setThumbnail("https://dmps.takaratomy.co.jp/common/img/logo.png");
-                default -> {}
+                default -> { }
             }
         }
     }

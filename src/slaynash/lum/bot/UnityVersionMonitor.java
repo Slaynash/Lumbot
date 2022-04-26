@@ -224,7 +224,7 @@ public class UnityVersionMonitor {
                         JDAManager.getJDA().getGuildById(633588473433030666L /* Slaynash's Workbench */).getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
                     }
                     isRunningCheck = true;
-                    
+
                     loadIcalls();
 
                     for (UnityVersion newVersion : newVersions) {

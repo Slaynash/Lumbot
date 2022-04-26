@@ -11,6 +11,8 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Random;
 
+import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -37,7 +39,20 @@ public class UnivUCBLLIFExoGenerator {
             String exo = event.getOptions().get(0).getAsString();
             String ticket = event.getOptions().size() > 1 ? event.getOptions().get(1).getAsString() : null;
             String subcommandname = event.getSubcommandName();
-            System.out.println("exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
+            System.out.println(event.getUser().getAsTag() + "exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
+            Pattern p = Pattern.compile("([^\\w\\-!.~'\\(\\)*])");
+            Matcher m = p.matcher(exo);
+            if (m.find()) {
+                event.reply("Invalid character in exo: " + m.group(0)).setEphemeral(true).queue();
+                return;
+            }
+            if (ticket != null) {
+                Matcher m2 = p.matcher(ticket);
+                if (m2.find()) {
+                    event.reply("Invalid character in ticket: " + m2.group(0)).setEphemeral(true).queue();
+                    return;
+                }
+            }
 
             if (!subcommandname.equals("create") && !subcommandname.equals("solve")) {
                 if (interactionhook != null)

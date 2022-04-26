@@ -104,18 +104,18 @@ public final class DBConnectionManagerLum {
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "'");
             if (rs.next()) {
-                ts = rs.getTimestamp(GuildConfiguration.setting.TS.string);
-                scamShield = rs.getBoolean(GuildConfiguration.setting.SCAMSHIELD.string);
-                scamShieldBan = rs.getBoolean(GuildConfiguration.setting.SSBAN.string);
-                scamShieldCross = rs.getBoolean(GuildConfiguration.setting.SSCROSS.string);
-                mLLogScan = rs.getBoolean(GuildConfiguration.setting.LOGSCAN.string);
-                mLLogReaction = rs.getBoolean(GuildConfiguration.setting.LOGREACTION.string);
-                mLReplies = rs.getBoolean(GuildConfiguration.setting.MLREPLIES.string);
-                mLPartialRemover = rs.getBoolean(GuildConfiguration.setting.PARTIALLOGREMOVER.string);
-                mLGeneralRemover = rs.getBoolean(GuildConfiguration.setting.GENERALLOGREMOVER.string);
-                dLLRemover = rs.getBoolean(GuildConfiguration.setting.DLLREMOVER.string);
-                lumReplies = rs.getBoolean(GuildConfiguration.setting.LUMREPLIES.string);
-                dadJokes = rs.getBoolean(GuildConfiguration.setting.DADJOKES.string);
+                ts = rs.getTimestamp(GuildConfiguration.Setting.TS.string);
+                scamShield = rs.getBoolean(GuildConfiguration.Setting.SCAMSHIELD.string);
+                scamShieldBan = rs.getBoolean(GuildConfiguration.Setting.SSBAN.string);
+                scamShieldCross = rs.getBoolean(GuildConfiguration.Setting.SSCROSS.string);
+                mLLogScan = rs.getBoolean(GuildConfiguration.Setting.LOGSCAN.string);
+                mLLogReaction = rs.getBoolean(GuildConfiguration.Setting.LOGREACTION.string);
+                mLReplies = rs.getBoolean(GuildConfiguration.Setting.MLREPLIES.string);
+                mLPartialRemover = rs.getBoolean(GuildConfiguration.Setting.PARTIALLOGREMOVER.string);
+                mLGeneralRemover = rs.getBoolean(GuildConfiguration.Setting.GENERALLOGREMOVER.string);
+                dLLRemover = rs.getBoolean(GuildConfiguration.Setting.DLLREMOVER.string);
+                lumReplies = rs.getBoolean(GuildConfiguration.Setting.LUMREPLIES.string);
+                dadJokes = rs.getBoolean(GuildConfiguration.Setting.DADJOKES.string);
             }
             else {
                 System.out.println("No guild configuration found for guild and creating " + guildID);

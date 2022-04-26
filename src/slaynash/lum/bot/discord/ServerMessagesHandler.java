@@ -350,7 +350,7 @@ public class ServerMessagesHandler {
         if (event.getMessage().getContentStripped().toLowerCase().startsWith("l!ping")) {
             long processing = System.nanoTime() - inputTime;
             long gatewayPing = event.getJDA().getGatewayPing();
-            event.getChannel().sendMessage("Pong: Ping from Discord " + gatewayPing + "millisecond" + (gatewayPing > 1 ? "s" : "") + ".\nIt took " + processing + " nanosecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();
+            event.getChannel().sendMessage("Pong: Ping from Discord " + gatewayPing + " millisecond" + (gatewayPing > 1 ? "s" : "") + ".\nIt took " + java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(processing) + " nanoseconds to parse the command.").queue();
         }
     }
 

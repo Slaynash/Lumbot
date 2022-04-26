@@ -126,38 +126,38 @@ public class Main extends ListenerAdapter {
                 .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
                 .queue();
 
-        // try {
-        //     OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
-        //         new Command.Choice("Conversions binaire", "binconv"),
-        //         new Command.Choice("Boucles", "loops"),
-        //         new Command.Choice("Master Theorem", "mthm"),
-        //         new Command.Choice("Tas", "heap"),
-        //         new Command.Choice("AVL", "avl"),
-        //         new Command.Choice("Table de vérité", "bintable"));
-        //     JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
-        //         .addSubcommands(
-        //             new SubcommandData("create", "Génère un exercice")
-        //                 .addOptions(optionUCBLLIF)
-        //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
-        //         .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
-        //             .addOptions(optionUCBLLIF)
-        //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
-        //         .setDefaultEnabled(true)
-        //         .queue();
-        // }
-        // catch (Exception e) {
-        //     ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
-        // }
+            // try {
+            //     OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
+            //         new Command.Choice("Conversions binaire", "binconv"),
+            //         new Command.Choice("Boucles", "loops"),
+            //         new Command.Choice("Master Theorem", "mthm"),
+            //         new Command.Choice("Tas", "heap"),
+            //         new Command.Choice("AVL", "avl"),
+            //         new Command.Choice("Table de vérité", "bintable"));
+            //     JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
+            //         .addSubcommands(
+            //             new SubcommandData("create", "Génère un exercice")
+            //                 .addOptions(optionUCBLLIF)
+            //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
+            //         .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
+            //             .addOptions(optionUCBLLIF)
+            //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
+            //         .setDefaultEnabled(true)
+            //         .queue();
+            // }
+            // catch (Exception e) {
+            //     ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
+            // }
 
-        VRCApiVersionScanner.init();
-        UnityVersionMonitor.start();
+            VRCApiVersionScanner.init();
+            UnityVersionMonitor.start();
 
-        //registerCommands();
-        Moderation.voiceStartup();
+            //registerCommands();
+            Moderation.voiceStartup();
 
-        new Steam().start();
+            new Steam().start();
 
-        new AddMissingRoles().addMissing(null);
+            new AddMissingRoles().addMissing(null);
         }
 
         Timer timer = new Timer();

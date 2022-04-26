@@ -69,51 +69,51 @@ public class SlashConfig {
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 switch (event.getComponentId()) {
                     case "ss" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SCAMSHIELD.string, !guildconfig.ScamShield());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SCAMSHIELD.string, !guildconfig.ScamShield());
                         event.editButton(!guildconfig.ScamShield() ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield")).queue();
                         checkBanPerm(event, guild, guildconfig.ScamShieldBan());
                     }
                     case "dll" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.DLLREMOVER.string, !guildconfig.DLLRemover());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.DLLREMOVER.string, !guildconfig.DLLRemover());
                         event.editButton(!guildconfig.DLLRemover() ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover")).queue();
                         checkDllRemovePerm(event, guild);
                     }
                     case "reaction" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LOGREACTION.string, !guildconfig.MLLogReaction());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.LOGREACTION.string, !guildconfig.MLLogReaction());
                         event.editButton(!guildconfig.MLLogReaction() ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions")).queue();
                     }
                     case "thanks" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LUMREPLIES.string, !guildconfig.LumReplies());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.LUMREPLIES.string, !guildconfig.LumReplies());
                         event.editButton(!guildconfig.LumReplies() ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum")).queue();
                     }
                     case "dad" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.DADJOKES.string, !guildconfig.DadJokes());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.DADJOKES.string, !guildconfig.DadJokes());
                         event.editButton(!guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
                     }
                     case "partial" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.PARTIALLOGREMOVER.string, !guildconfig.MLPartialRemover());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.PARTIALLOGREMOVER.string, !guildconfig.MLPartialRemover());
                         event.editButton(!guildconfig.MLPartialRemover() ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover")).queue();
                     }
                     case "general" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.GENERALLOGREMOVER.string, !guildconfig.MLGeneralRemover());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.GENERALLOGREMOVER.string, !guildconfig.MLGeneralRemover());
                         event.editButton(!guildconfig.MLGeneralRemover() ? Button.success("general", "General Log remover") : Button.danger("general", "General Log remover")).queue();
                     }
                     case "log" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.LOGSCAN.string, !guildconfig.MLLogScan());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.LOGSCAN.string, !guildconfig.MLLogScan());
                         event.editButton(!guildconfig.MLLogScan() ? Button.success("log", "MelonLoader Log scanner") : Button.danger("log", "MelonLoader Log scanner")).queue();
                     }
                     case "mlr" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.MLREPLIES.string, !guildconfig.MLReplies());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.MLREPLIES.string, !guildconfig.MLReplies());
                         event.editButton(!guildconfig.MLReplies() ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
                     }
                     case "ssban" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SSBAN.string, !guildconfig.ScamShield());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSBAN.string, !guildconfig.ScamShield());
                         event.editButton(!guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
                         checkBanPerm(event, guild, !guildconfig.ScamShieldBan());
                     }
                     case "sscross" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.setting.SSCROSS.string, !guildconfig.ScamShield());
-                        event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan()? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSCROSS.string, !guildconfig.ScamShield());
+                        event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                     }
                     case "delete" -> event.getMessage().delete().queue();
                     default -> {

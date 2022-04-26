@@ -119,7 +119,7 @@ public class ScamShield {
 
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         String msg = event.getMessage().getContentStripped();
-        if(event.isFromGuild()) {
+        if (event.isFromGuild()) {
             for (Member member : event.getMessage().getMentionedMembers()) {
                 msg = msg.replace("@" + member.getEffectiveName(), "");
             }
