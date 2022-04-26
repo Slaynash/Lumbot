@@ -64,7 +64,7 @@ public class MelonLoaderError {
         if (!(o instanceof MelonLoaderError me)) {
             return false;
         }
-        return this.regex.equals(me.regex) && this.error.equals(me.error);
+        return this.error.equals(me.error);
     }
 
     public static boolean init() {
