@@ -409,6 +409,10 @@
             {
                 "regex": "\\[[\\d.:]+] \\[PrivateServer] \\[ERROR] System.ArgumentException: The specified path is not of a legal form \\(empty\\).",
                 "error": "PrivateServer mod is not yet setup, Please follow [these step to set PrivateServer up](https://gitlab.com/george/privateservermod#configuration)"
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[PlayerList] \\[WARNING] Couldn't get player entry in OnSetupFlagsReceived",
+                "error": "PlayerList is throwing some harmless warnings. It is safe to ignore these."
             }
         ],
         "BloonsTD6": [
