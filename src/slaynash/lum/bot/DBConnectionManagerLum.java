@@ -41,6 +41,7 @@ public final class DBConnectionManagerLum {
         }
     }
 
+    @SuppressWarnings("checkstyle:RightCurly")
     private static Connection getConnection() {
         try {
             if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
@@ -48,8 +49,7 @@ public final class DBConnectionManagerLum {
                 init();
             }
             return connection;
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             ExceptionUtils.reportException("Failed to get database connection", e);
         }
         return null;

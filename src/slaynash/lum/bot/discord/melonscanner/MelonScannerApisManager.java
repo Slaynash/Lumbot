@@ -223,7 +223,7 @@ public class MelonScannerApisManager {
                             }
                             if (api.name.equals("vrcmg")) {
                                 //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
-                                apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), null, null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
+                                apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
                             }
 
                             api.cachedMods = apiMods;

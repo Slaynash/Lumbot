@@ -30,6 +30,7 @@ public class JDAManager {
         jda.awaitReady();
         EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE);
         AllowedMentions.setDefaultMentions(EnumSet.complementOf(deny));
+        jda.setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
     }
 
     public static JDA getJDA() {

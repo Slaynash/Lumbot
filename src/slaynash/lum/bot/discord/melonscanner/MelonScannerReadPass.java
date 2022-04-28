@@ -318,7 +318,7 @@ public final class MelonScannerReadPass {
             String oldName = splitName(line);
             if (oldName.equalsIgnoreCase("ReMod Core"))
                 context.errors.add(new MelonLoaderError("ReMod.Core.dll goes in the root folder. Please move it up one folder."));
-            if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
+            else if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
                 context.errors.add(new MelonLoaderError("Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
@@ -542,7 +542,8 @@ public final class MelonScannerReadPass {
             if (split.length == 3) {
                 context.errors.add(new MelonLoaderError("Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
                 return true;
-            } else if (split.length < 3) return true;
+            }
+            else if (split.length < 3) return true;
             context.gameBuild = split[3].trim();
             System.out.println("Game version " + context.gameBuild);
             return true;

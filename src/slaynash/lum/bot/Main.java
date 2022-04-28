@@ -5,12 +5,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-import java.util.concurrent.TimeUnit;
 
 import javax.security.auth.login.LoginException;
 
@@ -43,6 +43,11 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
@@ -126,33 +131,10 @@ public class Main extends ListenerAdapter {
                 .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
                 .queue();
 
-            // try {
-            //     OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
-            //         new Command.Choice("Conversions binaire", "binconv"),
-            //         new Command.Choice("Boucles", "loops"),
-            //         new Command.Choice("Master Theorem", "mthm"),
-            //         new Command.Choice("Tas", "heap"),
-            //         new Command.Choice("AVL", "avl"),
-            //         new Command.Choice("Table de vérité", "bintable"));
-            //     JDAManager.getJDA().getGuildById(624635229222600717L).upsertCommand("exo", "Génère ou affiche le corrigé d'un exercice")
-            //         .addSubcommands(
-            //             new SubcommandData("create", "Génère un exercice")
-            //                 .addOptions(optionUCBLLIF)
-            //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false))
-            //         .addSubcommands(new SubcommandData("solve", "Affiche le corrigé d'un exercice")
-            //             .addOptions(optionUCBLLIF)
-            //             .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true))
-            //         .setDefaultEnabled(true)
-            //         .queue();
-            // }
-            // catch (Exception e) {
-            //     ExceptionUtils.reportException("Failed to upsert UCBL guild commands", e);
-            // }
-
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
 
-            //registerCommands();
+            registerCommands();
             Moderation.voiceStartup();
 
             new Steam().start();
@@ -479,8 +461,6 @@ public class Main extends ListenerAdapter {
                 net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner(false).complete();
                 owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
             }
-            event.getGuild().upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false)
-                .queueAfter(10, TimeUnit.SECONDS, g -> event.getGuild().updateCommandPrivilegesById(g.getId(), Moderation.getAdminsPrivileges(event.getGuild())).queue(null, e -> ExceptionUtils.reportException("An error has occurred on guild join:", e))); // register Guild command for newly joined server
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);
@@ -506,32 +486,38 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-    /*
+
     private static void registerCommands() {
-        Guild loopGuild = null;
+        JDA jda = JDAManager.getJDA();
+
+        OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
+                new Command.Choice("Conversions binaire", "binconv"),
+                new Command.Choice("Boucles", "loops"),
+                new Command.Choice("Master Theorem", "mthm"),
+                new Command.Choice("Tas", "heap"),
+                new Command.Choice("AVL", "avl"),
+                new Command.Choice("Table de vérité", "bintable"));
+        List<SubcommandData> subUCBLLIF = Arrays.asList(
+                new SubcommandData("create", "Génère un exercice")
+                        .addOptions(Collections.singleton(optionUCBLLIF))
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false),
+                new SubcommandData("solve", "Affiche le corrigé d'un exercice")
+                        .addOptions(Collections.singleton(optionUCBLLIF))
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true));
+
         try {
-            JDAManager.getJDA().setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
-            // JDAManager.getJDA().updateCommands().addCommands(new CommandData("configs", "send server config buttons").addOption(OptionType.STRING, "guild", "Enter Guild ID", true)).queue(); // Global/DM command
-            for (Guild tempGuild : JDAManager.getJDA().getGuilds()) {
-                loopGuild = tempGuild;
-                try {
-                    List<Command> commands = loopGuild.retrieveCommands().complete();
-                    if (commands.stream().anyMatch(c -> c.getName().equals("config")))
-                        continue;
-                    long cmdID = loopGuild.upsertCommand("config", "send server config buttons for this guild").setDefaultEnabled(false).complete().getIdLong(); // Guild command
-                    loopGuild.updateCommandPrivilegesById(cmdID, Moderation.getAdminsPrivileges(loopGuild)).queue();
-                }
-                catch (Exception e) {
-                    System.err.println("Failed to register slash command for: " + loopGuild.getName());
-                }
+            jda.updateCommands().complete();
+            for (Guild guild : jda.getGuilds()) {
+                guild.updateCommands().queue();
             }
+            jda.upsertCommand(new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false)).queue();
+            jda.getGuildById(624635229222600717L).upsertCommand(new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF)).queue();
         }
         catch (Exception e) {
-            ExceptionUtils.reportException(
-                "Error registering command for " + loopGuild.getName(), e);
+            ExceptionUtils.reportException("Error registering command", e);
         }
     }
-    */
+
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {
