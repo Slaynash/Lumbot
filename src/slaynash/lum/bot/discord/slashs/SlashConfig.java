@@ -107,12 +107,13 @@ public class SlashConfig {
                         event.editButton(!guildconfig.MLReplies() ? Button.success("mlr", "MelonLoader AutoReplies") : Button.danger("mlr", "MelonLoader AutoReplies")).queue();
                     }
                     case "ssban" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSBAN.string, !guildconfig.ScamShield());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSBAN.string, !guildconfig.ScamShieldBan());
                         event.editButton(!guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
+                        event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                         checkBanPerm(event, guild, !guildconfig.ScamShieldBan());
                     }
                     case "sscross" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSCROSS.string, !guildconfig.ScamShield());
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSCROSS.string, !guildconfig.ScamShieldCross());
                         event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                     }
                     case "delete" -> event.getMessage().delete().queue();
