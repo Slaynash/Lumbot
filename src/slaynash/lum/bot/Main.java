@@ -506,9 +506,9 @@ public class Main extends ListenerAdapter {
                         .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true));
 
         try {
-            jda.updateCommands().complete();
+            jda.updateCommands().complete(); // Clear global commands
             for (Guild guild : jda.getGuilds()) {
-                guild.updateCommands().queue();
+                guild.updateCommands().queue(); // Clear guild commands
             }
             jda.updateCommands().addCommands(new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false)).queue();
             jda.getGuildById(624635229222600717L).updateCommands().addCommands(new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF)).queue();

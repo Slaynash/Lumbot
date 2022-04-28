@@ -2,7 +2,6 @@ package slaynash.lum.bot.discord.slashs;
 
 import java.util.List;
 
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;

@@ -162,7 +162,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.",
-            "error": "Something failed to download. Make sure nothing is blocking downloads and try again later.",
+            "error": "Something failed to download. Make sure nothing is blocking downloads and try again later."
         },
         {
             "regex": "\\[[\\d.:]+] \\[WARNING] .*IL Compile Error \\(unknown location\\).*",
