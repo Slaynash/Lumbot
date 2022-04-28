@@ -27,8 +27,8 @@ public class SlashConfig {
                 event.reply("Guild was not found.").queue();
                 return;
             }
-            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
+                GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
                 System.out.println("Sent config for " + guild.getName());
                 event.reply("Server Config for " + guild.getName() + ": " + guildID)
                     .addActionRow(// Buttons can be in a 5x5
@@ -49,7 +49,7 @@ public class SlashConfig {
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
-            else event.reply("You do not have permission to use this command.").queue();
+            else event.reply("You do not have permissions to use this command for the guild " + guild.getName()).setEphemeral(true).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);
@@ -65,8 +65,8 @@ public class SlashConfig {
             }
             String guildID = message[message.length - 1];
             Guild guild = event.getJDA().getGuildById(guildID);
-            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
+                GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
                 switch (event.getComponentId()) {
                     case "ss" -> {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SCAMSHIELD.string, !guildconfig.ScamShield());
@@ -122,7 +122,7 @@ public class SlashConfig {
                 }
             }
             else {
-                event.reply("You do not have permission to use this command.").setEphemeral(true).queue();
+                event.reply("You do not have permissions to edit settings for " + guild.getName()).setEphemeral(true).queue();
             }
         }
         catch (Exception e) {

@@ -41,7 +41,6 @@ public final class DBConnectionManagerLum {
         }
     }
 
-    @SuppressWarnings("checkstyle:RightCurly")
     private static Connection getConnection() {
         try {
             if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
