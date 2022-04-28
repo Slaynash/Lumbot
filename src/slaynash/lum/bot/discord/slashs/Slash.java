@@ -12,11 +12,7 @@ public class Slash {
     public static void slashRun(SlashCommandEvent event) {
         if (event.getChannelType() != ChannelType.PRIVATE && !event.getTextChannel().canTalk())
             return;  //Lum can't talk in this channel
-        if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS)) {
-            event.reply("I can't send embeds, please give embed perms").queue();
-            return;
-        }
-        if (event.getName().equals("config")) { // Guild command
+        if (event.getName().equals("config")) { // Guild settings command
             String guildID;
             List<OptionMapping> guildOption = event.getOptionsByName("guild");
             if (event.getChannelType() == ChannelType.PRIVATE) {

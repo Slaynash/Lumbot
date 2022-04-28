@@ -510,8 +510,8 @@ public class Main extends ListenerAdapter {
             for (Guild guild : jda.getGuilds()) {
                 guild.updateCommands().queue();
             }
-            jda.upsertCommand(new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false)).queue();
-            jda.getGuildById(624635229222600717L).upsertCommand(new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF)).queue();
+            jda.updateCommands().addCommands(new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false)).queue();
+            jda.getGuildById(624635229222600717L).updateCommands().addCommands(new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF)).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Error registering command", e);
