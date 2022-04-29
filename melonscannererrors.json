@@ -150,7 +150,7 @@
         },
         {
             "regex": ".*System.TypeInitializationException: The type initializer for 'HarmonyLib.AccessTools' threw an exception.*",
-            "error": "IPA or something else is conflicting with MelonLoader. Please remove it or check for an update."
+            "error": "IPA or something else is conflicting with MelonLoader. Please remove everything that you don't see in the image below.$cleanunity$"
         },
         {
             "regex": ".*\\[ERROR] No Support Module Loaded!",
@@ -167,6 +167,12 @@
         {
             "regex": "\\[[\\d.:]+] \\[WARNING] .*IL Compile Error \\(unknown location\\).*",
             "error": "Something is broken in MelonLoader. Try reinstalling MelonLoader."
+        },
+        {
+            "previousLineRegex": "\\[[\\d.:]+] Executing Cpp2IL...",
+            "regex": "\\[[\\d.:]+] \"Z:\\\\.*",
+            "nextLineRegex": "^((?!Samboy063).)*$",
+            "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-set up the version library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
         }
     ],
     "knownErrors": [

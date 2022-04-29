@@ -669,6 +669,9 @@ public final class MelonScannerReadPass {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;
             }
+            if (knownError.previousLineRegex != null && context.lastLine != null && !context.nextLine.matches(knownError.previousLineRegex)) {
+                continue;
+            }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.namedGroups().size() > 0) {
@@ -693,6 +696,9 @@ public final class MelonScannerReadPass {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;
             }
+            if (knownError.previousLineRegex != null && context.lastLine != null && !context.nextLine.matches(knownError.previousLineRegex)) {
+                continue;
+            }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.namedGroups().size() > 0) {
@@ -712,6 +718,9 @@ public final class MelonScannerReadPass {
         if (context.game != null && gameSpecificErrors.containsKey(context.game)) {
             for (MelonLoaderError knownGameError : gameSpecificErrors.get(context.game)) {
                 if (knownGameError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownGameError.nextLineRegex)) {
+                    continue;
+                }
+                if (knownGameError.previousLineRegex != null && context.lastLine != null && !context.lastLine.matches(knownGameError.previousLineRegex)) {
                     continue;
                 }
                 String errorMess = knownGameError.error;

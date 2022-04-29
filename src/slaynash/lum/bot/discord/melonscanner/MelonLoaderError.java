@@ -37,6 +37,7 @@ public class MelonLoaderError {
 
 
     public final String nextLineRegex;
+    public final String previousLineRegex;
     public final String regex;
     public final String error;
 
@@ -44,16 +45,25 @@ public class MelonLoaderError {
         this.error = error;
         this.regex = null;
         this.nextLineRegex = null;
+        this.previousLineRegex = null;
     }
     public MelonLoaderError(String regex, String error) {
         this.regex = regex;
         this.error = error;
         this.nextLineRegex = null;
+        this.previousLineRegex = null;
     }
     public MelonLoaderError(String regex, String error, String nextLineRegex) {
         this.regex = regex;
         this.error = error;
         this.nextLineRegex = nextLineRegex;
+        this.previousLineRegex = null;
+    }
+    public MelonLoaderError(String regex, String error, String nextLineRegex, String previousLineRegex) {
+        this.regex = regex;
+        this.error = error;
+        this.nextLineRegex = nextLineRegex;
+        this.previousLineRegex = previousLineRegex;
     }
 
     @Override
