@@ -10,6 +10,10 @@ public final class UrlShortener {
     }
 
     public static String getShortenedUrl(String baseUrl) {
+        if (baseUrl == null)
+            return null;
+        if (baseUrl.contains("discord.com") || baseUrl.contains("discord.gg"))
+            return baseUrl;
         String result;
 
         // Check if already exists

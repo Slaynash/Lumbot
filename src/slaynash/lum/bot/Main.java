@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -43,11 +42,6 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
@@ -125,16 +119,11 @@ public class Main extends ListenerAdapter {
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
-            JDAManager.getJDA()
-                .getGuildById(633588473433030666L)
-                .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
-                .queue();
 
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
 
-            registerCommands();
+            // registerCommands();
             Moderation.voiceStartup();
 
             new Steam().start();
@@ -155,6 +144,13 @@ public class Main extends ListenerAdapter {
             Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom for funny number
         }
 
+        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+            JDAManager.getJDA()
+                .getGuildById(633588473433030666L)
+                .getTextChannelById(808076226064941086L)
+                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
+                .queue();
+        }
         System.out.println("LUM Started!");
     }
 
@@ -486,7 +482,7 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-
+/*
     private static void registerCommands() {
         JDA jda = JDAManager.getJDA();
 
@@ -517,7 +513,7 @@ public class Main extends ListenerAdapter {
             ExceptionUtils.reportException("Error registering command", e);
         }
     }
-
+*/
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {
