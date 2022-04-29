@@ -1,6 +1,7 @@
 package slaynash.lum.bot.api;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -35,7 +36,9 @@ public class API {
             endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
             endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonScannerErrorsEndpoint());
 
-            socket = new ServerSocket(28644);
+            socket = new ServerSocket();
+            socket.setReuseAddress(true);
+            socket.bind(new InetSocketAddress(28644));
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to start up API", e);
