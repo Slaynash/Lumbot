@@ -669,7 +669,7 @@ public final class MelonScannerReadPass {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;
             }
-            if (knownError.previousLineRegex != null && context.lastLine != null && !context.nextLine.matches(knownError.previousLineRegex)) {
+            if (knownError.previousLineRegex != null && context.lastLine != null && !context.lastLine.matches(knownError.previousLineRegex)) {
                 continue;
             }
             String errorMess = knownError.error;
@@ -696,7 +696,7 @@ public final class MelonScannerReadPass {
             if (knownError.nextLineRegex != null && context.nextLine != null && !context.nextLine.matches(knownError.nextLineRegex)) {
                 continue;
             }
-            if (knownError.previousLineRegex != null && context.lastLine != null && !context.nextLine.matches(knownError.previousLineRegex)) {
+            if (knownError.previousLineRegex != null && context.lastLine != null && !context.lastLine.matches(knownError.previousLineRegex)) {
                 continue;
             }
             String errorMess = knownError.error;
