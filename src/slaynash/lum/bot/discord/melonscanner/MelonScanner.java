@@ -77,7 +77,7 @@ public final class MelonScanner {
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
             for (String messagePart : messageParts) {
                 if (messagePart.startsWith("lang:"))
-                    lang = messagePart.substring(5);
+                    lang = messagePart.substring(5).toLowerCase();
             }
 
             List<Attachment> attachments = messageReceivedEvent.getMessage().getAttachments();

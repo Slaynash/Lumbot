@@ -68,7 +68,8 @@ public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
     final List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
         "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api",
-        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "discord api intents", "hypesquad events discord", "discord hype squad events");
+        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "mod mail", "discord api intents", "hypesquad events discord", "discord hype squad events",
+        "the sandbox announcement", "deniz 2.0", "stoned frogs bot", "giveaway Bot", "metroverse announcments");
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
@@ -528,6 +529,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
+        if (event.getUser().isBot())
+            return;
         String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
@@ -549,6 +552,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
+        if (event.getUser().isBot())
+            return;
         String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
@@ -569,6 +574,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onUserUpdateName(UserUpdateNameEvent event) {
+        if (event.getUser().isBot())
+            return;
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
         mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
         for (Guild guild : mutualGuilds) {
