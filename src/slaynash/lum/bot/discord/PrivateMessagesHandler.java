@@ -42,6 +42,9 @@ public class PrivateMessagesHandler {
             for (Attachment attachment : event.getMessage().getAttachments()) {
                 message = message.concat("\n").concat(attachment.getUrl());
             }
+            if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+                message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+            }
             Profile profile = author.retrieveProfile().complete();
             MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {

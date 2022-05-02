@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.coder4.emoji.EmojiUtils;
+import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -450,7 +452,14 @@ public class ServerMessagesHandler {
                         banmember = true;
                         key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
                     }
-                    if (content.matches("(?s)".concat(key))) {
+                    boolean matchUser = false;
+                    Matcher m = Pattern.compile("<@!?(?<userid>\\d{18,19})>").matcher(key);
+                    if (m.find()) {
+                        long userid = Long.parseLong(m.group("userid"));
+                        if (userid == event.getAuthor().getIdLong())
+                            matchUser = true;
+                    }
+                    if (matchUser || content.matches("(?s)".concat(key))) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                             event.getMessage().delete().queue();
                         }

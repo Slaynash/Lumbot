@@ -322,7 +322,7 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
-            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer") && !line.contains("Load Assembly")) {
+            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer")) {
                 context.vrcmuMods--;
             }
             return true;

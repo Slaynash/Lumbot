@@ -18,7 +18,7 @@ public class SlashConfig {
 
     public void sendReply(SlashCommandEvent event, String guildID) {
         try {
-            if (!guildID.matches("^\\d{18,}$")) {
+            if (!guildID.matches("^\\d{18,19}$")) {
                 event.reply("Invalid Guild ID. Please make sure that you are using the digit ID. https://support.discord.com/hc/en-us/articles/206346498").setEphemeral(true).queue();
                 return;
             }
