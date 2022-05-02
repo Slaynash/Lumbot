@@ -17,6 +17,18 @@ public class Replies extends Command {
         if (!includeInHelp(event))
             return;
 
+        try {
+            event.getMessage().getEmotes().forEach(emote -> {
+                if (!emote.canInteract(event.getGuild().getSelfMember()))
+                    event.getMessage().reply("Lum can not use that emote.").queue();
+                    return;
+            });
+        } catch (Exception e) {
+            event.getMessage().reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
+            return;
+        }
+
+
         Map<String, String> regexReplies = CommandManager.guildRegexReplies.getOrDefault(event.getGuild().getIdLong(), new HashMap<>());
         Map<String, String> replies = CommandManager.guildReplies.getOrDefault(event.getGuild().getIdLong(), new HashMap<>());
         String[] parts = paramString.trim().split(" ", 2);
