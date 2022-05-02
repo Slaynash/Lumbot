@@ -452,14 +452,7 @@ public class ServerMessagesHandler {
                         banmember = true;
                         key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
                     }
-                    boolean matchUser = false;
-                    Matcher m = Pattern.compile("<@!?(?<userid>\\d{18,19})>").matcher(key);
-                    if (m.find()) {
-                        long userid = Long.parseLong(m.group("userid"));
-                        if (userid == event.getAuthor().getIdLong())
-                            matchUser = true;
-                    }
-                    if (matchUser || content.matches("(?s)".concat(key))) {
+                    if (content.matches("(?s)".concat(key))) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                             event.getMessage().delete().queue();
                         }
@@ -498,7 +491,14 @@ public class ServerMessagesHandler {
                         banmember = true;
                         key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
                     }
-                    if (content.contains(key)) {
+                    boolean matchUser = false;
+                    Matcher m = Pattern.compile("<@!?(?<userid>\\d{18,19})>").matcher(key);
+                    if (m.find()) {
+                        String userid = m.group("userid");
+                        if (event.getAuthor().getId().equals(userid))
+                            matchUser = true;
+                    }
+                    if (matchUser || content.contains(key)) {
                         if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
                             event.getMessage().delete().queue();
                         }
