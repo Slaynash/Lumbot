@@ -22,7 +22,7 @@ public class VRCApiVersionScanner {
             .connectTimeout(Duration.ofSeconds(45))
             .build();
 
-    private static String lastBVT, lastDG;
+    private static String secondLastBVT, lastBVT, lastDG;
 
     public static void init() {
         Thread t = new Thread(() -> {
@@ -41,6 +41,7 @@ public class VRCApiVersionScanner {
                     VRCAPIConfig config = gson.fromJson(new String(response.body()), VRCAPIConfig.class);
 
                     if (lastBVT == null) {
+                        secondLastBVT = "nyan";
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;
                     }
@@ -52,10 +53,13 @@ public class VRCApiVersionScanner {
                         eb.addField("New Build Version Tag", "[" + config.deploymentGroup + "] " + config.buildVersionTag, false);
                         if (lastDG.equals(config.deploymentGroup))
                             eb.addField("WTF VRChat <:latina_pout:828090216732295228>", "Reusing Deployment Groups I see", false);
+                        else if (config.buildVersionTag.equals(secondLastBVT))
+                            eb.addField("<:Neko_TeHe:865328470685909033>", "I see you fucked up VRChat and need to undo your mess.", false);
                         MessageEmbed embed = eb.build();
 
                         JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
 
+                        secondLastBVT = lastBVT;
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;
                     }
@@ -65,7 +69,7 @@ public class VRCApiVersionScanner {
                 }
 
                 try {
-                    Thread.sleep(60 * 1000);
+                    Thread.sleep(60 * 1000);  // 60 seconds is maybe too slow
                 }
                 catch (Exception ignored) {
                 }

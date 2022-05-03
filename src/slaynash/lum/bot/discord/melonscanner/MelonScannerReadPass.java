@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -193,6 +196,10 @@ public final class MelonScannerReadPass {
                 //TODO: Uncomment when ready
                 //context.editedLog = true;
             }
+            if (checkLag(line, context.nextLine)) {
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage((line.contains("Plugin") ? "plugins" : "mods") + " load lagged sussly").queue();
+                // context.editedLog = true;
+            }
             return true;
         }
         else if (context.listingMods && context.tmpModName == null) {
@@ -250,6 +257,14 @@ public final class MelonScannerReadPass {
                 context.preListingMods = false;
                 context.listingMods = false;
                 System.out.println("Done scanning mods");
+            }
+            else if (checkLag(line, context.nextLine)) {
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("next line lagged sussly: " + context.nextLine).queue();
+                // context.editedLog = true;
+            }
+            if (checkLag(context.lastLine, line)) {
+                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("last line lagged sussly: " + context.lastLine).queue();
+                // context.editedLog = true;
             }
             return true;
         }
@@ -804,5 +819,25 @@ public final class MelonScannerReadPass {
     private static void consoleCopypasteCheck(MelonScanContext context) {
         if (context.line.matches("\\[[\\d.:]+] \\[MelonLoader] .*"))
             context.consoleCopyPaste = true;
+    }
+
+    private static boolean checkLag(String line, String futureLine) {
+        if (line == null || futureLine == null)
+            return false;
+        try {
+            SimpleDateFormat fMLtime = new SimpleDateFormat("HH:mm:ss.SSS");
+            Pattern p = Pattern.compile("\\[(?<MLtime>\\d{2}:\\d{2}:\\d{2}\\.\\d{3})].*");
+            Matcher m1 = p.matcher(line);
+            Matcher m2 = p.matcher(futureLine);
+            if (!m1.matches() || !m2.matches())
+                return false;
+
+            Date tsML1 = fMLtime.parse(m1.group("MLtime"));
+            Date tsML2 = fMLtime.parse(m2.group("MLtime"));
+            return tsML2.getTime() - tsML1.getTime() >= 4;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
