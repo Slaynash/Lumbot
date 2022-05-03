@@ -196,7 +196,16 @@ public final class MelonScannerReadPass {
                 //TODO: Uncomment when ready
                 //context.editedLog = true;
             }
-            if (checkLag(line, context.nextLine)) {
+            String nextline = null, nextnextline = null;
+            try {
+                context.bufferedReader.mark(690);
+                nextline = context.bufferedReader.readLine();
+                nextnextline = context.bufferedReader.readLine();
+                context.bufferedReader.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (checkLag(nextline, nextnextline)) {
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage((line.contains("Plugin") ? "plugins" : "mods") + " load lagged sussly").queue();
                 // context.editedLog = true;
             }
@@ -260,10 +269,6 @@ public final class MelonScannerReadPass {
             }
             else if (checkLag(line, context.nextLine)) {
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("next line lagged sussly: " + context.nextLine).queue();
-                // context.editedLog = true;
-            }
-            if (checkLag(context.lastLine, line)) {
-                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("last line lagged sussly: " + context.lastLine).queue();
                 // context.editedLog = true;
             }
             return true;

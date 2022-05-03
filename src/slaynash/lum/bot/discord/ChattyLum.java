@@ -158,6 +158,21 @@ public class ChattyLum {
         "https://tenor.com/view/raiden-shogun-gif-23244583"
     ));
 
+    private static final ArrayList<String> what = new ArrayList<>(Arrays.asList(
+        "https://cdn.discordapp.com/attachments/680928395399266314/832204354584182834/videoplayback_2.mp4",
+        "https://tenor.com/view/indian-dramatic-whut-soapopera-gif-8233002",
+        "https://tenor.com/view/brule-what-ay-what-gif-14969459",
+        "https://tenor.com/view/what-cat-what-cat-computer-gif-18924522",
+        "https://tenor.com/view/cat-wtf-shiny-what-shinywhat-gif-24910441",
+        "https://tenor.com/view/wait-what-gif-21319330",
+        "https://tenor.com/view/what-repeat-confused-gif-17603995",
+        "https://tenor.com/view/nick-young-question-marks-what-excuse-me-huh-gif-4486363",
+        "https://tenor.com/view/huh-rabbit-cute-gif-15676652",
+        "https://tenor.com/view/obama-wtf-why-president-wut-gif-12221156",
+        "https://tenor.com/view/what-confused-persian-room-cat-guardian-gif-11044457",
+        "https://tenor.com/view/anime-what-gif-24642265"
+    ));
+
     static { //on class load, nothing is removing these when the season is over other then a reboot
         if (LocalDate.now().getMonthValue() == 10) { //halloween
             helloLum.add("<:Neko_mummy:865328473761775627>");
@@ -293,7 +308,7 @@ public class ChattyLum {
         //must be last
         if (message.matches(".*\\b(what)\\b.*")) {
             System.out.println("Lum What?");
-            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/680928395399266314/832204354584182834/videoplayback_2.mp4").queue();
+            event.getChannel().sendMessage(what.get(random.nextInt(what.size()))).queue();
             return true;
         }
 
