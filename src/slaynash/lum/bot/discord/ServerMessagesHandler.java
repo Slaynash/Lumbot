@@ -201,7 +201,7 @@ public class ServerMessagesHandler {
                     else
                         if (message.replace(" ", "").contains("remod"))
                             Utils.replyEmbed(remodpinString, null, "https://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png", event);
-                        else
+                        if (message.replace(" ", "").contains("emm"))
                             Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
                     return;
                 }
