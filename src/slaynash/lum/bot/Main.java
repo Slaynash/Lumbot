@@ -67,7 +67,7 @@ import slaynash.lum.bot.utils.Utils;
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
     final List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
-        "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api",
+        "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api", "hype events",
         "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "mod mail", "discord api intents", "hypesquad events discord", "discord hype squad events",
         "the sandbox announcement", "deniz 2.0", "stoned frogs bot", "giveaway Bot", "metroverse announcments");
 

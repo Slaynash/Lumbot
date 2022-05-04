@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.User.Profile;
@@ -42,6 +43,9 @@ public class PrivateMessagesHandler {
             for (Attachment attachment : event.getMessage().getAttachments()) {
                 message = message.concat("\n").concat(attachment.getUrl());
             }
+            for (MessageSticker sticker : event.getMessage().getStickers()) {
+                message = message.concat("\n").concat(sticker.getIconUrl());
+            }
             if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
                 message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
             }
@@ -52,9 +56,8 @@ public class PrivateMessagesHandler {
                 StringBuilder sb = new StringBuilder();
                 event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory().forEach(m -> {
                     sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ").append(m.getContentRaw()).append(" ");
-                    if (m.getAttachments().size() > 0) {
-                        m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
-                    }
+                    m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
+                    m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
                     sb.append("\n");
                 });
                 if (sb.toString().isBlank())

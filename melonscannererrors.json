@@ -393,6 +393,10 @@
                 "error": "An internal error occurred. If this keeps happening, please contact Requi"
             },
             {
+                "regex": ".*ReModX is outdated - Download current version from the ReMod Discord!",
+                "error": "ReModX is outdated - Download current version from <#917473100403204116>"
+            },
+            {
                 "regex": "\\[[\\d.:]+] \\[ReModCE] \\[ERROR] Could not login to ReModCE API:.*",
                 "error": "Failed to log into ReModCE API. Try restarting VRChat and log into ReModCE again."
             },
