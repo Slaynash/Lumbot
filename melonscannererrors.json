@@ -6,7 +6,7 @@
         },
         {
             "regex": ".*System\\.IO\\.FileNotFoundException: .* ['|\"]System\\.IO\\.Compression.*",
-            "error": "You are actually missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>."
+            "error": "You are missing the required .NET Framework for MelonLoader.\nPlease make sure to install it using the following link: <https://dotnet.microsoft.com/download/dotnet-framework/net48>."
         },
         {
             "regex": "System.UnauthorizedAccessException:.*",
@@ -14,7 +14,7 @@
         },
         {
             "regex": "System.IO.IOException: The process cannot access the file '(?<filename>[\\w.]+)'.*",
-            "error": "Access to file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and amke sure your Virus scanner isn't interfering."
+            "error": "Access to file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and make sure your Virus scanner isn't interfering."
         },
         {
             "regex": "\\[[\\d.:]+] System.IO.IOException: The process cannot access the file.*",
@@ -138,7 +138,7 @@
         },
         {
             "regex": ".*The WOF driver encountered a corruption in the compressed file's Resource Table.",
-            "error": "WOF driver error. You may have a corrupt Windows install and you should try validing. [Article on how to](https://www.thewindowsclub.com/the-wof-driver-encountered-a-corruption-in-the-compressed-files-resource-table-dism-error) as well as a video at the bottom."
+            "error": "WOF driver error. You may have a corrupt Windows install and you should try validating. [Article on how to](https://www.thewindowsclub.com/the-wof-driver-encountered-a-corruption-in-the-compressed-files-resource-table-dism-error) as well as a video at the bottom."
         },
         {
             "regex": ".*System.MissingMethodException.*AssetsManager.*",
@@ -172,7 +172,7 @@
             "previousLineRegex": "\\[[\\d.:]+] Executing Cpp2IL...",
             "regex": "\\[[\\d.:]+] \"Z:\\\\.*",
             "nextLineRegex": "^((?!Samboy063).)*$",
-            "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-set up the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
+            "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
         }
     ],
     "knownErrors": [
@@ -210,7 +210,7 @@
         },
         {
             "regex": ".*Expecting a newline character at the end of a statement on line \\d+, but found an unexpected ','",
-            "error": "Please either delete `UserData\\MelonPreferences.cfg` which will reset mod settings or manually to replace all commas (`,`) in numbers with periods (`.`)"
+            "error": "Please either delete `UserData\\MelonPreferences.cfg` which will reset mod settings or manually replace all commas (`,`) in numbers with periods (`.`)"
         },
         {
             "regex": ".*System.IO.IOException: Win32 IO returned 112.*",
@@ -301,7 +301,7 @@
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(502\\) Bad Gateway.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could a firewall blocking the connection. Type `!proxy` if you need more help."
+                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could be a firewall blocking the connection. Type `!proxy` if you need more help."
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Your instance history file is invalid. It will be wiped.",
@@ -309,7 +309,7 @@
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: ConnectFailure \\(A connection attempt failed because the connected party did not properly respond after a period of time.*",
-                "error": "emmVRC servers timed out. There is either heavy load or emmVRC servers is having some issues. Please wait while staff looks into the issue."
+                "error": "emmVRC servers timed out. There is either a heavy load or emmVRC servers are having some issues. Please wait while staff looks into the issue."
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] emmVRC could not be accessed. Loading from disk, if possible...",
@@ -325,11 +325,11 @@
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occur+ed while trying to update emmVRC: System.IO.(DirectoryNotFoundException|FileNotFoundException).*",
-                "error": "emmVRC Dev mode is on. Please make sure that the launch options is cleared."
+                "error": "emmVRC Dev mode is on. Please make sure that the launch options are cleared."
             },
             {
                 "regex": ".*emmVRC is currently running with developer mode enabled.*",
-                "error": "emmVRC Dev mode is on. Please make sure that the launch options is cleared as this can cause issues."
+                "error": "emmVRC Dev mode is on. Please make sure that the launch options are cleared as this can cause issues."
             },
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
@@ -337,7 +337,7 @@
             },
             {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Error with platform icon: System\\.NullReferenceException.*",
-                "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team are aware of this issue."
+                "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team is aware of this issue."
             },
             {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
@@ -353,7 +353,7 @@
             },
             {
                 "regex": "  at VRChatUtilityKit.Utilities.VRCUtils.EndEmmCheck \\(System.IAsyncResult asyncResult\\) \\[0x00022].*",
-                "error": "emmVRC servers is having some issues. Please wait while we work on it."
+                "error": "emmVRC servers are having some issues. Please wait while we work on it."
             },
             {
                 "regex": ".*Exception in IL2CPP-to-Managed trampoline.*NullReferenceException.*",
@@ -362,7 +362,7 @@
             },
             {
                 "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
-                "error": "FavCat Image cache trim failed. Maybe try refeatching favorites."
+                "error": "FavCat Image cache trim failed. Maybe try refetching favorites."
             },
             {
                 "regex": ".*InstanceHistory.json file is corrupted and will need to be manually deleted.*",
@@ -465,7 +465,7 @@
     },
     "modSpecificErrors": {
         "AvatarStatsShowAuthor": "AvatarStatsShowAuthor has been added to VRChat and can be removed.",
-        "CleanConsole": "CleanConsole has been added into MelonLoader and no longer needed. Please remove CleanConsole from your Mods folder.",
+        "CleanConsole": "CleanConsole has been added into MelonLoader and is no longer needed. Please remove CleanConsole from your Mods folder.",
         "ClearVRAM": "ClearVRAM is no longer needed as this bug is now fixed in VRChat.",
         "ClickFix": "ClickFix has been added into VRChat and will cause VRChat to crash. Please remove ClickFix from your Mods folder.",
         "CloseFix": "CloseFix has been added into MelonLoader by adding `--quitfix` to the launch options. Please remove CloseFix from your Mods folder.",
@@ -483,7 +483,7 @@
         "Portal Confirmation": "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it.",
         "USpeakerPlaybackDelayFix": "USpeakerPlaybackDelayFix is no longer needed as this bug is now fixed in VRChat.",
         "YoutubeDLUpdater": "YoutubeDLUpdater is no longer needed and should be removed.",
-        "VRChat-TokenStealer-Doxer-IPGrabber-AvatarYoinker-RegionDisconnector-NotMalware-V6.9.0-Hotfix-420-XX": "Do I seriously need to explain to you why<:Natsuki_Facepalm:828070877978951681>? Maybe take a look at [this](https://youtu.be/dQw4w9WgXcQ) and reevaluate your life chooses.",
+        "VRChat-TokenStealer-Doxer-IPGrabber-AvatarYoinker-RegionDisconnector-NotMalware-V6.9.0-Hotfix-420-XX": "Do I seriously need to explain to you why<:Natsuki_Facepalm:828070877978951681>? Maybe take a look at [this](https://youtu.be/dQw4w9WgXcQ) and reevaluate your life choices.",
 
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
         "NKHook6": "NKHook6 is broken and should be removed from the mods folder.",

@@ -196,16 +196,15 @@ public final class MelonScannerReadPass {
                 //TODO: Uncomment when ready
                 //context.editedLog = true;
             }
-            String nextline = null, nextnextline = null;
+            String nextnextline = null;
             try {
                 context.bufferedReader.mark(690);
-                nextline = context.bufferedReader.readLine();
                 nextnextline = context.bufferedReader.readLine();
                 context.bufferedReader.reset();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if (checkLag(nextline, nextnextline)) {
+            if (checkLag(context.nextLine, nextnextline)) {
                 context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage((line.contains("Plugin") ? "plugins" : "mods") + " load lagged sussly").queue();
                 // context.editedLog = true;
             }
