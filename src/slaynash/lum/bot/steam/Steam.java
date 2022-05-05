@@ -188,8 +188,6 @@ public class Steam {
                 } catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
                 }
-                if (channels.size() == 0)
-                    return;
 
                 printKeyValue(app.getValue().getKeyValues(), 1);
                 SteamAppDetails gameDetail = gameDetails.get(app.getKey());
@@ -199,6 +197,9 @@ public class Steam {
                     gameDetails.put(app.getKey(), gameDetail);
                     return;
                 }
+
+                if (channels.size() == 0)
+                    return;
 
                 SteamAppDetails newAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
                 SteamAppDetails appChanges = SteamAppDetails.compare(gameDetail, newAppDetails);
