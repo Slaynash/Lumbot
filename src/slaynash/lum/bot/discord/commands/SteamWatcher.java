@@ -60,14 +60,14 @@ public class SteamWatcher extends Command {
         if (found == 0) {
             try {
                 DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `TS`) VALUES ('" + gameID + "', '" + guildID + "', ' " + channelID + "', CURRENT_TIMESTAMP);");
-                event.getMessage().reply("Added gameID " + gameID + " to Steam Watch").queue();
+                event.getMessage().reply("Added " + new Steam().getGameName(gameID) + " to Steam Watch").queue();
             } catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to add steam watch", e, event.getTextChannel());
             }
             new Steam().intDetails(gameID);
         }
         else {
-            event.getMessage().reply("Removed gameID " + gameID + " from Steam Watch").queue();
+            event.getMessage().reply("Removed " + new Steam().getGameName(gameID) + " from Steam Watch").queue();
         }
     }
 

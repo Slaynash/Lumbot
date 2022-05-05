@@ -339,4 +339,27 @@ public class Steam {
         thread.start();
     }
 
+    // Steam Id to Game name
+    public String getGameName(Integer gameID) {
+        if (gameDetails.containsKey(gameID)) {
+            SteamAppDetails appDetails = gameDetails.get(gameID);
+            if (appDetails.common.name != null)
+                return appDetails.common.name;
+        }
+        apps.picsGetProductInfo(gameID, null, false, false);
+        long timestamp = System.currentTimeMillis();
+        while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 5000) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (!gameDetails.containsKey(gameID))
+            return gameID.toString();
+        SteamAppDetails appDetails = gameDetails.get(gameID);
+        if (appDetails.common.name != null)
+            return appDetails.common.name;
+        return gameID.toString();
+    }
 }

@@ -337,6 +337,8 @@ public final class MelonScannerReadPass {
             String oldName = splitName(line);
             if (oldName.equalsIgnoreCase("ReMod Core"))
                 context.errors.add(new MelonLoaderError("ReMod.Core.dll goes in the root folder. Please move it up one folder."));
+            else if (oldName.equalsIgnoreCase("ReModCE"))
+                context.errors.add(new MelonLoaderError("ReModCE.dll goes in the root folder. Please move it up one folder."));
             else if (oldName.equalsIgnoreCase("emmVRC"))
                 context.errors.add(new MelonLoaderError("emmVRC.dll needs to stay in the Dependencies folder. Please delete it from your Mods folder."));
             else if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
