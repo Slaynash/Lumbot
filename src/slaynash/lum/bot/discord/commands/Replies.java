@@ -19,7 +19,7 @@ public class Replies extends Command {
 
         try {
             event.getMessage().getEmotes().forEach(emote -> {
-                if (!emote.canInteract(event.getGuild().getSelfMember())) {
+                if (!emote.canInteract(emote.getGuild().getSelfMember())) {
                     event.getMessage().reply("Lum can not use that emote.").queue();
                     return;
                 }
