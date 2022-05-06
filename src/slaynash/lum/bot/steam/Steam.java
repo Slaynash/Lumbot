@@ -349,6 +349,8 @@ public class Steam {
 
     // Steam Id to Game name
     public String getGameName(Integer gameID) {
+        if (gameID == null)
+            return "null";
         if (gameDetails.containsKey(gameID)) {
             SteamAppDetails appDetails = gameDetails.get(gameID);
             if (appDetails.common.name != null)
