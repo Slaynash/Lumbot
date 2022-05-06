@@ -79,6 +79,7 @@ public class CommandManager {
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command.toLowerCase())) continue;
+                if (!rcmd.allowBots() && event.getAuthor().isBot()) continue;
                 try {
                     rcmd.onClient(command, event);
                 }

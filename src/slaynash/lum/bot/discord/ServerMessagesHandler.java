@@ -63,6 +63,7 @@ public class ServerMessagesHandler {
             }
 
             handleAP(event);
+            CommandManager.runAsServer(event);
             if (event.getMessage().getType().isSystem() || event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
@@ -73,7 +74,7 @@ public class ServerMessagesHandler {
             }
             if (ABCpolice.abcPolice(event))
                 return;
-            CommandManager.runAsServer(event);
+
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);

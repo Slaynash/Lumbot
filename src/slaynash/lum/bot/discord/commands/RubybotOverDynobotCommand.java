@@ -7,7 +7,7 @@ public class RubybotOverDynobotCommand extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        paramMessageReceivedEvent.getChannel().sendMessage("<:SmugSip:743484784415866950>").queue();
+        paramMessageReceivedEvent.getMessage().reply("<:SmugSip:743484784415866950>").queue();
     }
 
     @Override
@@ -18,6 +18,11 @@ public class RubybotOverDynobotCommand extends Command {
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
         return false;
+    }
+
+    @Override
+    public boolean allowBots() {
+        return true;
     }
 
 }

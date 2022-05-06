@@ -25,4 +25,7 @@ public abstract class Command {
         return true;
     }
 
+    public boolean allowBots() {
+        return false;
+    }
 }
