@@ -164,7 +164,7 @@ public class Steam {
                 }
                 if (channels.size() != 0) {
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle("New Steam changelist from " + gameID + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
+                    eb.setTitle("New Steam changelist from " + getGameName(gameID) + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
                     for (ServerChannel sc : channels) {
                         if (testChannel(sc))
@@ -353,12 +353,14 @@ public class Steam {
             return "null";
         if (gameDetails.containsKey(gameID)) {
             SteamAppDetails appDetails = gameDetails.get(gameID);
-            if (appDetails.common.name != null)
+            if (appDetails.common != null && appDetails.common.name != null)
                 return appDetails.common.name;
+            else
+                return gameID.toString();
         }
         intDetails(gameID);
         long timestamp = System.currentTimeMillis();
-        while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 5000) {
+        while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 6900) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
@@ -368,7 +370,7 @@ public class Steam {
         if (!gameDetails.containsKey(gameID)) //timed out
             return gameID.toString();
         SteamAppDetails appDetails = gameDetails.get(gameID);
-        if (appDetails.common.name != null)
+        if (appDetails.common != null && appDetails.common.name != null)
             return appDetails.common.name;
         return gameID.toString();
     }
