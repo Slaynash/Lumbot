@@ -38,7 +38,7 @@ public class SteamWatcher extends Command {
             if (channels.size() != 0) {
                 StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game)\n");
                 for (ServerChannel sc : channels)
-                    sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(new Steam().getGameName(Integer.getInteger(sc.serverID))).append(sc.serverID).append(")\n"); //maybe look into sorting by channels
+                    sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(new Steam().getGameName(Integer.parseInt(sc.serverID))).append(" (").append(sc.serverID).append(")\n"); //maybe look into sorting by channels
                 event.getMessage().reply(sb.toString()).queue();
             }
             else
