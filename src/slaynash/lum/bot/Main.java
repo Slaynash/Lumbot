@@ -483,7 +483,7 @@ public class Main extends ListenerAdapter {
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-/*
+    /*
     private static void registerCommands() {
         JDA jda = JDAManager.getJDA();
 
@@ -514,7 +514,7 @@ public class Main extends ListenerAdapter {
             ExceptionUtils.reportException("Error registering command", e);
         }
     }
-*/
+    */
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {

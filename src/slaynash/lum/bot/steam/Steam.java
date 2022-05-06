@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import in.dragonbra.javasteam.enums.EResult;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSChangeData;
@@ -49,6 +50,7 @@ public class Steam {
     private int previousChangeNumber;
 
     private static final Map<Integer, SteamAppDetails> gameDetails = new HashMap<>();
+    private static final CopyOnWriteArrayList<Integer> intGameIDs = new CopyOnWriteArrayList<>();
 
     public Steam() {
 
@@ -136,6 +138,10 @@ public class Steam {
             System.out.println("Logged off from Steam");
         });
         callbackManager.subscribe(PICSChangesCallback.class, callback -> {
+            for (Integer intGameID : intGameIDs) {
+                apps.picsGetProductInfo(intGameID, null, false, false);
+                intGameIDs.remove(intGameID);
+            }
             if (previousChangeNumber == callback.getCurrentChangeNumber())
                 return;
 
@@ -311,8 +317,9 @@ public class Steam {
     }
 
     public void intDetails(Integer gameID) {
+        // For some reason, SteamKit ignores picsGetProductInfo if it is called outside of a callback
         if (!gameDetails.containsKey(gameID))
-            apps.picsGetProductInfo(gameID, null, false, false);
+            intGameIDs.add(gameID);
     }
 
     private void startChangesRequesterThread() {
@@ -347,7 +354,7 @@ public class Steam {
             if (appDetails.common.name != null)
                 return appDetails.common.name;
         }
-        apps.picsGetProductInfo(gameID, null, false, false);
+        intDetails(gameID);
         long timestamp = System.currentTimeMillis();
         while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 5000) {
             try {
@@ -356,7 +363,7 @@ public class Steam {
                 e.printStackTrace();
             }
         }
-        if (!gameDetails.containsKey(gameID))
+        if (!gameDetails.containsKey(gameID)) //timed out
             return gameID.toString();
         SteamAppDetails appDetails = gameDetails.get(gameID);
         if (appDetails.common.name != null)

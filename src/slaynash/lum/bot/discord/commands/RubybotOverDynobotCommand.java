@@ -12,7 +12,7 @@ public class RubybotOverDynobotCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.trim().toLowerCase().replace(" ", "").equals("rubybot>dynobot");
+        return paramString.trim().toLowerCase().replace(" ", "").replace(">", "<").contains("rubybot<lum");
     }
 
     @Override

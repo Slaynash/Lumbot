@@ -114,7 +114,7 @@ public class Utils {
         }
     }
 
-    /**
+    /*
     * Calculates the similarity (a number within 0 and 1) between two strings.
     * from https://stackoverflow.com/a/16018452
     */

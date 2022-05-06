@@ -602,9 +602,9 @@ public final class MelonScanner {
     private static boolean duplicatedModsCheck(MelonScanContext context) {
         if (context.duplicatedMods.size() > 0) {
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.duplicatedMods.size() && i < 10; ++i)
+            for (int i = 0; i < context.duplicatedMods.size() && i < (context.duplicatedMods.size() == 11 ? 11 : 10); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.duplicatedMods.get(i) + "\n"));
-            if (context.duplicatedMods.size() > 10)
+            if (context.duplicatedMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.duplicatemods.more", context.lang, context.duplicatedMods.size() - 10));
 
             error.append(Localization.get("melonscanner.duplicatemods.warning", context.lang));
@@ -619,7 +619,7 @@ public final class MelonScanner {
         if (context.missingMods.size() > 0) {
             context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.missingMods.size() && i < 10; ++i) {
+            for (int i = 0; i < context.missingMods.size() && i < (context.missingMods.size() == 11 ? 11 : 10); ++i) {
                 String missingModName = context.missingMods.get(i);
                 String missingModDownloadLink = MelonScannerApisManager.getDownloadLinkForMod(context.game, missingModName);
                 if (missingModDownloadLink != null)
@@ -627,7 +627,7 @@ public final class MelonScanner {
                 else
                     error.append("- ").append(CrossServerUtils.sanitizeInputString(missingModName)).append("\n");
             }
-            if (context.missingMods.size() > 10)
+            if (context.missingMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.missingmods.more", context.lang, context.missingMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -640,11 +640,11 @@ public final class MelonScanner {
     private static boolean incompatibleModsCheck(MelonScanContext context) {
         if (context.incompatibleMods.size() > 0) {
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.incompatibleMods.size() && i < 10; ++i) {
+            for (int i = 0; i < context.incompatibleMods.size() && i < (context.incompatibleMods.size() == 11 ? 11 : 10); ++i) {
                 MelonIncompatibleMod incompatibleMod = context.incompatibleMods.get(i);
                 error.append("- ").append(incompatibleMod.mod).append(" is incompatible with ").append(incompatibleMod.incompatible).append("\n");
             }
-            if (context.incompatibleMods.size() > 10)
+            if (context.incompatibleMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.incompatibleMods.more", context.lang, context.incompatibleMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.incompatibleMods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -658,12 +658,12 @@ public final class MelonScanner {
         context.corruptedMods.removeIf(m -> context.brokenMods.contains(m.name));
         if (context.corruptedMods.size() > 0) {
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.corruptedmods.warning", context.lang) + "\n");
-            for (int i = 0; i < context.corruptedMods.size() && i < 10; ++i)
+            for (int i = 0; i < context.corruptedMods.size() && i < (context.corruptedMods.size() == 11 ? 11 : 10); ++i)
                 if (context.corruptedMods.get(i).downloadLink != null)
                     error.append("- [").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name)).append("](").append(context.corruptedMods.get(i).downloadLink).append(")\n");
                 else
                     error.append("- ").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name + "\n"));
-            if (context.corruptedMods.size() > 10)
+            if (context.corruptedMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -678,9 +678,9 @@ public final class MelonScanner {
         if (context.brokenMods.size() > 0) {
             context.brokenMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.brokenMods.size() && i < 20; ++i)
+            for (int i = 0; i < context.brokenMods.size() && i < (context.brokenMods.size() == 21 ? 21 : 20); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.brokenMods.get(i) + "\n"));
-            if (context.brokenMods.size() > 20)
+            if (context.brokenMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.brokenMods.size() - 20));
 
             context.embedBuilder.addField(Localization.get("melonscanner.brokenmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -696,7 +696,7 @@ public final class MelonScanner {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             boolean added = false;
-            for (int i = 0; i < context.oldMods.size() && i < 20; ++i) {
+            for (int i = 0; i < context.oldMods.size() && i < (context.oldMods.size() == 21 ? 21 : 20); ++i) {
                 boolean found = false;
                 String modName = context.oldMods.get(i);
                 if (context.modDetails != null) { //null check for games without an API
@@ -728,7 +728,7 @@ public final class MelonScanner {
                     added = true;
                 }
             }
-            if (context.oldMods.size() > 20)
+            if (context.oldMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.oldmods.more", context.lang, context.oldMods.size() - 20));
             if (added) {
                 context.embedBuilder.addField(Localization.get("melonscanner.oldmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -742,7 +742,7 @@ public final class MelonScanner {
     private static boolean unknownModsCheck(MelonScanContext context) {
         if (context.unknownMods.size() > 0) {
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.unknownMods.size() && i < 10; ++i) {
+            for (int i = 0; i < context.unknownMods.size() && i < (context.unknownMods.size() == 11 ? 11 : 10); ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
                 if (md.version != null && !md.version.isBlank())
@@ -751,7 +751,7 @@ public final class MelonScanner {
                     unknowModOut = Localization.getFormat("melonscanner.unknownmods.modnamewithauthor", context.lang, unknowModOut, CrossServerUtils.sanitizeInputString(md.author));
                 error.append("- ").append(unknowModOut).append("\n");
             }
-            if (context.unknownMods.size() > 10)
+            if (context.unknownMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.unknownmods.more", context.lang, context.unknownMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.unknownmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -766,11 +766,11 @@ public final class MelonScanner {
         if (context.misplacedMods.size() > 0) {
             context.misplacedMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.misplacedmods.warning", context.lang) + "\n");
-            for (int i = 0; i < context.misplacedMods.size() && i < 10; ++i) {
+            for (int i = 0; i < context.misplacedMods.size() && i < (context.misplacedMods.size() == 11 ? 11 : 10); ++i) {
                 String mm = context.misplacedMods.get(i);
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(mm)).append("\n");
             }
-            if (context.misplacedMods.size() > 10)
+            if (context.misplacedMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.misplacedmods.more", context.lang, context.misplacedMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.misplacedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -785,11 +785,11 @@ public final class MelonScanner {
         if (context.misplacedPlugins.size() > 0) {
             context.misplacedPlugins.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.misplacedplugins.warning", context.lang) + "\n");
-            for (int i = 0; i < context.misplacedPlugins.size() && i < 10; ++i) {
+            for (int i = 0; i < context.misplacedPlugins.size() && i < (context.misplacedPlugins.size() == 11 ? 11 : 10); ++i) {
                 String mp = context.misplacedPlugins.get(i);
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(mp)).append("\n");
             }
-            if (context.misplacedPlugins.size() > 10)
+            if (context.misplacedPlugins.size() > 11)
                 error.append(Localization.getFormat("melonscanner.misplacedplugins.more", context.lang, context.misplacedPlugins.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.misplacedplugins.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
@@ -915,9 +915,9 @@ public final class MelonScanner {
         if (context.hasPendingMods.size() > 0) {
             context.hasPendingMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder("The following mods have an update waiting for review. This may bring new features or bug fixes, but it does not mean the below mods are broken.\n");
-            for (int i = 0; i < context.hasPendingMods.size() && i < 20; ++i)
+            for (int i = 0; i < context.hasPendingMods.size() && i < (context.hasPendingMods.size() == 21 ? 21 : 20); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.hasPendingMods.get(i))).append("\n");
-            if (context.hasPendingMods.size() > 20)
+            if (context.hasPendingMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.hasPendingMods.size() - 20));
 
             context.embedColor = Color.ORANGE;
@@ -932,9 +932,9 @@ public final class MelonScanner {
         if (context.modsThrowingErrors.size() > 0 && !context.isMLOutdated && !context.isMLOutdatedVRC) {
             context.modsThrowingErrors.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
-            for (int i = 0; i < context.modsThrowingErrors.size() && i < 10; ++i)
+            for (int i = 0; i < context.modsThrowingErrors.size() && i < (context.modsThrowingErrors.size() == 11 ? 11 : 10); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.modsThrowingErrors.get(i))).append("\n");
-            if (context.modsThrowingErrors.size() > 10)
+            if (context.modsThrowingErrors.size() > 11)
                 error.append(Localization.getFormat("melonscanner.modsthrowingerrors.more", context.lang, context.modsThrowingErrors.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.modsthrowingerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
