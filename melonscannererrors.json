@@ -413,6 +413,10 @@
                 "error": "Advanced Safety can get spammy in the console. Disabling \"Enforce default sorting layer\" in settings fixes that for now."
             },
             {
+                "regex": "\\[[\\d.:]+] \\[Advanced_Safety] Verifier process failed with exit code.*",
+                "error": "Advanced Safety failed to load a bundle and prevented the bad avatar from loading."
+            },
+            {
                 "regex": "\\[[\\d.:]+] \\[WholesomeLoader] \\[ERROR] Newtonsoft.Json.JsonReaderException: Error reading JObject from JsonReader.*",
                 "error": "Your TotallyWholesomeConfig.json is corrupted, you can delete it from `VRChat/UserData/TotallyWholesomeConfig.json`"
             },
@@ -482,7 +486,6 @@
         "PortableMirror": "PortableMirror is replaced by [PortableMirrorMod](https://api.vrcmg.com/v0/mods/197/PortableMirrorMod.dll) by another creator, please download and replace `PortableMirror.dll` with it.",
         "Portal Confirmation": "Portal Confirmation is replaced by [AskToPortal](https://api.vrcmg.com/v0/mods/152/AskToPortal.dll) by another creator, please download and replace `PortalConfirmation.dll` with it.",
         "USpeakerPlaybackDelayFix": "USpeakerPlaybackDelayFix is no longer needed as this bug is now fixed in VRChat.",
-        "YoutubeDLUpdater": "YoutubeDLUpdater is no longer needed and should be removed.",
         "VRChat-TokenStealer-Doxer-IPGrabber-AvatarYoinker-RegionDisconnector-NotMalware-V6.9.0-Hotfix-420-XX": "Do I seriously need to explain to you why<:Natsuki_Facepalm:828070877978951681>? Maybe take a look at [this](https://youtu.be/dQw4w9WgXcQ) and reevaluate your life choices.",
 
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
