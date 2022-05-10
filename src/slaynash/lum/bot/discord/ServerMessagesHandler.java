@@ -50,6 +50,17 @@ public class ServerMessagesHandler {
                     return;
                 }
                 Message message = event.getMessage();
+                try {
+                    message.getEmotes().forEach(emote -> {
+                        if (!emote.canInteract(emote.getGuild().getSelfMember())) {
+                            message.reply("Lum can not use that emote.").queue();
+                            return;
+                        }
+                    });
+                } catch (Exception e) {
+                    message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
+                    return;
+                }
                 MessageBuilder messageBuilder = new MessageBuilder(message);
                 for (Attachment attachment : message.getAttachments()) {
                     messageBuilder.append("\n").append(attachment.getUrl());
