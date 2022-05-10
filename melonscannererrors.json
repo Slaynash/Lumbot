@@ -173,6 +173,10 @@
             "regex": "\\[[\\d.:]+] \"Z:\\\\.*",
             "nextLineRegex": "^((?!Samboy063).)*$",
             "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
+        },
+        {
+            "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Initialize Assets Manager!",
+            "error": "Failed to Initialize Assets Manager. If you are using Turkish, That could be the problem."
         }
     ],
     "knownErrors": [

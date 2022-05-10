@@ -472,9 +472,10 @@ public class ServerMessagesHandler {
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
-                        else if (!value.equals("."))
+                        else if (!value.equals(".")) {
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                        return true;
+                            return true;
+                        }
                     }
                 }
             }
@@ -518,9 +519,10 @@ public class ServerMessagesHandler {
                             event.getMessage().addReaction(value).queue();
                         else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
                             event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
-                        else if (!value.equals("."))
+                        else if (!value.equals(".")) {
                             event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                        return true;
+                            return true;
+                        }
                     }
                 }
             }
