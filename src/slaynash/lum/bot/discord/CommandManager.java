@@ -34,7 +34,6 @@ import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetVRCBuild;
-import slaynash.lum.bot.discord.commands.SteamWatcher;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.UnityCheckCommand;
@@ -140,7 +139,6 @@ public class CommandManager {
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
         CommandManager.registerCommand(new Replies());
-        CommandManager.registerCommand(new SteamWatcher());
 
         CommandManager.registerCommand(new TestVRCObfmap());
         CommandManager.registerCommand(new UnityCheckCommand());

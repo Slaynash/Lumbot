@@ -3,7 +3,7 @@ package slaynash.lum.bot.steam;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +34,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
-import slaynash.lum.bot.discord.ServerChannel;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Steam {
@@ -151,12 +150,12 @@ public class Steam {
 
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 Integer gameID = changeDataPair.getKey();
-                List<ServerChannel> channels = new ArrayList<>();
+                List<SteamChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
                     while (rs.next()) {
-                        channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                 } catch (SQLException e) {
@@ -166,10 +165,10 @@ public class Steam {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + getGameName(gameID) + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
-                    for (ServerChannel sc : channels) {
+                    for (SteamChannel sc : channels) {
                         if (testChannel(sc))
                             continue;
-                        Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
+                        Guild guild = JDAManager.getJDA().getGuildById(sc.guildID);
                         TextChannel channel = guild.getTextChannelById(sc.channelId);
                         if (channel.canTalk())
                             channel.sendMessageEmbeds(eb.build()).queue();
@@ -184,11 +183,11 @@ public class Steam {
             System.out.println("[PICSProductInfoCallback] apps: ");
             for (Entry<Integer, PICSProductInfo> app : callback.getApps().entrySet()) {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
-                List<ServerChannel> channels = new ArrayList<>();
+                List<SteamChannel> channels = new ArrayList<>();
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + app.getKey() + ")");
                     while (rs.next()) {
-                        channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                 } catch (SQLException e) {
@@ -220,6 +219,7 @@ public class Steam {
                     eb.setTitle(gameDetail.common.name + " Depot" + (changeBranches.size() > 1 ? "s" : "") + " changed");
                     StringBuilder description = new StringBuilder();
                     boolean isPublicBranchUpdate = false;
+                    boolean isBetaBranchUpdate = false;
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
                         if (!oldBranches.containsKey(changedBranch.getKey())) {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
@@ -240,22 +240,28 @@ public class Steam {
                             description.append("[").append(changedBranch.getKey()).append("] Branch ").append(oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded").append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
                             if (newBranchDetails.description != null && !newBranchDetails.description.isBlank()) // I don't think this is ever null but nice to have
                                 description.append(" - Description: ").append(newBranchDetails.description).append("\n");
-                            if (newBranchDetails.pwdrequired == null || !newBranchDetails.pwdrequired)
+                            if (newBranchDetails.pwdrequired == null || !newBranchDetails.pwdrequired) {
                                 description.append(" - This is a public branch").append("\n");
-                            if (changedBranch.getKey().equals("public"))
+                                isBetaBranchUpdate = true;
+                            }
+                            if (changedBranch.getKey().equals("public")) {
                                 isPublicBranchUpdate = true;
+                                isBetaBranchUpdate = false;
+                            }
                         }
                     }
                     eb.setDescription(description.toString());
                     MessageBuilder mb = new MessageBuilder();
                     mb.setEmbeds(eb.build());
 
-                    for (ServerChannel sc : channels) {
-                        if (isPublicBranchUpdate && sc.serverID.equals("673663870136746046"))
-                            mb.setContent("@everyone");
-                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.serverID).getTextChannelById(sc.channelId);
+                    for (SteamChannel sc : channels) {
+                        if (isPublicBranchUpdate && sc.publicMessage != null && !sc.publicMessage.isBlank())
+                            mb.setContent(sc.publicMessage);
+                        if (isBetaBranchUpdate && sc.betaMessage != null && !sc.betaMessage.isBlank())
+                            mb.setContent(sc.betaMessage);
+                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessage(mb.build()).allowedMentions(Collections.singletonList(MentionType.EVERYONE)).queue();
+                            channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue();
                         mb.setContent("");
                     }
                 }
@@ -265,16 +271,16 @@ public class Steam {
         });
     }
 
-    private static boolean testChannel(ServerChannel sc) {
+    private static boolean testChannel(SteamChannel sc) {
         if (JDAManager.getJDA() == null)
             return true;
         if (!JDAManager.getJDA().getStatus().equals(JDA.Status.CONNECTED))
             return true;
-        Guild guild = JDAManager.getJDA().getGuildById(sc.serverID);
+        Guild guild = JDAManager.getJDA().getGuildById(sc.guildID);
         if (guild == null) {
-            System.out.println("Steam can not find Guild " + sc.serverID);
+            System.out.println("Steam can not find Guild " + sc.guildID);
             try {
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = " + sc.serverID);
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = " + sc.guildID);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -282,7 +288,7 @@ public class Steam {
         }
         TextChannel channel = guild.getTextChannelById(sc.channelId);
         if (channel == null) {
-            System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.serverID);
+            System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.guildID);
             try {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = " + sc.channelId);
             } catch (SQLException e) {

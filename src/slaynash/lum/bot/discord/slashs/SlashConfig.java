@@ -70,7 +70,7 @@ public class SlashConfig extends Slash {
         String guildID;
         List<OptionMapping> guildOption = event.getOptionsByName("guild");
         if (event.getChannelType() == ChannelType.PRIVATE) {
-            if (guildOption.size() == 0) {
+            if (guildOption.isEmpty()) {
                 event.reply("You must specify a guild ID in DMs").queue();
                 return;
             }
@@ -78,7 +78,7 @@ public class SlashConfig extends Slash {
                 guildID = guildOption.get(0).getAsString();
         }
         else {
-            if (guildOption.size() == 0)
+            if (guildOption.isEmpty())
                 guildID = event.getGuild().getId();
             else
                 guildID = guildOption.get(0).getAsString();

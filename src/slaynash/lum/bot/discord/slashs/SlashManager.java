@@ -62,6 +62,7 @@ public class SlashManager {
         JDA jda = JDAManager.getJDA();
 
         registerSlash(new SlashConfig());
+        registerSlash(new SteamWatcher());
         registerSlash(new UnivUCBLLIFExoGenerator());
 
         try {
@@ -89,9 +90,9 @@ public class SlashManager {
             for (Guild guild : jda.getGuilds()) {
                 List<CommandData> gslash = guildSlashes.get(guild.getIdLong());
                 if (gslash == null)
-                    guild.updateCommands().addCommands().queue(null, e -> {});
+                    guild.updateCommands().addCommands().queue(null, e -> { });
                 else
-                    guild.updateCommands().addCommands(gslash).queue(null, e -> {});
+                    guild.updateCommands().addCommands(gslash).queue(null, e -> { });
             }
         }
         catch (Exception e) {
