@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 09, 2022 at 08:47 PM
+-- Generation Time: May 11, 2022 at 10:29 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -78,10 +78,14 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
 --
 
 CREATE TABLE IF NOT EXISTS `SteamWatch` (
+  `ukey` int NOT NULL AUTO_INCREMENT,
   `GameID` bigint UNSIGNED NOT NULL,
   `ServerID` bigint UNSIGNED NOT NULL,
   `ChannelID` bigint UNSIGNED NOT NULL,
-  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `publicMention` varchar(1024) DEFAULT NULL,
+  `betaMention` varchar(1024) DEFAULT NULL,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `ukey` (`ukey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
