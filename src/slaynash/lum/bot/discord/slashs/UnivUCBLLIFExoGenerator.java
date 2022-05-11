@@ -8,17 +8,27 @@ import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
+
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.Command;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
-public class UnivUCBLLIFExoGenerator {
+public class UnivUCBLLIFExoGenerator extends Slash {
 
     Random rand = new Random();
 
@@ -29,6 +39,25 @@ public class UnivUCBLLIFExoGenerator {
         .followRedirects(Redirect.ALWAYS)
         .connectTimeout(Duration.ofSeconds(30))
         .build();
+
+    @Override
+    protected Map<Long, CommandData> guildSlashData() {
+        OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
+                new Command.Choice("Conversions binaire", "binconv"),
+                new Command.Choice("Boucles", "loops"),
+                new Command.Choice("Master Theorem", "mthm"),
+                new Command.Choice("Tas", "heap"),
+                new Command.Choice("AVL", "avl"),
+                new Command.Choice("Table de vérité", "bintable"));
+        List<SubcommandData> subUCBLLIF = Arrays.asList(
+                new SubcommandData("create", "Génère un exercice")
+                        .addOptions(Collections.singleton(optionUCBLLIF))
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false),
+                new SubcommandData("solve", "Affiche le corrigé d'un exercice")
+                        .addOptions(Collections.singleton(optionUCBLLIF))
+                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true));
+        return Collections.singletonMap(624635229222600717L, new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF));
+    }
 
     public void onCommand(SlashCommandEvent event) {
         // ₁₂₃₄₅₆₇₈₉

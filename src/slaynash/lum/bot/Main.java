@@ -56,7 +56,7 @@ import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
-import slaynash.lum.bot.discord.slashs.Slash;
+import slaynash.lum.bot.discord.slashs.SlashManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
@@ -119,12 +119,12 @@ public class Main extends ListenerAdapter {
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
+        SlashManager.registerCommands();
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
 
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
 
-            // registerCommands();
             Moderation.voiceStartup();
 
             new Steam().start();
@@ -471,50 +471,19 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onSlashCommand(@NotNull SlashCommandEvent event) {
-        Slash.slashRun(event);
+        SlashManager.slashRun(event);
     }
 
     @Override
     public void onButtonClick(@NotNull ButtonClickEvent event) {
-        Slash.buttonClick(event);
+        SlashManager.buttonClicked(event);
     }
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
-    /*
-    private static void registerCommands() {
-        JDA jda = JDAManager.getJDA();
 
-        OptionData optionUCBLLIF = new OptionData(OptionType.STRING, "type", "Type d'exercice", true).addChoices(
-                new Command.Choice("Conversions binaire", "binconv"),
-                new Command.Choice("Boucles", "loops"),
-                new Command.Choice("Master Theorem", "mthm"),
-                new Command.Choice("Tas", "heap"),
-                new Command.Choice("AVL", "avl"),
-                new Command.Choice("Table de vérité", "bintable"));
-        List<SubcommandData> subUCBLLIF = Arrays.asList(
-                new SubcommandData("create", "Génère un exercice")
-                        .addOptions(Collections.singleton(optionUCBLLIF))
-                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice (optionnel)", false),
-                new SubcommandData("solve", "Affiche le corrigé d'un exercice")
-                        .addOptions(Collections.singleton(optionUCBLLIF))
-                        .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true));
-
-        try {
-            jda.updateCommands().complete(); // Clear global commands
-            for (Guild guild : jda.getGuilds()) {
-                guild.updateCommands().queue(); // Clear guild commands
-            }
-            jda.updateCommands().addCommands(new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false)).queue();
-            jda.getGuildById(624635229222600717L).updateCommands().addCommands(new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF)).queue();
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Error registering command", e);
-        }
-    }
-    */
     @Override
     public void onException(@NotNull ExceptionEvent event) {
         try {

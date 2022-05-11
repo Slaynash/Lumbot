@@ -1,6 +1,8 @@
 package slaynash.lum.bot.discord.slashs;
 
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -8,13 +10,20 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.components.Button;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.GuildConfiguration;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public class SlashConfig {
+public class SlashConfig extends Slash {
+    @Override
+    protected CommandData globalSlashData() {
+        return new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false).setDefaultEnabled(false);
+    }
 
     public void sendReply(SlashCommandEvent event, String guildID) {
         try {
@@ -56,6 +65,33 @@ public class SlashConfig {
         }
     }
 
+    @Override
+    public void slashRun(SlashCommandEvent event) {
+        String guildID;
+        List<OptionMapping> guildOption = event.getOptionsByName("guild");
+        if (event.getChannelType() == ChannelType.PRIVATE) {
+            if (guildOption.size() == 0) {
+                event.reply("You must specify a guild ID in DMs").queue();
+                return;
+            }
+            else
+                guildID = guildOption.get(0).getAsString();
+        }
+        else {
+            if (guildOption.size() == 0)
+                guildID = event.getGuild().getId();
+            else
+                guildID = guildOption.get(0).getAsString();
+        }
+        new SlashConfig().sendReply(event, guildID);
+    }
+
+    @Override
+    protected List<String> buttonList() {
+        return Arrays.asList("ss", "ssban", "sscross", "dll", "partial", "general", "log", "mlr", "reaction", "thanks", "dad", "delete");
+    }
+
+    @Override
     public void buttonClick(ButtonClickEvent event) {
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
@@ -109,7 +145,6 @@ public class SlashConfig {
                     case "ssban" -> {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSBAN.string, !guildconfig.ScamShieldBan());
                         event.editButton(!guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick")).queue();
-                        event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                         checkBanPerm(event, guild, !guildconfig.ScamShieldBan());
                     }
                     case "sscross" -> {
