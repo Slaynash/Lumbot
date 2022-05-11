@@ -770,10 +770,6 @@ public final class MelonScannerReadPass {
             //context.editedLog = true;
             return true;
         }
-        if (context.lastLine.matches("\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.") && context.line.matches(".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*")) {
-            context.errors.add(new MelonLoaderError("AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."));
-            return true;
-        }
         return false;
     }
 

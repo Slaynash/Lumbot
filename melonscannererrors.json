@@ -166,13 +166,18 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[WARNING] .*IL Compile Error \\(unknown location\\).*",
-            "error": "Something is broken in MelonLoader. Try reinstalling MelonLoader."
+            "error": "Something is broken in MelonLoader. Try reinstalling MelonLoader. If that doesn't work, try cleaning your game install. For VRChat, remove everything that you don't see in the image below.$cleanunity$"
         },
         {
             "previousLineRegex": "\\[[\\d.:]+] Executing Cpp2IL...",
             "regex": "\\[[\\d.:]+] \"Z:\\\\.*",
             "nextLineRegex": "^((?!Samboy063).)*$",
             "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
+        },
+        {
+            "previousLineRegex": "\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.",
+            "regex": ".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*",
+            "error": "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Initialize Assets Manager!",
@@ -259,6 +264,10 @@
         {
             "regex": ".*Invalid File Extension.*\\.zip",
             "error": "Do not leave zips in Mod/Plugin folder. Remove the zip and try again."
+        },
+        {
+            "regex": ".*(?<error>Please Make Sure Mod DLL Name Is .*)",
+            "error": "error"
         }
     ],
     "gameSpecificErrors": {
