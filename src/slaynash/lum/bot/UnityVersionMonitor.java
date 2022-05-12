@@ -418,7 +418,7 @@ public class UnityVersionMonitor {
                 return;
             }
 
-            boolean useNSISBIExtractor = uv.version.startsWith("2020") && !uv.version.startsWith("2020.1") || uv.version.startsWith("2021");
+            boolean useNSISBIExtractor = uv.version.startsWith("202") && !uv.version.startsWith("2020.1");
             extractFilesFromArchive(uv, true, useNSISBIExtractor);
 
             saveInstalledVersionCache(uv.version, "windows il2cpp");
