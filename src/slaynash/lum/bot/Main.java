@@ -505,7 +505,7 @@ public class Main extends ListenerAdapter {
             ExceptionUtils.reportException("Member joined with null name");
             return;
         }
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replace("'", "");
 
         boolean foundblacklist = false;
         try {
@@ -513,7 +513,7 @@ public class Main extends ListenerAdapter {
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         } catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
         }
 
         if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
@@ -536,7 +536,7 @@ public class Main extends ListenerAdapter {
         if (event.getNewNickname() == null) { //removed nickname
             return;
         }
-        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase();
+        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replace("'", "");
 
         boolean foundblacklist = false;
         try {
@@ -544,7 +544,7 @@ public class Main extends ListenerAdapter {
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         } catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
         }
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
@@ -563,14 +563,14 @@ public class Main extends ListenerAdapter {
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
         mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
 
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replace("'", "");
         boolean foundblacklist = false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         } catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
         }
 
         for (Guild guild : mutualGuilds) {
