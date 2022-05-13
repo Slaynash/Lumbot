@@ -69,7 +69,7 @@ public class Main extends ListenerAdapter {
     final List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
         "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api", "hype events",
         "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "mod mail", "discord api intents", "hypesquad events discord", "discord hype squad events",
-        "the sandbox announcement", "deniz 2.0", "stoned frogs bot", "giveaway Bot", "metroverse announcments");
+        "the sandbox announcement", "deniz 2.0", "stoned frogs bot", "giveaway Bot", "metroverse announcments", "application mail", "discord bot", "discord bot application");
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");

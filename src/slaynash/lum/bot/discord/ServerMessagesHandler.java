@@ -238,7 +238,7 @@ public class ServerMessagesHandler {
                     return;
                 }
 
-                if (message.startsWith("!log")) {
+                if (message.startsWith("!log") || message.equals("<:logs:821719779756081182>")) {
                     if (message.startsWith("!loge")) {
                         System.out.println("loge");
                         event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/733305093264375849/835411858533515334/LOGE.mp4").queue();
