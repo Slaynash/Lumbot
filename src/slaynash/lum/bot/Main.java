@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,10 +67,6 @@ import slaynash.lum.bot.utils.Utils;
 
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
-    final List<String> scamUsernames = java.util.Arrays.asList("moderators academy", "moderation academy", "discord moderators recruitments", "discord developers",
-        "moderators academy recruitments", "discord moderator academy", "discord academy recruitments", "discord hypesquad", "discord api", "hype events",
-        "discord staff", "discord bots", "mod academy", "hype squad events", "modmail", "mod mail", "discord api intents", "hypesquad events discord", "discord hype squad events",
-        "the sandbox announcement", "deniz 2.0", "stoned frogs bot", "giveaway Bot", "metroverse announcments", "application mail", "discord bot", "discord bot application");
 
     public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
         System.out.println("Starting Lum...");
@@ -510,7 +507,16 @@ public class Main extends ListenerAdapter {
         }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
 
-        if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
+        boolean foundblacklist = false;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
+            foundblacklist = rs.next();
+            DBConnectionManagerLum.closeRequest(rs);
+        } catch (Exception e) {
+            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+        }
+
+        if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
             reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
             event.getMember().kick("Lum: Scammer joined").queue();
         }
@@ -532,11 +538,20 @@ public class Main extends ListenerAdapter {
         }
         String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase();
 
+        boolean foundblacklist = false;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
+            foundblacklist = rs.next();
+            DBConnectionManagerLum.closeRequest(rs);
+        } catch (Exception e) {
+            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+        }
+
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
+        if (foundblacklist) {
             event.getMember().kick("Lum: User changed nickname to known Scam").queue();
         }
     }
@@ -547,6 +562,17 @@ public class Main extends ListenerAdapter {
             return;
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
         mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
+
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
+        boolean foundblacklist = false;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
+            foundblacklist = rs.next();
+            DBConnectionManagerLum.closeRequest(rs);
+        } catch (Exception e) {
+            ExceptionUtils.reportException("Failed to check blacklisted username", e);
+        }
+
         for (Guild guild : mutualGuilds) {
             String report = CommandManager.mlReportChannels.get(guild.getIdLong());
             TextChannel reportchannel = guild.getTextChannelById(report);
@@ -555,8 +581,8 @@ public class Main extends ListenerAdapter {
                 ExceptionUtils.reportException("Member changed their name to null");
                 return;
             }
-            String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase();
-            if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS) && scamUsernames.stream().anyMatch(name::equalsIgnoreCase)) {
+
+            if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").allowedMentions(Collections.emptyList()).queue();
                 guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
                 return;
