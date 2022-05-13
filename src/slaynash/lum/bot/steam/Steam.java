@@ -226,8 +226,14 @@ public class Steam {
                             description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
                             if (branchDetails.description != null && !branchDetails.description.isBlank())
                                 description.append(" - Description: ").append(branchDetails.description).append("\n");
-                            if (branchDetails.pwdrequired == null || !branchDetails.pwdrequired)
+                            if (branchDetails.pwdrequired == null || !branchDetails.pwdrequired) {
                                 description.append(" - This is a public branch").append("\n");
+                                isBetaBranchUpdate = true;
+                            }
+                            if (changedBranch.getKey().equals("public")) {
+                                isPublicBranchUpdate = true;
+                                isBetaBranchUpdate = false;
+                            }
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
                             description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");

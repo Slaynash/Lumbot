@@ -402,6 +402,10 @@
                 "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {
+                "regex": ".*not passing it to il2cpp: System.MissingMethodException: ReMod.Core.*",
+                "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
+            },
+            {
                 "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",
                 "error": "An internal error occurred. If this keeps happening, please contact Requi"
             },
