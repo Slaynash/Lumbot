@@ -58,7 +58,7 @@ public class ScamShield {
             put("@here", 2);
             put("money", 1);
             put("loot", 1);
-            put("csgo", 2);
+            put("csgo", 1);
             put("trade", 1);
             put("knife", 1);
             put("offer", 1);

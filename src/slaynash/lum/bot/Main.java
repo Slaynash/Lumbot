@@ -505,7 +505,7 @@ public class Main extends ListenerAdapter {
             ExceptionUtils.reportException("Member joined with null name");
             return;
         }
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replace("'", "");
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
 
         boolean foundblacklist = false;
         try {
@@ -536,7 +536,7 @@ public class Main extends ListenerAdapter {
         if (event.getNewNickname() == null) { //removed nickname
             return;
         }
-        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replace("'", "");
+        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
 
         boolean foundblacklist = false;
         try {
@@ -563,7 +563,7 @@ public class Main extends ListenerAdapter {
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
         mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
 
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replace("'", "");
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
         boolean foundblacklist = false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
