@@ -122,8 +122,6 @@ public class Main extends ListenerAdapter {
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
 
-            Moderation.voiceStartup();
-
             new Steam().start();
 
             new AddMissingRoles().addMissing(null);
@@ -143,6 +141,7 @@ public class Main extends ListenerAdapter {
         }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+            Moderation.voiceStartup();
             JDAManager.getJDA()
                 .getGuildById(633588473433030666L)
                 .getTextChannelById(808076226064941086L)
