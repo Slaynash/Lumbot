@@ -304,6 +304,16 @@ public class ChattyLum {
             event.getChannel().sendMessage("<:Neko_cop:865328472540971058>").queue();
             return true;
         }
+        if (message.matches(".*install vrc(|hat) sdk.*")) {
+            System.out.println("Lum VRCSDK");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/972746728136671232/How_to_install_VRC_SDK.mp4").queue();
+            return true;
+        }
+        if (message.matches(".*\\b(looking for a girl).*")) {
+            System.out.println("looking for a girl");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/975632183949688942/looking_for_a_girl.mp4").queue();
+            return true;
+        }
 
         //must be last
         if (message.matches(".*\\b(what)\\b.*")) {

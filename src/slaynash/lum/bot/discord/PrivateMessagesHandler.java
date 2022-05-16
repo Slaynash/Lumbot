@@ -2,14 +2,12 @@ package slaynash.lum.bot.discord;
 
 import java.util.List;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.User.Profile;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 
@@ -39,7 +37,7 @@ public class PrivateMessagesHandler {
             User author = event.getAuthor();
             String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).replaceAll("[!ǃ@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").replace(" ", "-").toLowerCase();
             TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
-            String message = event.getMessage().getContentRaw();
+            String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
             for (Attachment attachment : event.getMessage().getAttachments()) {
                 message = message.concat("\n").concat(attachment.getUrl());
             }
@@ -49,8 +47,6 @@ public class PrivateMessagesHandler {
             if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
                 message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
             }
-            Profile profile = author.retrieveProfile().complete();
-            MessageEmbed eb = new EmbedBuilder().setAuthor(author.getAsTag(), null, author.getAvatarUrl()).setDescription(message.trim()).setColor(profile.getAccentColor()).setImage(profile.getBannerUrl()).build();
             if (guildchannel == null) {
                 System.out.println("Creating DM Channel " + channelName);
                 StringBuilder sb = new StringBuilder();
@@ -60,14 +56,15 @@ public class PrivateMessagesHandler {
                     m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
                     sb.append("\n");
                 });
+                final String finalMessage = message;
                 if (sb.toString().isBlank())
-                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).flatMap(ababa -> tc.sendMessage(finalMessage))).queue();
                 else
-                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName() + ".txt").flatMap(ababa -> tc.sendMessageEmbeds(eb))).queue();
+                    mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L)).flatMap(tc -> tc.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFile(sb.toString().getBytes(), author.getName() + ".txt").flatMap(ababa -> tc.sendMessage(finalMessage))).queue();
                 event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
             }
             else {
-                guildchannel.sendMessageEmbeds(eb).queue();
+                guildchannel.sendMessage(message).queue();
                 event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
             }
         }
