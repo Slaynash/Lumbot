@@ -56,8 +56,19 @@ public class TicketTool {
                 String code = split[1].toLowerCase();
                 String codeNotFound = "`" + code + "` was not found. If this is your account, please make sure to save it in your bio or status.";
                 List<Field> embedFields = event.getMessage().getEmbeds().get(0).getFields();
+                Field idField = null;
+                for (Field field : embedFields) {
+                    if (field.getName().equalsIgnoreCase("ID") || field.getName().equalsIgnoreCase("UserID")) {
+                        idField = field;
+                        break;
+                    }
+                }
+                if (idField == null) {
+                    System.out.println("[ERROR] Can not find ID field");
+                    return;
+                }
                 boolean codeFound = checkForCode(embedFields, code);
-                String id = embedFields.get(0).getValue().replace("`", ""); //assume that ID is always in the first field
+                String id = idField.getValue().replace("`", "");
                 System.out.println("Code: " + code + " ID:" + id);
 
                 if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
