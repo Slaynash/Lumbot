@@ -398,6 +398,7 @@ public final class MelonScanner {
                 case "arizonasunshine" -> context.embedBuilder.setThumbnail("https://arizona-sunshine.com/wp-content/uploads/2020/12/ArizonaSunshine_Logo_White.png");
                 case "audica" -> context.embedBuilder.setThumbnail("https://i.imgur.com/CHa4yW0.png");
                 case "battlebit" -> context.embedBuilder.setThumbnail("https://static.wikia.nocookie.net/battlebit_gamepedia_en/images/b/b3/Bbpng.png");
+                case "beatsaber" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202011/0203/4LLWirkLb4ufeFwgIzIB8lqp.png");
                 case "bloonsadventuretimetd" -> context.embedBuilder.setThumbnail("https://hisgames.org/images/logo/183/logo_bloons-adventure-time-td.png");
                 case "bloonstd6" -> {
                     if (context.pirate)
@@ -470,6 +471,7 @@ public final class MelonScanner {
                 case "thegolfclub2019protee" -> context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
                 case "townscaper" -> context.embedBuilder.setThumbnail("https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Townscaper_OskarStlberg_S3_2560x1440-558540cb0b62cb5520f1f9e5b4c7a204");
                 case "ultrakill" -> context.embedBuilder.setThumbnail("https://cdn2.steamgriddb.com/file/sgdb-cdn/logo/a295a55e7c3b2af6f363711442900b96.png");
+                case "umamusume" -> context.embedBuilder.setThumbnail("https://images.fanart.tv/fanart/uma-musume-pretty-derby-5c7fd37409c73.png");
                 case "uno" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                 case "voxmachinae" -> context.embedBuilder.setThumbnail("https://www.gmw3.com/wp-content/uploads/2016/08/splash1-300x149.png");
                 case "vrchat" -> context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");

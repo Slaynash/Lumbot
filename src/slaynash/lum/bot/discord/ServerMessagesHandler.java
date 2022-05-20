@@ -212,7 +212,10 @@ public class ServerMessagesHandler {
                             Utils.replyEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null, event);
                     }
                     else if (guildID == 936064484391387256L/*Remod Dev*/) {
-                        Utils.replyEmbed(remodpinString, null, "https://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png", event);
+                        if (message.replace(" ", "").contains("emm"))
+                            Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
+                        else
+                            Utils.replyEmbed(remodpinString, null, "https://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png", event);
                     }
                     else {
                         if (message.replace(" ", "").contains("remod"))

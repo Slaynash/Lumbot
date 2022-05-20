@@ -85,6 +85,7 @@ public class ScamShield {
             put("asubscription!", 2);
             put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
+            put("itisalreadyrunningout", 2);
             put("pleasetryclaimthisquickly", 2);
             put("gameicreatedtoday)", 2);
             put("whattoaddandwhattoremove", 2);
