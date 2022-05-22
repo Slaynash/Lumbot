@@ -1,5 +1,6 @@
 package slaynash.lum.bot.steam;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class Steam {
                     Map<String, SteamAppDetails.SteamAppBranch> changeBranches = appChanges.depots.branches;
 
                     EmbedBuilder eb = new EmbedBuilder();
-                    eb.setTitle(gameDetail.common.name + " Depot" + (changeBranches.size() > 1 ? "s" : "") + " changed");
+                    eb.setTitle(new String(gameDetail.common.name.getBytes(), StandardCharsets.UTF_8) + " Depot" + (changeBranches.size() > 1 ? "s" : "") + " changed");
                     StringBuilder description = new StringBuilder();
                     boolean isPublicBranchUpdate = false;
                     boolean isBetaBranchUpdate = false;
@@ -256,7 +257,7 @@ public class Steam {
                             }
                         }
                     }
-                    eb.setDescription(description.toString());
+                    eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
                     MessageBuilder mb = new MessageBuilder();
                     mb.setEmbeds(eb.build());
 
@@ -366,7 +367,7 @@ public class Steam {
         if (gameDetails.containsKey(gameID)) {
             SteamAppDetails appDetails = gameDetails.get(gameID);
             if (appDetails.common != null && appDetails.common.name != null)
-                return appDetails.common.name;
+                return new String(appDetails.common.name.getBytes(), StandardCharsets.UTF_8);
             else
                 return gameID.toString();
         }
@@ -383,7 +384,7 @@ public class Steam {
             return gameID.toString();
         SteamAppDetails appDetails = gameDetails.get(gameID);
         if (appDetails.common != null && appDetails.common.name != null)
-            return appDetails.common.name;
+            return new String(appDetails.common.name.getBytes(), StandardCharsets.UTF_8);
         return gameID.toString();
     }
 }
