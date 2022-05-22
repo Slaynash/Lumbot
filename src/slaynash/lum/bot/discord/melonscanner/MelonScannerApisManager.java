@@ -66,7 +66,7 @@ public class MelonScannerApisManager {
     static {
         apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v0/mods.json", true));
         apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://mintlily.lgbt/img/rak/btd6_info.json"));
         // apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
