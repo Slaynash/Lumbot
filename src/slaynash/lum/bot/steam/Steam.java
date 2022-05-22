@@ -156,7 +156,7 @@ public class Steam {
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
                     while (rs.next()) {
-                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention")));
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                 } catch (SQLException e) {
@@ -188,7 +188,7 @@ public class Steam {
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + app.getKey() + ")");
                     while (rs.next()) {
-                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention")));
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                 } catch (SQLException e) {
@@ -262,10 +262,14 @@ public class Steam {
                     mb.setEmbeds(eb.build());
 
                     for (SteamChannel sc : channels) {
-                        if (isPublicBranchUpdate && sc.publicMessage != null && !sc.publicMessage.isBlank())
+                        if (isPublicBranchUpdate && sc.publicMessage != null)
                             mb.setContent(sc.publicMessage);
-                        if (isBetaBranchUpdate && sc.betaMessage != null && !sc.betaMessage.isBlank())
+                        if (isBetaBranchUpdate && sc.betaMessage != null)
                             mb.setContent(sc.betaMessage);
+                        if (isPublicBranchUpdate == false && isBetaBranchUpdate == false && sc.otherMessage != null) {
+                            mb.setContent(sc.otherMessage);
+                        }
+
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
                             channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue();

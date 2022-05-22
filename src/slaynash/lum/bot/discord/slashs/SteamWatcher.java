@@ -22,7 +22,8 @@ public class SteamWatcher extends Slash {
         return new CommandData("steam", "Steam Watcher")
             .addOption(OptionType.STRING, "gameid", "Enter Game ID, blank for list", false)
             .addOption(OptionType.STRING, "public", "Enter Mention/Message for public changes", false)
-            .addOption(OptionType.STRING, "beta", "Enter Mention/Message for beta beta", false)
+            .addOption(OptionType.STRING, "beta", "Enter Mention/Message for public beta", false)
+            .addOption(OptionType.STRING, "other", "Enter Mention/Message for non-public changes", false)
             .setDefaultEnabled(false);
     }
 
@@ -38,12 +39,13 @@ public class SteamWatcher extends Slash {
         List<OptionMapping> gameID = event.getOptionsByName("gameid");
         List<OptionMapping> publicMess = event.getOptionsByName("public");
         List<OptionMapping> betaMess = event.getOptionsByName("beta");
+        List<OptionMapping> otherMess = event.getOptionsByName("other");
         List<SteamChannel> channels = new ArrayList<>();
         if (gameID.isEmpty()) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = '" + guildID + "'");
                 while (rs.next())
-                    channels.add(new SteamChannel(rs.getString("GameID"), guildID, rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention")));
+                    channels.add(new SteamChannel(rs.getString("GameID"), guildID, rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                 DBConnectionManagerLum.closeRequest(rs);
             } catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getTextChannel());
@@ -57,6 +59,7 @@ public class SteamWatcher extends Slash {
                     sb.append(event.getJDA().getTextChannelById(sc.channelId).getName()).append(" -> ").append(new Steam().getGameName(Integer.parseInt(sc.gameID))).append(" (").append(sc.gameID).append(")"); //maybe look into sorting by channels
                     if (sc.publicMessage != null) sb.append(" (Public: ").append(sc.publicMessage).append(")");
                     if (sc.betaMessage != null) sb.append(" (Beta: ").append(sc.betaMessage).append(")");
+                    if (sc.otherMessage != null) sb.append(" (Other: ").append(sc.otherMessage).append(")");
                     sb.append("\n");
                 }
                 interactionhook.sendMessage(sb.toString()).queue();
@@ -78,6 +81,7 @@ public class SteamWatcher extends Slash {
 
         String publicString;
         String betaString;
+        String otherString;
 
         if (publicMess.isEmpty())
             publicString = "NULL";
@@ -87,10 +91,14 @@ public class SteamWatcher extends Slash {
             betaString = "NULL";
         else
             betaString = "'" + betaMess.get(0).getAsString() + "'";
+        if (otherMess.isEmpty())
+            otherString = "NULL";
+        else
+            otherString = "'" + otherMess.get(0).getAsString() + "'";
 
         if (found == 0) {
             try {
-                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `publicMention`, `betaMention`) VALUES ('" + gameIDstr + "', '" + guildID + "', ' " + channelID + "', " + publicString + ", " + betaString + ");");
+                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `publicMention`, `betaMention`, `otherMention`) VALUES ('" + gameIDstr + "', '" + guildID + "', ' " + channelID + "', " + publicString + ", " + betaString + ", " + otherString + ");");
                 interactionhook.sendMessage("Added " + new Steam().getGameName(gameIDint) + " to Steam Watch").queue();
             } catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to add steam watch", e, event.getTextChannel());

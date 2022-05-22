@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 14, 2022 at 12:20 AM
+-- Generation Time: May 22, 2022 at 07:41 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -96,6 +96,7 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
   `ChannelID` bigint UNSIGNED NOT NULL,
   `publicMention` varchar(1024) DEFAULT NULL,
   `betaMention` varchar(1024) DEFAULT NULL,
+  `otherMention` varchar(1024) DEFAULT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `ukey` (`ukey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
