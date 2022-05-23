@@ -72,9 +72,11 @@ public class ServerMessagesHandler {
                         error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
                 return;
             }
-
-            handleAP(event);
             CommandManager.runAsServer(event);
+            if (event.getTextChannel().isNews()) {
+                handleAP(event);
+                return;
+            }
             if (event.getMessage().getType().isSystem() || event.getAuthor().getDiscriminator().equals("0000")) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {

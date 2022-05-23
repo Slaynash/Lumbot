@@ -181,7 +181,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Initialize Assets Manager!",
-            "error": "Failed to Initialize Assets Manager. If you are using Turkish, That could be the problem."
+            "error": "Failed to Initialize Assets Manager. If you are using Turkish as your main Windows language, That could be the problem."
         }
     ],
     "knownErrors": [
