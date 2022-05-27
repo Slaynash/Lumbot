@@ -14,14 +14,11 @@ import com.coder4.emoji.EmojiUtils;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageSticker;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.gcardone.junidecode.Junidecode;
@@ -39,39 +36,8 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
-            if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
-                    event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
-                    event.getChannel().getName().toLowerCase().startsWith("dm-") &&
-                    !event.getMessage().getContentRaw().startsWith(".")) {
-                String[] userID = event.getChannel().getName().split("-");
-                User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
-                if (user == null) {
-                    Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
-                    return;
-                }
-                Message message = event.getMessage();
-                try {
-                    message.getEmotes().forEach(emote -> {
-                        if (!emote.canInteract(emote.getGuild().getSelfMember())) {
-                            message.reply("Lum can not use that emote.").queue();
-                            return;
-                        }
-                    });
-                } catch (Exception e) {
-                    message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
-                    return;
-                }
-                MessageBuilder messageBuilder = new MessageBuilder(message);
-                for (Attachment attachment : message.getAttachments()) {
-                    messageBuilder.append("\n").append(attachment.getUrl());
-                }
-                for (MessageSticker sticker : event.getMessage().getStickers()) {
-                    messageBuilder.append("\n").append(sticker.getIconUrl());
-                }
-                user.openPrivateChannel().queue(channel -> channel.sendMessage(messageBuilder.build()).queue(null, e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
-                        error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
+            if (MessageProxy.fromDev(event))
                 return;
-            }
             CommandManager.runAsServer(event);
             if (event.getTextChannel().isNews()) {
                 handleAP(event);

@@ -101,6 +101,7 @@ public class ScamShield {
             put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
+            put("join (this|my) server (|https?://)(discord.gg|(discord(.com|app.com|.media|.co)|watchanimeattheoffice.com)/invite).*", 2);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 1);

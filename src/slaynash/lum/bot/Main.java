@@ -41,12 +41,14 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.MessageProxy;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
@@ -599,14 +601,8 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    //Does not work because we need GUILD_PRESENCES along with DIRECT_MESSAGE_TYPING and GUILD_MESSAGE_TYPING
-    // @Override
-    // public void onUserTyping(UserTypingEvent event) {
-    //     if (event.isFromType(ChannelType.PRIVATE)) {
-    //         PrivateMessagesHandler.typingFromDM(event);
-    //     }
-    //     else {
-    //         ServerMessagesHandler.typingToDM(event);
-    //     }
-    // }
+    @Override
+    public void onUserTyping(@NotNull UserTypingEvent event) {
+        MessageProxy.proxyTyping(event);
+    }
 }

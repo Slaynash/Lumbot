@@ -1,0 +1,143 @@
+package slaynash.lum.bot.discord;
+
+import java.awt.Color;
+
+import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageSticker;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.user.UserTypingEvent;
+import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.utils.Utils;
+
+public class MessageProxy {
+
+    public static void fromDM(MessageReceivedEvent event) {
+        Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
+
+        User author = event.getAuthor();
+        String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong())
+                .replaceAll("[!ǃ@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").replace(" ", "-")
+                .toLowerCase();
+        TextChannel guildchannel = mainguild.getTextChannels().stream()
+                .filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
+
+        String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
+        for (Attachment attachment : event.getMessage().getAttachments()) {
+            message = message.concat("\n").concat(attachment.getUrl());
+            if (MelonScanner.isValidFileFormat(attachment, false)) {
+                event.getMessage().reply(
+                        "Sorry, I do not scan logs in DMs. Please use a server that has MelonLoader log scans enabled.")
+                        .queue();
+                if (guildchannel != null)
+                    guildchannel.sendMessage(
+                            "Sorry, I do not scan logs in DMs. Please use a server that has MelonLoader log scans enabled.")
+                            .queue();
+                return;
+            }
+        }
+        for (MessageSticker sticker : event.getMessage().getStickers()) {
+            message = message.concat("\n").concat(sticker.getIconUrl());
+        }
+        if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+            message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+        }
+        if (guildchannel == null) {
+            System.out.println("Creating DM Channel " + channelName);
+            StringBuilder sb = new StringBuilder();
+            event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
+                    .forEach(m -> {
+                        sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ")
+                                .append(m.getContentRaw()).append(" ");
+                        m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
+                        m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
+                        sb.append("\n");
+                    });
+            final String finalMessage = message;
+            if (sb.toString().isBlank())
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L))
+                        .flatMap(tc -> tc
+                                .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
+                                .flatMap(ababa -> tc.sendMessage(finalMessage)))
+                        .queue();
+            else
+                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L))
+                        .flatMap(tc -> tc
+                                .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
+                                .addFile(sb.toString().getBytes(), author.getName() + ".txt")
+                                .flatMap(ababa -> tc.sendMessage(finalMessage)))
+                        .queue();
+            event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
+        } else {
+            guildchannel.sendMessage(message).queue();
+            event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
+        }
+    }
+
+    public static boolean fromDev(MessageReceivedEvent event) {
+        if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
+                event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
+                event.getChannel().getName().toLowerCase().startsWith("dm-") &&
+                !event.getMessage().getContentRaw().startsWith(".")) {
+            String[] userID = event.getChannel().getName().split("-");
+            User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
+            if (user == null) {
+                Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
+                return true;
+            }
+            Message message = event.getMessage();
+            try {
+                message.getEmotes().forEach(emote -> {
+                    if (!emote.canInteract(emote.getGuild().getSelfMember())) {
+                        message.reply("Lum can not use that emote.").queue();
+                        return;
+                    }
+                });
+            } catch (Exception e) {
+                message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
+                return true;
+            }
+            MessageBuilder messageBuilder = new MessageBuilder(message);
+            for (Attachment attachment : message.getAttachments()) {
+                messageBuilder.append("\n").append(attachment.getUrl());
+            }
+            for (MessageSticker sticker : event.getMessage().getStickers()) {
+                messageBuilder.append("\n").append(sticker.getIconUrl());
+            }
+            user.openPrivateChannel().queue(
+                    channel -> channel.sendMessage(messageBuilder.build()).queue(null,
+                            e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red,
+                                    event)),
+                    error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red,
+                            event));
+
+            return true;
+        }
+        return false;
+    }
+
+    public static void proxyTyping(UserTypingEvent event) {
+        TextChannel guildchannel = JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
+        if (guildchannel == null) {
+            return;
+        }
+        if (event.isFromType(ChannelType.PRIVATE)) {
+            if (guildchannel != null) {
+                guildchannel.sendTyping().queue();
+            }
+        } else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getTextChannel().getParent() != null && event.getTextChannel().getParent().getIdLong() == 924780998124798022L) {
+            event.getUser().openPrivateChannel().queue(
+                channel -> channel.sendMessage("").queue(null,
+                        e -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
+                error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
+        }
+
+    }
+
+}

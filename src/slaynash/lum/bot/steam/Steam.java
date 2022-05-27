@@ -269,7 +269,7 @@ public class Steam {
                             mb.setContent(sc.publicMessage);
                         if (isBetaBranchUpdate && sc.betaMessage != null)
                             mb.setContent(sc.betaMessage);
-                        if (isPublicBranchUpdate == false && isBetaBranchUpdate == false && sc.otherMessage != null) {
+                        if (!isPublicBranchUpdate && !isBetaBranchUpdate && sc.otherMessage != null) {
                             mb.setContent(sc.otherMessage);
                         }
 
