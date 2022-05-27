@@ -353,12 +353,16 @@
                 "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team is aware of this issue."
             },
             {
-                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
-                "error": "emmVRC fbt saving errored due to fbt not existing on the oculus version."
-            },
-            {
                 "regex": ".*\\[emmVRCLoader] \\[ERROR] Could not load the programs JSON file. Please make sure everything is correctly formatted!",
                 "error": "emmVRC Programs is not formatted correctly. Try deleting `VRChat\\UserData\\emmVRC\\programs.json` and relaunch VRChat."
+            },
+            {
+                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
+                "error": "emmVRC fbt saving errored due to fbt saving now part of VRChat."
+            },
+            {
+                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.Other.UpdateNotice\":",
+                "error": "emmVRC is having some issues because of the update. If your windows is running Turkish then that could be the issue, else feel free to ignore this error. Please mention if you notice any issues."
             },
             {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
@@ -402,7 +406,7 @@
                 "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {
-                "regex": ".*not passing it to il2cpp: System.MissingMethodException: ReMod.Core.*",
+                "regex": ".*not passing it to il2cpp: System.MissingMethodException: (ReMod|void VRC.UI).Core.*",
                 "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {

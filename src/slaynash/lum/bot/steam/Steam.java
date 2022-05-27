@@ -96,10 +96,10 @@ public class Steam {
             EResult result = callback.getResult();
             if (result != EResult.OK) {
                 if (result == EResult.ServiceUnavailable || result == EResult.Timeout || result == EResult.TryAnotherCM) {
-                    ExceptionUtils.reportException("Steam: " + result + " Retrying in 5min...");
+                    ExceptionUtils.reportException("Steam: " + result + " Retrying in a min...");
                     client.disconnect();
                     try {
-                        Thread.sleep(5 * 60 * 1000);
+                        Thread.sleep(60 * 1000);
                     }
                     catch (Exception e) {
                         e.printStackTrace();
@@ -172,7 +172,10 @@ public class Steam {
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID);
                         TextChannel channel = guild.getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessageEmbeds(eb.build()).queue();
+                            channel.sendMessageEmbeds(eb.build()).queue(s -> {
+                                if (channel.isNews())
+                                    s.crosspost().queue();
+                            });
                         else
                             System.out.println("Lum can't talk in " + guild.getName() + " " + channel.getName());
                     }
@@ -272,7 +275,10 @@ public class Steam {
 
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue();
+                            channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
+                                if (channel.isNews())
+                                    s.crosspost().queue();
+                            });
                         mb.setContent("");
                     }
                 }
@@ -351,7 +357,7 @@ public class Steam {
                 apps.picsGetChangesSince(previousChangeNumber, true, true);
 
                 try {
-                    Thread.sleep(random.nextInt(3210));
+                    Thread.sleep(random.nextInt(3210) + 1000);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

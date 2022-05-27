@@ -312,6 +312,7 @@ public final class MelonScanner {
                     latestModBroken = modDetail.isbroken;
                     if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash))
                         context.corruptedMods.add(modDetail);
+                        System.out.println("Mod " + modDetail.name + " is corrupted, API hash: " + latestModHash + " vs. logs hash: " + logsModDetails.hash);
                     break;
                 }
             }
