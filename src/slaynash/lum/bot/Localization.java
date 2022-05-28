@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,6 +52,8 @@ public final class Localization {
         String ret = getInternal(key, lang);
         if ("sga".equals(lang))
             return toStandardGalacticAlphabet(ret);
+        if ("owo".equals(lang) || "uwu".equals(lang))
+            return toOwOify(ret);
 
         return ret;
     }
@@ -62,6 +65,9 @@ public final class Localization {
 
         if ("sga".equals(lang))
             return toStandardGalacticAlphabet(ret);
+
+        if ("owo".equals(lang) || "uwu".equals(lang))
+            return toOwOify(ret);
 
         return ret;
     }
@@ -105,5 +111,23 @@ public final class Localization {
         });
 
         return ret.toString();
+    }
+    public static String toOwOify (String text) {
+        if (text == null || text.isBlank())
+            return text;
+
+        text = text.replace('r', 'w')
+                .replace('l', 'w')
+                .replace('R', 'W')
+                .replace('L', 'W');
+        Random random = new Random();
+        switch (random.nextInt(2)) {
+            case 0 -> text = text.replace("n", "ny");
+            case 1 -> text = text.replace("n", "nya");
+            default -> {
+            }
+        }
+
+        return text;
     }
 }

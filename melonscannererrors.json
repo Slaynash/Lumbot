@@ -410,6 +410,10 @@
                 "error": "ReMod.Core is erroring. Please delete the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
             },
             {
+                "regex": ".*Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.ArgumentException: method argument length mismatch",
+                "error": "Maybe ReMod.Core is erroring. Try deleting the file `VRChat\\ReMod.Core.dll` and relaunch VRChat"
+            },
+            {
                 "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",
                 "error": "An internal error occurred. If this keeps happening, please contact Requi"
             },

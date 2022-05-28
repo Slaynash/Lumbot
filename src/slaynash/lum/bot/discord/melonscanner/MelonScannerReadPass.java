@@ -347,7 +347,7 @@ public final class MelonScannerReadPass {
         }
 
         if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
-            context.errors.add(new MelonLoaderError("You gotten ReMod Honeypotted. Load into a world and VRChat would restart if you are whitelisted. Ping a BlueName if that doesn't unHoneypot you."));
+            context.errors.add(new MelonLoaderError("You've been honeypotted, cope with it and don't report it to me. <:Neko_dab:865328473719439381>"));
             return true;
         }
         return false;

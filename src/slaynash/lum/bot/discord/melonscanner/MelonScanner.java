@@ -72,6 +72,8 @@ public final class MelonScanner {
                 Random random = new Random();
                 if (random.nextInt(1000) == 420)
                     lang = "sga";
+                if (random.nextInt(420) == 69)
+                    lang = "owo";
             }
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
