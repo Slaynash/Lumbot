@@ -921,7 +921,7 @@ public final class MelonScanner {
     private static boolean modsHasPendingCheck(MelonScanContext context) {
         if (context.hasPendingMods.size() > 0) {
             context.hasPendingMods.sort(String.CASE_INSENSITIVE_ORDER);
-            StringBuilder error = new StringBuilder("The following mods have an update waiting for review. This may bring new features or bug fixes, but it does not mean the below mods are broken.\n");
+            StringBuilder error = new StringBuilder(Localization.get("The following mods have an update waiting for review. This may bring new features or bug fixes, but it does not mean the below mods are broken.\n", context.lang));
             for (int i = 0; i < context.hasPendingMods.size() && i < (context.hasPendingMods.size() == 21 ? 21 : 20); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.hasPendingMods.get(i))).append("\n");
             if (context.hasPendingMods.size() > 21)
@@ -971,32 +971,33 @@ public final class MelonScanner {
                     error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
             }
             if (context.loadedMods.containsKey("BTKCompanionLoader") && context.loadedMods.containsKey("BTKSANameplateMod")) {
-                error += "Remove BTKSANameplateMod as it is included with BTKCompanionLoader\n";
+                error += Localization.get("Remove BTKSANameplateMod as it is included with BTKCompanionLoader", context.lang) + "\n";
             }
             if (context.hasNonModErrors && context.errors.size() == 0) {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
                 context.unidentifiedErrors = true;
             }
             if (context.mlVersion != null && VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
-                error += "Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n";
+                error += Localization.get("Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder", context.lang) + "\n";
             }
             if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
-                error += "MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.";
+                error += Localization.get("MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.", context.lang) + "\n";
             }
             if (context.line.contains("Downloading")) {
-                error += "MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.";
+                error += Localization.get("MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.", context.lang) + "\n";
             }
             if (context.line.contains("Contacting RemoteAPI...")) {
-                error += "Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.";
+                error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
+
             }
             if (context.mlVersion != null && context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
-                context.embedBuilder.addField("You don't have ReMod", "ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", false);
+                context.embedBuilder.addField(Localization.get("You don't have ReMod", context.lang), Localization.get("ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", context.lang), false);
                 if (context.embedColor == Color.BLUE)
                     context.embedColor = Color.ORANGE;
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
-                context.embedBuilder.addField("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", "Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", false);
+                context.embedBuilder.addField(Localization.get("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", context.lang), Localization.get("Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", context.lang), false);
 
             if (error.length() > 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
