@@ -75,6 +75,7 @@ public class ScamShield {
             put("download", 1);
             put("100%", 1);
             put("bro", 1);
+            put("joinnow", 1);
             put("broken", -1); //temporary solution until I can think of a better way, issue is that all spaces are removed
             put("checkthis", 1);
             put("linkforyou", 1);
@@ -165,6 +166,10 @@ public class ScamShield {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge * 3);
+        }
+        tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
+        if (tempval > 0 && event.getMessage().getInvites().size() > 0) {
+            ssFoundTerms.put("Invite", 1);
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);

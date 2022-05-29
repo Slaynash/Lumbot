@@ -121,13 +121,17 @@ public final class Localization {
                 .replace('R', 'W')
                 .replace('L', 'W');
         Random random = new Random();
-        switch (random.nextInt(2)) {
-            case 0 -> text = text.replace("n", "ny");
-            case 1 -> text = text.replace("n", "nya");
-            default -> {
+        StringBuilder nyan = new StringBuilder(text.length());
+        for (String cat : text.split(" ")) {
+            switch (random.nextInt(2)) {
+                case 0 -> cat = cat.replace("n", "ny");
+                case 1 -> cat = cat.replace("n", "nya");
+                default -> {
+                }
             }
+            nyan.append(cat).append(" ");
         }
 
-        return text;
+        return nyan.toString();
     }
 }
