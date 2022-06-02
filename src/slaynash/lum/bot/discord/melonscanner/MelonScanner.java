@@ -698,7 +698,7 @@ public final class MelonScanner {
     }
 
     private static boolean oldModsCheck(MelonScanContext context) {
-        boolean reinstallML = context.errors.stream().anyMatch(e -> e.error.contains("reinstall"));
+        boolean reinstallML = context.errors.stream().filter(i -> i.error != null).anyMatch(e -> e.error.contains("reinstall"));
         if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated) || context.modifiedML || reinstallML) {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
