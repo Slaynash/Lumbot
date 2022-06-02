@@ -593,7 +593,7 @@ public final class MelonScanner {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.errors.size(); ++i) {
                 String errorString = context.errors.get(i).error(context.lang);
-                if (errorString.contains("$cleanunity$")) {
+                if (errorString != null && errorString.contains("$cleanunity$")) {
                     errorString = errorString.replace("$cleanunity$", "");
                     context.embedBuilder.setImage("https://cdn.discordapp.com/attachments/600661924010786816/956088486220431400/unknown.png");
                 }
