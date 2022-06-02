@@ -273,6 +273,19 @@
     "gameSpecificErrors": {
         "VRChat": [
             {
+                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Update notice failed."
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System locale:.*"
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Config semver:.*"
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Error produced: System.ArgumentOutOfRangeException: startIndex must be less than length of string.",
+                "error": "EmmVRC failed to download changelog. This does not cause any issues."
+            },
+            {
                 "regex": "\\[[\\d.:]+] \\[OculusPlayspaceMover] \\[ERROR] OVRCameraRig not found, this mod only work (i|o)n Oculus( for now!|! If u are using SteamVR, use the OVR Advanced Settings!)",
                 "error": "OculusPlayspaceMover does not work in SteamVR. Instead, it is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."
             },

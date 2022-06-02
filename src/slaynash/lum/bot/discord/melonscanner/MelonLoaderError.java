@@ -74,6 +74,12 @@ public class MelonLoaderError {
         if (!(o instanceof MelonLoaderError me)) {
             return false;
         }
+        if (this.error == null && me.error == null) {
+            return true;
+        }
+        if (this.error == null || me.error == null) {
+            return false;
+        }
         return this.error.equals(me.error);
     }
 
@@ -152,6 +158,9 @@ public class MelonLoaderError {
                 return Utils.translate("en", "de", error);
             case "sga":
                 return Localization.toStandardGalacticAlphabet(error);
+            case "owo":
+            case "uwu":
+                return Localization.toOwOify(error);
             default:
         }
         return error;
