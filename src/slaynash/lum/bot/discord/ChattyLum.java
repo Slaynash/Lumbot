@@ -205,6 +205,10 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920902875364864090/nya.mp4").queue();
             return true;
         }
+        if (message.equals("56709")) {
+            event.getMessage().reply("https://cdn.discordapp.com/attachments/773300021117321248/981405263208775680/awooo_56709.mp4").queue();
+            return true;
+        }
         if (message.replace(" ", "").contains("welcometovrchat")) {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/757187539638550610/932623632746836018/WELCOME_TO_VRCHAT_-_TFMJonny_Bo_Burnham_Parody.mp4").queue();
             return true;

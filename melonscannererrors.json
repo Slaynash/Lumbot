@@ -181,7 +181,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Initialize Assets Manager!",
-            "error": "Failed to Initialize Assets Manager. If you are using Turkish as your main Windows language, That could be the problem."
+            "error": "Failed to Initialize Assets Manager. If you are using Turkish as your main Windows language, That could be the problem. It is fixed in the next release of MelonLoader so feel free to use the [nightly build](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip)."
         }
     ],
     "knownErrors": [
@@ -361,10 +361,6 @@
                 "error": "emmVRC fbt saving errored due to fbt saving now part of VRChat."
             },
             {
-                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.Other.UpdateNotice\":",
-                "error": "emmVRC is having some issues because of the update. If your windows is running Turkish then that could be the issue, else feel free to ignore this error. Please mention if you notice any issues."
-            },
-            {
                 "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
                 "error": "emmVRC is having some issues because of the update. Please reinstall MelonLoader $MLRelease$."
             },
@@ -379,7 +375,7 @@
             },
             {
                 "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
-                "error": "FavCat Image cache trim failed. Maybe try refetching favorites."
+                "error": "FavCat Image cache trim failed. Please delete `VRChat\\UserData\\favcat-images.db` and restart VRChat."
             },
             {
                 "regex": ".*InstanceHistory.json file is corrupted and will need to be manually deleted.*",

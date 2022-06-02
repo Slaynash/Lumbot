@@ -239,7 +239,7 @@ public class ScamShield {
         suspiciousResults.totalSuspicionCount = suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.suspiciousValue > 0)
             event.getJDA().getGuildById(633588473433030666L).getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
-                + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).toList() + "\n\n" + message).queue();
+                + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
         if (suspiciousResults.suspiciousValue <= 3)
             return false;
 

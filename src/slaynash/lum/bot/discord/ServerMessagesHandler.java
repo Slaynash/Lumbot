@@ -220,10 +220,6 @@ public class ServerMessagesHandler {
                     if (replied != null && replied.getMember() != null) {
                         sendMessage = sendMessage + CrossServerUtils.sanitizeInputString(replied.getMember().getEffectiveName()) + "\n\n";
                     }
-                    else if (replied != null /*and member is null*/) {
-                        event.getMessage().reply("That user is no longer in this server.").queue();
-                        return;
-                    }
                     String temp;
                     if (guildconfig.MLGeneralRemover() && event.getChannel().getName().toLowerCase().contains("general")) {
                         if (guildID == 600298024425619456L /*emmVRC*/)
