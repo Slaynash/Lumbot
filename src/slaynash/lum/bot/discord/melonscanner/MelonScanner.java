@@ -589,6 +589,7 @@ public final class MelonScanner {
     }
 
     private static boolean knownErrorsCheck(MelonScanContext context) {
+        context.errors.removeIf(e -> e == null || e.error == null || e.error.isBlank());
         if (context.errors.size() > 0) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.errors.size(); ++i) {
