@@ -684,7 +684,7 @@ public final class MelonScannerReadPass {
             }
             MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
             if (m.matches()) {
-                if (!context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated)
+                if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated)
                     context.errors.add(newerror);
                 System.out.println("Found known unhollower error");
                 context.hasErrors = true;
@@ -711,7 +711,7 @@ public final class MelonScannerReadPass {
             }
             MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
             if (m.matches()) {
-                if (!context.errors.contains(newerror))
+                if (context.errors != null && !context.errors.contains(newerror))
                     context.errors.add(newerror);
                 System.out.println("Found known error");
                 context.hasErrors = true;
@@ -735,7 +735,7 @@ public final class MelonScannerReadPass {
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex, errorMess);
                 if (m.matches()) {
-                    if (!context.errors.contains(newerror))
+                    if (context.errors != null && !context.errors.contains(newerror))
                         context.errors.add(newerror);
                     System.out.println("Found known game error");
                     context.hasErrors = true;
