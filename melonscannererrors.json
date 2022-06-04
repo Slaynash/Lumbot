@@ -13,8 +13,8 @@
             "error": "The access to a file has been denied. Please make sure the game is closed when installing MelonLoader, or try restarting your computer. If this doesn't work, try running the MelonLoader Installer with administrator privileges."
         },
         {
-            "regex": "System.IO.IOException: The process cannot access the file '(?<filename>[\\w.]+)'.*",
-            "error": "Access to file filename has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and make sure your Virus scanner isn't interfering."
+            "regex": "System.IO.IOException: The process cannot access the file '(?<filename>.*)'.*",
+            "error": "Access to file `filename` has been blocked. Please make sure the game or whatever has the file open is closed, or try restarting your computer. If this doesn't work, try running with administrator privileges and make sure your Virus scanner isn't interfering."
         },
         {
             "regex": "\\[[\\d.:]+] System.IO.IOException: The process cannot access the file.*",

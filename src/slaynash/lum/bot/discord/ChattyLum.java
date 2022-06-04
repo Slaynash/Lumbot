@@ -201,6 +201,10 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920891104281374780/Gura_Padoru.mp4").queue();
             return true;
         }
+        if (message.contains("do a barrel roll")) {
+            event.getMessage().reply("https://tenor.com/view/owl-sector-barrel-roll-star-fox-gif-18290188").queue();
+            return true;
+        }
         if (message.equals("nya")) {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920902875364864090/nya.mp4").queue();
             return true;
