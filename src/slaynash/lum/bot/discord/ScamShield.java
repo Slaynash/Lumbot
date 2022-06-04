@@ -402,14 +402,14 @@ public class ScamShield {
                 }
                 if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
                     ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
-                else
+                else if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_WRITE))
                     ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
             }
             else if (suspiciousResults.sameauthormessages != null && event.getGuild() == guild) {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-                else
+                else if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_WRITE))
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
         }
