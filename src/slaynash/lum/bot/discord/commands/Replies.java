@@ -36,7 +36,7 @@ public class Replies extends Command {
 
         if (parts.length == 1) {
             int totalsize = replies.size() + regexReplies.size();
-            if (totalsize > 5) {
+            if (totalsize > 9) {
                 StringBuilder sb = new StringBuilder();
                 if (replies.size() > 0) {
                     sb.append("Current replies in this guild:\n");
@@ -47,7 +47,10 @@ public class Replies extends Command {
                     sb.append("Current regex replies in this guild:\n");
                     regexReplies.forEach((k, v) -> sb.append(k.concat("\n\t").concat(v.replace("\n", "\n\t")).concat("\n")));
                 }
-                event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
+                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(),Permission.MESSAGE_ATTACH_FILES))
+                    event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
+                else
+                    event.getMessage().reply("I cant send logs into this channel. Please give me MESSAGE_ATTACH_FILES perms and try again.").queue();
             }
             else if (totalsize > 0) {
                 StringBuilder sb = new StringBuilder();
