@@ -4,7 +4,6 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.TimerTask;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -13,8 +12,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ClearDMs extends TimerTask {
     public void run() {
-        JDA jda = JDAManager.getJDA();
-        Guild mainGuild = jda.getGuildById(633588473433030666L);
+        Guild mainGuild = JDAManager.mainGuild;
         if (mainGuild == null)
             return;
         List<TextChannel> channels = mainGuild.getCategoryById(924780998124798022L).getTextChannels();

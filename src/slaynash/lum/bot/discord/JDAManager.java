@@ -6,6 +6,7 @@ import javax.security.auth.login.LoginException;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.AllowedMentions;
@@ -16,6 +17,7 @@ import slaynash.lum.bot.Main;
 public class JDAManager {
 
     private static JDA jda;
+    public static Guild mainGuild;
     private static boolean init = false;
 
     public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException {
@@ -31,6 +33,7 @@ public class JDAManager {
         EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE);
         AllowedMentions.setDefaultMentions(EnumSet.complementOf(deny));
         jda.setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
+        mainGuild = jda.getGuildById(633588473433030666L);
     }
 
     public static JDA getJDA() {

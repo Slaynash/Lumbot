@@ -116,7 +116,7 @@ public final class CrossServerUtils {
         int guildSize = JDAManager.getJDA().getGuilds().size();
         System.out.println("Joined " + event.getGuild().getName() + ", connected to " + guildSize + " guilds");
         if (guildSize % 25 == 0 && guildSize != lastGuildCount) {
-            JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(876466104036393060L).sendMessage("I joined my " + guildSize + "th guild <:Neko_cat_woah:851935805874110504>").queue();
+            JDAManager.mainGuild.getTextChannelById(876466104036393060L).sendMessage("I joined my " + guildSize + "th guild <:Neko_cat_woah:851935805874110504>").queue();
             saveGuildCount(guildSize);
         }
     }

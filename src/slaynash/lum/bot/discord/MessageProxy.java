@@ -19,7 +19,7 @@ import slaynash.lum.bot.utils.Utils;
 public class MessageProxy {
 
     public static void fromDM(MessageReceivedEvent event) {
-        Guild mainguild = JDAManager.getJDA().getGuildById(633588473433030666L);
+        Guild mainguild = JDAManager.mainGuild;
 
         User author = event.getAuthor();
         String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong())
@@ -123,7 +123,7 @@ public class MessageProxy {
     }
 
     public static void proxyTyping(UserTypingEvent event) {
-        TextChannel guildchannel = JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
+        TextChannel guildchannel = JDAManager.mainGuild.getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
         if (guildchannel == null) {
             return;
         }

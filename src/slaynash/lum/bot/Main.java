@@ -80,7 +80,7 @@ public class Main extends ListenerAdapter {
 
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-                jda.getGuildById(633588473433030666L)
+                JDAManager.mainGuild
                     .getTextChannelById(808076226064941086L)
                     .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                     .complete();
@@ -144,8 +144,7 @@ public class Main extends ListenerAdapter {
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             Moderation.voiceStartup();
-            JDAManager.getJDA()
-                .getGuildById(633588473433030666L)
+            JDAManager.mainGuild
                 .getTextChannelById(808076226064941086L)
                 .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
                 .queue();
