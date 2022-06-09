@@ -14,12 +14,12 @@ for i = 0, apiData:size() - 1, 1 do
     local hash = base64toLowerHexString(modDetails:get("hash"):getAsString())
 
     table.insert(mods, {
-        approvalStatus = modDetails:get("ApprovalStatus"):getAsString(),
+        approvalStatus = modDetails:get("approvalStatus"):getAsString(),
         name = modDetails:get("name"):getAsString(),
-        version = modDetails:get("modversion"):getAsString(),
-        downloadLink = modDetails:get("downloadlink"):getAsString(),
-        modtype = modDetails:get("modtype"):getAsString(),
-        haspending = mod:get("haspending"):getAsBoolean(),
+        version = modDetails:get("modVersion"):getAsString(),
+        downloadLink = modDetails:get("downloadLink"):getAsString(),
+        modtype = modDetails:get("modType"):getAsString(),
+        haspending = mod:get("hasPending"):getAsBoolean(),
         aliases = aliases,
         hash = hash
     })

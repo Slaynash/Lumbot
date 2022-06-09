@@ -76,9 +76,7 @@ public final class CrossServerUtils {
         }
         if (event.getMember() == null) //https://discord.com/channels/633588473433030666/851519891965345845/883320272982278174
             return false;
-        if (event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE) || event.getMember().hasPermission(Permission.BAN_MEMBERS) || event.getMember().hasPermission(Permission.KICK_MEMBERS))
-            return true;
-        return false;
+        return event.getMember().hasPermission(Permission.ADMINISTRATOR) || event.getMember().hasPermission(Permission.MESSAGE_MANAGE) || event.getMember().hasPermission(Permission.BAN_MEMBERS) || event.getMember().hasPermission(Permission.KICK_MEMBERS);
     }
 
     public static boolean isLumDev(Member member) {

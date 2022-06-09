@@ -479,6 +479,7 @@ public final class MelonScanner {
                 case "uno" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                 case "voxmachinae" -> context.embedBuilder.setThumbnail("https://www.gmw3.com/wp-content/uploads/2016/08/splash1-300x149.png");
                 case "vrchat" -> context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
+                case "vrising" -> context.embedBuilder.setThumbnail("https://cdn.playvrising.com/web2/images/hero/vRisingLogo.png");
                 case "vseeface" -> context.embedBuilder.setThumbnail("https://www.vseeface.icu/assets/img/VSF.png");
                 case "wasteland3" -> context.embedBuilder.setThumbnail("https://www.nicepng.com/png/full/300-3005551_wasteland-3-logo-png-image-grandmaster-flash-vs.png");
                 case "wobblylife" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/887755823038754886/Wobbly_Life.png");

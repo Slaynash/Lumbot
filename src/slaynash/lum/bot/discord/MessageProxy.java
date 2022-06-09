@@ -112,10 +112,8 @@ public class MessageProxy {
             }
             user.openPrivateChannel().queue(
                     channel -> channel.sendMessage(messageBuilder.build()).queue(null,
-                            e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red,
-                                    event)),
-                    error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red,
-                            event));
+                            e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
+                    error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
 
             return true;
         }
@@ -123,6 +121,8 @@ public class MessageProxy {
     }
 
     public static void proxyTyping(UserTypingEvent event) {
+        if (JDAManager.mainGuild == null)
+            return;
         TextChannel guildchannel = JDAManager.mainGuild.getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
         if (guildchannel == null) {
             return;
