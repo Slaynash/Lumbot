@@ -23,316 +23,261 @@ package net.gcardone.junidecode;
 class Xd5 {
 
     public static final String[] map = new String[]{
-        "pyuk", // 0x00
-        "pyut", // 0x01
-        "pyup", // 0x02
-        "pyuh", // 0x03
-        "peu", // 0x04
-        "peug", // 0x05
-        "peugg", // 0x06
-        "peugs", // 0x07
-        "peun", // 0x08
-        "peunj", // 0x09
-        "peunh", // 0x0a
-        "peud", // 0x0b
-        "peul", // 0x0c
-        "peulg", // 0x0d
-        "peulm", // 0x0e
-        "peulb", // 0x0f
-        "peuls", // 0x10
-        "peult", // 0x11
-        "peulp", // 0x12
-        "peulh", // 0x13
-        "peum", // 0x14
-        "peub", // 0x15
-        "peubs", // 0x16
-        "peus", // 0x17
-        "peuss", // 0x18
-        "peung", // 0x19
-        "peuj", // 0x1a
-        "peuc", // 0x1b
-        "peuk", // 0x1c
-        "peut", // 0x1d
-        "peup", // 0x1e
-        "peuh", // 0x1f
-        "pyi", // 0x20
-        "pyig", // 0x21
-        "pyigg", // 0x22
-        "pyigs", // 0x23
-        "pyin", // 0x24
-        "pyinj", // 0x25
-        "pyinh", // 0x26
-        "pyid", // 0x27
-        "pyil", // 0x28
-        "pyilg", // 0x29
-        "pyilm", // 0x2a
-        "pyilb", // 0x2b
-        "pyils", // 0x2c
-        "pyilt", // 0x2d
-        "pyilp", // 0x2e
-        "pyilh", // 0x2f
-        "pyim", // 0x30
-        "pyib", // 0x31
-        "pyibs", // 0x32
-        "pyis", // 0x33
-        "pyiss", // 0x34
-        "pying", // 0x35
-        "pyij", // 0x36
-        "pyic", // 0x37
-        "pyik", // 0x38
-        "pyit", // 0x39
-        "pyip", // 0x3a
-        "pyih", // 0x3b
-        "pi", // 0x3c
-        "pig", // 0x3d
-        "pigg", // 0x3e
-        "pigs", // 0x3f
-        "pin", // 0x40
-        "pinj", // 0x41
-        "pinh", // 0x42
-        "pid", // 0x43
-        "pil", // 0x44
-        "pilg", // 0x45
-        "pilm", // 0x46
-        "pilb", // 0x47
-        "pils", // 0x48
-        "pilt", // 0x49
-        "pilp", // 0x4a
-        "pilh", // 0x4b
-        "pim", // 0x4c
-        "pib", // 0x4d
-        "pibs", // 0x4e
-        "pis", // 0x4f
-        "piss", // 0x50
-        "ping", // 0x51
-        "pij", // 0x52
-        "pic", // 0x53
-        "pik", // 0x54
-        "pit", // 0x55
-        "pip", // 0x56
-        "pih", // 0x57
-        "ha", // 0x58
-        "hag", // 0x59
-        "hagg", // 0x5a
-        "hags", // 0x5b
-        "han", // 0x5c
-        "hanj", // 0x5d
-        "hanh", // 0x5e
-        "had", // 0x5f
-        "hal", // 0x60
-        "halg", // 0x61
-        "halm", // 0x62
-        "halb", // 0x63
-        "hals", // 0x64
-        "halt", // 0x65
-        "halp", // 0x66
-        "halh", // 0x67
-        "ham", // 0x68
-        "hab", // 0x69
-        "habs", // 0x6a
-        "has", // 0x6b
-        "hass", // 0x6c
-        "hang", // 0x6d
-        "haj", // 0x6e
-        "hac", // 0x6f
-        "hak", // 0x70
-        "hat", // 0x71
-        "hap", // 0x72
-        "hah", // 0x73
-        "hae", // 0x74
-        "haeg", // 0x75
-        "haegg", // 0x76
-        "haegs", // 0x77
-        "haen", // 0x78
-        "haenj", // 0x79
-        "haenh", // 0x7a
-        "haed", // 0x7b
-        "hael", // 0x7c
-        "haelg", // 0x7d
-        "haelm", // 0x7e
-        "haelb", // 0x7f
-        "haels", // 0x80
-        "haelt", // 0x81
-        "haelp", // 0x82
-        "haelh", // 0x83
-        "haem", // 0x84
-        "haeb", // 0x85
-        "haebs", // 0x86
-        "haes", // 0x87
-        "haess", // 0x88
-        "haeng", // 0x89
-        "haej", // 0x8a
-        "haec", // 0x8b
-        "haek", // 0x8c
-        "haet", // 0x8d
-        "haep", // 0x8e
-        "haeh", // 0x8f
-        "hya", // 0x90
-        "hyag", // 0x91
-        "hyagg", // 0x92
-        "hyags", // 0x93
-        "hyan", // 0x94
-        "hyanj", // 0x95
-        "hyanh", // 0x96
-        "hyad", // 0x97
-        "hyal", // 0x98
-        "hyalg", // 0x99
-        "hyalm", // 0x9a
-        "hyalb", // 0x9b
-        "hyals", // 0x9c
-        "hyalt", // 0x9d
-        "hyalp", // 0x9e
-        "hyalh", // 0x9f
-        /*
-        "hyam", // 0xa0 A
-        "hyab", // 0xa1
-        "hyabs", // 0xa2
-        "hyas", // 0xa3  D
-        "hyass", // 0xa4
-        "hyang", // 0xa5
-        "hyaj", // 0xa6
-        "hyac", // 0xa7 H
-        "hyak", // 0xa8
-        "hyat", // 0xa9
-        "hyap", // 0xaa
-        "hyah", // 0xab
-        "hyae", // 0xac
-        "hyaeg", // 0xad
-        "hyaegg", // 0xae
-        "hyaegs", // 0xaf
-        "hyaen", // 0xb0
-        "hyaenj", // 0xb1
-        "hyaenh", // 0xb2
-        "hyaed", // 0xb3
-        "hyael", // 0xb4
-        "hyaelg", // 0xb5
-        "hyaelm", // 0xb6
-        "hyaelb", // 0xb7
-        "hyaels", // 0xb8
-        "hyaelt", // 0xb9
-        "hyaelp", // 0xba
-        "hyaelh", // 0xbb
-        "hyaem", // 0xbc
-        "hyaeb", // 0xbd
-        "hyaebs", // 0xbe
-        "hyaes", // 0xbf
-        "hyaess", // 0xc0
-        "hyaeng", // 0xc1
-        "hyaej", // 0xc2    i
-        "hyaec", // 0xc3
-        "hyaek", // 0xc4
-        "hyaet", // 0xc5
-        "hyaep", // 0xc6
-        "hyaeh", // 0xc7
-        "heo", // 0xc8
-        "heog", // 0xc9
-        "heogg", // 0xca
-        "heogs", // 0xcb
-        "heon", // 0xcc
-        "heonj", // 0xcd
-        "heonh", // 0xce
-        "heod", // 0xcf
-        "heol", // 0xd0
-        "heolg", // 0xd1
-        "heolm", // 0xd2
-        "heolb", // 0xd3
-        */
-        //Replaced to fix discord scam
-        "A",
-        "B",
-        "C",
-        "D",
-        "E",
-        "F",
-        "G",
-        "H",
-        "I",
-        "J",
-        "K",
-        "L",
-        "M",
-        "N",
-        "O",
-        "P",
-        "Q",
-        "R",
-        "S",
-        "T",
-        "U",
-        "V",
-        "W",
-        "X",
-        "Y",
-        "Z",
-        "a",
-        "b",
-        "c",
-        "d",
-        "e",
-        "f",
-        "g",
-        "h",
-        "i",
-        "j",
-        "k",
-        "l",
-        "m",
-        "n",
-        "o",
-        "p",
-        "q",
-        "r",
-        "s",
-        "t",
-        "u",
-        "v",
-        "w",
-        "x",
-        "y",
-        "z",
-        "heols", // 0xd4
-        "heolt", // 0xd5
-        "heolp", // 0xd6
-        "heolh", // 0xd7
-        "heom", // 0xd8
-        "heob", // 0xd9
-        "heobs", // 0xda
-        "heos", // 0xdb
-        "heoss", // 0xdc
-        "heong", // 0xdd
-        "heoj", // 0xde
-        "heoc", // 0xdf
-        "heok", // 0xe0
-        "heot", // 0xe1
-        "heop", // 0xe2
-        "heoh", // 0xe3
-        "he", // 0xe4
-        "heg", // 0xe5
-        "hegg", // 0xe6
-        "hegs", // 0xe7
-        "hen", // 0xe8
-        "henj", // 0xe9
-        "henh", // 0xea
-        "hed", // 0xeb
-        "hel", // 0xec
-        "helg", // 0xed
-        "helm", // 0xee
-        "helb", // 0xef
-        "hels", // 0xf0
-        "helt", // 0xf1
-        "help", // 0xf2
-        "helh", // 0xf3
-        "hem", // 0xf4
-        "heb", // 0xf5
-        "hebs", // 0xf6
-        "hes", // 0xf7
-        "hess", // 0xf8
-        "heng", // 0xf9
-        "hej", // 0xfa
-        "hec", // 0xfb
-        "hek", // 0xfc
-        "het", // 0xfd
-        "hep", // 0xfe
-        "heh" // 0xff
+        "w", // 0x00
+        "x", // 0x01
+        "y", // 0x02
+        "z", // 0x03
+        "A", // 0x04
+        "B", // 0x05
+        "C", // 0x06
+        "D", // 0x07
+        "E", // 0x08
+        "F", // 0x09
+        "G", // 0x0a
+        "H", // 0x0b
+        "I", // 0x0c
+        "J", // 0x0d
+        "K", // 0x0e
+        "L", // 0x0f
+        "M", // 0x10
+        "N", // 0x11
+        "O", // 0x12
+        "P", // 0x13
+        "Q", // 0x14
+        "R", // 0x15
+        "S", // 0x16
+        "T", // 0x17
+        "U", // 0x18
+        "V", // 0x19
+        "W", // 0x1a
+        "X", // 0x1b
+        "Y", // 0x1c
+        "Z", // 0x1d
+        "a", // 0x1e
+        "b", // 0x1f
+        "c", // 0x20
+        "d", // 0x21
+        "e", // 0x22
+        "f", // 0x23
+        "g", // 0x24
+        "h", // 0x25
+        "i", // 0x26
+        "j", // 0x27
+        "k", // 0x28
+        "l", // 0x29
+        "m", // 0x2a
+        "n", // 0x2b
+        "o", // 0x2c
+        "p", // 0x2d
+        "q", // 0x2e
+        "r", // 0x2f
+        "s", // 0x30
+        "t", // 0x31
+        "u", // 0x32
+        "v", // 0x33
+        "w", // 0x34
+        "x", // 0x35
+        "y", // 0x36
+        "z", // 0x37
+        "A", // 0x38
+        "B", // 0x39
+        "C", // 0x3a
+        "D", // 0x3b
+        "E", // 0x3c
+        "F", // 0x3d
+        "G", // 0x3e
+        "H", // 0x3f
+        "I", // 0x40
+        "J", // 0x41
+        "K", // 0x42
+        "L", // 0x43
+        "M", // 0x44
+        "N", // 0x45
+        "O", // 0x46
+        "P", // 0x47
+        "Q", // 0x48
+        "R", // 0x49
+        "S", // 0x4a
+        "T", // 0x4b
+        "U", // 0x4c
+        "V", // 0x4d
+        "W", // 0x4e
+        "X", // 0x4f
+        "Y", // 0x50
+        "Z", // 0x51
+        "a", // 0x52
+        "b", // 0x53
+        "c", // 0x54
+        "d", // 0x55
+        "e", // 0x56
+        "f", // 0x57
+        "g", // 0x58
+        "h", // 0x59
+        "i", // 0x5a
+        "j", // 0x5b
+        "k", // 0x5c
+        "l", // 0x5d
+        "m", // 0x5e
+        "n", // 0x5f
+        "o", // 0x60
+        "p", // 0x61
+        "q", // 0x62
+        "r", // 0x63
+        "s", // 0x64
+        "t", // 0x65
+        "u", // 0x66
+        "v", // 0x67
+        "w", // 0x68
+        "x", // 0x69
+        "y", // 0x6a
+        "z", // 0x6b
+        "A", // 0x6c
+        "B", // 0x6d
+        "C", // 0x6e
+        "D", // 0x6f
+        "E", // 0x70
+        "F", // 0x71
+        "G", // 0x72
+        "H", // 0x73
+        "I", // 0x74
+        "J", // 0x75
+        "K", // 0x76
+        "L", // 0x77
+        "M", // 0x78
+        "N", // 0x79
+        "O", // 0x7a
+        "P", // 0x7b
+        "Q", // 0x7c
+        "R", // 0x7d
+        "S", // 0x7e
+        "T", // 0x7f
+        "U", // 0x80
+        "V", // 0x81
+        "W", // 0x82
+        "X", // 0x83
+        "Y", // 0x84
+        "Z", // 0x85
+        "a", // 0x86
+        "b", // 0x87
+        "c", // 0x88
+        "d", // 0x89
+        "e", // 0x8a
+        "f", // 0x8b
+        "g", // 0x8c
+        "h", // 0x8d
+        "i", // 0x8e
+        "j", // 0x8f
+        "k", // 0x90
+        "l", // 0x91
+        "m", // 0x92
+        "n", // 0x93
+        "o", // 0x94
+        "p", // 0x95
+        "q", // 0x96
+        "r", // 0x97
+        "s", // 0x98
+        "t", // 0x99
+        "u", // 0x9a
+        "v", // 0x9b
+        "w", // 0x9c
+        "x", // 0x9d
+        "y", // 0x9e
+        "z", // 0x9f
+        "A", // 0xa0
+        "B", // 0xa1
+        "C", // 0xa2
+        "D", // 0xa3
+        "E", // 0xa4
+        "F", // 0xa5
+        "G", // 0xa6
+        "H", // 0xa7
+        "I", // 0xa8
+        "J", // 0xa9
+        "K", // 0xaa
+        "L", // 0xab
+        "M", // 0xac
+        "N", // 0xad
+        "O", // 0xae
+        "P", // 0xaf
+        "Q", // 0xb0
+        "R", // 0xb1
+        "S", // 0xb2
+        "T", // 0xb3
+        "U", // 0xb4
+        "V", // 0xb5
+        "W", // 0xb6
+        "X", // 0xb7
+        "Y", // 0xb8
+        "Z", // 0xb9
+        "a", // 0xba
+        "b", // 0xbb
+        "c", // 0xbc
+        "d", // 0xbd
+        "e", // 0xbe
+        "f", // 0xbf
+        "g", // 0xc0
+        "h", // 0xc1
+        "i", // 0xc2
+        "j", // 0xc3
+        "k", // 0xc4
+        "l", // 0xc5
+        "m", // 0xc6
+        "n", // 0xc7
+        "o", // 0xc8
+        "p", // 0xc9
+        "q", // 0xca
+        "r", // 0xcb
+        "s", // 0xcc
+        "t", // 0xcd
+        "u", // 0xce
+        "v", // 0xcf
+        "w", // 0xd0
+        "x", // 0xd1
+        "y", // 0xd2
+        "z", // 0xd3
+        "A", // 0xd4
+        "B", // 0xd5
+        "C", // 0xd6
+        "D", // 0xd7
+        "E", // 0xd8
+        "F", // 0xd9
+        "G", // 0xda
+        "H", // 0xdb
+        "I", // 0xdc
+        "J", // 0xdd
+        "K", // 0xde
+        "L", // 0xdf
+        "M", // 0xe0
+        "N", // 0xe1
+        "O", // 0xe2
+        "P", // 0xe3
+        "Q", // 0xe4
+        "R", // 0xe5
+        "S", // 0xe6
+        "T", // 0xe7
+        "U", // 0xe8
+        "V", // 0xe9
+        "W", // 0xea
+        "X", // 0xeb
+        "Y", // 0xec
+        "Z", // 0xed
+        "a", // 0xee
+        "b", // 0xef
+        "c", // 0xf0
+        "d", // 0xf1
+        "e", // 0xf2
+        "f", // 0xf3
+        "g", // 0xf4
+        "h", // 0xf5
+        "i", // 0xf6
+        "j", // 0xf7
+        "k", // 0xf8
+        "l", // 0xf9
+        "m", // 0xfa
+        "n", // 0xfb
+        "o", // 0xfc
+        "p", // 0xfd
+        "q", // 0xfe
+        "r" // 0xff
     };
 }

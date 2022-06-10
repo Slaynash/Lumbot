@@ -23,220 +23,220 @@ package net.gcardone.junidecode;
 class Xd6 {
 
     public static final String[] map = new String[]{
-        "hyeo", // 0x00
-        "hyeog", // 0x01
-        "hyeogg", // 0x02
-        "hyeogs", // 0x03
-        "hyeon", // 0x04
-        "hyeonj", // 0x05
-        "hyeonh", // 0x06
-        "hyeod", // 0x07
-        "hyeol", // 0x08
-        "hyeolg", // 0x09
-        "hyeolm", // 0x0a
-        "hyeolb", // 0x0b
-        "hyeols", // 0x0c
-        "hyeolt", // 0x0d
-        "hyeolp", // 0x0e
-        "hyeolh", // 0x0f
-        "hyeom", // 0x10
-        "hyeob", // 0x11
-        "hyeobs", // 0x12
-        "hyeos", // 0x13
-        "hyeoss", // 0x14
-        "hyeong", // 0x15
-        "hyeoj", // 0x16
-        "hyeoc", // 0x17
-        "hyeok", // 0x18
-        "hyeot", // 0x19
-        "hyeop", // 0x1a
-        "hyeoh", // 0x1b
-        "hye", // 0x1c
-        "hyeg", // 0x1d
-        "hyegg", // 0x1e
-        "hyegs", // 0x1f
-        "hyen", // 0x20
-        "hyenj", // 0x21
-        "hyenh", // 0x22
-        "hyed", // 0x23
-        "hyel", // 0x24
-        "hyelg", // 0x25
-        "hyelm", // 0x26
-        "hyelb", // 0x27
-        "hyels", // 0x28
-        "hyelt", // 0x29
-        "hyelp", // 0x2a
-        "hyelh", // 0x2b
-        "hyem", // 0x2c
-        "hyeb", // 0x2d
-        "hyebs", // 0x2e
-        "hyes", // 0x2f
-        "hyess", // 0x30
-        "hyeng", // 0x31
-        "hyej", // 0x32
-        "hyec", // 0x33
-        "hyek", // 0x34
-        "hyet", // 0x35
-        "hyep", // 0x36
-        "hyeh", // 0x37
-        "ho", // 0x38
-        "hog", // 0x39
-        "hogg", // 0x3a
-        "hogs", // 0x3b
-        "hon", // 0x3c
-        "honj", // 0x3d
-        "honh", // 0x3e
-        "hod", // 0x3f
-        "hol", // 0x40
-        "holg", // 0x41
-        "holm", // 0x42
-        "holb", // 0x43
-        "hols", // 0x44
-        "holt", // 0x45
-        "holp", // 0x46
-        "holh", // 0x47
-        "hom", // 0x48
-        "hob", // 0x49
-        "hobs", // 0x4a
-        "hos", // 0x4b
-        "hoss", // 0x4c
-        "hong", // 0x4d
-        "hoj", // 0x4e
-        "hoc", // 0x4f
-        "hok", // 0x50
-        "hot", // 0x51
-        "hop", // 0x52
-        "hoh", // 0x53
-        "hwa", // 0x54
-        "hwag", // 0x55
-        "hwagg", // 0x56
-        "hwags", // 0x57
-        "hwan", // 0x58
-        "hwanj", // 0x59
-        "hwanh", // 0x5a
-        "hwad", // 0x5b
-        "hwal", // 0x5c
-        "hwalg", // 0x5d
-        "hwalm", // 0x5e
-        "hwalb", // 0x5f
-        "hwals", // 0x60
-        "hwalt", // 0x61
-        "hwalp", // 0x62
-        "hwalh", // 0x63
-        "hwam", // 0x64
-        "hwab", // 0x65
-        "hwabs", // 0x66
-        "hwas", // 0x67
-        "hwass", // 0x68
-        "hwang", // 0x69
-        "hwaj", // 0x6a
-        "hwac", // 0x6b
-        "hwak", // 0x6c
-        "hwat", // 0x6d
-        "hwap", // 0x6e
-        "hwah", // 0x6f
-        "hwae", // 0x70
-        "hwaeg", // 0x71
-        "hwaegg", // 0x72
-        "hwaegs", // 0x73
-        "hwaen", // 0x74
-        "hwaenj", // 0x75
-        "hwaenh", // 0x76
-        "hwaed", // 0x77
-        "hwael", // 0x78
-        "hwaelg", // 0x79
-        "hwaelm", // 0x7a
-        "hwaelb", // 0x7b
-        "hwaels", // 0x7c
-        "hwaelt", // 0x7d
-        "hwaelp", // 0x7e
-        "hwaelh", // 0x7f
-        "hwaem", // 0x80
-        "hwaeb", // 0x81
-        "hwaebs", // 0x82
-        "hwaes", // 0x83
-        "hwaess", // 0x84
-        "hwaeng", // 0x85
-        "hwaej", // 0x86
-        "hwaec", // 0x87
-        "hwaek", // 0x88
-        "hwaet", // 0x89
-        "hwaep", // 0x8a
-        "hwaeh", // 0x8b
-        "hoe", // 0x8c
-        "hoeg", // 0x8d
-        "hoegg", // 0x8e
-        "hoegs", // 0x8f
-        "hoen", // 0x90
-        "hoenj", // 0x91
-        "hoenh", // 0x92
-        "hoed", // 0x93
-        "hoel", // 0x94
-        "hoelg", // 0x95
-        "hoelm", // 0x96
-        "hoelb", // 0x97
-        "hoels", // 0x98
-        "hoelt", // 0x99
-        "hoelp", // 0x9a
-        "hoelh", // 0x9b
-        "hoem", // 0x9c
-        "hoeb", // 0x9d
-        "hoebs", // 0x9e
-        "hoes", // 0x9f
-        "hoess", // 0xa0
-        "hoeng", // 0xa1
-        "hoej", // 0xa2
-        "hoec", // 0xa3
-        "hoek", // 0xa4
-        "hoet", // 0xa5
+        "s", // 0x00
+        "t", // 0x01
+        "u", // 0x02
+        "v", // 0x03
+        "w", // 0x04
+        "x", // 0x05
+        "y", // 0x06
+        "z", // 0x07
+        "A", // 0x08
+        "B", // 0x09
+        "C", // 0x0a
+        "D", // 0x0b
+        "E", // 0x0c
+        "F", // 0x0d
+        "G", // 0x0e
+        "H", // 0x0f
+        "I", // 0x10
+        "J", // 0x11
+        "K", // 0x12
+        "L", // 0x13
+        "M", // 0x14
+        "N", // 0x15
+        "O", // 0x16
+        "P", // 0x17
+        "Q", // 0x18
+        "R", // 0x19
+        "S", // 0x1a
+        "T", // 0x1b
+        "U", // 0x1c
+        "V", // 0x1d
+        "W", // 0x1e
+        "X", // 0x1f
+        "Y", // 0x20
+        "Z", // 0x21
+        "a", // 0x22
+        "b", // 0x23
+        "c", // 0x24
+        "d", // 0x25
+        "e", // 0x26
+        "f", // 0x27
+        "g", // 0x28
+        "h", // 0x29
+        "i", // 0x2a
+        "j", // 0x2b
+        "k", // 0x2c
+        "l", // 0x2d
+        "m", // 0x2e
+        "n", // 0x2f
+        "o", // 0x30
+        "p", // 0x31
+        "q", // 0x32
+        "r", // 0x33
+        "s", // 0x34
+        "t", // 0x35
+        "u", // 0x36
+        "v", // 0x37
+        "w", // 0x38
+        "x", // 0x39
+        "y", // 0x3a
+        "z", // 0x3b
+        "A", // 0x3c
+        "B", // 0x3d
+        "C", // 0x3e
+        "D", // 0x3f
+        "E", // 0x40
+        "F", // 0x41
+        "G", // 0x42
+        "H", // 0x43
+        "I", // 0x44
+        "J", // 0x45
+        "K", // 0x46
+        "L", // 0x47
+        "M", // 0x48
+        "N", // 0x49
+        "O", // 0x4a
+        "P", // 0x4b
+        "Q", // 0x4c
+        "R", // 0x4d
+        "S", // 0x4e
+        "T", // 0x4f
+        "U", // 0x50
+        "V", // 0x51
+        "W", // 0x52
+        "X", // 0x53
+        "Y", // 0x54
+        "Z", // 0x55
+        "a", // 0x56
+        "b", // 0x57
+        "c", // 0x58
+        "d", // 0x59
+        "e", // 0x5a
+        "f", // 0x5b
+        "g", // 0x5c
+        "h", // 0x5d
+        "i", // 0x5e
+        "j", // 0x5f
+        "k", // 0x60
+        "l", // 0x61
+        "m", // 0x62
+        "n", // 0x63
+        "o", // 0x64
+        "p", // 0x65
+        "q", // 0x66
+        "r", // 0x67
+        "s", // 0x68
+        "t", // 0x69
+        "u", // 0x6a
+        "v", // 0x6b
+        "w", // 0x6c
+        "x", // 0x6d
+        "y", // 0x6e
+        "z", // 0x6f
+        "A", // 0x70
+        "B", // 0x71
+        "C", // 0x72
+        "D", // 0x73
+        "E", // 0x74
+        "F", // 0x75
+        "G", // 0x76
+        "H", // 0x77
+        "I", // 0x78
+        "J", // 0x79
+        "K", // 0x7a
+        "L", // 0x7b
+        "M", // 0x7c
+        "N", // 0x7d
+        "O", // 0x7e
+        "P", // 0x7f
+        "Q", // 0x80
+        "R", // 0x81
+        "S", // 0x82
+        "T", // 0x83
+        "U", // 0x84
+        "V", // 0x85
+        "W", // 0x86
+        "X", // 0x87
+        "Y", // 0x88
+        "Z", // 0x89
+        "a", // 0x8a
+        "b", // 0x8b
+        "c", // 0x8c
+        "d", // 0x8d
+        "e", // 0x8e
+        "f", // 0x8f
+        "g", // 0x90
+        "h", // 0x91
+        "i", // 0x92
+        "j", // 0x93
+        "k", // 0x94
+        "l", // 0x95
+        "m", // 0x96
+        "n", // 0x97
+        "o", // 0x98
+        "p", // 0x99
+        "q", // 0x9a
+        "r", // 0x9b
+        "s", // 0x9c
+        "t", // 0x9d
+        "u", // 0x9e
+        "v", // 0x9f
+        "w", // 0xa0
+        "x", // 0xa1
+        "y", // 0xa2
+        "z", // 0xa3
+        "i", // 0xa4
+        "j", // 0xa5
         "hoep", // 0xa6
         "hoeh", // 0xa7
-        "hyo", // 0xa8
-        "hyog", // 0xa9
-        "hyogg", // 0xaa
+        "A", // 0xa8
+        "B", // 0xa9
+        "r", // 0xaa
         "hyogs", // 0xab
-        "hyon", // 0xac
-        "hyonj", // 0xad
-        "hyonh", // 0xae
-        "hyod", // 0xaf
-        "hyol", // 0xb0
-        "hyolg", // 0xb1
+        "E", // 0xac
+        "Z", // 0xad
+        "H", // 0xae
+        "O", // 0xaf
+        "I", // 0xb0
+        "K", // 0xb1
         "hyolm", // 0xb2
-        "hyolb", // 0xb3
-        "hyols", // 0xb4
-        "hyolt", // 0xb5
-        "hyolp", // 0xb6
-        "hyolh", // 0xb7
-        "hyom", // 0xb8
-        "hyob", // 0xb9
-        "hyobs", // 0xba
-        "hyos", // 0xbb
-        "hyoss", // 0xbc
+        "M", // 0xb3
+        "N", // 0xb4
+        "P", // 0xb5
+        "O", // 0xb6
+        "N", // 0xb7
+        "P", // 0xb8
+        "O", // 0xb9
+        "E", // 0xba
+        "T", // 0xbb
+        "Y", // 0xbc
         "hyong", // 0xbd
-        "hyoj", // 0xbe
+        "X", // 0xbe
         "hyoc", // 0xbf
         "hyok", // 0xc0
         "hyot", // 0xc1
         "hyop", // 0xc2
         "hyoh", // 0xc3
-        "hu", // 0xc4
+        "y", // 0xc4
         "hug", // 0xc5
-        "hugg", // 0xc6
+        "e", // 0xc6
         "hugs", // 0xc7
         "hun", // 0xc8
         "hunj", // 0xc9
         "hunh", // 0xca
-        "hud", // 0xcb
+        "c", // 0xcb
         "hul", // 0xcc
         "hulg", // 0xcd
         "hulm", // 0xce
         "hulb", // 0xcf
-        "huls", // 0xd0
+        "o", // 0xd0
         "hult", // 0xd1
-        "hulp", // 0xd2
+        "p", // 0xd2
         "hulh", // 0xd3
         "hum", // 0xd4
-        "hub", // 0xd5
+        "t", // 0xd5
         "hubs", // 0xd6
         "hus", // 0xd7
         "huss", // 0xd8
@@ -249,29 +249,29 @@ class Xd6 {
         "huh", // 0xdf
         "hweo", // 0xe0
         "hweog", // 0xe1
-        "hweogg", // 0xe2
-        "hweogs", // 0xe3
+        "A", // 0xe2
+        "B", // 0xe3
         "hweon", // 0xe4
         "hweonj", // 0xe5
-        "hweonh", // 0xe6
-        "hweod", // 0xe7
-        "hweol", // 0xe8
+        "E", // 0xe6
+        "Z", // 0xe7
+        "H", // 0xe8
         "hweolg", // 0xe9
-        "hweolm", // 0xea
-        "hweolb", // 0xeb
+        "I", // 0xea
+        "K", // 0xeb
         "hweols", // 0xec
-        "hweolt", // 0xed
-        "hweolp", // 0xee
+        "M", // 0xed
+        "N", // 0xee
         "hweolh", // 0xef
-        "hweom", // 0xf0
+        "O", // 0xf0
         "hweob", // 0xf1
-        "hweobs", // 0xf2
+        "P", // 0xf2
         "hweos", // 0xf3
         "hweoss", // 0xf4
-        "hweong", // 0xf5
-        "hweoj", // 0xf6
+        "T", // 0xf5
+        "Y", // 0xf6
         "hweoc", // 0xf7
-        "hweok", // 0xf8
+        "X", // 0xf8
         "hweot", // 0xf9
         "hweop", // 0xfa
         "hweoh", // 0xfb
