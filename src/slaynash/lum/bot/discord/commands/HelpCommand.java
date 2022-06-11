@@ -27,11 +27,11 @@ public class HelpCommand extends Command {
             }
         }
         if (!empty) {
-            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.CYAN)).queue();
+            Utils.replyEmbed(helpMessage.toString(), Color.CYAN, event);
         }
         else {
             helpMessage.append("**No commands found**");
-            event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(helpMessage.toString(), Color.RED)).queue();
+            Utils.replyEmbed(helpMessage.toString(), Color.RED, event);
         }
     }
 
