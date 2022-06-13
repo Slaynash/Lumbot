@@ -16,22 +16,23 @@ public class TicketTool {
 
     public static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-        String channelName = event.getTextChannel().getName();
+        // String channelName = event.getTextChannel().getName();
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
         if ((event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
-                //The code needs to be the first ` in message
-                if (channelName.contains("reset"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                else if (channelName.contains("wipe"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                else if (channelName.contains("deletion"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                else if (channelName.contains("export"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexport").replace("$randomString$", randomString(8))).queue();
-            }
-            else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
+            // if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
+            //     //The code needs to be the first ` in message
+            //     if (channelName.contains("reset"))
+            //         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+            //     else if (channelName.contains("wipe"))
+            //         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+            //     else if (channelName.contains("deletion"))
+            //         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+            //     else if (channelName.contains("export"))
+            //         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexport").replace("$randomString$", randomString(8))).queue();
+            // }
+            // else
+            if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
                 //The code needs to be the first ` in message
                 event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8))).queue();
             }
