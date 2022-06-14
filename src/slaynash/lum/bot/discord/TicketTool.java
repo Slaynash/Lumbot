@@ -1,13 +1,18 @@
 package slaynash.lum.bot.discord;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.Main;
+import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
 public class TicketTool {
@@ -22,8 +27,14 @@ public class TicketTool {
         if ((event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
             if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                 //The code needs to be the first ` in message
-                if (channelName.contains("reset"))
+                if (channelName.contains("reset")){
                     event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+                    try {
+                        DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelID`, `UserID`, `Created`) VALUES (?,?,?)", event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
+                    } catch (SQLException e) {
+                        ExceptionUtils.reportException("Failed to create TT autoclose", e);
+                    }
+                }
                 else if (channelName.contains("wipe"))
                     event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                 else if (channelName.contains("deletion"))
@@ -106,6 +117,33 @@ public class TicketTool {
             }, "Ticket");
             thread.start();
         }
+    }
+
+    public static void start() {
+        Thread thread = new Thread(() -> {
+            while (!Main.isShuttingDown) {
+                try {
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `TicketTool` WHERE `Created`+? < ?", 10*60*1000, System.currentTimeMillis());
+                    while (rs.next()) {
+                        long ukey = rs.getLong("ukey");
+                        long channelID = rs.getLong("ChannelID");
+                        // long userID = rs.getLong("UserID");
+                        // long created = rs.getLong("Created");
+                        TextChannel channel = JDAManager.getJDA().getTextChannelById(channelID);
+                        if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
+                            channel.sendMessage("$close").queue();
+                            DBConnectionManagerLum.sendUpdate("DELETE FROM `TicketTool` WHERE `ukey`=?", ukey);
+                        }
+                    }
+                    Thread.sleep(5 * 1000); // sleep for 5 seconds
+                }
+                catch (Exception e) {
+                    ExceptionUtils.reportException("Failed to handle TT autoclose", e);
+                }
+            }
+        }, "TTThread");
+        thread.setDaemon(false);
+        thread.start();
     }
 
     private static final String AB = "23456789abcdefghijkmnopqrstuvwxyz";

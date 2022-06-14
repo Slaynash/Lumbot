@@ -54,6 +54,7 @@ import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
 import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.discord.TicketTool;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
@@ -108,6 +109,7 @@ public class Main extends ListenerAdapter {
         CrossServerUtils.loadGuildCount();
 
         API.start();
+        TicketTool.start();
 
         MelonScanner.init();
 
