@@ -131,7 +131,7 @@ public class TicketTool {
                         // long created = rs.getLong("Created");
                         TextChannel channel = JDAManager.getJDA().getTextChannelById(channelID);
                         if (channel == null) {
-                            System.out.println("[ERROR] Channel not found");
+                            DBConnectionManagerLum.sendUpdate("DELETE FROM `TicketTool` WHERE `ukey`=?", ukey); // Was deleted by not Lum
                             continue;
                         }
                         if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
