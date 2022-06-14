@@ -130,6 +130,10 @@ public class TicketTool {
                         // long userID = rs.getLong("UserID");
                         // long created = rs.getLong("Created");
                         TextChannel channel = JDAManager.getJDA().getTextChannelById(channelID);
+                        if (channel == null) {
+                            System.out.println("[ERROR] Channel not found");
+                            continue;
+                        }
                         if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
                             channel.sendMessage("$close").queue();
                             DBConnectionManagerLum.sendUpdate("DELETE FROM `TicketTool` WHERE `ukey`=?", ukey);
