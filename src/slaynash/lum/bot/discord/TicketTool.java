@@ -80,7 +80,7 @@ public class TicketTool {
                 }
                 boolean codeFound = checkForCode(embedFields, code);
                 String id = idField.getValue().replace("`", "");
-                System.out.println("Code: " + code + " ID:" + id);
+                System.out.println("Code: " + code + " ID:" + id + " CodeFound: " + codeFound);
 
                 if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                     if (channelName.contains("reset")) {

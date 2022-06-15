@@ -299,9 +299,11 @@ public class ScamShield {
             }
             String sourceName;
             boolean cross;
+            boolean dm = false;
             if (event.getChannelType() == ChannelType.PRIVATE) {
                 sourceName = "DMs";
                 cross = true;
+                dm = true;
             }
             else {
                 sourceName = event.getGuild().getName();
@@ -330,12 +332,12 @@ public class ScamShield {
             else
                 embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-            if (!guild.getSelfMember().canInteract(member) && suspiciousResults.sameauthormessages != null) { //This may fail from DMs b/c of getTextChannel
+            if (!guild.getSelfMember().canInteract(member)) {
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
-                if (guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS))
+                if (!dm && guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE, Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else
-                    guild.getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role")).queue(null, m -> System.out.println("Failed to open dms with guild owner to send SS is higher role then Mine."));
+                    guild.getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessageEmbeds(embedBuilder.build())).queue(null, m -> System.out.println("Failed to open dms with guild owner to send SS is higher role then Mine."));
             }
             else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
@@ -353,7 +355,7 @@ public class ScamShield {
                 member.kick().reason("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
 
-                if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && suspiciousResults.sameauthormessages != null) {
+                if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && !dm) { // there are no messages in guild if scam came from dm
                     List<Message> messagelist = new ArrayList<>();
                     suspiciousResults.sameauthormessages.forEach(m -> {
                         if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE)) {
@@ -377,7 +379,7 @@ public class ScamShield {
                     System.out.println("Removing " + messagelist.size() + " messages");
                     messagelist.forEach(m -> m.delete().queue(/*success*/ null, /*failure*/ f -> System.out.println("Message failed to be deleted, most likely removed")));
                 }
-                else if (suspiciousResults.sameauthormessages != null) {
+                else if (!dm) {
                     System.out.println("Lum does not have MESSAGE_MANAGE perm");
                     String temp = "";
                     if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
@@ -391,7 +393,7 @@ public class ScamShield {
 
             if (reportChannel != null) {
                 StringBuilder sb;
-                if (suspiciousResults.sameauthormessages == null) { //came from DMs
+                if (dm) {
                     sb = new StringBuilder(usernameWithTag + " " + userId + " DMed me a likely scam\n");
                     sb.append(event.getMessage().getContentRaw());
                     sb.append("\n").append(suspiciousResults.ssFoundTerms);
@@ -405,7 +407,7 @@ public class ScamShield {
                 else if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_WRITE))
                     ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFile(sb.toString().getBytes(), usernameWithTag + ".txt").queueAfter(4, TimeUnit.SECONDS));
             }
-            else if (suspiciousResults.sameauthormessages != null && event.getGuild() == guild) {
+            else if (!dm && event.getGuild() == guild) {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
