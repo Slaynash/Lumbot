@@ -213,7 +213,7 @@ public class MelonScannerApisManager {
                                     }
                                 }
 
-                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
+                                if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 2) {
                                     if (!CommandManager.brokenMods.contains(name))
                                         CommandManager.brokenMods.add(name);
                                 }
