@@ -294,7 +294,7 @@ public final class MelonScannerReadPass {
                 return true;
             }
             else if (line.toLowerCase().contains("exception") && !line.toLowerCase().contains("typeloadexception")) {
-                String erroringName = splitName(line);
+                String erroringName = splitName(line).replace("_", " ");
                 //TODO check if broken
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
@@ -789,8 +789,8 @@ public final class MelonScannerReadPass {
             List<MelonApiMod> mods = MelonScannerApisManager.getMods(context.game);
             if (mods != null) {
                 if (mods.stream().anyMatch(m -> m.name.equalsIgnoreCase(mod))) {
-                    if (!context.modsThrowingErrors.contains(mod))
-                        context.modsThrowingErrors.add(mod);
+                    if (!context.modsThrowingErrors.contains(mod.replace("_", " ")))
+                        context.modsThrowingErrors.add(mod.replace("_", " "));
                 }
                 else {
                     Optional<MelonApiMod> aliasedMod = mods.stream().filter(m -> m.aliases != null && Arrays.asList(m.aliases).contains(mod)).findFirst();

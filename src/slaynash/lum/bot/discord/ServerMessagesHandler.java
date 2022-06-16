@@ -182,7 +182,7 @@ public class ServerMessagesHandler {
                     else if (guildID == 936064484391387256L/*Remod Dev*/) {
                         if (message.replace(" ", "").contains("emm"))
                             Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
-                        else
+                        else if (!message.contains("982721463985524826"))
                             event.getMessage().reply("<#982721463985524826>").queue();
                     }
                     else {
