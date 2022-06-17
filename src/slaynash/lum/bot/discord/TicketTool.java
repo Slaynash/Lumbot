@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -156,7 +157,9 @@ public class TicketTool {
         for (int i = 0; i < len; i++)
             sb.append(AB.charAt(random.nextInt(AB.length())));
         String sbr = sb.toString();
-        if (sbr.matches(".*(joe|red|sjw|[s5]hit|fuck|sex|xxx|cum|nazi|kkk|ass|tit|fag|fap|gay).*"))
+        String sbrt = sbr.replace("4", "a").replace("8", "b").replace("3", "e").replace("9", "q")
+                .replace("2", "r").replace("5", "s").replace("7", "t").replace("vv", "w");
+        if (blacklistTerms.stream().anyMatch(sbrt::contains))
             return randomString(len); //just generate a new one until we get a good one
         return sbr;
     }
@@ -174,4 +177,18 @@ public class TicketTool {
         }
         return false;
     }
+
+    //known words that VRChat censors plus a few more I added.
+    static List<String> blacklistTerms = Arrays.asList("ass", "biatch", "bimbos", "bitch", "boner", "buceta", "bugger",
+            "busty", "cawk", "chinga", "chink", "choade", "cnut", "cock", "cocks", "cuck", "cum", "cumdump", "cummer",
+            "cumming", "cumshot", "cunt", "cuntbag", "cunts", "cutrope", "dick", "dirsa", "doggin", "dogging", "doosh",
+            "duche", "dyke", "erotic", "fag", "fagging", "faggitt", "faggot", "faggs", "fagot", "fagots", "fags", "fap",
+            "fapfap", "fck", "fcuk", "fuck", "gaysex", "hairpie", "horny", "hotsex", "jackoff", "jerkoff", "jism",
+            "jizm", "jizz", "joder", "joe", "kkk", "knobead", "knobed", "knobend", "kummer", "kumming", "kwif",
+            "mangina", "mgtow", "mierda", "misandr", "misogyn", "mofo", "nazi", "nigga", "nigger", "nobhead", "nutsack",
+            "orgasim", "orgasm", "pecker", "penis", "phuck", "phuk", "phuq", "porno", "prick", "pricks", "pusse",
+            "pussi", "pussy", "queaf", "rapist", "red", "retard", "rimjaw", "rimjob", "scroat", "scrote", "scrotum",
+            "sex", "shit", "sjw", "skank", "smegma", "snatch", "teets", "tit", "titfuck", "tittie", "titty", "titwank",
+            "tupper", "twat", "twunt", "twunter", "vagina", "viagra", "wank", "wanker", "whore", "woose", "xrated",
+            "xxx");
 }

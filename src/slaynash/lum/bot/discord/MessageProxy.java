@@ -86,7 +86,7 @@ public class MessageProxy {
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&
                 !event.getMessage().getContentRaw().startsWith(".")) {
             String[] userID = event.getChannel().getName().split("-");
-            User user = JDAManager.getJDA().getUserById(userID[userID.length - 1]);
+            User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
             if (user == null) {
                 Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
                 return true;
@@ -133,7 +133,7 @@ public class MessageProxy {
             }
         } else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getTextChannel().getParent() != null && event.getTextChannel().getParent().getIdLong() == 924780998124798022L) {
             event.getUser().openPrivateChannel().queue(
-                channel -> channel.sendMessage("").queue(null,
+                channel -> channel.sendTyping().queue(null,
                         e -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
                 error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
         }
