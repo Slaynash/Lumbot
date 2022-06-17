@@ -154,7 +154,7 @@ public class Steam {
                 List<SteamChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + gameID + ")");
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)",previousChangeNumber,gameID);
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
@@ -189,7 +189,7 @@ public class Steam {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
                 List<SteamChannel> channels = new ArrayList<>();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(" + previousChangeNumber + ", " + app.getKey() + ")");
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)",previousChangeNumber,app.getKey());
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }

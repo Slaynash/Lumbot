@@ -31,7 +31,7 @@ public class TicketTool {
                 if (channelName.contains("reset")){
                     event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                     try {
-                        DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelID`, `UserID`, `Created`) VALUES (?,?,?)", event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
+                        DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
                     } catch (SQLException e) {
                         ExceptionUtils.reportException("Failed to create TT autoclose", e);
                     }
@@ -115,6 +115,13 @@ public class TicketTool {
                     else
                         event.getTextChannel().sendMessage(codeNotFound).queue();
                 }
+                if(codeFound) {
+                    try {
+                        DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Completed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
+                    } catch (SQLException e) {
+                        ExceptionUtils.reportException("Failed to handle TT completed TS", e);
+                    }
+                }
             }, "Ticket");
             thread.start();
         }
@@ -124,7 +131,7 @@ public class TicketTool {
         Thread thread = new Thread(() -> {
             while (!Main.isShuttingDown) {
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `TicketTool` WHERE `Created`+? < ?", 10*60*1000, System.currentTimeMillis());
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `TicketsToClose`(?)", System.currentTimeMillis());
                     while (rs.next()) {
                         long ukey = rs.getLong("ukey");
                         long channelID = rs.getLong("ChannelID");
