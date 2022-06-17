@@ -159,7 +159,7 @@ public class TicketTool {
         String sbr = sb.toString();
         String sbrt = sbr.replace("4", "a").replace("8", "b").replace("3", "e").replace("9", "q")
                 .replace("2", "r").replace("5", "s").replace("7", "t").replace("vv", "w");
-        if (blacklistTerms.stream().anyMatch(sbrt::contains))
+        if (blacklistTerms.stream().anyMatch(sbrt::contains) || blacklistTerms.stream().anyMatch(sbr.replaceAll("\\d", "")::contains))
             return randomString(len); //just generate a new one until we get a good one
         return sbr;
     }
