@@ -109,7 +109,6 @@ public class Main extends ListenerAdapter {
         CrossServerUtils.loadGuildCount();
 
         API.start();
-        TicketTool.start();
 
         MelonScanner.init();
 
@@ -119,6 +118,7 @@ public class Main extends ListenerAdapter {
         JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
+        TicketTool.start();
 
         SlashManager.registerCommands();
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)

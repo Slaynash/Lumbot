@@ -128,6 +128,8 @@ public class TicketTool {
     }
 
     public static void start() {
+        if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L)
+            return;
         Thread thread = new Thread(() -> {
             while (!Main.isShuttingDown) {
                 try {
