@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public final class DBConnectionManagerLum {
         try {
             System.out.println("Connecting to Database...");
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
-            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum, ConfigManager.dbLogin, ConfigManager.dbPassword);
+            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum + "?useUnicode=true&characterEncoding=UTF-8", ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("Connection to Database initialised");
         }
         catch (Exception e) {
@@ -41,7 +42,7 @@ public final class DBConnectionManagerLum {
         }
     }
 
-    private static Connection getConnection() {
+    public static Connection getConnection() {
         try {
             if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
                 if (connection != null && !connection.isClosed()) connection.close();
@@ -54,12 +55,11 @@ public final class DBConnectionManagerLum {
         return null;
     }
 
-    public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
-        requestCount.incrementAndGet();
+    public static PreparedStatement formatStatement(String statement, Object... args) throws SQLException {
         PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
-                throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
+                ps.setNull(i + 1, Types.VARCHAR);
             else if (args[i].getClass() == String.class)
                 ps.setString(i + 1, (String) args[i]);
             else if (args[i].getClass() == Integer.class)
@@ -68,8 +68,14 @@ public final class DBConnectionManagerLum {
                 ps.setBoolean(i + 1, (boolean) args[i]);
             else if (args[i].getClass() == Long.class)
                 ps.setLong(i + 1, (long) args[i]);
-            else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[0].getClass() + "(arg number " + i + ")");
+            else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
+        return ps;
+    }
+
+    public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
+        requestCount.incrementAndGet();
+        PreparedStatement ps = formatStatement(statement, args);
         ResultSet rs = ps.executeQuery();
         synchronized (requests) {
             requests.put(rs, ps);
@@ -152,20 +158,7 @@ public final class DBConnectionManagerLum {
 
     public static int sendUpdate(String statement, Object... args) throws SQLException {
         updateCount.incrementAndGet();
-        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
-        for (int i = 0; i < args.length; i++) {
-            if (args[i] == null)
-                throw new IllegalArgumentException("Trying to initialise request with null arg (arg number " + i + ")");
-            else if (args[i].getClass() == String.class)
-                ps.setString(i + 1, (String) args[i]);
-            else if (args[i].getClass() == Integer.class)
-                ps.setInt(i + 1, (int) args[i]);
-            else if (args[i].getClass() == Boolean.class)
-                ps.setBoolean(i + 1, (boolean) args[i]);
-            else if (args[i].getClass() == Long.class)
-                ps.setLong(i + 1, (long) args[i]);
-            else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
-        }
+        PreparedStatement ps = formatStatement(statement, args);
         int r = ps.executeUpdate();
         ps.close();
         updateClosedCount.incrementAndGet();

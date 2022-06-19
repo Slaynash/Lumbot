@@ -297,7 +297,7 @@ public class Steam {
         if (guild == null) {
             System.out.println("Steam can not find Guild " + sc.guildID);
             try {
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = " + sc.guildID);
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = ?", sc.guildID);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -307,7 +307,7 @@ public class Steam {
         if (channel == null) {
             System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.guildID);
             try {
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = " + sc.channelId);
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", sc.channelId);
             } catch (SQLException e) {
                 e.printStackTrace();
             }

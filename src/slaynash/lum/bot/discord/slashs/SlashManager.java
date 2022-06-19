@@ -19,7 +19,8 @@ public class SlashManager {
     private static final List<Slash> slashes = new ArrayList<>();
 
     public static void slashRun(SlashCommandEvent event) {
-        if (event.getChannelType() != ChannelType.PRIVATE && !event.getTextChannel().canTalk())
+        System.out.println("Slash " + event.getName() + (event.getSubcommandName()==null?"":" "+event.getSubcommandName()) + " options:" + event.getOptions() + " in " + (event.getGuild()==null?"DM "+event.getUser().getId():event.getGuild().getName()));
+        if (event.getChannelType() == ChannelType.TEXT && !event.getTextChannel().canTalk())
             return;  //Lum can't talk in this channel
         for (Slash slash : slashes) {
             CommandData global = slash.globalSlashData();
@@ -63,6 +64,7 @@ public class SlashManager {
 
         registerSlash(new SlashConfig());
         registerSlash(new SteamWatcher());
+        registerSlash(new Replies());
         registerSlash(new UnivUCBLLIFExoGenerator());
 
         try {

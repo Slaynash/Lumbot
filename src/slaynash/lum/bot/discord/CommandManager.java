@@ -28,7 +28,6 @@ import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
-import slaynash.lum.bot.discord.commands.Replies;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
@@ -138,7 +137,6 @@ public class CommandManager {
         CommandManager.registerCommand(new Unban());
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
-        CommandManager.registerCommand(new Replies());
 
         CommandManager.registerCommand(new TestVRCObfmap());
         CommandManager.registerCommand(new UnityCheckCommand());
@@ -244,24 +242,6 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
-        }
-    }
-
-    public static void saveReplies() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/replies.txt"))) {
-            for (Entry<Long, Map<String, String>> guilds : guildReplies.entrySet()) {
-                for (Entry<String, String> reply : guilds.getValue().entrySet()) {
-                    writer.write(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n")));
-                }
-            }
-            for (Entry<Long, Map<String, String>> guilds : guildRegexReplies.entrySet()) {
-                for (Entry<String, String> reply : guilds.getValue().entrySet()) {
-                    writer.write("regex".concat(guilds.getKey().toString().concat(",").concat(reply.getKey().concat("&#00;").concat(reply.getValue().replace("\n", "&#10;")).concat("\n"))));
-                }
-            }
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save Replies", e);
         }
     }
 

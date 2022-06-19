@@ -4,17 +4,16 @@ import java.awt.Color;
 import java.io.File;
 import java.io.InputStream;
 import java.security.MessageDigest;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import com.coder4.emoji.EmojiUtils;
-import com.google.code.regexp.Matcher;
-import com.google.code.regexp.Pattern;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
@@ -412,97 +411,94 @@ public class ServerMessagesHandler {
             content = content.toLowerCase();
             if (event.getMember().equals(event.getGuild().getSelfMember()))
                 return true;
-            if (content.startsWith("l!repl"))
-                return true;
-            Map<String, String> regexReplies = CommandManager.guildRegexReplies.get(event.getGuild().getIdLong());
-            Map<String, String> replies = CommandManager.guildReplies.get(event.getGuild().getIdLong());
+            String guildID = event.getGuild().getId();
+            try {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = '" + guildID + "'");
 
-            if (regexReplies != null) {
-                for (Entry<String, String> reply : regexReplies.entrySet()) {
-                    boolean deleteMessage = false;
-                    boolean kickmember = false;
-                    boolean banmember = false;
-                    String key = reply.getKey();
-                    String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (key.contains("%delete")) {
-                        deleteMessage = true;
-                        key = key.replace("%delete ", "").replace(" %delete", "").replace("%delete", "");
+                while (rs.next()) {
+                    int ukey = rs.getInt("ukey");
+                    String regex = rs.getString("regex");
+                    String contains = rs.getString("contains");
+                    String equals = rs.getString("equals");
+                    long user = rs.getLong("user");
+                    long channel = rs.getLong("channel");
+                    long ignorerole = rs.getLong("ignorerole");
+                    String message = rs.getString("message");
+                    boolean delete = rs.getBoolean("bdelete");
+                    boolean kick = rs.getBoolean("bkick");
+                    boolean ban = rs.getBoolean("bban");
+                    boolean edit = rs.getBoolean("bedit");
+                    if (!edit && event.getMessage().isEdited()){
+                        continue;
                     }
-                    if (key.contains("%kick")) {
-                        kickmember = true;
-                        key = key.replace("%kick ", "").replace(" %kick", "").replace("%kick", "");
-                    }
-                    if (key.contains("%ban")) {
-                        banmember = true;
-                        key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
-                    }
-                    if (content.matches("(?s)".concat(key))) {
-                        if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-                            event.getMessage().delete().queue();
-                        }
-                        if (kickmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
-                            event.getMember().kick().queue();
-                        }
-                        if (banmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
-                            event.getMember().ban(0).queue();
-                        }
-                        if (EmojiUtils.isOneEmoji(value))
-                            event.getMessage().addReaction(value).queue();
-                        else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
-                            event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue(); //This could error if unknown or too many reactions on message
-                        else if (!value.equals(".")) {
-                            event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                            return true;
+                    if (regex != null && !regex.isBlank()) {
+                        if (!content.matches("(?s)".concat(regex))) {
+                            continue;
                         }
                     }
+                    if (contains != null && !contains.isBlank()) {
+                        if (!content.contains(contains)) {
+                            continue;
+                        }
+                    }
+                    if (equals != null && !equals.isBlank()) {
+                        if (!content.equals(equals)) {
+                            continue;
+                        }
+                    }
+                    if (user > 69420) {
+                        if (event.getAuthor().getIdLong() != user) {
+                            continue;
+                        }
+                    }
+                    if (channel > 69420) {
+                        System.out.println("Channel: " + channel + " " + event.getChannel().getIdLong());
+                        if (event.getChannel().getIdLong() != channel && (event.getTextChannel() == null || event.getTextChannel().getParent() == null || event.getTextChannel().getParent().getIdLong() != channel)) {
+                            continue;
+                        }
+                    }
+                    if (ignorerole > 69420) {
+                        if (event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == ignorerole)) {
+                            continue;
+                        }
+                    }
+                    if (event.getAuthor().isBot() && !rs.getBoolean("bbot")) {
+                        continue;
+                    }
+
+                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                        event.getMessage().delete().queue();
+                    }
+                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
+                        event.getMember().kick().queue();
+                    }
+                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
+                        event.getMember().ban(0).queue();
+                    }
+                    if (EmojiUtils.isOneEmoji(message))
+                        event.getMessage().addReaction(message).queue();
+                    else if (message.matches("^<a?:\\w+:\\d+>$")) {
+                        System.out.println("Emoji: " + message);
+                        Emote emote = event.getJDA().getEmoteById(message.replace(">", "").split(":")[2]);
+                        try {
+                            if (emote.canInteract(emote.getGuild().getSelfMember()))
+                                event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
+                            else
+                                event.getTextChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
+                        } catch (Exception e) {
+                            event.getTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
+                        }
+                    }
+                    else if (!message.isBlank()) {
+                        event.getTextChannel().sendMessage(message).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                    }
+                    DBConnectionManagerLum.closeRequest(rs);
+                    return true;
                 }
-            }
-            if (replies != null) {
-                for (Entry<String, String> reply : replies.entrySet()) {
-                    boolean deleteMessage = false;
-                    boolean kickmember = false;
-                    boolean banmember = false;
-                    String key = reply.getKey();
-                    String value = reply.getValue().replace("%u", event.getAuthor().getName());
-                    if (key.contains("%delete")) {
-                        deleteMessage = true;
-                        key = key.replace("%delete ", "").replace(" %delete", "").replace("%delete", "");
-                    }
-                    if (key.contains("%kick")) {
-                        kickmember = true;
-                        key = key.replace("%kick ", "").replace(" %kick", "").replace("%kick", "");
-                    }
-                    if (key.contains("%ban")) {
-                        banmember = true;
-                        key = key.replace("%ban ", "").replace(" %ban", "").replace("%ban", "");
-                    }
-                    boolean matchUser = false;
-                    Matcher m = Pattern.compile("<@!?(?<userid>\\d{18,19})>").matcher(key);
-                    if (m.find()) {
-                        String userid = m.group("userid");
-                        if (event.getAuthor().getId().equals(userid))
-                            matchUser = true;
-                    }
-                    if (matchUser || content.contains(key)) {
-                        if (deleteMessage && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
-                            event.getMessage().delete().queue();
-                        }
-                        if (kickmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
-                            event.getMember().kick().queue();
-                        }
-                        if (banmember && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
-                            event.getMember().ban(0).queue();
-                        }
-                        if (EmojiUtils.isOneEmoji(value))
-                            event.getMessage().addReaction(value).queue();
-                        else if ((value.startsWith("<:") || value.startsWith("<a:")) && value.endsWith(">") && value.split(":").length == 3)
-                            event.getMessage().addReaction(value.substring(1, value.length() - 1)).queue();
-                        else if (!value.equals(".")) {
-                            event.getTextChannel().sendMessage(value).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                            return true;
-                        }
-                    }
-                }
+
+                DBConnectionManagerLum.closeRequest(rs);
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to check replies", e, event.getTextChannel());
             }
         }
         catch (Exception e) {

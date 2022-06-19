@@ -188,7 +188,7 @@ public class TicketTool {
     }
 
     //known words that VRChat censors plus a few more I added.
-    static List<String> blacklistTerms = Arrays.asList("ass", "biatch", "bimbos", "bitch", "boner", "buceta", "bugger",
+    static final List<String> blacklistTerms = Arrays.asList("ass", "biatch", "bimbos", "bitch", "boner", "buceta", "bugger",
             "busty", "cawk", "chinga", "chink", "choade", "cnut", "cock", "cocks", "cuck", "cum", "cumdump", "cummer",
             "cumming", "cumshot", "cunt", "cuntbag", "cunts", "cutrope", "dick", "dirsa", "doggin", "dogging", "doosh",
             "duche", "dyke", "erotic", "fag", "fagging", "faggitt", "faggot", "faggs", "fagot", "fagots", "fags", "fap",

@@ -542,7 +542,8 @@ public class Main extends ListenerAdapter {
 
         boolean foundblacklist = false;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "'");
+            // DBConnectionManagerLum.sendUpdate("INSERT INTO `blacklistusername` (`username`) VALUES (?)", name);
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ?", name);
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         } catch (Exception e) {

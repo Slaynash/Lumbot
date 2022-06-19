@@ -96,7 +96,6 @@ public class MessageProxy {
                 message.getEmotes().forEach(emote -> {
                     if (!emote.canInteract(emote.getGuild().getSelfMember())) {
                         message.reply("Lum can not use that emote.").queue();
-                        return;
                     }
                 });
             } catch (Exception e) {
