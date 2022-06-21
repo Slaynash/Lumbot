@@ -25,27 +25,36 @@ public class TicketTool {
         String channelName = event.getTextChannel().getName();
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
-        if ((event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) && event.getMessage().getContentDisplay().startsWith("Welcome")) {
-            if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
-                //The code needs to be the first ` in message
-                if (channelName.contains("reset")){
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                    try {
-                        DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
-                    } catch (SQLException e) {
-                        ExceptionUtils.reportException("Failed to create TT autoclose", e);
+        if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) {
+            if (event.getMessage().getContentDisplay().startsWith("Welcome")) {
+                if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
+                    //The code needs to be the first ` in message
+                    if (channelName.contains("reset")){
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+                        try {
+                            DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
+                        } catch (SQLException e) {
+                            ExceptionUtils.reportException("Failed to create TT autoclose", e);
+                        }
                     }
+                    else if (channelName.contains("wipe"))
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+                    else if (channelName.contains("deletion"))
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
+                    else if (channelName.contains("export"))
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexport").replace("$randomString$", randomString(8))).queue();
                 }
-                else if (channelName.contains("wipe"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                else if (channelName.contains("deletion"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                else if (channelName.contains("export"))
-                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexport").replace("$randomString$", randomString(8))).queue();
+                else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
+                    //The code needs to be the first ` in message
+                    event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8))).queue();
+                }
             }
-            else if (event.getGuild().getIdLong() == 716536783621587004L /* TW */) {
-                //The code needs to be the first ` in message
-                event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8))).queue();
+            else if (event.getMessage().getEmbeds().size() > 0 && event.getMessage().getEmbeds().get(0).getDescription().startsWith("Ticket Closed by")) {
+                try {
+                    DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
+                } catch (SQLException e) {
+                    ExceptionUtils.reportException("Failed to handle TT close", e);
+                }
             }
         }
         else if ((event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ || event.getAuthor().getIdLong() == 150562159196241920L /*Karren-sama*/) && event.getMessage().getEmbeds().size() > 0) {
@@ -146,6 +155,7 @@ public class TicketTool {
                             DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ukey`=?", System.currentTimeMillis(), ukey);
                         }
                     }
+                    DBConnectionManagerLum.closeRequest(rs);
                     Thread.sleep(5 * 1000); // sleep for 5 seconds
                 }
                 catch (Exception e) {

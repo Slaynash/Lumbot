@@ -194,6 +194,8 @@ public class Replies extends Slash {
                     int ukey = rs.getInt("AUTO_INCREMENT") - 1; // pretty bad way to get the ukey
 
                     event.reply("Added reply, ukey: " + ukey).queue();
+
+                    DBConnectionManagerLum.closeRequest(rs);
                 } catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to Add reply", e, event.getTextChannel());
                 }
