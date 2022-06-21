@@ -137,16 +137,13 @@ public class TicketTool {
                     while (rs.next()) {
                         long ukey = rs.getLong("ukey");
                         long channelID = rs.getLong("ChannelID");
-                        // long userID = rs.getLong("UserID");
-                        // long created = rs.getLong("Created");
                         TextChannel channel = JDAManager.getJDA().getTextChannelById(channelID);
                         if (channel == null) {
-                            DBConnectionManagerLum.sendUpdate("DELETE FROM `TicketTool` WHERE `ukey`=?", ukey); // Was deleted by not Lum
-                            continue;
+                            DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ukey`=?", System.currentTimeMillis(), ukey); // Was deleted by not Lum
                         }
-                        if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
+                        else if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
                             channel.sendMessage("$close").queue();
-                            DBConnectionManagerLum.sendUpdate("DELETE FROM `TicketTool` WHERE `ukey`=?", ukey);
+                            DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ukey`=?", System.currentTimeMillis(), ukey);
                         }
                     }
                     Thread.sleep(5 * 1000); // sleep for 5 seconds
