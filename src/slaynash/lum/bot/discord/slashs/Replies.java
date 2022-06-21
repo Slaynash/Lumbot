@@ -175,8 +175,10 @@ public class Replies extends Slash {
             }
 
             if (event.getOption("ukey") == null) {
+                if (event.getOption("regex") == null && event.getOption("contains") == null && event.getOption("equals") == null)
+                    event.getTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
                 try {
-                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     event.getGuild().getIdLong(),
                     event.getOption("regex") == null ? null : event.getOption("regex").getAsString(),
                     event.getOption("contains") == null ? null : event.getOption("contains").getAsString(),
@@ -185,7 +187,7 @@ public class Replies extends Slash {
                     event.getOption("user") == null ? null : event.getOption("user").getAsUser().getId(),
                     event.getOption("channel") == null ? null : event.getOption("channel").getAsMessageChannel().getId(),
                     event.getOption("ignorerole") == null ? null : event.getOption("ignorerole").getAsRole().getId(),
-                    delete, kick, ban, bot, edit);
+                    delete, kick, ban, bot, edit, event.getUser().getIdLong());
 
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `AUTO_INCREMENT` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Replies'");
                     rs.next();
@@ -211,7 +213,8 @@ public class Replies extends Slash {
                     return;
                 }
 
-                try { // Use setString to avoid SQL Injection, not sure how to combine them so updating one at a time
+                try { // not sure how to combine them so updating one at a time
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set lastedited = ? WHERE `Replies`.`ukey` = ?", event.getUser().getIdLong(), ukey);
                     if (event.getOption("message") != null)
                         DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set message = ? WHERE `Replies`.`ukey` = ?", event.getOption("message").getAsString(), ukey);
                     if (event.getOption("regex") != null)

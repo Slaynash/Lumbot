@@ -73,6 +73,12 @@ public final class DBConnectionManagerLum {
         return ps;
     }
 
+    /** SELECT
+     *
+     * @param statement The SQL statement to execute
+     * @param args Replacements for the ? in the statement
+     * @return ResultSet
+     */
     public static ResultSet sendRequest(String statement, Object... args) throws SQLException {
         requestCount.incrementAndGet();
         PreparedStatement ps = formatStatement(statement, args);
@@ -156,6 +162,12 @@ public final class DBConnectionManagerLum {
         }
     }
 
+    /** INSERT, UPDATE or DELETE
+     *
+     * @param statement The SQL statement to execute
+     * @param args Replacements for the ? in the statement
+     * @return Number of Rows affected
+     */
     public static int sendUpdate(String statement, Object... args) throws SQLException {
         updateCount.incrementAndGet();
         PreparedStatement ps = formatStatement(statement, args);

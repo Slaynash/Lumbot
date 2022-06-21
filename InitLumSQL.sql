@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 22, 2022 at 07:41 AM
+-- Generation Time: Jun 21, 2022 at 02:37 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -30,6 +30,10 @@ DELIMITER $$
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber` INT UNSIGNED, IN `GameID` INT UNSIGNED)  BEGIN
 	UPDATE `Config` SET `value` = ChangeNumber WHERE `Config`.`setting` = 'LastSteamChange';
 	SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = GameID;
+END$$
+
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
+	SELECT * FROM `TicketTool` WHERE `Created`+ (30*60*1000) < currentTime;
 END$$
 
 DELIMITER ;
@@ -86,6 +90,32 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Replies`
+--
+
+CREATE TABLE IF NOT EXISTS `Replies` (
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ukey` int NOT NULL AUTO_INCREMENT,
+  `guildID` bigint NOT NULL,
+  `regex` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contains` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `equals` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user` bigint DEFAULT NULL,
+  `message` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bdelete` tinyint(1) NOT NULL DEFAULT '0',
+  `bkick` tinyint(1) NOT NULL DEFAULT '0',
+  `bban` tinyint(1) NOT NULL DEFAULT '0',
+  `bbot` tinyint(1) NOT NULL DEFAULT '0',
+  `bedit` tinyint(1) NOT NULL DEFAULT '0',
+  `channel` bigint DEFAULT NULL,
+  `ignorerole` bigint DEFAULT NULL,
+  `lastedited` bigint DEFAULT NULL,
+  PRIMARY KEY (`ukey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `SteamWatch`
 --
 
@@ -112,6 +142,23 @@ CREATE TABLE IF NOT EXISTS `strings` (
   `value` text NOT NULL,
   UNIQUE KEY `string` (`string`(32))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `TicketTool`
+--
+
+CREATE TABLE IF NOT EXISTS `TicketTool` (
+  `ukey` int NOT NULL AUTO_INCREMENT,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ChannelName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `ChannelID` bigint NOT NULL,
+  `UserID` bigint DEFAULT NULL,
+  `Created` bigint DEFAULT NULL,
+  `Completed` bigint DEFAULT NULL,
+  UNIQUE KEY `ukey` (`ukey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 --
 -- Database: `shorturls`
 --
@@ -127,7 +174,8 @@ USE `shorturls`;
 CREATE TABLE IF NOT EXISTS `shorturls` (
   `id` int NOT NULL AUTO_INCREMENT,
   `uid` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
-  `url` text COLLATE utf8mb4_general_ci NOT NULL,
+  `url` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `uid` (`uid`)

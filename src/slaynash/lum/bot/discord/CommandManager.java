@@ -18,6 +18,7 @@ import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.AutoPublish;
 import slaynash.lum.bot.discord.commands.Ban;
+import slaynash.lum.bot.discord.commands.Blacklist;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.DumpID;
 import slaynash.lum.bot.discord.commands.HelpCommand;
@@ -141,6 +142,7 @@ public class CommandManager {
         CommandManager.registerCommand(new TestVRCObfmap());
         CommandManager.registerCommand(new UnityCheckCommand());
         CommandManager.registerCommand(new AddMissingRoles());
+        CommandManager.registerCommand(new Blacklist());
 
         CommandManager.registerCommand(new LumGoneCommand());
     }
