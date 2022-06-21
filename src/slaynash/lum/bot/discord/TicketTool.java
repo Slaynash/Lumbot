@@ -49,7 +49,7 @@ public class TicketTool {
                     event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "twTTmessage").replace("$randomString$", randomString(8))).queue();
                 }
             }
-            else if (event.getMessage().getEmbeds().size() > 0 && event.getMessage().getEmbeds().get(0).getDescription().startsWith("Ticket Closed by")) {
+            else if (event.getMessage().getEmbeds().size() > 0 && event.getMessage().getEmbeds().get(0).getDescription() != null && event.getMessage().getEmbeds().get(0).getDescription().startsWith("Ticket Closed by")) {
                 try {
                     DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
                 } catch (SQLException e) {
