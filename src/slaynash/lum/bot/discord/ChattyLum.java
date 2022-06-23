@@ -38,6 +38,7 @@ public class ChattyLum {
         "Why won't you read my answer <:angry:835647632843866122>",
         "https://tenor.com/view/exultant-what-anime-gif-16881880",
         "https://tenor.com/view/obama-what-dafuq-gif-7447350",
+        "https://tenor.com/view/waiting-late-wait-patiently-bored-gif-7779408",
         "https://tenor.com/view/cute-pouting-pout-anime-girl-gif-14739721"
     ));
 

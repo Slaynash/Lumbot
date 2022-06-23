@@ -195,7 +195,7 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
                     System.out.println("VRChatUtilityKit print");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/231/VRChatUtilityKit.dll and put it in your Mods folder.").queue();
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/231/ and put it in your Mods folder.").queue();
                     return;
                 }
 
@@ -239,13 +239,13 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!uix")) {
                     System.out.println("UIX printed");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/55/UIExpansionKit.dll and put it in your Mods folder.").queue();
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/55/ and put it in your Mods folder.").queue();
                     return;
                 }
 
                 if (message.startsWith("!amapi") || message.startsWith("!vrcama")) {
                     System.out.println("actionmenuapi printed");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/201/ActionMenuApi.dll and put it in your Mods folder.").queue();
+                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/201/ and put it in your Mods folder.").queue();
                     return;
                 }
 
