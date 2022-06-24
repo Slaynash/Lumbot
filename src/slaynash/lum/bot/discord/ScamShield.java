@@ -102,7 +102,7 @@ public class ScamShield {
             put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put("@everyone (Hey, )?(join (this|my) (friend's )?server )?(https?://)?(discord.gg|(discord(.com|app.com|.media|.co)|watchanimeattheoffice.com)/invite)/[\\w-_.,~$&+\\d]+( join now)?", 10);
+            put("@everyone(Hey,)?(join(this|my)(friend's)?server)?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 1);
@@ -132,6 +132,7 @@ public class ScamShield {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
+        // System.out.println("SS final Message: " + finalMessage);
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
