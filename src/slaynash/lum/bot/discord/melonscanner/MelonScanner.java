@@ -369,7 +369,7 @@ public final class MelonScanner {
             return;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
+            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") &&!context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
                 context.pirate = true;
             }
         }
