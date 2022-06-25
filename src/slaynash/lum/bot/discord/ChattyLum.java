@@ -36,6 +36,7 @@ public class ChattyLum {
         "I've already given you a response! <:MeguminEyes:852057834686119946>",
         "There's already the answer up here!! <:cirHappy:829458722634858496>",
         "Why won't you read my answer <:angry:835647632843866122>",
+        "https://tenor.com/view/klee-klee-bonk-head-bonk-klee-gif-20738643",
         "https://tenor.com/view/exultant-what-anime-gif-16881880",
         "https://tenor.com/view/obama-what-dafuq-gif-7447350",
         "https://tenor.com/view/waiting-late-wait-patiently-bored-gif-7779408",

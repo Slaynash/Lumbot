@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
@@ -59,6 +58,16 @@ public class Replies extends Slash {
             event.reply("Please specify a subcommand").queue();
             return;
         }
+        long muserid = event.getUser().getIdLong();
+        long guildid = event.getGuild().getIdLong();
+        String regex = event.getOption("regex") == null ? null : event.getOption("regex").getAsString().replace("\\n", "\n");
+        String contains = event.getOption("contains") == null ? null : event.getOption("contains").getAsString().replace("\\n", "\n");
+        String equals = event.getOption("equals") == null ? null : event.getOption("equals").getAsString().replace("\\n", "\n");
+        String message = event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n");
+        String user = event.getOption("user") == null ? null : event.getOption("user").getAsUser().getId();
+        String channel = event.getOption("channel") == null ? null : event.getOption("channel").getAsMessageChannel().getId();
+        String ignorerole = event.getOption("ignorerole") == null ? null : event.getOption("ignorerole").getAsRole().getId();
+
         boolean delete = false;
         if (event.getOption("delete") != null && event.getOption("delete").getAsBoolean()) {
             delete = true;
@@ -145,23 +154,22 @@ public class Replies extends Slash {
                 event.reply("Please set at least one option").queue();
                 return;
             }
-            if (event.getOption("regex") != null) {
+            if (regex != null) {
                 try {
-                    Pattern.compile(event.getOption("regex").getAsString());
+                    Pattern.compile(regex);
                 }
                 catch (Exception e) {
                     event.replyEmbeds(new EmbedBuilder().setTitle("Invalid Regex!").setDescription("Please use a site like [regex101](https://regex101.com/) to test regex").setColor(Color.RED).build()).queue();
                     return;
                 }
             }
-            if (event.getOption("message") != null) {
-                OptionMapping messageop = event.getOption("message");
-                if (messageop.getAsString().length() > Message.MAX_CONTENT_LENGTH) {
+            if (message != null) {
+                if (message.length() > Message.MAX_CONTENT_LENGTH) {
                     event.reply("Message is too long. Please use a shorter message.").queue();
                     return;
                 }
                 Pattern p = Pattern.compile("<a?:\\w+:(?<id>\\d+)>", Pattern.CASE_INSENSITIVE);
-                Matcher m = p.matcher(messageop.getAsString());
+                Matcher m = p.matcher(message);
                 while (m.find()) {
                     Emote emote = event.getJDA().getEmoteById(m.group("id"));
                     try {
@@ -180,20 +188,11 @@ public class Replies extends Slash {
                 if (event.getOption("regex") == null && event.getOption("contains") == null && event.getOption("equals") == null)
                     event.getTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
                 try {
-                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                    event.getGuild().getIdLong(),
-                    event.getOption("regex") == null ? null : event.getOption("regex").getAsString().replace("\\n", "\n"),
-                    event.getOption("contains") == null ? null : event.getOption("contains").getAsString().replace("\\n", "\n"),
-                    event.getOption("equals") == null ? null : event.getOption("equals").getAsString().replace("\\n", "\n"),
-                    event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n"),
-                    event.getOption("user") == null ? null : event.getOption("user").getAsUser().getId(),
-                    event.getOption("channel") == null ? null : event.getOption("channel").getAsMessageChannel().getId(),
-                    event.getOption("ignorerole") == null ? null : event.getOption("ignorerole").getAsRole().getId(),
-                    delete, kick, ban, bot, edit, event.getUser().getIdLong());
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, muserid);
 
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `AUTO_INCREMENT` FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Replies'");
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ukey` FROM `Replies` WHERE `guildID` = ? ORDER BY `ukey` DESC", guildid);
                     rs.next();
-                    int ukey = rs.getInt("AUTO_INCREMENT") - 1; // pretty bad way to get the ukey
+                    int ukey = rs.getInt("ukey");
 
                     event.reply("Added reply, ukey: " + ukey).queue();
 
@@ -218,31 +217,31 @@ public class Replies extends Slash {
                 }
 
                 try { // not sure how to combine them so updating one at a time
-                    DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set lastedited = ? WHERE `Replies`.`ukey` = ?", event.getUser().getIdLong(), ukey);
-                    if (event.getOption("message") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set message = ? WHERE `Replies`.`ukey` = ?", event.getOption("message").getAsString().replace("\\n", "\n"), ukey);
-                    if (event.getOption("regex") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set regex = ? WHERE `Replies`.`ukey` = ?", event.getOption("regex").getAsString().replace("\\n", "\n"), ukey);
-                    if (event.getOption("contains") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set contains = ? WHERE `Replies`.`ukey` = ?", event.getOption("contains").getAsString().replace("\\n", "\n"), ukey);
-                    if (event.getOption("equals") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set equals = ? WHERE `Replies`.`ukey` = ?", event.getOption("equals").getAsString().replace("\\n", "\n"), ukey);
-                    if (event.getOption("user") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set user = ? WHERE `Replies`.`ukey` = ?", event.getOption("user").getAsString(), ukey);
-                    if (event.getOption("channel") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set channel = ? WHERE `Replies`.`ukey` = ?", event.getOption("channel").getAsString(), ukey);
-                    if (event.getOption("ignorerole") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set ignorerole = ? WHERE `Replies`.`ukey` = ?", event.getOption("ignorerole").getAsString(), ukey);
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set lastedited = ? WHERE `Replies`.`ukey` = ?", muserid, ukey);
+                    if (message != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set message = ? WHERE `Replies`.`ukey` = ?", message, ukey);
+                    if (regex != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set regex = ? WHERE `Replies`.`ukey` = ?", regex, ukey);
+                    if (contains != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set contains = ? WHERE `Replies`.`ukey` = ?", contains, ukey);
+                    if (equals != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set equals = ? WHERE `Replies`.`ukey` = ?", equals, ukey);
+                    if (user != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set user = ? WHERE `Replies`.`ukey` = ?", user, ukey);
+                    if (channel != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set channel = ? WHERE `Replies`.`ukey` = ?", channel, ukey);
+                    if (ignorerole != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set ignorerole = ? WHERE `Replies`.`ukey` = ?", ignorerole, ukey);
                     if (event.getOption("delete") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bdelete = ? WHERE `Replies`.`ukey` = ?", event.getOption("delete").getAsBoolean(), ukey);
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bdelete = ? WHERE `Replies`.`ukey` = ?", delete, ukey);
                     if (event.getOption("kick") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bkick = ? WHERE `Replies`.`ukey` = ?", event.getOption("kick").getAsBoolean(), ukey);
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bkick = ? WHERE `Replies`.`ukey` = ?", kick, ukey);
                     if (event.getOption("ban") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bban = ? WHERE `Replies`.`ukey` = ?", event.getOption("ban").getAsBoolean(), ukey);
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bban = ? WHERE `Replies`.`ukey` = ?", ban, ukey);
                     if (event.getOption("bot") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bbot = ? WHERE `Replies`.`ukey` = ?", event.getOption("bot").getAsBoolean(), ukey);
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bbot = ? WHERE `Replies`.`ukey` = ?", bot, ukey);
                     if (event.getOption("edit") != null)
-                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bedit = ? WHERE `Replies`.`ukey` = ?", event.getOption("edit").getAsBoolean(), ukey);
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bedit = ? WHERE `Replies`.`ukey` = ?", edit, ukey);
                     event.reply("Reply " + ukey + " updated!").queue();
                 } catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to Update reply", e, event.getTextChannel());
@@ -262,7 +261,7 @@ public class Replies extends Slash {
                 event.reply("No reply found with that trigger").queue();
             }
             else {
-                event.reply("Deleted reply").queue();
+                event.reply("Deleted reply " + ukey).queue();
             }
 
         } else {
