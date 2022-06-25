@@ -182,6 +182,10 @@
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Initialize Assets Manager!",
             "error": "Failed to Initialize Assets Manager. If you are using Turkish as your main Windows language, That could be the problem. It is fixed in the next release of MelonLoader so feel free to use the [nightly build](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip)."
+        },
+        {
+            "regex": ".*ExecutionEngineException: String conversion error: Illegal byte sequence encounted in the input.",
+            "error": "Illegal char in path. Please remove any double byte characters from the path like Japanese or ü."
         }
     ],
     "knownErrors": [
