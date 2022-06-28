@@ -393,12 +393,15 @@ public class Main extends ListenerAdapter {
                     event.getGuild().addRoleToMember(event.getMember(), role).reason("User clicked role reaction").queue();
                     writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to " + event.getUser().getAsMention());
                 }
+                else
+                    writeLogMessage(event.getGuild(), "Role `" + rl.emoteId + "` not found");
                 return;
             }
         }
     }
 
     private static void writeLogMessage(Guild guild, String message) {
+        System.out.println("[" + guild.getName() + "] " + message);
         String channelId;
         if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
             for (TextChannel c : guild.getTextChannels()) {
@@ -419,6 +422,8 @@ public class Main extends ListenerAdapter {
                     event.getGuild().removeRoleFromMember(event.getUserId(), role).reason("User removed role reaction").queue();
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
+                else
+                    writeLogMessage(event.getGuild(), "Role `" + rl.emoteId + "` not found");
                 return;
             }
         }
@@ -429,7 +434,7 @@ public class Main extends ListenerAdapter {
         long targetRoleId = CommandManager.autoScreeningRoles.getOrDefault(event.getGuild().getIdLong(), 0L);
         if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
-            if (role != null)
+            if (role != null && event.getMember() != null)
                 event.getGuild().addRoleToMember(event.getMember(), role).reason("User has agreed to Membership Screening requirements").queue();
         }
     }
