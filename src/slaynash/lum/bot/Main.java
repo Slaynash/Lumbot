@@ -394,7 +394,7 @@ public class Main extends ListenerAdapter {
                     writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to " + event.getUser().getAsMention());
                 }
                 else
-                    writeLogMessage(event.getGuild(), "Role `" + rl.emoteId + "` not found");
+                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId + "` not found");
                 return;
             }
         }
@@ -423,7 +423,7 @@ public class Main extends ListenerAdapter {
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
                 else
-                    writeLogMessage(event.getGuild(), "Role `" + rl.emoteId + "` not found");
+                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId + "` not found");
                 return;
             }
         }
