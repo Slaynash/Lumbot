@@ -715,7 +715,7 @@ public final class MelonScanner {
             if (context.retiredMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.retiredMods.size() - 20));
 
-            context.embedBuilder.addField(Localization.get("melonscanner.retiredMods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedBuilder.addField(Localization.get("melonscanner.modretired.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
             return true;
         }
