@@ -711,7 +711,7 @@ public final class MelonScanner {
             context.retiredMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.modretired.field", context.lang) + "\n");
             for (int i = 0; i < context.retiredMods.size() && i < (context.retiredMods.size() == 21 ? 21 : 20); ++i)
-                error.append("- ").append(CrossServerUtils.sanitizeInputString(context.brokenMods.get(i) + "\n"));
+                error.append("- ").append(CrossServerUtils.sanitizeInputString(context.retiredMods.get(i) + "\n"));
             if (context.retiredMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.retiredMods.size() - 20));
 
