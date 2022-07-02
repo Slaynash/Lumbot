@@ -22,9 +22,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.GZIPInputStream;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LoadState;
 import org.luaj.vm2.LuaError;
@@ -40,12 +37,22 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
-import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
     public static final String LOG_IDENTIFIER = "ML:API";
+
+    public static final List<String> brokenMods = new ArrayList<>();
+    public static final List<String> retiredMods = new ArrayList<>();
+    public static List<String> badMod = new ArrayList<>();
+    public static List<String> badModAuthor = new ArrayList<>();
+    public static List<String> badPluginAuthor = new ArrayList<>();
+    public static List<String> badPlugin = new ArrayList<>();
 
     private static final List<MelonScannerApi> apis = new ArrayList<>();
 
@@ -114,8 +121,7 @@ public class MelonScannerApisManager {
                                 int len;
                                 while ((len = gis.read(responseBody)) > 0)
                                     decompressedStream.write(responseBody, 0, len);
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
                                 //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
                                 return;
@@ -175,8 +181,7 @@ public class MelonScannerApisManager {
                                 LuaValue v = n.arg(2);
                                 try {
                                     k.checkint();
-                                }
-                                catch (LuaError e) {
+                                } catch (LuaError e) {
                                     System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
                                     continue;
                                 }
@@ -184,8 +189,7 @@ public class MelonScannerApisManager {
                                 LuaTable mod;
                                 try {
                                     mod = v.checktable();
-                                }
-                                catch (LuaError e) {
+                                } catch (LuaError e) {
                                     System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
                                     continue;
                                 }
@@ -215,18 +219,18 @@ public class MelonScannerApisManager {
                                 }
 
                                 if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
-                                    if (!CommandManager.brokenMods.contains(name))
-                                        CommandManager.brokenMods.add(name);
+                                    if (!brokenMods.contains(name))
+                                        brokenMods.add(name);
                                 }
                                 else
-                                    CommandManager.brokenMods.remove(name);
+                                    brokenMods.remove(name);
 
                                 if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
-                                    if (!CommandManager.retiredMods.contains(name))
-                                        CommandManager.retiredMods.add(name);
+                                    if (!retiredMods.contains(name))
+                                        retiredMods.add(name);
                                 }
                                 else
-                                    CommandManager.retiredMods.remove(name);
+                                    retiredMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
                             }
                             if (api.name.equals("vrcmg")) {
@@ -283,22 +287,41 @@ public class MelonScannerApisManager {
                         if (doneFirstInit)
                             Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
                         else
-                            Thread.sleep(5 * 1000);
-                    }
-                    catch (HttpTimeoutException exception) {
+                            Thread.sleep(1000);
+                    } catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + api.endpoint);
-                    }
-                    catch (IOException exception) {
+                    } catch (IOException exception) {
                         if (exception.getMessage().contains("GOAWAY")) {
                             ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
                             ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + api.endpoint, exception.getMessage());
-                    }
-                    catch (Exception exception) {
+                    } catch (Exception exception) {
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + api.endpoint, exception);
                     }
 
+                }
+
+                // fetch Blacklist from API and parse it
+                try {
+                    HttpRequest.Builder blbuilder = HttpRequest.newBuilder()
+                        .GET()
+                        .uri(URI.create(ConfigManager.vrcmgBlacklist))
+                        .setHeader("User-Agent", "LUM Bot")
+                        .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+                        .setHeader("Pragma", "no-cache")
+                        .setHeader("Expires", "-1")
+                        .timeout(Duration.ofSeconds(45));
+                    String blDataRaw = new String(downloadRequest(blbuilder.build(), "blacklist").body());
+                    String[] blSplit = blDataRaw.split("\n");
+
+                    badMod = Arrays.asList(blSplit[0].split("\\|"));
+                    badModAuthor = Arrays.asList(blSplit[1].split("\\|"));
+                    badPluginAuthor = Arrays.asList(blSplit[2].split("\\|"));
+                    badPlugin = Arrays.asList(blSplit[3].split("\\|"));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 doneFirstInit = true;
@@ -417,8 +440,7 @@ public class MelonScannerApisManager {
                     System.out.println(source + " provided empty response");
                     throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 exception = e;
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;

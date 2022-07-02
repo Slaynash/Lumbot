@@ -25,6 +25,7 @@ public final class ConfigManager {
     public static String dbPassword;
 
     public static String discordPrefix;
+    public static String vrcmgBlacklist;
 
     public static void init() {
         if (initialized)
@@ -52,9 +53,9 @@ public final class ConfigManager {
             dbPassword = properties.getProperty("DB_PASSWORD");
 
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
+            vrcmgBlacklist = properties.getProperty("VRCMG_BLACKLIST");
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load config", e);
         }
     }

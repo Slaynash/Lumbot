@@ -60,8 +60,6 @@ public class CommandManager {
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
-    public static final List<String> brokenMods = new ArrayList<>();
-    public static final List<String> retiredMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
@@ -82,8 +80,7 @@ public class CommandManager {
                 if (!rcmd.allowBots() && event.getAuthor().isBot()) continue;
                 try {
                     rcmd.onClient(command, event);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
                 }
             }
@@ -100,8 +97,7 @@ public class CommandManager {
                 if (!rcmd.matchPattern(command.toLowerCase())) continue;
                 try {
                     rcmd.onServer(command, event);
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
                 }
             }
@@ -154,8 +150,7 @@ public class CommandManager {
             for (ReactionListener rl : reactionListeners) {
                 writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed save ReactionRoles", e);
         }
     }
@@ -165,8 +160,7 @@ public class CommandManager {
             for (Entry<Long, Long> pair : autoScreeningRoles.entrySet()) {
                 writer.write(pair.getKey() + " " + pair.getValue() + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save ScreeningRoles", e);
         }
     }
@@ -176,8 +170,7 @@ public class CommandManager {
             for (Entry<Long, String> logchannel : logChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Log Channels", e);
         }
     }
@@ -187,8 +180,7 @@ public class CommandManager {
             for (Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
                 writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
         }
     }
@@ -201,8 +193,7 @@ public class CommandManager {
             for (MLHashPair s : melonLoaderAlphaHashes)
                 writer.write("a " + s.x86 + " " + s.x64 + "\n");
 
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
         }
     }
@@ -211,8 +202,7 @@ public class CommandManager {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/melonloaderversions.txt"))) {
             writer.write(MelonScanner.latestMLVersionRelease + "\n");
             writer.write(MelonScanner.latestMLVersionAlpha + "\n");
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
         }
     }
@@ -220,8 +210,7 @@ public class CommandManager {
     public static void saveMLVRCHash() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlvrchash.txt"))) {
             writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save VRChat Hash", e);
         }
     }
@@ -231,8 +220,7 @@ public class CommandManager {
             for (Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
                 writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save Verify Channels", e);
         }
     }
@@ -242,8 +230,7 @@ public class CommandManager {
             for (Long channel : apChannels) {
                 writer.write(channel + "\n");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
         }
     }

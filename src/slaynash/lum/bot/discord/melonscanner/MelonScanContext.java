@@ -62,8 +62,9 @@ public class MelonScanContext {
     public int vrcmuMods = -1;
 
     // Mod listing - temp
-    public boolean preListingMods = false;
-    public boolean listingMods = false;
+    public boolean listingPlugins = false;
+    public boolean preListingModsPlugins = false;
+    public boolean listingModsPlugins = false;
     public int remainingModCount;
     public String tmpModName;
     public String tmpModVersion;
@@ -113,6 +114,8 @@ public class MelonScanContext {
     public final List<MelonApiMod> corruptedMods = new ArrayList<>();
     public final List<String> oldMods = new ArrayList<>();
     public final List<String> hasPendingMods = new ArrayList<>();
+    public final List<String> badMods = new ArrayList<>();
+    public final List<String> badPlugins = new ArrayList<>();
     /*
     public List<String> universalMods = new ArrayList<>();
     public Map<String, String> modAuthors = new HashMap<>();

@@ -113,7 +113,7 @@ public final class MelonScanner {
             prepareEmbed(context);
             fileAgeCheck(context);
             fillEmbedDescription(context);
-
+            badModCheck(context);
 
             boolean issueFound;
             if  (!context.pirate) {
@@ -173,8 +173,7 @@ public final class MelonScanner {
                 }
                 ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
             }
-        }
-        catch (Exception exception) {
+        } catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while reading attachment of message:",
                 exception, messageReceivedEvent.getTextChannel());
@@ -328,10 +327,10 @@ public final class MelonScanner {
             else if (latestHasPending && compare == 0) {
                 context.hasPendingMods.add(modName);
             }
-            else if (CommandManager.brokenMods.contains(modName) || latestModBroken) {
+            else if (MelonScannerApisManager.brokenMods.contains(modName) || latestModBroken) {
                 context.brokenMods.add(modName);
             }
-            else if (CommandManager.retiredMods.contains(modName)) {
+            else if (MelonScannerApisManager.retiredMods.contains(modName)) {
                 context.retiredMods.add(modName);
             }
             else if (deprecatedName || compare > 0) {
@@ -365,6 +364,15 @@ public final class MelonScanner {
         reportUserModifiedML(context.messageReceivedEvent);
     }
 
+    private static void badModCheck(MelonScanContext context) {
+        long guildid = context.messageReceivedEvent.getGuild().getIdLong();
+        if (guildid != 439093693769711616L && guildid != 600298024425619456L && guildid != 663449315876012052L && guildid != 716536783621587004L && guildid != 936064484391387256L)
+            return;
+        if (context.badMods.isEmpty() && context.badPlugins.isEmpty())
+            return;
+        context.messageReceivedEvent.getMessage().delete().reason("Bad mods detected").queue();
+    }
+
     private static void checkForPirate(MelonScanContext context) {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.editedLog = true; //trigger the `dont edit the log` message
@@ -373,7 +381,7 @@ public final class MelonScanner {
             return;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") &&!context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
+            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
                 context.pirate = true;
             }
         }
@@ -509,8 +517,7 @@ public final class MelonScanner {
                 LocalDate fileDate = LocalDate.parse("20" + fileDateString);
                 LocalDate now = LocalDate.now();
                 ageDays = ChronoUnit.DAYS.between(fileDate, now);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 ExceptionUtils.reportException("Exception while reading log age", "File age: " + fileDateString, e);
             }
 
@@ -985,10 +992,10 @@ public final class MelonScanner {
     private static boolean minorErrorsHandling(MelonScanContext context) {
         if (!context.assemblyGenerationFailed && !context.isMLOutdated && !context.isMLOutdatedVRC && context.duplicatedMods.size() == 0 && context.outdatedMods.size() == 0) {
             String error = "";
-            if (context.noMods && context.missingMods.size() == 0 && context.preListingMods && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
+            if (context.noMods && context.missingMods.size() == 0 && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
-            if (context.noMods && context.misplacedMods.size() == 0 && !context.preListingMods && context.errors.size() == 0) {
+            if (context.noMods && context.misplacedMods.size() == 0 && !context.preListingModsPlugins && context.errors.size() == 0) {
                 long guildID = context.messageReceivedEvent.getGuild().getIdLong();
                 if (guildID == 600298024425619456L)
                     error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
@@ -1021,7 +1028,7 @@ public final class MelonScanner {
                 error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
 
             }
-            if (context.mlVersion != null && context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingMods || context.listingMods)) {
+            if (context.mlVersion != null && context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingModsPlugins || context.listingModsPlugins)) {
                 context.embedBuilder.addField(Localization.get("You don't have ReMod", context.lang), Localization.get("ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", context.lang), false);
                 if (context.embedColor == Color.BLUE)
                     context.embedColor = Color.ORANGE;
@@ -1034,7 +1041,7 @@ public final class MelonScanner {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
             }
-            else if (context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingMods) && context.errors.size() == 0) {
+            else if (context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingModsPlugins) && context.errors.size() == 0) {
                 context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
                 context.embedColor = Color.ORANGE;
             }
