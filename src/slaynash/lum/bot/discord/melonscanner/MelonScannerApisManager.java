@@ -217,6 +217,8 @@ public class MelonScannerApisManager {
                                         aliases[iAlias++] = n2.arg(2).checkjstring();
                                     }
                                 }
+                                if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
+                                    approvalStatus = "3";
 
                                 if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
                                     if (!brokenMods.contains(name))
