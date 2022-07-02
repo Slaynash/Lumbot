@@ -106,6 +106,7 @@ public class MelonScanContext {
     public List<MelonApiMod> modDetails;
     public final List<LogsModDetails> unknownMods = new ArrayList<>();
     public final List<String> brokenMods = new ArrayList<>();
+    public final List<String> retiredMods = new ArrayList<>();
     public final List<MelonOutdatedMod> outdatedMods = new ArrayList<>();
     public final List<MelonOutdatedMod> outdatedPlugins = new ArrayList<>();
     public final List<MelonOutdatedMod> newerMods = new ArrayList<>();

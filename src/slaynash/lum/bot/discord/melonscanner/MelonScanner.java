@@ -125,6 +125,7 @@ public final class MelonScanner {
                 issueFound |= incompatibleModsCheck(context);
                 issueFound |= corruptedModsCheck(context);
                 issueFound |= brokenModsCheck(context);
+                issueFound |= retiredModsCheck(context);
                 issueFound |= oldModsCheck(context);
                 issueFound |= misplacedModsCheck(context);
                 issueFound |= misplacedPluginsCheck(context);
@@ -329,6 +330,9 @@ public final class MelonScanner {
             }
             else if (CommandManager.brokenMods.contains(modName) || latestModBroken) {
                 context.brokenMods.add(modName);
+            }
+            else if (CommandManager.retiredMods.contains(modName)) {
+                context.retiredMods.add(modName);
             }
             else if (deprecatedName || compare > 0) {
                 if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
@@ -701,6 +705,23 @@ public final class MelonScanner {
         return false;
     }
 
+    private static boolean retiredModsCheck(MelonScanContext context) {
+        context.retiredMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex).toList());
+        if (context.retiredMods.size() > 0) {
+            context.retiredMods.sort(String.CASE_INSENSITIVE_ORDER);
+            StringBuilder error = new StringBuilder(Localization.get("melonscanner.modretired.field", context.lang) + "\n");
+            for (int i = 0; i < context.retiredMods.size() && i < (context.retiredMods.size() == 21 ? 21 : 20); ++i)
+                error.append("- ").append(CrossServerUtils.sanitizeInputString(context.brokenMods.get(i) + "\n"));
+            if (context.retiredMods.size() > 21)
+                error.append(Localization.getFormat("melonscanner.brokenmods.more", context.lang, context.retiredMods.size() - 20));
+
+            context.embedBuilder.addField(Localization.get("melonscanner.retiredMods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.RED;
+            return true;
+        }
+        return false;
+    }
+
     private static boolean oldModsCheck(MelonScanContext context) {
         boolean reinstallML = context.errors.stream().filter(i -> i.error != null).anyMatch(e -> e.error.contains("reinstall"));
         if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated) || context.modifiedML || reinstallML) {
@@ -925,7 +946,7 @@ public final class MelonScanner {
     private static boolean modsHasPendingCheck(MelonScanContext context) {
         if (context.hasPendingMods.size() > 0) {
             context.hasPendingMods.sort(String.CASE_INSENSITIVE_ORDER);
-            StringBuilder error = new StringBuilder(Localization.get("The following mods have an update waiting for review. This may bring new features or bug fixes, but it does not mean the below mods are broken.\n", context.lang));
+            StringBuilder error = new StringBuilder(Localization.get("melonscanner.modpending.field", context.lang) + "\n");
             for (int i = 0; i < context.hasPendingMods.size() && i < (context.hasPendingMods.size() == 21 ? 21 : 20); ++i)
                 error.append("- ").append(CrossServerUtils.sanitizeInputString(context.hasPendingMods.get(i))).append("\n");
             if (context.hasPendingMods.size() > 21)

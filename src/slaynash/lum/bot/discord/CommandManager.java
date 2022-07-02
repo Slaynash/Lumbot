@@ -61,6 +61,7 @@ public class CommandManager {
     public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
     public static final List<String> brokenMods = new ArrayList<>();
+    public static final List<String> retiredMods = new ArrayList<>();
 
     public static String melonLoaderVRCHash = "25881";
     public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";

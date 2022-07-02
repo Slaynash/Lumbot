@@ -213,12 +213,19 @@ public class MelonScannerApisManager {
                                     }
                                 }
 
-                                if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 2) {
+                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
                                     if (!CommandManager.brokenMods.contains(name))
                                         CommandManager.brokenMods.add(name);
                                 }
                                 else
                                     CommandManager.brokenMods.remove(name);
+
+                                if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
+                                    if (!CommandManager.retiredMods.contains(name))
+                                        CommandManager.retiredMods.add(name);
+                                }
+                                else
+                                    CommandManager.retiredMods.remove(name);
                                 apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
                             }
                             if (api.name.equals("vrcmg")) {
