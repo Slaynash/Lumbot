@@ -5,7 +5,7 @@ for i = 0, apiData:size() - 1, 1 do
     local mod = apiData:get(i)
     if mod:get("full_name"):getAsString() == "LavaGang-MelonLoader" then goto continue end
 
-    is_deprecated = modDetails:get("is_deprecated"):getAsBoolean()
+    is_deprecated = mod:get("is_deprecated"):getAsBoolean()
     local modDetails = mod:get("versions"):get(0)
 
     table.insert(mods, {
