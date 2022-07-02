@@ -440,6 +440,12 @@ public final class MelonScanner {
                 case "ghosthunterscorp" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                 case "gunfirereborn" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/868613876600680558/Gunfire_Reborn_Logo.png");
                 case "guigubahuang" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
+                case "hard bullet" -> {
+                    if (context.pirate)
+                        context.embedBuilder.setThumbnail("https://media.discordapp.net/attachments/559422692370022411/992754745406128198/20220622150201_1.jpg");
+                    else
+                        context.embedBuilder.setThumbnail("https://media.discordapp.net/attachments/559422692370022411/992754759092142120/unknown.png");
+                }
                 case "hiredops" -> context.embedBuilder.setThumbnail("https://www.hiredops.com/themes/hiredops/images/logo.png");
                 case "hotdogshorseshoesandhandgrenades" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/871468287144390698/Hot_Dogs_Horseshoes_and_Hand_Grenades.png");
                 case "houseparty" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1186376117357305856/ZlgsB9ag_400x400.jpg");

@@ -71,6 +71,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
+        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
         apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
     }
