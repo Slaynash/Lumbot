@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 21, 2022 at 02:37 AM
+-- Generation Time: Jul 02, 2022 at 01:55 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -33,7 +33,11 @@ CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber
 END$$
 
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
-	SELECT * FROM `TicketTool` WHERE `Created`+ (30*60*1000) < currentTime;
+	SELECT * FROM `TicketTool`
+    WHERE `Closed` IS NULL
+    AND ((`Completed` IS NULL
+   	AND `Created` + (30*60*1000) < currentTime)
+    OR `Completed` + (7*60*1000) < currentTime);
 END$$
 
 DELIMITER ;
@@ -157,6 +161,7 @@ CREATE TABLE IF NOT EXISTS `TicketTool` (
   `UserID` bigint DEFAULT NULL,
   `Created` bigint DEFAULT NULL,
   `Completed` bigint DEFAULT NULL,
+  `Closed` bigint DEFAULT NULL,
   UNIQUE KEY `ukey` (`ukey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 --

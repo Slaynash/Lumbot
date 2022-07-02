@@ -101,6 +101,7 @@ public class ScamShield {
             put(".*invest.*crypto.*", 1);
             put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
+            put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
             put("@everyone(Hey,)?(join(this|my)(friend's)?server)?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
@@ -412,7 +413,7 @@ public class ScamShield {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-                else if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_WRITE))
+                else if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
         }

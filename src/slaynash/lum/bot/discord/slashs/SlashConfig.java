@@ -188,14 +188,14 @@ public class SlashConfig extends Slash {
             event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(finalMessage)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         }
         else {
-            event.getTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+            event.getTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue(null, e -> { });
         }
     }
     private void checkDllRemovePerm(ButtonClickEvent event, Guild guild) {
         if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             final String message = "I don't have manage message permission so I can't remove dll and zip files.";
             if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
-                event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
+                event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue(null, e -> { });
             }
             else {
                 event.getTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();

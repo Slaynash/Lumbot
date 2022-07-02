@@ -49,6 +49,8 @@ public final class LogCounter {
 
     public static void updateCounter() {
         try {
+            if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
+                return;
             if (!JDAManager.getJDA().getStatus().equals(Status.CONNECTED)) return;
             Date date = new Date();
             String directoryPath = workingPath + "/MLlogs/";
