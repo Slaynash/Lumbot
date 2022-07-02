@@ -440,7 +440,7 @@ public final class MelonScanner {
                 case "ghosthunterscorp" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                 case "gunfirereborn" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/868613876600680558/Gunfire_Reborn_Logo.png");
                 case "guigubahuang" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
-                case "hard bullet" -> {
+                case "hardbullet" -> {
                     if (context.pirate)
                         context.embedBuilder.setThumbnail("https://media.discordapp.net/attachments/559422692370022411/992754745406128198/20220622150201_1.jpg");
                     else
