@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Random;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
@@ -31,7 +31,7 @@ public class TicketTool {
             if (event.getMessage().getContentDisplay().startsWith("Welcome")) {
                 if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
                     //The code needs to be the first ` in message
-                    if (channelName.contains("reset")){
+                    if (channelName.contains("reset")) {
                         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                         try {
                             DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
@@ -115,7 +115,9 @@ public class TicketTool {
                     }
                     else if (channelName.contains("export")) {
                         if (codeFound)
-                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexportcomplete")).queue();
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTexportcomplete")).queue(s -> {
+                                s.getTextChannel().sendMessage("e.export " + id).queue();
+                            });
                         else
                             event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
@@ -126,7 +128,7 @@ public class TicketTool {
                     else
                         event.getTextChannel().sendMessage(codeNotFound).queue();
                 }
-                if(codeFound) {
+                if (codeFound) {
                     try {
                         DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Completed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
                     } catch (SQLException e) {
@@ -159,8 +161,7 @@ public class TicketTool {
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                     Thread.sleep(5 * 1000); // sleep for 5 seconds
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     ExceptionUtils.reportException("Failed to handle TT autoclose", e);
                 }
             }
