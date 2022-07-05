@@ -108,10 +108,10 @@ public class ScamShield {
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 1);
-            put(".ru/", 1);
-            put("bit.ly", 2);
-            put("cutt.ly", 2);
-            put("mega.nz", 2);
+            put("ru/", 1);
+            put("bitly", 2);
+            put("cuttly", 2);
+            put("meganz", 2);
             put("hour", 1);
             put("$", 1);
             put("dollar", 1);
@@ -417,8 +417,7 @@ public class ScamShield {
                 else if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("Failed handleBan in SS", e);
         }
         return status;
@@ -487,8 +486,7 @@ public class ScamShield {
                 if (mindate.isAfter(ZonedDateTime.now().minusDays(age)))
                     count++;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             JDAManager.mainGuild.getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to check domain age\n" + e.getMessage(), Color.RED)).queue();
             e.printStackTrace();
         }

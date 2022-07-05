@@ -23,7 +23,7 @@ public class TicketTool {
     public static void tickettool(MessageReceivedEvent event) {
         long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
         String channelName = event.getTextChannel().getName();
-        if (event.getMessage().isEdited())
+        if (event.getMessage().isEdited() || event.getMessage().isPinned())
             return;
         if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
