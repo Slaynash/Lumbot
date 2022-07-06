@@ -75,10 +75,12 @@ public final class ExceptionUtils {
         if (exception != null)
             exception.printStackTrace();
 
-        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
+        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED || JDAManager.mainGuild == null)
             queuedExceptions.add(new QueuedException(title, comment, exception, textChannel));
-        else
+        else {
+            processExceptionQueue();
             reportDiscord(title, comment, exception, textChannel);
+        }
     }
 
     private static void reportDiscord(String title, String comment, Throwable exception, TextChannel textChannel) {
@@ -125,8 +127,7 @@ public final class ExceptionUtils {
                 if (!sorryEmbed.isEmpty())
                     textChannel.sendMessageEmbeds(sorryEmbed).queue();
             }
-        }
-        catch (Exception e2) {
+        } catch (Exception e2) {
             e2.printStackTrace();
         }
     }

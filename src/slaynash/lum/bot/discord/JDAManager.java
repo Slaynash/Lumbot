@@ -30,10 +30,9 @@ public class JDAManager {
                 .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.DIRECT_MESSAGE_TYPING)
                 .build();
         jda.awaitReady();
+        mainGuild = jda.getGuildById(633588473433030666L);
         EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE);
         AllowedMentions.setDefaultMentions(EnumSet.complementOf(deny));
-        jda.setRequiredScopes("applications.commands"); // incase we use getInviteUrl(permissions)
-        mainGuild = jda.getGuildById(633588473433030666L);
     }
 
     public static JDA getJDA() {

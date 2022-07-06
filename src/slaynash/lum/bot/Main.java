@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
+import net.dv8tion.jda.api.events.ReconnectedEvent;
+import net.dv8tion.jda.api.events.ResumedEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -473,6 +475,16 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onReady(@NotNull ReadyEvent event) {
+        ExceptionUtils.processExceptionQueue();
+    }
+
+    @Override
+    public void onReconnected(@NotNull ReconnectedEvent event) {
+        ExceptionUtils.processExceptionQueue();
+    }
+
+    @Override
+    public void onResumed(@NotNull ResumedEvent event) {
         ExceptionUtils.processExceptionQueue();
     }
 
