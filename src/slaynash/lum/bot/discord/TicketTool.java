@@ -103,13 +103,17 @@ public class TicketTool {
                     }
                     else if (channelName.contains("wipe")) {
                         if (codeFound)
-                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTwipecomplete")).queue();
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTwipecomplete")).queue(s -> {
+                                s.getTextChannel().sendMessage("e.avatar wipe " + id).queue();
+                            });
                         else
                             event.getTextChannel().sendMessage(codeNotFound).queue();
                     }
                     else if (channelName.contains("deletion")) {
                         if (codeFound)
-                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue();
+                            event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTdeletecomplete")).queue(s -> {
+                                s.getTextChannel().sendMessage("e.user delete " + id).queue();
+                            });
                         else
                             event.getTextChannel().sendMessage(codeNotFound).queue();
                     }

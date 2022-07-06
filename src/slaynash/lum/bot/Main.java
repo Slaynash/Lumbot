@@ -166,8 +166,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load RoleReactions", e);
         }
     }
@@ -185,8 +184,7 @@ public class Main extends ListenerAdapter {
                 else System.err.println("loadScreeningRolesList is formated badly");
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load ScreeningRoles", e);
         }
     }
@@ -208,8 +206,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Hashes", e);
         }
     }
@@ -221,8 +218,7 @@ public class Main extends ListenerAdapter {
             CommandManager.melonLoaderVRCHash = reader.readLine();
             CommandManager.melonLoaderVRCMinDate = reader.readLine();
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load VRChat Hash", e);
         }
     }
@@ -237,8 +233,7 @@ public class Main extends ListenerAdapter {
             else
                 CommandManager.vrchatBuild = "1";
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load VRChat Build infos", e);
         }
     }
@@ -255,8 +250,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Report Channels", e);
         }
     }
@@ -273,8 +267,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Log Channels", e);
         }
     }
@@ -291,8 +284,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Verify Channels", e);
         }
     }
@@ -304,8 +296,7 @@ public class Main extends ListenerAdapter {
             MelonScanner.latestMLVersionRelease = reader.readLine().trim();
             MelonScanner.latestMLVersionAlpha = reader.readLine().trim();
             reader.close();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
         }
     }
@@ -319,8 +310,7 @@ public class Main extends ListenerAdapter {
                 CommandManager.apChannels.add(Long.parseLong(line));
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Auto Publish Channels", e);
         }
     }
@@ -348,8 +338,7 @@ public class Main extends ListenerAdapter {
                 }
             }
             reader.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Replies", e);
         }
     }
@@ -435,7 +424,7 @@ public class Main extends ListenerAdapter {
         if (targetRoleId > 0L) {
             Role role = event.getGuild().getRoleById(targetRoleId);
             if (role != null && event.getMember() != null)
-                event.getGuild().addRoleToMember(event.getMember(), role).reason("User has agreed to Membership Screening requirements").queue();
+                event.getGuild().addRoleToMember(event.getMember(), role).reason("User has agreed to Membership Screening requirements").queue(null, e -> { });
         }
     }
 
@@ -462,8 +451,7 @@ public class Main extends ListenerAdapter {
                 net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner(false).complete();
                 owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred on guild join:", e);
         }
     }
@@ -493,8 +481,7 @@ public class Main extends ListenerAdapter {
         try {
             ExceptionUtils.reportException(
                 "Exception while handling JDA event:", event.getCause());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.err.println("[ERROR] Failed to report exception:");
             e.printStackTrace();
         }

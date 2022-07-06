@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
+import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.Utils;
 
@@ -22,11 +23,9 @@ public class MessageProxy {
         Guild mainguild = JDAManager.mainGuild;
 
         User author = event.getAuthor();
-        String channelName = ("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong())
-                .replaceAll("[!ǃ@#$%^`~&*()+=,./<>?;:'\"\\[\\]\\\\|{}]", "").replace("--", "-").replace(" ", "-")
-                .toLowerCase();
-        TextChannel guildchannel = mainguild.getTextChannels().stream()
-                .filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
+        String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).toLowerCase()
+                .replaceAll("[^a-z0-9\\-_]", "").replace(" ", "-").replace("--", "-");
+        TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
 
         String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
         for (Attachment attachment : event.getMessage().getAttachments()) {

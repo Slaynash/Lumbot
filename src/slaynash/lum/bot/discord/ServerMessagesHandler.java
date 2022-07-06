@@ -100,8 +100,7 @@ public class ServerMessagesHandler {
                     new Thread(() -> {
                         try {
                             MelonScanner.scanMessage(event);
-                        }
-                        catch (Exception e) {
+                        } catch (Exception e) {
                             ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
                         }
                     }).start();
@@ -137,7 +136,7 @@ public class ServerMessagesHandler {
             if (handleReplies(event, message))
                 return;
 
-            if (guildconfig.MLPartialRemover() && (message.contains("[error]") || message.contains("developer:") || message.contains("[internal failure]") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[\\d.:]+] -{30}"))) {
+            if (guildconfig.MLPartialRemover() && (message.contains("[error] ") || message.contains("developer:") || message.contains("[internal failure] ") || message.contains("system.io.error") || message.contains("melonloader.installer.program") || message.contains("system.typeloadexception: could not resolve type with token") || message.matches("\\[[\\d.:]+] -{30}"))) {
                 System.out.println("Partial Log was printed");
 
                 if (event.getChannel().getName().contains("develo"))
@@ -318,8 +317,7 @@ public class ServerMessagesHandler {
 
             if (guildconfig.LumReplies() && ChattyLum.handle(message, event))
                 return;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e);
         }
     }
@@ -378,8 +376,7 @@ public class ServerMessagesHandler {
             String hash = MelonScannerApisManager.bytesToHex(digester.digest(data));
             System.out.println("Attached DLL has the hash of: " + hash);
             return MelonScannerApisManager.getMods("VRChat").stream().anyMatch(m -> hash.equalsIgnoreCase(m.versions[0].hash)); //TODO loop through all Unity games with hashes
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("Failed attachment hash check", e);
         }
         return false;
@@ -393,8 +390,7 @@ public class ServerMessagesHandler {
                 System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getTextChannel().getName());
                 event.getMessage().crosspost().queue();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             ExceptionUtils.reportException("Failed to handle Auto Publish", e);
         }
     }
@@ -428,7 +424,7 @@ public class ServerMessagesHandler {
                     boolean kick = rs.getBoolean("bkick");
                     boolean ban = rs.getBoolean("bban");
                     boolean edit = rs.getBoolean("bedit");
-                    if (!edit && event.getMessage().isEdited()){
+                    if (!edit && event.getMessage().isEdited()) {
                         continue;
                     }
                     if (regex != null && !regex.isBlank()) {
@@ -500,8 +496,7 @@ public class ServerMessagesHandler {
             } catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getTextChannel());
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return false;
