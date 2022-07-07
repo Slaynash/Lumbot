@@ -32,6 +32,7 @@ import org.luaj.vm2.compiler.LuaC;
 import org.luaj.vm2.lib.Bit32Lib;
 import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.PackageLib;
+import org.luaj.vm2.lib.StringLib;
 import org.luaj.vm2.lib.TableLib;
 import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
@@ -134,6 +135,7 @@ public class MelonScannerApisManager {
                         user_globals.load(new Bit32Lib());
                         user_globals.load(new TableLib());
                         user_globals.load(new JseMathLib());
+                        user_globals.load(new StringLib());
 
                         user_globals.set("base64toLowerHexString", new Base64toLowerHexString());
 
