@@ -107,6 +107,10 @@ public class MelonScannerApisManager {
                     if (api.isGZip)
                         builder.header("Accept-Encoding", "gzip");
 
+                    for (String header : api.customHeaders) {
+                        builder.setHeader(header.split(":")[0], header.split(":")[1]);
+                    }
+
                     String constructedURI = api.endpoint;
 
                     try {
