@@ -71,17 +71,16 @@ public class MelonScannerApisManager {
     private static boolean doneFirstInit = false;
 
     static {
-        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
-        apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
-        // apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
-        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        // apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
-        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
-        // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
-        apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new CurseforgeApi("Demeo", 78135));
+        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
+        apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
+        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
+        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
     }
 
     public static void startFetchingThread() {
@@ -426,7 +425,7 @@ public class MelonScannerApisManager {
 
     private static class CurseforgeApi extends MelonScannerApi {
         public CurseforgeApi(String game, int cfId) {
-            super(game, "curseforge:" + cfId + "(" + game + ")", "https://api.curseforge.com/v1/mods/search?gameId=" + cfId + "&pageSize={count}&index={offset}");
+            super(game, "curseforge:" + cfId + " (" + game + ")", "https://api.curseforge.com/v1/mods/search?gameId=" + cfId + "&pageSize={count}&index={offset}");
             maxPagination = 50;
             customHeaders.add("X-Api-Key: " + ConfigManager.curseforgeApiKey);
         }
