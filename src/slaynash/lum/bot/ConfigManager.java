@@ -27,6 +27,8 @@ public final class ConfigManager {
     public static String discordPrefix;
     public static String vrcmgBlacklist;
 
+    public static String curseforgeApiKey;
+
     public static void init() {
         if (initialized)
             return;
@@ -54,6 +56,8 @@ public final class ConfigManager {
 
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
             vrcmgBlacklist = properties.getProperty("VRCMG_BLACKLIST");
+
+            curseforgeApiKey = properties.getProperty("CURSEFORGE_API_KEY");
 
         } catch (IOException e) {
             ExceptionUtils.reportException("Failed to load config", e);

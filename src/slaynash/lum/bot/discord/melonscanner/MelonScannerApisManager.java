@@ -81,6 +81,7 @@ public class MelonScannerApisManager {
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         // apis.add(new MelonScannerApi("Domeo", "domeo", ""));
         apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
+        apis.add(new CurseforgeApi("Demeo", 78135));
     }
 
     public static void startFetchingThread() {
@@ -95,49 +96,21 @@ public class MelonScannerApisManager {
                     System.out.println("Fetching " + api.name);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
-                            .GET()
-                            .uri(URI.create(api.endpoint))
-                            .setHeader("User-Agent", "LUM Bot")
-                            .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-                            .setHeader("Pragma", "no-cache")
-                            .setHeader("Expires", "-1")
-                            .timeout(Duration.ofSeconds(45));
+                        .GET()
+                        .uri(URI.create(api.endpoint))
+                        .setHeader("User-Agent", "LUM Bot")
+                        .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+                        .setHeader("Pragma", "no-cache")
+                        .setHeader("Expires", "-1")
+                        .timeout(Duration.ofSeconds(45));
 
 
-                    if (api.isGZip)
+                        if (api.isGZip)
                         builder.header("Accept-Encoding", "gzip");
-
-                    HttpRequest request = builder.build();
 
                     try {
 
-                        // API request
-
-                        HttpResponse<byte[]> response = downloadRequest(request, api.name);
-                        byte[] responseBody = response.body();
-                        if (api.isGZip) {
-                            ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
-                            try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
-                                int len;
-                                while ((len = gis.read(responseBody)) > 0)
-                                    decompressedStream.write(responseBody, 0, len);
-                            } catch (Exception e) {
-                                ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
-                                //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
-                                return;
-                            }
-
-                            responseBody = decompressedStream.toByteArray();
-                        }
-
-
-                        String apiDataRaw = new String(responseBody);
-                        //System.out.println("API retured body: " + apiDataRaw);
-                        //System.out.println("API URI: " + response.uri());
-
-                        JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
-
-                        // Script pass
+                        // Script setup
 
                         if (server_globals == null) {
                             server_globals = new Globals();
@@ -160,87 +133,149 @@ public class MelonScannerApisManager {
 
                         user_globals.set("base64toLowerHexString", new Base64toLowerHexString());
 
-                        user_globals.set("data", CoerceJavaToLua.coerce(data));
+                        // API request
 
-                        FileInputStream fis = new FileInputStream("apiscripts/" + api.getScriptName() + ".lua"); // TODO compile and cache
-                        LuaValue modsLuaRaw = server_globals.load(fis, api.getScriptName() + ".lua", "t", user_globals).call();
-                        fis.close();
-
-                        // Parse data returned by script
+                        int pagingOffset = 0;
+                        boolean doneFetching = false;
 
                         List<MelonApiMod> apiMods = new ArrayList<>();
 
-                        if (modsLuaRaw == LuaValue.FALSE)
-                            apiMods = api.cachedMods;
-                        else {
-                            LuaTable mods = modsLuaRaw.checktable();
+                        while (!doneFetching) {
 
-                            LuaValue k = LuaValue.NIL;
-                            Varargs n;
-                            while (!(k = (n = mods.next(k)).arg1()).isnil()) {
-                                LuaValue v = n.arg(2);
-                                try {
-                                    k.checkint();
-                                } catch (LuaError e) {
-                                    System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
-                                    continue;
+                            String constructedURI;
+
+
+                            if (api.maxPagination > 0)
+                                constructedURI = api.endpoint
+                                    .replace("{count}", "" + api.maxPagination)
+                                    .replace("{offset}", "" + pagingOffset);
+                            else
+                                constructedURI = api.endpoint;
+                            
+                            builder.uri(URI.create(constructedURI));
+
+                            HttpRequest request = builder.build();
+                            
+                            HttpResponse<byte[]> response = downloadRequest(request, api.name);
+                            byte[] responseBody = response.body();
+                            if (api.isGZip) {
+                                ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
+                                try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
+                                    int len;
+                                    while ((len = gis.read(responseBody)) > 0)
+                                        decompressedStream.write(responseBody, 0, len);
+                                } catch (Exception e) {
+                                    ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
+                                    //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
+                                    return;
                                 }
 
-                                LuaTable mod;
-                                try {
-                                    mod = v.checktable();
-                                } catch (LuaError e) {
-                                    System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
-                                    continue;
-                                }
+                                responseBody = decompressedStream.toByteArray();
+                            }
 
-                                String name = mod.get("name").checkjstring();
-                                // System.out.println("Processing mod " + name);
-                                String approvalStatus = "0";
-                                if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
-                                    approvalStatus = mod.get("approvalStatus").checkjstring();
-                                String version = mod.get("version").checkjstring();
-                                String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
-                                String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
-                                boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
-                                String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
-                                String[] aliases = null;
-                                boolean isbroken = mod.get("isbroken") != LuaValue.NIL && mod.get("isbroken").checkboolean();
-                                LuaValue aliasesRaw = mod.get("aliases");
-                                if (aliasesRaw != LuaValue.NIL) {
-                                    LuaTable aliasesTable = aliasesRaw.checktable();
-                                    aliases = new String[aliasesTable.length()];
-                                    int iAlias = 0;
-                                    LuaValue k2 = LuaValue.NIL;
-                                    Varargs n2;
-                                    while (!(k2 = (n2 = aliasesTable.next(k2)).arg1()).isnil()) {
-                                        aliases[iAlias++] = n2.arg(2).checkjstring();
+
+                            String apiDataRaw = new String(responseBody);
+                            //System.out.println("API retured body: " + apiDataRaw);
+                            //System.out.println("API URI: " + response.uri());
+
+                            JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
+
+                            // Script pass
+
+                            user_globals.set("data", CoerceJavaToLua.coerce(data));
+
+                            FileInputStream fis = new FileInputStream("apiscripts/" + api.getScriptName() + ".lua"); // TODO compile and cache
+                            LuaValue modsLuaRaw = server_globals.load(fis, api.getScriptName() + ".lua", "t", user_globals).call();
+                            fis.close();
+
+                            // Parse data returned by script
+
+                            if (modsLuaRaw == LuaValue.FALSE || modsLuaRaw == LuaValue.NIL) {
+                                if (apiMods.isEmpty())
+                                    apiMods = api.cachedMods;
+                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.name, constructedURI);
+                                doneFetching = true;
+                            }
+                            else {
+                                int modsCount = 0;
+                                LuaTable mods = modsLuaRaw.checktable();
+
+                                LuaValue k = LuaValue.NIL;
+                                Varargs n;
+                                while (!(k = (n = mods.next(k)).arg1()).isnil()) {
+                                    LuaValue v = n.arg(2);
+                                    try {
+                                        k.checkint();
+                                    } catch (LuaError e) {
+                                        System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
+                                        continue;
                                     }
-                                }
-                                if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
-                                    approvalStatus = "3";
 
-                                if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
-                                    if (!brokenMods.contains(name))
-                                        brokenMods.add(name);
-                                }
-                                else
-                                    brokenMods.remove(name);
+                                    LuaTable mod;
+                                    try {
+                                        mod = v.checktable();
+                                    } catch (LuaError e) {
+                                        System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
+                                        continue;
+                                    }
 
-                                if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
-                                    if (!retiredMods.contains(name))
-                                        retiredMods.add(name);
+                                    String name = mod.get("name").checkjstring();
+                                    // System.out.println("Processing mod " + name);
+                                    String approvalStatus = "0";
+                                    if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
+                                        approvalStatus = mod.get("approvalStatus").checkjstring();
+                                    String version = mod.get("version").checkjstring();
+                                    String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
+                                    String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
+                                    boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
+                                    String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
+                                    String[] aliases = null;
+                                    boolean isbroken = mod.get("isbroken") != LuaValue.NIL && mod.get("isbroken").checkboolean();
+                                    LuaValue aliasesRaw = mod.get("aliases");
+                                    if (aliasesRaw != LuaValue.NIL) {
+                                        LuaTable aliasesTable = aliasesRaw.checktable();
+                                        aliases = new String[aliasesTable.length()];
+                                        int iAlias = 0;
+                                        LuaValue k2 = LuaValue.NIL;
+                                        Varargs n2;
+                                        while (!(k2 = (n2 = aliasesTable.next(k2)).arg1()).isnil()) {
+                                            aliases[iAlias++] = n2.arg(2).checkjstring();
+                                        }
+                                    }
+                                    if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
+                                        approvalStatus = "3";
+
+                                    if (approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
+                                        if (!brokenMods.contains(name))
+                                            brokenMods.add(name);
+                                    }
+                                    else
+                                        brokenMods.remove(name);
+
+                                    if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
+                                        if (!retiredMods.contains(name))
+                                            retiredMods.add(name);
+                                    }
+                                    else
+                                        retiredMods.remove(name);
+                                    apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken)); ++modsCount;
                                 }
-                                else
-                                    retiredMods.remove(name);
-                                apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
+
+                                if ((api.maxPagination > 0 && modsCount < api.maxPagination) || api.maxPagination <= 0) {
+                                    doneFetching = true;
+                                }
                             }
-                            if (api.name.equals("vrcmg")) {
-                                //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
-                                apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
-                            }
 
-                            api.cachedMods = apiMods;
+                            if (!doneFetching)
+                                Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
+                            else if (!apiMods.isEmpty()) {
+                                if (api.name.equals("vrcmg") && pagingOffset == 0) {
+                                    //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
+                                    apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
+                                }
+
+                                api.cachedMods = apiMods;
+                            }
                         }
 
                         // Update stored api datas
@@ -349,8 +384,11 @@ public class MelonScannerApisManager {
         public final String game;
         public final String name;
         public final String endpoint;
-        public final boolean isGZip = false;
         public final boolean compareUsingHashes;
+
+        public boolean isGZip = false;
+        public int maxPagination;
+        public List<String> customHeaders = new ArrayList<>();
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 
@@ -359,12 +397,14 @@ public class MelonScannerApisManager {
             this.name = name;
             this.endpoint = endpoint;
             this.compareUsingHashes = false;
+            this.maxPagination = -1;
         }
         public MelonScannerApi(String game, String name, String endpoint, boolean compareUsingHashes) {
             this.game = game;
             this.name = name;
             this.endpoint = endpoint;
             this.compareUsingHashes = compareUsingHashes;
+            this.maxPagination = -1;
         }
 
         public String getScriptName() {
@@ -380,6 +420,19 @@ public class MelonScannerApisManager {
         @Override
         public String getScriptName() {
             return "thunderstore";
+        }
+    }
+
+    private static class CurseforgeApi extends MelonScannerApi {
+        public CurseforgeApi(String game, int cfId) {
+            super(game, "curseforge:" + cfId, "https://api.curseforge.com/api/v1/mods/search?gameId=" + cfId + "&pageSize={count}&index={offset}");
+            maxPagination = 50;
+            customHeaders.add("X-Api-Key: " + ConfigManager.curseforgeApiKey);
+        }
+
+        @Override
+        public String getScriptName() {
+            return "curseforge";
         }
     }
 
