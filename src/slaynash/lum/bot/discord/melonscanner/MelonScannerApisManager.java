@@ -97,7 +97,6 @@ public class MelonScannerApisManager {
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .GET()
-                        .uri(URI.create(api.endpoint))
                         .setHeader("User-Agent", "LUM Bot")
                         .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                         .setHeader("Pragma", "no-cache")
@@ -105,7 +104,7 @@ public class MelonScannerApisManager {
                         .timeout(Duration.ofSeconds(45));
 
 
-                        if (api.isGZip)
+                    if (api.isGZip)
                         builder.header("Accept-Encoding", "gzip");
 
                     try {
