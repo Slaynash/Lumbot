@@ -171,7 +171,7 @@
         {
             "previousLineRegex": "\\[[\\d.:]+] Executing Cpp2IL...",
             "regex": "\\[[\\d.:]+] \"\\w:\\\\.*",
-            "nextLineRegex": "^((?!Samboy063).)*$",
+            "nextLineRegex": "^((?!Samboy063|ERROR).)*$",
             "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
         },
         {

@@ -649,7 +649,7 @@ public final class MelonScanner {
                 String missingModName = context.missingMods.get(i);
                 String missingModDownloadLink = MelonScannerApisManager.getDownloadLinkForMod(context.game, missingModName);
                 if (missingModName.replace(" ", ".").equalsIgnoreCase("ReMod.Core") && !context.loadedMods.containsKey("ReMod.Core.Updater"))
-                    error.append("- ReMod.Core - Put [ReMod.Core.Updater](https://github.com/PennyBunny/ReMod.Core.Updater/releases/latest/download/ReMod.Core.Updater.dll) in `Plugin` or manually install [ReMod.Core](https://github.com/RequiDev/ReMod.Core/releases/latest/download/ReMod.Core.dll) into `UserLibs`").append("\n");
+                    error.append("- ReMod.Core - Put [ReMod.Core.Updater](https://github.com/PennyBunny/ReMod.Core.Updater/releases/latest/download/ReMod.Core.Updater.dll) in `Plugins` or manually install [ReMod.Core](https://github.com/RequiDev/ReMod.Core/releases/latest/download/ReMod.Core.dll) into `UserLibs`").append("\n");
                 else if (missingModDownloadLink != null)
                     error.append("- [").append(CrossServerUtils.sanitizeInputString(missingModName)).append("](").append(missingModDownloadLink).append(")\n");
                 else

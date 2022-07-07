@@ -77,7 +77,7 @@ public class TicketTool {
                     return;
                 }
                 String code = split[1].toLowerCase();
-                String codeNotFound = "`" + code + "` was not found. If this is your account, please make sure to save it in your bio or status.";
+                String codeNotFound = "`" + code + "` was not found. If this is your account, please make sure to save it in your VRChat bio or status.";
                 List<Field> embedFields = event.getMessage().getEmbeds().get(0).getFields();
                 Field idField = null;
                 for (Field field : embedFields) {
