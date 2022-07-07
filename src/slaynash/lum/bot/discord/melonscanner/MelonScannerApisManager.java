@@ -107,6 +107,8 @@ public class MelonScannerApisManager {
                     if (api.isGZip)
                         builder.header("Accept-Encoding", "gzip");
 
+                    String constructedURI = api.endpoint;
+
                     try {
 
                         // Script setup
@@ -141,15 +143,11 @@ public class MelonScannerApisManager {
 
                         while (!doneFetching) {
 
-                            String constructedURI;
-
 
                             if (api.maxPagination > 0)
                                 constructedURI = api.endpoint
                                     .replace("{count}", "" + api.maxPagination)
                                     .replace("{offset}", "" + pagingOffset);
-                            else
-                                constructedURI = api.endpoint;
                             
                             builder.uri(URI.create(constructedURI));
 
@@ -325,15 +323,15 @@ public class MelonScannerApisManager {
                         else
                             Thread.sleep(1000);
                     } catch (HttpTimeoutException exception) {
-                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + api.endpoint);
+                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + constructedURI);
                     } catch (IOException exception) {
                         if (exception.getMessage().contains("GOAWAY")) {
                             ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
-                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + api.endpoint, exception.getMessage());
+                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + constructedURI, exception.getMessage());
                     } catch (Exception exception) {
-                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + api.endpoint, exception);
+                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + constructedURI, exception);
                     }
 
                 }
@@ -424,7 +422,7 @@ public class MelonScannerApisManager {
 
     private static class CurseforgeApi extends MelonScannerApi {
         public CurseforgeApi(String game, int cfId) {
-            super(game, "curseforge:" + cfId, "https://api.curseforge.com/api/v1/mods/search?gameId=" + cfId + "&pageSize={count}&index={offset}");
+            super(game, "curseforge:" + cfId + "(" + game + ")", "https://api.curseforge.com/v1/mods/search?gameId=" + cfId + "&pageSize={count}&index={offset}");
             maxPagination = 50;
             customHeaders.add("X-Api-Key: " + ConfigManager.curseforgeApiKey);
         }
