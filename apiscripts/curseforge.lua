@@ -12,7 +12,7 @@ for i = 0, apiData:size() - 1, 1 do
     -- remove the file extension
     local filenameWithoutExt = string.gsub(rawfilename, "%.[^%.]*$", "")
     -- get only the version from the filename (can have a "v", and be preceded by a space, "-", or "_")
-    local version = string.gsub(filenameWithoutExt, "^(.*?)(v?)[-_ ][^%d]*", "")
+    local version = string.gsub(filenameWithoutExt, "^.[^%d]+[ _-]v?", "")
 
     table.insert(mods, {
         name = mod:get("name"):getAsString(),
