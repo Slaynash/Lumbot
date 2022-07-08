@@ -1,11 +1,18 @@
 package slaynash.lum.bot.discord.commands;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.Command;
+import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -36,8 +43,33 @@ public class Blacklist extends Command {
             int update = DBConnectionManagerLum.sendUpdate("INSERT INTO `blacklistusername`(`username`) VALUES (?)", username);
             if (update == 0)
                 event.getMessage().reply("Failed to blacklist username").queue();
-            else
+            else {
                 event.getMessage().reply("Successfully blacklisted username " + username).queue();
+                if (event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
+                    List<Member> members = new ArrayList<>();
+                    event.getGuild().loadMembers(m -> {
+                        if (m.getNickname() != null && Junidecode.unidecode(m.getNickname()).toLowerCase().equals(username)) {
+                            members.add(m);
+                            m.kick("Lum: Remove existing Scammers").queue();
+                            return;
+                        }
+                        if (Junidecode.unidecode(m.getUser().getName()).toLowerCase().equals(username)) {
+                            members.add(m);
+                            m.kick("Lum: Remove existing Scammers").queue();
+                        }
+                    });
+                    if (members.size() > 0) {
+                        event.getMessage().reply("Kicked " + members.size() + " members with username " + username).queue();
+                        String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+                        if (report == null) return;
+                        TextChannel reportchannel = event.getGuild().getTextChannelById(report);
+                        if (reportchannel == null) return;
+                        for (Member m : members) {
+                            reportchannel.sendMessage("Kicked " + m.getUser().getAsTag() + " by setting blacklist").allowedMentions(Collections.emptyList()).queue();
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             ExceptionUtils.reportException("Failed to add blacklist", e, event.getTextChannel());
         }
