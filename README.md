@@ -8,15 +8,20 @@ Make a file in the working path called `.settings.conf` with the following conte
 
 ```
 DISCORD_TOKEN=
+
 DB_ADDRESS=
 DB_PORT=
 DB_DATABASELUM=lum
 DB_DATABASESHORTURL=shorturls
-DB_LOGIN=DB_PASSWORD=
-DISCORD_PREFIX=l!
-```
+DB_LOGIN=
+DB_PASSWORD=
 
-also add [localization.json](https://raw.githubusercontent.com/Slaynash/Lumbot-translations/main/localization.json "localization.json") to your working path
+DISCORD_PREFIX=l!
+
+VRCMG_BLACKLIST=
+
+CURSEFORGE_API_KEY=
+```
 
 Initialize your SQL with the InitLumSQL.sql file
 
@@ -41,7 +46,7 @@ Currently, Lum assumes that it is run on Linux-like OS (Currently Debian 11) and
 * Verifier
 * DM message Proxy to Devs
 
---
+---
 
 ## Licence
 
