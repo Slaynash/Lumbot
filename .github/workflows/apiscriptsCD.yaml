@@ -34,7 +34,7 @@ jobs:
           -F 'apiscripts/tld=@apiscripts/tld.lua' \
           -F 'apiscripts/uno=@apiscripts/uno.lua' \
           -F 'apiscripts/vrcmg=@apiscripts/vrcmg.lua' \
-          https://${{ secrets.SSH_HOST }}/uploadlum.php
+          https://${{ secrets.SSH_HOST }}/uploadlum.php?key=${{ secrets.UPLOAD_KEY }}
         shell: bash
 
       - name: Running remote script
