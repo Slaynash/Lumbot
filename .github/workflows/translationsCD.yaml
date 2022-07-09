@@ -1,11 +1,11 @@
-name: Melon Scanner Errors CD
+name: Localization CD
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'melonscannererrors.json'
+      - 'localization.json'
       - '!src/**'
       - '!pom.xml'
   workflow_dispatch:
@@ -25,15 +25,15 @@ jobs:
       - name: Upload to server
         run: |
           curl \
-          -F 'melonscannererrors=@melonscannererrors.json' \
+          -F 'localization=@localization.json' \
           https://${{ secrets.SSH_HOST }}/uploadlum.php
         shell: bash
-
+      
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            python3 ~/downloadMelonscannererrors.py melonscannererrors.json
+            python3 ~/downloadLocalization.py localization.json
 
           host: ${{ secrets.SSH_HOST }}
           port: ${{ secrets.SSH_PORT }}

@@ -45,7 +45,7 @@ jobs:
         run: |
           curl \
           -F 'buildfile=@target/${{ env.buildname }}' \
-          https://srv1.slaynash.fr/uploadlum.php
+          https://${{ secrets.SSH_HOST }}/uploadlum.php
         shell: bash
 
       - name: Running remote script
