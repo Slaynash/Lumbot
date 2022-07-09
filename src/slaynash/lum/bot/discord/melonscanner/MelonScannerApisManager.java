@@ -84,10 +84,8 @@ public class MelonScannerApisManager {
                 String version = logsModDetails.version;
                 if (version.contains(" (")) {
                     String[] parts = version.split(" \\(");
-                    String id = parts[1];
-                    if (id.endsWith(")"))
-                        id = id.substring(0, id.length() - 1);
-                        logsModDetails.id = parts[1];
+                    String id = parts[1].trim().replace(")", "");
+                    logsModDetails.id = id;
                     logsModDetails.version = parts[0];
                 }
             }
