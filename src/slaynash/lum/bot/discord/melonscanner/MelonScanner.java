@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -103,6 +104,8 @@ public final class MelonScanner {
                 return;
 
             vrcHashCheck(context);
+
+            postReadApiPass(context);
 
             if (getModsFromApi(context)) {
                 cleanupDuplicateMods(context);
@@ -239,6 +242,12 @@ public final class MelonScanner {
         }
     }
 
+    private static void postReadApiPass(MelonScanContext context) {
+        Consumer<MelonScanContext> postReadApiPass = MelonScannerApisManager.getPostReadPass(context.game);
+        if (postReadApiPass != null)
+            postReadApiPass.accept(context);
+    }
+
     private static boolean getModsFromApi(MelonScanContext context) {
         return (context.modDetails = MelonScannerApisManager.getMods(context.game)) != null;
     }
@@ -281,6 +290,7 @@ public final class MelonScanner {
             final String modName = entry.getKey();
             final LogsModDetails logsModDetails = entry.getValue();
             final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.getVersion(logsModDetails.version) : null;
+            final String id = logsModDetails.id;
 
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
                 if (modSpecificError.regex.equals(modName)) {
@@ -303,7 +313,11 @@ public final class MelonScanner {
             boolean deprecatedName = false;
             boolean latestModBroken = false;
             for (MelonApiMod modDetail : context.modDetails) {
-                if (modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) || (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))) {
+                if (
+                    (modDetail.id != null && modDetail.id.equals(id)) ||
+                    modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) ||
+                    (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))
+                ) {
                     System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;

@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 
 import org.luaj.vm2.Globals;
@@ -72,16 +73,30 @@ public class MelonScannerApisManager {
     private static boolean doneFirstInit = false;
 
     static {
-        apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
-        // apis.add(new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
-        apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
-        apis.add(new CurseforgeApi("Demeo", 78135));
-        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
-        apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
-        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
-        apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
-        apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
+        MelonScannerApi api;
+        apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
+        // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
+        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
+        apis.add(api = new CurseforgeApi("Demeo", 78135));
+        api.setPostReadPass((context) -> { // TODO move this to a lua script
+            for (LogsModDetails logsModDetails : context.loadedMods.values()) {
+                String version = logsModDetails.version;
+                if (version.contains(" (")) {
+                    String[] parts = version.split(" \\(");
+                    String id = parts[1];
+                    if (id.endsWith(")"))
+                        id = id.substring(0, id.length() - 1);
+                        logsModDetails.id = parts[1];
+                    logsModDetails.version = parts[0];
+                }
+            }
+        });
+        apis.add(api = new ThunderstoreApi("Hard Bullet", "hard-bullet"));
+        apis.add(api = new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
+        apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        apis.add(api = new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
+        apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
     }
 
     public static void startFetchingThread() {
@@ -226,6 +241,7 @@ public class MelonScannerApisManager {
                                     String approvalStatus = "0";
                                     if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
                                         approvalStatus = mod.get("approvalStatus").checkjstring();
+                                    String id = mod.get("id").checkjstring();
                                     String version = mod.get("version").checkjstring();
                                     String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
                                     String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
@@ -260,7 +276,7 @@ public class MelonScannerApisManager {
                                     }
                                     else
                                         retiredMods.remove(name);
-                                    apiMods.add(new MelonApiMod(name, version, downloadLink, aliases, hash, modtype, haspending, isbroken)); ++modsCount;
+                                    apiMods.add(new MelonApiMod(id, name, version, downloadLink, aliases, hash, modtype, haspending, isbroken)); ++modsCount;
                                 }
 
                                 if ((api.maxPagination > 0 && modsCount < api.maxPagination) || api.maxPagination <= 0) {
@@ -273,7 +289,7 @@ public class MelonScannerApisManager {
                             else if (!apiMods.isEmpty()) {
                                 if (api.name.equals("vrcmg") && pagingOffset == 0) {
                                     //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
-                                    apiMods.add(new MelonApiMod("WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
+                                    apiMods.add(new MelonApiMod(null, "WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
                                 }
 
                                 api.cachedMods = apiMods;
@@ -394,6 +410,8 @@ public class MelonScannerApisManager {
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 
+        public Consumer<MelonScanContext> postReadPass;
+
         public MelonScannerApi(String game, String name, String endpoint) {
             this.game = game;
             this.name = name;
@@ -407,6 +425,10 @@ public class MelonScannerApisManager {
             this.endpoint = endpoint;
             this.compareUsingHashes = compareUsingHashes;
             this.maxPagination = -1;
+        }
+
+        public void setPostReadPass(Consumer<MelonScanContext> postReadPass) {
+            this.postReadPass = postReadPass;
         }
 
         public String getScriptName() {
@@ -443,6 +465,11 @@ public class MelonScannerApisManager {
             return null;
         List<MelonApiMod> list = games.get(game);
         return list == null ? null : new ArrayList<>(games.get(game));
+    }
+
+    public static Consumer<MelonScanContext> getPostReadPass(String game) {
+        MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
+        return api != null ? api.postReadPass : null;
     }
 
     public static boolean compareUsingHash(String game) {

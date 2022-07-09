@@ -15,7 +15,7 @@ for i = 0, apiData:size() - 1, 1 do
     local version = string.gsub(filenameWithoutExt, "^.[^%d]+[ _-]v?", "")
 
     table.insert(mods, {
-        id = mod:get("id"):getAsInt(),
+        id = tostring(mod:get("id"):getAsInt()),
         name = mod:get("name"):getAsString(),
         version = version,
         downloadLink = latestFiles:get("downloadUrl"):getAsString()
