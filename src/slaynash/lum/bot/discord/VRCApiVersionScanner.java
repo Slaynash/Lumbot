@@ -60,6 +60,7 @@ public class VRCApiVersionScanner {
                         MessageEmbed embed = eb.build();
 
                         JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
+                        JDAManager.getJDA().getGuildById(876431015478951936L /* The Private Server Project */).getTextChannelById(995348312230203535L /* #official-api-updates */).sendMessageEmbeds(embed).queue();
 
                         secondLastBVT = lastBVT;
                         lastBVT = config.buildVersionTag;
