@@ -168,7 +168,7 @@ public class ServerMessagesHandler {
                     }
                 }
 
-                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/ || guildID == 936064484391387256L/*Remod Dev*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*\\b(forg([oe])t|reset|change|lost|t remember)\\b.*") && message.matches(".*\\b(pins?|password)\\b.*")) {
+                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/ || guildID == 936064484391387256L/*Remod Dev*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 899140251241570344L/*Claimed*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*\\b(forg([oe])t|reset|change|lost|t remember)\\b.*") && message.matches(".*\\b(pins?|password)\\b.*")) {
                     System.out.println("Forgot pin asked");
                     final String remodpinString = "You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.\nYour VRChat ID can be found by logging into the VRChat website and clicking \"Go To Profile\" on the left, upon doing so, your id will be in the URL bar.";
                     if (guildID == 600298024425619456L/*emmVRC*/) {
