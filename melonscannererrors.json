@@ -303,7 +303,7 @@
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(503\\) Backend unavailable.*",
-                "error": "emmVRC Network is unable right now (or when this log was generated). Please try again later."
+                "error": "emmVRC Network is unavailable right now (or when this log was generated). Please try again later."
             },
             {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] You have emmVRC's Stealth Mode enabled.*",
