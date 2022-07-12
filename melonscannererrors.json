@@ -302,6 +302,10 @@
                 "error": "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder."
             },
             {
+                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(503\\) Backend unavailable.*",
+                "error": "emmVRC Network is unable right now (or when this log was generated). Please try again later."
+            },
+            {
                 "regex": "\\[[\\d.:]+] \\[emmVRCLoader] You have emmVRC's Stealth Mode enabled.*",
                 "error": "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."
             },
