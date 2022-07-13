@@ -193,7 +193,7 @@ public class Replies extends Slash {
                 try {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, muserid);
 
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ukey` FROM `Replies` WHERE `guildID` = ? ORDER BY `ukey` DESC", guildid);
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ukey` FROM `Replies` WHERE `guildID` = ? ORDER BY `ukey` DESC LIMIT 1", guildid);
                     rs.next();
                     int ukey = rs.getInt("ukey");
 
@@ -208,7 +208,7 @@ public class Replies extends Slash {
             else {
                 long ukey = event.getOption("ukey").getAsLong();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `Replies`.`ukey` FROM `Replies` WHERE `Replies`.`ukey` = ?", ukey);
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `Replies`.`ukey` FROM `Replies` WHERE `Replies`.`ukey` = ? LIMIT 1", ukey);
                     if (!rs.next()) {
                         event.reply("Invalid ukey or reply not found!").setEphemeral(true).queue();
                         DBConnectionManagerLum.closeRequest(rs);

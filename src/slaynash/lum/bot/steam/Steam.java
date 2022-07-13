@@ -55,7 +55,7 @@ public class Steam {
     public Steam() {
 
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `value` FROM `Config` WHERE `setting` = 'LastSteamChange'");
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `value` FROM `Config` WHERE `setting` = 'LastSteamChange' LIMIT 1");
             rs.next();
             previousChangeNumber = rs.getInt("value");
             DBConnectionManagerLum.closeRequest(rs);

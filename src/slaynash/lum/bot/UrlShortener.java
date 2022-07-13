@@ -18,7 +18,7 @@ public final class UrlShortener {
 
         // Check if already exists
         try {
-            ResultSet rs = DBConnectionManagerShortUrls.sendRequest("SELECT uid FROM shorturls WHERE url = ?", baseUrl);
+            ResultSet rs = DBConnectionManagerShortUrls.sendRequest("SELECT uid FROM shorturls WHERE url = ? LIMIT 1", baseUrl);
             if (rs.next()) {
                 result = rs.getString("uid");
                 DBConnectionManagerShortUrls.closeRequest(rs);
@@ -36,7 +36,7 @@ public final class UrlShortener {
             boolean exists;
             do {
                 result = randomAlphaNumeric(8);
-                ResultSet rs = DBConnectionManagerShortUrls.sendRequest("SELECT uid FROM shorturls WHERE uid = ?", result);
+                ResultSet rs = DBConnectionManagerShortUrls.sendRequest("SELECT uid FROM shorturls WHERE uid = ? LIMIT 1", result);
                 exists = rs.next();
                 DBConnectionManagerShortUrls.closeRequest(rs);
             }

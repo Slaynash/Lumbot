@@ -94,7 +94,7 @@ public final class DBConnectionManagerLum {
         String pString = "";
         ResultSet rs;
         try {
-            rs = DBConnectionManagerLum.sendRequest("SELECT " + valuecolumn + " FROM `" + table + "` WHERE " + keycolumn + " = '" + keyrow + "'");
+            rs = DBConnectionManagerLum.sendRequest("SELECT " + valuecolumn + " FROM `" + table + "` WHERE " + keycolumn + " = '" + keyrow + "' LIMIT 1");
             if (rs.next())
                 pString = rs.getString(valuecolumn);
             closeRequest(rs);
@@ -115,7 +115,7 @@ public final class DBConnectionManagerLum {
             mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes;
         ResultSet rs;
         try {
-            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "'");
+            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "' LIMIT 1");
             if (rs.next()) {
                 ts = rs.getTimestamp(GuildConfiguration.Setting.TS.string);
                 scamShield = rs.getBoolean(GuildConfiguration.Setting.SCAMSHIELD.string);

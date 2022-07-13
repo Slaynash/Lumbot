@@ -33,7 +33,7 @@ public class Blacklist extends Command {
         String username = Junidecode.unidecode(parts[1]).toLowerCase();
 
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `blacklistusername` WHERE `username` = ?", username);
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `blacklistusername` WHERE `username` = ? LIMIT 1", username);
             if (rs.next()) {
                 event.getMessage().reply("Username already blacklisted").queue();
                 DBConnectionManagerLum.closeRequest(rs);
