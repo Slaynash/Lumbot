@@ -47,7 +47,8 @@ public class SteamWatcher extends Slash {
                 while (rs.next())
                     channels.add(new SteamChannel(rs.getString("GameID"), guildID, rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getTextChannel());
             }
             if (channels.isEmpty()) {
@@ -75,7 +76,8 @@ public class SteamWatcher extends Slash {
         int found = 0;
         try {
             found = DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `GameID` = ? AND `ServerID` = ? AND `ChannelID` = ?", gameIDstr, guildID, channelID);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to remove steam watch", e, event.getTextChannel());
         }
 
@@ -100,7 +102,8 @@ public class SteamWatcher extends Slash {
             try {
                 DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `publicMention`, `betaMention`, `otherMention`) VALUES (?,?,?,?,?,?)", gameIDstr, guildID, channelID, publicString, betaString, otherString);
                 interactionhook.sendMessage("Added " + new Steam().getGameName(gameIDint) + " to Steam Watch").queue();
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to add steam watch", e, event.getTextChannel());
             }
             new Steam().intDetails(gameIDint);

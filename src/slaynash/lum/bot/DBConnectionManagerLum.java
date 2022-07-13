@@ -49,7 +49,8 @@ public final class DBConnectionManagerLum {
                 init();
             }
             return connection;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to get database connection", e);
         }
         return null;
@@ -97,7 +98,8 @@ public final class DBConnectionManagerLum {
             if (rs.next())
                 pString = rs.getString(valuecolumn);
             closeRequest(rs);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Exception while fetching SQL string", e);
         }
         return pString;
@@ -136,7 +138,8 @@ public final class DBConnectionManagerLum {
                 return getGuildConfig(guildID);
             }
             closeRequest(rs);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Exception while fetching Guild Config", e);
             return null;
         }
@@ -157,7 +160,8 @@ public final class DBConnectionManagerLum {
                 ps2.executeUpdate();
                 ps2.close();
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Exception while setting Guild Config", e);
         }
     }

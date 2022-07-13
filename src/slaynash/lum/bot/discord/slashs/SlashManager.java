@@ -19,7 +19,7 @@ public class SlashManager {
     private static final List<Slash> slashes = new ArrayList<>();
 
     public static void slashRun(SlashCommandEvent event) {
-        System.out.println("Slash " + event.getName() + (event.getSubcommandName()==null?"":" "+event.getSubcommandName()) + " options:" + event.getOptions() + " in " + (event.getGuild()==null?"DM "+event.getUser().getId():event.getGuild().getName()));
+        System.out.println("Slash " + event.getName() + (event.getSubcommandName() == null ? "" : " " + event.getSubcommandName()) + " options:" + event.getOptions() + " in " + (event.getGuild() == null ? "DM " + event.getUser().getId() : event.getGuild().getName()));
         if (event.getChannelType() == ChannelType.TEXT && !event.getTextChannel().canTalk())
             return;  //Lum can't talk in this channel
         for (Slash slash : slashes) {

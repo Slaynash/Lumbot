@@ -25,24 +25,24 @@ public class Replies extends Slash {
     @Override
     protected CommandData globalSlashData() {
         return new CommandData("reply", "Custom Replies")
-            .addSubcommands(new SubcommandData("list","List all current replies"))
-            .addSubcommands(new SubcommandData("add","Add or Update reply") // Only the first 10 options are shown,
+            .addSubcommands(new SubcommandData("list", "List all current replies"))
+            .addSubcommands(new SubcommandData("add", "Add or Update reply") // Only the first 10 options are shown,
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to update existing Reply", false)
-                .addOption(OptionType.STRING , "message", "Enter Message to send on trigger", false)
-                .addOption(OptionType.STRING , "regex", "Use regex matching (regex needs to match all of user's message)", false)
-                .addOption(OptionType.STRING , "contains", "Term that message needs to contain", false)
-                .addOption(OptionType.STRING , "equals", "Term that message needs to equal", false)
-                .addOption(OptionType.USER   , "user", "Trigger if someone sends a message", false)
+                .addOption(OptionType.STRING,  "message", "Enter Message to send on trigger", false)
+                .addOption(OptionType.STRING,  "regex", "Use regex matching (regex needs to match all of user's message)", false)
+                .addOption(OptionType.STRING,  "contains", "Term that message needs to contain", false)
+                .addOption(OptionType.STRING,  "equals", "Term that message needs to equal", false)
+                .addOption(OptionType.USER,    "user", "Trigger if someone sends a message", false)
                 .addOption(OptionType.BOOLEAN, "delete", "Should User's message be deleted?", false)
                 .addOption(OptionType.BOOLEAN, "kick", "Should the User be kicked?", false)
                 .addOption(OptionType.BOOLEAN, "ban", "Should the User be banned?", false)
                 .addOption(OptionType.BOOLEAN, "bot", "Allow replying to other bots", false)
                 .addOption(OptionType.BOOLEAN, "edit", "Allow replying to when member edits their message", false)
                 .addOption(OptionType.CHANNEL, "channel", "Allow reply in only a single channel", false) //todo Maybe later
-                .addOption(OptionType.ROLE   , "ignorerole", "Prevent triggering if user has role", false) //todo Maybe later
-                // .addOption(OptionType.INTEGER, "repeat", "Trigger if repeated command", false) //todo Maybe later
+                .addOption(OptionType.ROLE,    "ignorerole", "Prevent triggering if user has role", false) //todo Maybe later
+            //  .addOption(OptionType.INTEGER, "repeat", "Trigger if repeated command", false) //todo Maybe later
             )
-            .addSubcommands(new SubcommandData("delete","Remove a reply")
+            .addSubcommands(new SubcommandData("delete", "Remove a reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to delete existing Reply", true))
             .setDefaultEnabled(false);
     }
@@ -135,7 +135,8 @@ public class Replies extends Slash {
                     c++;
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to get reply to List", e, event.getTextChannel());
                 return;
             }
@@ -144,13 +145,14 @@ public class Replies extends Slash {
                 event.reply("No replies in this guild").queue();
             }
             else {
-                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(),Permission.MESSAGE_ATTACH_FILES))
+                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ATTACH_FILES))
                     event.reply("").addFile(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
                 else
                     event.reply("I cant send logs into this channel. Please give me MESSAGE_ATTACH_FILES perms and try again.").queue();
             }
-        } else if (event.getSubcommandName().equals("add")) {
-            if ((event.getOption("ukey") == null && event.getOptions().size() == 0) || (event.getOption("ukey") != null && event.getOptions().size() == 1)) {
+        }
+        else if (event.getSubcommandName().equals("add")) {
+            if (event.getOption("ukey") == null && event.getOptions().size() == 0 || event.getOption("ukey") != null && event.getOptions().size() == 1) {
                 event.reply("Please set at least one option").queue();
                 return;
             }
@@ -177,7 +179,8 @@ public class Replies extends Slash {
                             event.reply("Lum can not use that emote.").queue();
                             return;
                         }
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         event.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
                         return;
                     }
@@ -197,7 +200,8 @@ public class Replies extends Slash {
                     event.reply("Added reply, ukey: " + ukey).queue();
 
                     DBConnectionManagerLum.closeRequest(rs);
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to Add reply", e, event.getTextChannel());
                 }
             }
@@ -211,7 +215,8 @@ public class Replies extends Slash {
                         return;
                     }
                     DBConnectionManagerLum.closeRequest(rs);
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to check for reply", e, event.getTextChannel());
                     return;
                 }
@@ -243,17 +248,20 @@ public class Replies extends Slash {
                     if (event.getOption("edit") != null)
                         DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bedit = ? WHERE `Replies`.`ukey` = ?", edit, ukey);
                     event.reply("Reply " + ukey + " updated!").queue();
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to Update reply", e, event.getTextChannel());
                 }
             }
-        } else if (event.getSubcommandName().equals("delete")) {
+        }
+        else if (event.getSubcommandName().equals("delete")) {
             int deleted;
             long ukey = event.getOption("ukey").getAsLong();
             try {
                 String update = "DELETE FROM `Replies` WHERE `guildID` = '" + event.getGuild().getId() + "' AND `ukey` = '" + ukey + "'";
                 deleted = DBConnectionManagerLum.sendUpdate(update);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to Delete reply", e, event.getTextChannel());
                 return;
             }
@@ -264,7 +272,8 @@ public class Replies extends Slash {
                 event.reply("Deleted reply " + ukey).queue();
             }
 
-        } else {
+        }
+        else {
             event.reply("Unknown subcommand").queue();
         }
     }

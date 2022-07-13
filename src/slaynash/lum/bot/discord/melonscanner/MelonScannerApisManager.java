@@ -79,7 +79,7 @@ public class MelonScannerApisManager {
         apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(api = new CurseforgeApi("Demeo", 78135));
-        api.setPostReadPass((context) -> { // TODO move this to a lua script
+        api.setPostReadPass(context -> { // TODO move this to a lua script
             for (LogsModDetails logsModDetails : context.loadedMods.values()) {
                 String version = logsModDetails.version;
                 if (version.contains(" (")) {
@@ -166,11 +166,11 @@ public class MelonScannerApisManager {
                                 constructedURI = api.endpoint
                                     .replace("{count}", "" + api.maxPagination)
                                     .replace("{offset}", "" + pagingOffset);
-                            
+
                             builder.uri(URI.create(constructedURI));
 
                             HttpRequest request = builder.build();
-                            
+
                             HttpResponse<byte[]> response = downloadRequest(request, api.name);
                             byte[] responseBody = response.body();
                             if (api.isGZip) {
@@ -179,7 +179,8 @@ public class MelonScannerApisManager {
                                     int len;
                                     while ((len = gis.read(responseBody)) > 0)
                                         decompressedStream.write(responseBody, 0, len);
-                                } catch (Exception e) {
+                                }
+                                catch (Exception e) {
                                     ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
                                     //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
                                     return;
@@ -221,7 +222,8 @@ public class MelonScannerApisManager {
                                     LuaValue v = n.arg(2);
                                     try {
                                         k.checkint();
-                                    } catch (LuaError e) {
+                                    }
+                                    catch (LuaError e) {
                                         System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
                                         continue;
                                     }
@@ -229,7 +231,8 @@ public class MelonScannerApisManager {
                                     LuaTable mod;
                                     try {
                                         mod = v.checktable();
-                                    } catch (LuaError e) {
+                                    }
+                                    catch (LuaError e) {
                                         System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
                                         continue;
                                     }
@@ -274,10 +277,11 @@ public class MelonScannerApisManager {
                                     }
                                     else
                                         retiredMods.remove(name);
-                                    apiMods.add(new MelonApiMod(id, name, version, downloadLink, aliases, hash, modtype, haspending, isbroken)); ++modsCount;
+                                    apiMods.add(new MelonApiMod(id, name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
+                                    ++modsCount;
                                 }
 
-                                if ((api.maxPagination > 0 && modsCount < api.maxPagination) || api.maxPagination <= 0) {
+                                if (api.maxPagination > 0 && modsCount < api.maxPagination || api.maxPagination <= 0) {
                                     doneFetching = true;
                                 }
                             }
@@ -341,15 +345,18 @@ public class MelonScannerApisManager {
                             Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
                         else
                             Thread.sleep(1000);
-                    } catch (HttpTimeoutException exception) {
+                    }
+                    catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + constructedURI);
-                    } catch (IOException exception) {
+                    }
+                    catch (IOException exception) {
                         if (exception.getMessage().contains("GOAWAY")) {
                             ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
                             ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + constructedURI, exception.getMessage());
-                    } catch (Exception exception) {
+                    }
+                    catch (Exception exception) {
                         ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + constructedURI, exception);
                     }
 
@@ -373,7 +380,8 @@ public class MelonScannerApisManager {
                     badPluginAuthor = Arrays.asList(blSplit[2].split("\\|"));
                     badPlugin = Arrays.asList(blSplit[3].split("\\|"));
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -522,7 +530,8 @@ public class MelonScannerApisManager {
                     System.out.println(source + " provided empty response");
                     throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
                 }
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 exception = e;
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;

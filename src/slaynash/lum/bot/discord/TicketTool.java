@@ -35,7 +35,8 @@ public class TicketTool {
                         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                         try {
                             DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
-                        } catch (SQLException e) {
+                        }
+                        catch (SQLException e) {
                             ExceptionUtils.reportException("Failed to create TT autoclose", e);
                         }
                     }
@@ -54,7 +55,8 @@ public class TicketTool {
             else if (event.getMessage().getEmbeds().size() > 0 && event.getMessage().getEmbeds().get(0).getDescription() != null && event.getMessage().getEmbeds().get(0).getDescription().startsWith("Ticket Closed by")) {
                 try {
                     DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to handle TT close", e);
                 }
             }
@@ -135,7 +137,8 @@ public class TicketTool {
                 if (codeFound) {
                     try {
                         DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Completed`=? WHERE `ChannelID`=?", System.currentTimeMillis(), event.getTextChannel().getIdLong());
-                    } catch (SQLException e) {
+                    }
+                    catch (SQLException e) {
                         ExceptionUtils.reportException("Failed to handle TT completed TS", e);
                     }
                 }
@@ -165,7 +168,8 @@ public class TicketTool {
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                     Thread.sleep(5 * 1000); // sleep for 5 seconds
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     ExceptionUtils.reportException("Failed to handle TT autoclose", e);
                 }
             }

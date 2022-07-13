@@ -100,7 +100,8 @@ public class ServerMessagesHandler {
                     new Thread(() -> {
                         try {
                             MelonScanner.scanMessage(event);
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
                         }
                     }).start();
@@ -317,7 +318,8 @@ public class ServerMessagesHandler {
 
             if (guildconfig.LumReplies() && ChattyLum.handle(message, event))
                 return;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e);
         }
     }
@@ -376,7 +378,8 @@ public class ServerMessagesHandler {
             String hash = MelonScannerApisManager.bytesToHex(digester.digest(data));
             System.out.println("Attached DLL has the hash of: " + hash);
             return MelonScannerApisManager.getMods("VRChat").stream().anyMatch(m -> hash.equalsIgnoreCase(m.versions[0].hash)); //TODO loop through all Unity games with hashes
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("Failed attachment hash check", e);
         }
         return false;
@@ -390,7 +393,8 @@ public class ServerMessagesHandler {
                 System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getTextChannel().getName());
                 event.getMessage().crosspost().queue();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("Failed to handle Auto Publish", e);
         }
     }
@@ -481,7 +485,8 @@ public class ServerMessagesHandler {
                                 event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
                             else
                                 event.getTextChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
-                        } catch (Exception e) {
+                        }
+                        catch (Exception e) {
                             event.getTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
                         }
                     }
@@ -493,10 +498,12 @@ public class ServerMessagesHandler {
                 }
 
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getTextChannel());
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return false;

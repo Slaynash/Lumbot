@@ -96,14 +96,16 @@ public final class MelonScannerReadPass {
                     unknownErrorCheck(context);
 
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             if (context.retryCount >= 3) {
                 throw e;
             }
             context.retryCount++;
             Thread.sleep(5000);
             doPass(context);
-        } finally {
+        }
+        finally {
             context.bufferedReader = null;
         }
 

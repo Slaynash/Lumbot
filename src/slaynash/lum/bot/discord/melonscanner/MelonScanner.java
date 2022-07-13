@@ -176,7 +176,8 @@ public final class MelonScanner {
                 }
                 ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
             }
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while reading attachment of message:",
                 exception, messageReceivedEvent.getTextChannel());
@@ -313,8 +314,7 @@ public final class MelonScanner {
             boolean deprecatedName = false;
             boolean latestModBroken = false;
             for (MelonApiMod modDetail : context.modDetails) {
-                if (
-                    (modDetail.id != null && modDetail.id.equals(id)) ||
+                if (modDetail.id != null && modDetail.id.equals(id) ||
                     modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) ||
                     (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))
                 ) {
@@ -534,7 +534,8 @@ public final class MelonScanner {
                 LocalDate fileDate = LocalDate.parse("20" + fileDateString);
                 LocalDate now = LocalDate.now();
                 ageDays = ChronoUnit.DAYS.between(fileDate, now);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ExceptionUtils.reportException("Exception while reading log age", "File age: " + fileDateString, e);
             }
 
@@ -1104,7 +1105,8 @@ public final class MelonScanner {
             }
             System.out.println("Done Translating Log Results");
             referenced.editMessageEmbeds(editEmbed.build()).queue();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("Exception while translating log:", e, event.getTextChannel());
         }
     }

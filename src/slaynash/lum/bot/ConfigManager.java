@@ -59,7 +59,8 @@ public final class ConfigManager {
 
             curseforgeApiKey = properties.getProperty("CURSEFORGE_API_KEY");
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to load config", e);
         }
     }

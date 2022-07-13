@@ -127,7 +127,8 @@ public final class ExceptionUtils {
                 if (!sorryEmbed.isEmpty())
                     textChannel.sendMessageEmbeds(sorryEmbed).queue();
             }
-        } catch (Exception e2) {
+        }
+        catch (Exception e2) {
             e2.printStackTrace();
         }
     }

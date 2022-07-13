@@ -61,8 +61,7 @@ public class AddMissingRoles extends Command {
                         System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
                         runCount.getAndIncrement();
                     }
-                    catch (Exception ignored) {
-                    }
+                    catch (Exception ignored) { }
                 }
             });
         });

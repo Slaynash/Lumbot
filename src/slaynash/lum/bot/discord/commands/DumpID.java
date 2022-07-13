@@ -25,7 +25,8 @@ public class DumpID extends Command {
         String regex = Junidecode.unidecode(parts[1]).toLowerCase();
         try {
             Pattern.compile(regex);
-        } catch (PatternSyntaxException exception) {
+        }
+        catch (PatternSyntaxException exception) {
             event.getMessage().reply("Invalid Regex, please check your regex and try again").queue();
             return;
         }

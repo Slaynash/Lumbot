@@ -59,7 +59,8 @@ public class Steam {
             rs.next();
             previousChangeNumber = rs.getInt("value");
             DBConnectionManagerLum.closeRequest(rs);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("Failed to initialize last steam depos change#", e);
         }
 
@@ -124,7 +125,8 @@ public class Steam {
                         apps.picsGetProductInfo(gameID, null, false, false);
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to initialize all steam depos", e);
             }
             startChangesRequesterThread();
@@ -154,12 +156,13 @@ public class Steam {
                 List<SteamChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)",previousChangeNumber,gameID);
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)", previousChangeNumber, gameID);
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
                 }
                 if (channels.size() != 0) {
@@ -189,12 +192,13 @@ public class Steam {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
                 List<SteamChannel> channels = new ArrayList<>();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)",previousChangeNumber,app.getKey());
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)", previousChangeNumber, app.getKey());
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
                     DBConnectionManagerLum.closeRequest(rs);
-                } catch (SQLException e) {
+                }
+                catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
                 }
 
@@ -298,7 +302,8 @@ public class Steam {
             System.out.println("Steam can not find Guild " + sc.guildID);
             try {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = ?", sc.guildID);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
             }
             return true;
@@ -308,7 +313,8 @@ public class Steam {
             System.out.println("Steam can not find Channel " + sc.channelId + " from guild " + sc.guildID);
             try {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", sc.channelId);
-            } catch (SQLException e) {
+            }
+            catch (SQLException e) {
                 e.printStackTrace();
             }
             return true;
@@ -386,7 +392,8 @@ public class Steam {
         while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 6900) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }

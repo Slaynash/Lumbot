@@ -112,7 +112,7 @@ public final class Localization {
 
         return ret.toString();
     }
-    public static String toOwOify (String text) {
+    public static String toOwOify(String text) {
         if (text == null || text.isBlank())
             return text;
 

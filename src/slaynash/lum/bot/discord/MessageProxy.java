@@ -73,7 +73,8 @@ public class MessageProxy {
                                 .flatMap(ababa -> tc.sendMessage(finalMessage)))
                         .queue();
             event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
-        } else {
+        }
+        else {
             guildchannel.sendMessage(message).queue();
             event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
         }
@@ -97,7 +98,8 @@ public class MessageProxy {
                         message.reply("Lum can not use that emote.").queue();
                     }
                 });
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
                 return true;
             }
@@ -129,7 +131,8 @@ public class MessageProxy {
             if (guildchannel != null) {
                 guildchannel.sendTyping().queue();
             }
-        } else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getTextChannel().getParent() != null && event.getTextChannel().getParent().getIdLong() == 924780998124798022L) {
+        }
+        else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getTextChannel().getParent() != null && event.getTextChannel().getParent().getIdLong() == 924780998124798022L) {
             event.getUser().openPrivateChannel().queue(
                 channel -> channel.sendTyping().queue(null,
                         e -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),

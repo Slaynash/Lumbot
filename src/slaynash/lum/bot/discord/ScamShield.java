@@ -417,7 +417,8 @@ public class ScamShield {
                 else if (guild.getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE))
                     event.getTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             ExceptionUtils.reportException("Failed handleBan in SS", e);
         }
         return status;
@@ -486,7 +487,8 @@ public class ScamShield {
                 if (mindate.isAfter(ZonedDateTime.now().minusDays(age)))
                     count++;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             JDAManager.mainGuild.getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to check domain age\n" + e.getMessage(), Color.RED)).queue();
             e.printStackTrace();
         }
