@@ -117,7 +117,7 @@
             "error": "SocketException. Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
         },
         {
-            "regex": ".*due to: Could not load file or assembly '.*",
+            "regex": ".*due to: Could not load file or assembly '(?!ReMod.Core).*",
             "error": "Failed to load critical files. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner. Make sure that there is no ` (#)` in any mod dll name."
         },
         {
@@ -429,6 +429,10 @@
             {
                 "regex": ".*Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.ArgumentException: method argument length mismatch",
                 "error": "Maybe ReMod.Core is erroring. Try deleting the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
+            },
+            {
+                "regex": ".*Could not load file or assembly 'ReMod.Core.*",
+                "error": "ReMod.Core is missing. Please download ReMod.Core.Updater into `VRChat\\Plugins`"
             },
             {
                 "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",

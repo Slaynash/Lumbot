@@ -488,6 +488,7 @@ public final class MelonScanner {
                 case "pipe" -> context.embedBuilder.setThumbnail("http://bmxstreets.com/wp-content/uploads/2017/12/pipe_black_1080-cropped-300x169.png");
                 case "pistolwhip" -> context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
                 case "polytoria" -> context.embedBuilder.setThumbnail("https://polytoria.com/assets/img/logo-light.png");
+                case "primitier" -> context.embedBuilder.setThumbnail("https://img.itch.zone/aW1nLzc3ODUzMjcucG5n/original/lmrIEa.png");
                 case "raot" -> context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
                 case "recroom" -> context.embedBuilder.setThumbnail("https://images.squarespace-cdn.com/content/v1/582e7271bebafbd72792bd97/1571873579729-YGLX8EAT3EP2LIFJ7EZQ/RecRoomLogo_Shadow.png");
                 case "reventure" -> context.embedBuilder.setThumbnail("https://i2.wp.com/maroonersrock.com/wp-content/uploads/2019/08/logo.png");
