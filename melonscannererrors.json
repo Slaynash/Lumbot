@@ -387,7 +387,7 @@
             },
             {
                 "regex": "  at VRChatUtilityKit.Utilities.VRCUtils.EndEmmCheck \\(System.IAsyncResult asyncResult\\) \\[0x00022].*",
-                "error": "emmVRC servers are having some issues. Please wait while we work on it."
+                "error": "VRChatUtilityKit failed to check API. Please make sure that VRChatUtilityKit is up to date."
             },
             {
                 "regex": ".*Exception in IL2CPP-to-Managed trampoline.*NullReferenceException.*",
