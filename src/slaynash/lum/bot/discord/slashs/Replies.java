@@ -26,7 +26,7 @@ public class Replies extends Slash {
     protected CommandData globalSlashData() {
         return new CommandData("reply", "Custom Replies")
             .addSubcommands(new SubcommandData("list", "List all current replies"))
-            .addSubcommands(new SubcommandData("add", "Add or Update reply") // Only the first 10 options are shown,
+            .addSubcommands(new SubcommandData("add", "Add or Update reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to update existing Reply", false)
                 .addOption(OptionType.STRING,  "message", "Enter Message to send on trigger", false)
                 .addOption(OptionType.STRING,  "regex", "Use regex matching (regex needs to match all of user's message)", false)
@@ -38,8 +38,8 @@ public class Replies extends Slash {
                 .addOption(OptionType.BOOLEAN, "ban", "Should the User be banned?", false)
                 .addOption(OptionType.BOOLEAN, "bot", "Allow replying to other bots", false)
                 .addOption(OptionType.BOOLEAN, "edit", "Allow replying to when member edits their message", false)
-                .addOption(OptionType.CHANNEL, "channel", "Allow reply in only a single channel", false) //todo Maybe later
-                .addOption(OptionType.ROLE,    "ignorerole", "Prevent triggering if user has role", false) //todo Maybe later
+                .addOption(OptionType.CHANNEL, "channel", "Allow reply in only a single channel", false)
+                .addOption(OptionType.ROLE,    "ignorerole", "Prevent triggering if user has role", false)
             //  .addOption(OptionType.INTEGER, "repeat", "Trigger if repeated command", false) //todo Maybe later
             )
             .addSubcommands(new SubcommandData("delete", "Remove a reply")

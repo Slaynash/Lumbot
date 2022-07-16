@@ -454,6 +454,7 @@ public final class MelonScanner {
                 case "enterthegungeon" -> context.embedBuilder.setThumbnail("https://static.wikia.nocookie.net/vsbattles/images/1/12/Enter-the-gungeon-logo.png");
                 case "escapefromtarkov" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875097509918302279/EscapeFromTarkov-lg.png");
                 case "eyeofthetemple" -> context.embedBuilder.setThumbnail("https://portforward.com/eye-of-the-temple/eye-of-the-temple-logo-large.webp");
+                case "facebookhorizon" -> context.embedBuilder.setThumbnail("https://i.pinimg.com/originals/fa/e7/57/fae757c8538f14b3190357653db5e00e.jpg");
                 case "fallguys_client" -> context.embedBuilder.setThumbnail("https://seeklogo.com/images/F/fall-guys-logo-0809CCA0D8-seeklogo.com.png");
                 case "fe" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202010/2621/CU5vdYEq51HmaGuE7ktHjXtW.png");
                 case "feign" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
@@ -487,6 +488,7 @@ public final class MelonScanner {
                 case "phasmophobia" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/866926713761431562/Phasmophobia_Logo.png");
                 case "pipe" -> context.embedBuilder.setThumbnail("http://bmxstreets.com/wp-content/uploads/2017/12/pipe_black_1080-cropped-300x169.png");
                 case "pistolwhip" -> context.embedBuilder.setThumbnail("https://i.imgur.com/MeMcntj.png");
+                case "pokeone" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/997544636358856784/pokeone___icon_2_by_blagoicons_dck7ezs-300w.png");
                 case "polytoria" -> context.embedBuilder.setThumbnail("https://polytoria.com/assets/img/logo-light.png");
                 case "primitier" -> context.embedBuilder.setThumbnail("https://img.itch.zone/aW1nLzc3ODUzMjcucG5n/original/lmrIEa.png");
                 case "raot" -> context.embedBuilder.setThumbnail("https://i.gjcdn.net/data/games/9/147/613147/media/game-description/game_logo_text-5uyytkca.png");
@@ -495,6 +497,7 @@ public final class MelonScanner {
                 case "ruinsmagus" -> context.embedBuilder.setThumbnail("https://www.gematsu.com/wp-content/uploads/2022/03/RUINSMAGUS_2022_03-24-22_009.png");
                 //what a crappy unity name, its bro falls
                 case "run" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
+                case "runes:theforgottenpath" -> context.embedBuilder.setThumbnail("https://www.gematsu.com/wp-content/uploads/2022/03/RUINSMAGUS_2022_03-24-22_009.png");
                 case "sable" -> context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/en/4/4c/Sable_cover_art.jpg");
                 case "scpsl" -> context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                 case "secretneighbor" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
@@ -519,6 +522,7 @@ public final class MelonScanner {
                 case "vseeface" -> context.embedBuilder.setThumbnail("https://www.vseeface.icu/assets/img/VSF.png");
                 case "wasteland3" -> context.embedBuilder.setThumbnail("https://www.nicepng.com/png/full/300-3005551_wasteland-3-logo-png-image-grandmaster-flash-vs.png");
                 case "wobblylife" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/887755823038754886/Wobbly_Life.png");
+                case "xel" -> context.embedBuilder.setThumbnail("https://www.gamecity-hamburg.de/site/assets/files/9677/xel_keyart_1920x1080_logomid.jpg");
                 case "zenith" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                 case "zombieland_vr_headshot_fever" -> context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
                 case "デュエプレ" -> context.embedBuilder.setThumbnail("https://dmps.takaratomy.co.jp/common/img/logo.png");

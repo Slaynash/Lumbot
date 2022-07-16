@@ -92,6 +92,8 @@ public class ScamShield {
             put("whattoaddandwhattoremove", 2);
             put("hereisthegameitselfhttp", 2);
             put("passwordtest", 2);
+            put("joinhttps//discordgg/", 2);
+            put("direct-linknet/", 2);
             put("screenshareinhd", 2);
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);

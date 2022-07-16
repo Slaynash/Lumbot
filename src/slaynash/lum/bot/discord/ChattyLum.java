@@ -161,7 +161,6 @@ public class ChattyLum {
     ));
 
     private static final ArrayList<String> what = new ArrayList<>(Arrays.asList(
-        "https://cdn.discordapp.com/attachments/680928395399266314/832204354584182834/videoplayback_2.mp4",
         "https://tenor.com/view/indian-dramatic-whut-soapopera-gif-8233002",
         "https://tenor.com/view/brule-what-ay-what-gif-14969459",
         "https://tenor.com/view/what-cat-what-cat-computer-gif-18924522",

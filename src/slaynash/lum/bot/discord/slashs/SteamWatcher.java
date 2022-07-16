@@ -86,15 +86,15 @@ public class SteamWatcher extends Slash {
         String otherString;
 
         if (publicMess.isEmpty())
-            publicString = "NULL";
+            publicString = null;
         else
             publicString = "'" + publicMess.get(0).getAsString() + "'";
         if (betaMess.isEmpty())
-            betaString = "NULL";
+            betaString = null;
         else
             betaString = "'" + betaMess.get(0).getAsString() + "'";
         if (otherMess.isEmpty())
-            otherString = "NULL";
+            otherString = null;
         else
             otherString = "'" + otherMess.get(0).getAsString() + "'";
 
