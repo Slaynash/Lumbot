@@ -19,7 +19,7 @@ public class VRCApiVersionScanner {
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
             .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(45))
+            .connectTimeout(Duration.ofSeconds(30))
             .build();
 
     private static String secondLastBVT, lastBVT, lastDG;
@@ -30,8 +30,8 @@ public class VRCApiVersionScanner {
             HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
-                .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0")
-                .timeout(Duration.ofSeconds(45))
+                .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
+                .timeout(Duration.ofSeconds(30))
                 .build();
 
             while (true) {
@@ -72,7 +72,7 @@ public class VRCApiVersionScanner {
                 }
 
                 try {
-                    Thread.sleep(60 * 1000);  // 60 seconds is maybe too slow
+                    Thread.sleep(45 * 1000);  // maybe 45 seconds is better?
                 }
                 catch (Exception ignored) { }
             }

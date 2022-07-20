@@ -64,7 +64,7 @@ public class TicketTool {
         else if ((event.getAuthor().getIdLong() == 886944444107063347L /*Rubybot*/ || event.getAuthor().getIdLong() == 150562159196241920L /*Karren-sama*/) && event.getMessage().getEmbeds().size() > 0) {
             Thread thread = new Thread(() -> {
                 System.out.println("Receved embed from Rubybot");
-                List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(100).complete().getRetrievedHistory());
+                List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryFromBeginning(20).complete().getRetrievedHistory());
                 // Role emmadmin = event.getJDA().getGuildById(600298024425619456L).getRoleById(748392927365169233L);
                 // Role emmnetwork = event.getJDA().getGuildById(600298024425619456L).getRoleById(801670419723452487L);
                 // history.removeIf(m -> !m.getAuthor().equals(m.getJDA().getSelfUser()) && !m.getMember().getRoles().contains(emmadmin) && !m.getMember().getRoles().contains(emmnetwork)); had a member is null error
