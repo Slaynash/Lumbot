@@ -30,16 +30,15 @@ public class TicketTool {
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) {
             if (event.getMessage().getContentDisplay().startsWith("Welcome")) {
                 if (event.getGuild().getIdLong() == 600298024425619456L /* emmVRC */) {
-                    //The code needs to be the first ` in message
-                    if (channelName.contains("reset")) {
-                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
-                        try {
-                            DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
-                        }
-                        catch (SQLException e) {
-                            ExceptionUtils.reportException("Failed to create TT autoclose", e);
-                        }
+                    try {
+                        DBConnectionManagerLum.sendUpdate("INSERT INTO `TicketTool`(`ChannelName`, `ChannelID`, `UserID`, `Created`) VALUES (?,?,?,?)", event.getTextChannel().getName(), event.getTextChannel().getIdLong(), event.getMessage().getMentionedUsers().get(0).getIdLong(), System.currentTimeMillis());
                     }
+                    catch (SQLException e) {
+                        ExceptionUtils.reportException("Failed to create TT autoclose", e);
+                    }
+                    //The code needs to be the first ` in message
+                    if (channelName.contains("reset"))
+                        event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                     else if (channelName.contains("wipe"))
                         event.getTextChannel().sendMessage(DBConnectionManagerLum.getString("strings", "string", "value", "emmTTmessage").replace("$randomString$", randomString(8))).queue();
                     else if (channelName.contains("deletion"))
