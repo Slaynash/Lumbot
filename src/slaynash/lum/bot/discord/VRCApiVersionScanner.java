@@ -5,11 +5,16 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.google.gson.Gson;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.TextChannel;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -33,6 +38,11 @@ public class VRCApiVersionScanner {
                 .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
                 .timeout(Duration.ofSeconds(30))
                 .build();
+
+            List<TextChannel> apiGuilds = new ArrayList<>(Arrays.asList(
+                JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */),
+                JDAManager.getJDA().getGuildById(876431015478951936L /* The Private Server Project */).getTextChannelById(995348312230203535L /* #official-api-updates */)
+            ));
 
             while (true) {
                 try {
@@ -59,12 +69,20 @@ public class VRCApiVersionScanner {
                         }
                         MessageEmbed embed = eb.build();
 
-                        JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */).sendMessageEmbeds(embed).queue();
-                        JDAManager.getJDA().getGuildById(876431015478951936L /* The Private Server Project */).getTextChannelById(995348312230203535L /* #official-api-updates */).sendMessageEmbeds(embed).queue();
-
                         secondLastBVT = lastBVT;
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;
+
+                        for (TextChannel tc : apiGuilds) {
+                            if (tc.canTalk()) {
+                                if (tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS))
+                                    tc.sendMessageEmbeds(embed).queue();
+                                else
+                                    tc.sendMessage("Gibme embed perms").queue();
+                            }
+                            else
+                                ExceptionUtils.reportException("Can not post VRCAPI in " + tc.getGuild().getName());
+                        }
                     }
                 }
                 catch (Exception e) {

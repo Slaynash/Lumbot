@@ -27,6 +27,7 @@ import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ArrayUtils;
@@ -444,6 +445,7 @@ public final class MelonScanner {
                         context.embedBuilder.setThumbnail("https://puu.sh/HAj1G/87f77fddf2.png");
                 }
                 case "carmechanicsimulator2021" -> context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steamcommunity/public/images/clans/29076066/86ec92aabfad0878253d3e47ef4133e3e3228471.png");
+                case "chilloutvr" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/661130/header.jpg");
                 case "cloudpunk" -> context.embedBuilder.setThumbnail("https://i0.wp.com/gameoctane.com/wp-content/uploads/2021/03/CPlogo-1.png");
                 case "crabgame" -> context.embedBuilder.setThumbnail("https://cdn.akamai.steamstatic.com/steam/apps/1782210/header.jpg");
                 case "demeo" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863610041335676938/demeo.png");
@@ -526,7 +528,9 @@ public final class MelonScanner {
                 case "zenith" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                 case "zombieland_vr_headshot_fever" -> context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
                 case "デュエプレ" -> context.embedBuilder.setThumbnail("https://dmps.takaratomy.co.jp/common/img/logo.png");
-                default -> { }
+                default -> {
+                    JDAManager.mainGuild.getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + context.game.replace(" ", "").toLowerCase() + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+                }
             }
         }
     }
