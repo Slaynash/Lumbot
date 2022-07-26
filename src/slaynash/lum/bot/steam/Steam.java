@@ -35,6 +35,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.steam.SteamAppDetails.SteamAppDetailsCommon;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Steam {
@@ -284,6 +285,29 @@ public class Steam {
                                     s.crosspost().queue();
                             });
                         mb.setContent("");
+                    }
+                }
+                if (gameDetail != null && newAppDetails != null && gameDetail.common != null && newAppDetails.common != null) {
+
+                    SteamAppDetailsCommon oldCommon = gameDetail.common;
+                    SteamAppDetailsCommon newCommon = newAppDetails.common;
+
+                    if (oldCommon.review_percentage != null && newCommon.review_percentage != null) {
+                        EmbedBuilder eb = new EmbedBuilder();
+                        eb.setTitle(gameDetail.common.name + " Review Percentage " + (Integer.parseInt(oldCommon.review_percentage) > Integer.parseInt(newCommon.review_percentage) ? "decreased" : "increased"));
+                        eb.setDescription(oldCommon.review_percentage + " -> " + newCommon.review_percentage);
+                        MessageBuilder mb = new MessageBuilder();
+                        mb.setEmbeds(eb.build());
+
+                        for (SteamChannel sc : channels) {
+                            TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
+                            if (channel.canTalk())
+                                channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
+                                    if (channel.isNews())
+                                        s.crosspost().queue();
+                                });
+                            mb.setContent("");
+                        }
                     }
                 }
                 if (newAppDetails != null)

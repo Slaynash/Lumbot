@@ -47,11 +47,13 @@ public class SteamAppDetails {
         public final String name;
         public final String type;
         public final String releasestate;
+        public final String review_percentage;
 
         public SteamAppDetailsCommon(KeyValue keyValues) {
             name = keyValues.get("name").asString();
             type = keyValues.get("type").asString();
             releasestate = keyValues.get("releasestate").asString();
+            review_percentage = keyValues.get("review_percentage").asString();
         }
     }
 
