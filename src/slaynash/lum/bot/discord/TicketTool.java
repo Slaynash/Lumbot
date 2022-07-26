@@ -25,7 +25,7 @@ public class TicketTool {
         String channelName = event.getTextChannel().getName();
         if (event.getMessage().isEdited() || event.getMessage().isPinned())
             return;
-        if (category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
+        if (category != 0L /*overflowed tickets*/ && category != 765058331345420298L /*emmVRC Tickets*/ && category != 899140251241570344L /*emmVRC Tickets Claimed*/ && category != 952713158533971968L /*TW*/ || event.getChannel().getIdLong() == 801679570863783937L/*testing*/)
             return;
         if (event.getAuthor().getIdLong() == 722196398635745312L /*tickettool*/ || event.getAuthor().getIdLong() == 557628352828014614L /*free tickettool*/) {
             if (event.getMessage().getContentDisplay().startsWith("Welcome")) {
@@ -160,7 +160,7 @@ public class TicketTool {
                         if (channel == null) {
                             DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ukey`=?", System.currentTimeMillis(), ukey); // Was deleted by not Lum
                         }
-                        else if (channel.getParent() != null && channel.getParent().getIdLong() == 765058331345420298L) {
+                        else if (channel.getParent() == null || channel.getParent().getIdLong() == 765058331345420298L) {
                             channel.sendMessage("$close").queue();
                             DBConnectionManagerLum.sendUpdate("UPDATE `TicketTool` SET `Closed`=? WHERE `ukey`=?", System.currentTimeMillis(), ukey);
                         }
