@@ -292,7 +292,7 @@ public class Steam {
                     SteamAppDetailsCommon oldCommon = gameDetail.common;
                     SteamAppDetailsCommon newCommon = newAppDetails.common;
 
-                    if (oldCommon.review_percentage != null && newCommon.review_percentage != null) {
+                    if (oldCommon.review_percentage != null && newCommon.review_percentage != null && !oldCommon.review_percentage.equals(newCommon.review_percentage)) {
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle(gameDetail.common.name + " Review Percentage " + (Integer.parseInt(oldCommon.review_percentage) > Integer.parseInt(newCommon.review_percentage) ? "decreased" : "increased"));
                         eb.setDescription(oldCommon.review_percentage + " -> " + newCommon.review_percentage);

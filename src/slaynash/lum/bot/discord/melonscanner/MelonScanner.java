@@ -528,9 +528,7 @@ public final class MelonScanner {
                 case "zenith" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202112/2106/3FzveWLc7O0W5x89U63y9WNj.png");
                 case "zombieland_vr_headshot_fever" -> context.embedBuilder.setThumbnail("https://www.hgunified.com/wp-content/uploads/2021/03/ZOMBIELAND.png");
                 case "デュエプレ" -> context.embedBuilder.setThumbnail("https://dmps.takaratomy.co.jp/common/img/logo.png");
-                default -> {
-                    JDAManager.mainGuild.getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + context.game.replace(" ", "").toLowerCase() + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
-                }
+                default -> JDAManager.mainGuild.getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + context.game.replace(" ", "").toLowerCase() + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
             }
         }
     }
