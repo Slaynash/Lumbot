@@ -156,8 +156,6 @@ public class ServerMessagesHandler {
             }
 
             if (guildconfig.MLReplies()) {
-                long category = event.getMessage().getCategory() == null ? 0L : event.getMessage().getCategory().getIdLong();
-
                 if (guildID == 663449315876012052L /* MelonLoader */) {
                     if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher")) {
                         event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
@@ -167,36 +165,6 @@ public class ServerMessagesHandler {
                         event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFile(new File("images/Phasmo_folder.png")).queue();
                         return;
                     }
-                }
-
-                if (!(message.contains("765785673088499752") || message.contains("network-support")) && (guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/ || guildID == 936064484391387256L/*Remod Dev*/) && category != 765058331345420298L/*Tickets*/ && category != 801137026450718770L/*Mod Tickets*/ && category != 899140251241570344L/*Claimed*/ && category != 600914209303298058L/*Staff*/ && message.matches(".*\\b(forg([oe])t|reset|change|lost|t remember)\\b.*") && message.matches(".*\\b(pins?|password)\\b.*")) {
-                    System.out.println("Forgot pin asked");
-                    final String remodpinString = "You can reset your [remod pin here](https://remod-ce.requi.dev/api/pin.php).\nEnter your VRChat ID that starts with `usr_`, add the code given into your bio, and refresh the page.\nYour VRChat ID can be found by logging into the VRChat website and clicking \"Go To Profile\" on the left, upon doing so, your id will be in the URL bar.";
-                    if (guildID == 600298024425619456L/*emmVRC*/) {
-                        if (message.replace(" ", "").contains("remod"))
-                            Utils.replyEmbed(remodpinString, null, "https://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png", event);
-                        else
-                            Utils.replyEmbed(CrossServerUtils.sanitizeInputString(event.getMember().getEffectiveName()) + ", please create a new ticket in <#765785673088499752>. Thank you!", null, event);
-                    }
-                    else if (guildID == 936064484391387256L/*Remod Dev*/) {
-                        if (message.replace(" ", "").contains("emm"))
-                            Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
-                        else if (!message.contains("982721463985524826"))
-                            event.getMessage().reply("<#982721463985524826>").queue();
-                    }
-                    else {
-                        if (message.replace(" ", "").contains("remod"))
-                            Utils.replyEmbed(remodpinString, null, "https://cdn.discordapp.com/attachments/949470254659145768/949769871338651678/unknown.png", event);
-                        if (message.replace(" ", "").contains("emm"))
-                            Utils.replyEmbed("Please join the [emmVRC Network Discord](https://discord.gg/emmvrc). From there, create a new ticket in #network-support. A Staff Member will be with you when available to assist.", null, event);
-                    }
-                    return;
-                }
-
-                if (message.startsWith("!vrcuk") || message.startsWith("!cuck")) {
-                    System.out.println("VRChatUtilityKit print");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/231/ and put it in your Mods folder.").queue();
-                    return;
                 }
 
                 if (message.startsWith("!loggif")) {
@@ -237,18 +205,6 @@ public class ServerMessagesHandler {
                     return;
                 }
 
-                if (message.startsWith("!uix")) {
-                    System.out.println("UIX printed");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/55/ and put it in your Mods folder.").queue();
-                    return;
-                }
-
-                if (message.startsWith("!amapi") || message.startsWith("!vrcama")) {
-                    System.out.println("actionmenuapi printed");
-                    event.getChannel().sendMessage("Please download https://api.vrcmg.com/v1/mods/download/201/ and put it in your Mods folder.").queue();
-                    return;
-                }
-
                 if (message.startsWith("!ovras")) {
                     System.out.println("OVR:AS printed");
                     event.getChannel().sendMessage("Download it from Steam here: <https://store.steampowered.com/app/1009850/OVR_Advanced_Settings/>\nVideo guide on setting up playspacemover: https://youtu.be/E4ZByfPWTuM").queue();
@@ -264,18 +220,6 @@ public class ServerMessagesHandler {
                 if (message.startsWith("!proxy")) {
                     System.out.println("Proxy printed");
                     event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
-                    return;
-                }
-
-                if (message.startsWith("!vrcmu")) {
-                    System.out.println("VRCModUpdater printed");
-                    event.getChannel().sendMessage("Please download the VRChat Mod Updater and move it into your Plugins folder: https://github.com/Slaynash/VRCModUpdater/releases/latest/download/VRCModUpdater.Loader.dll").queue();
-                    return;
-                }
-
-                if (message.startsWith("!vrcma")) {
-                    System.out.println("VRCMelonAssistant printed");
-                    event.getChannel().sendMessage("Download the VRChat Mod Assistant and double click it to easily install mods: <https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe>").queue();
                     return;
                 }
 

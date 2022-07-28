@@ -464,6 +464,8 @@ public final class MelonScanner {
                 case "genshinimpact" -> context.embedBuilder.setThumbnail("https://gmedia.playstation.com/is/image/SIEPDC/genshin-impact-logo-01-en-3sep21?$native--t$");
                 case "ghosthunterscorp" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                 case "godsofgravity" -> context.embedBuilder.setThumbnail("https://cdn.sidequestvr.com/file/140588/cover-art-landscape-calltoaction.png");
+                case "gog" -> context.embedBuilder.setThumbnail("https://i.ytimg.com/vi/mdaqfZpF12I/mqdefault.jpg");
+                case "gogtest" -> context.embedBuilder.setThumbnail("https://i.ytimg.com/vi/mdaqfZpF12I/mqdefault.jpg");
                 case "guigubahuang" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/837379147617140786/guigubahuang.png");
                 case "gunfirereborn" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/868613876600680558/Gunfire_Reborn_Logo.png");
                 case "hardbullet" -> {
@@ -497,26 +499,26 @@ public final class MelonScanner {
                 case "recroom" -> context.embedBuilder.setThumbnail("https://images.squarespace-cdn.com/content/v1/582e7271bebafbd72792bd97/1571873579729-YGLX8EAT3EP2LIFJ7EZQ/RecRoomLogo_Shadow.png");
                 case "reventure" -> context.embedBuilder.setThumbnail("https://i2.wp.com/maroonersrock.com/wp-content/uploads/2019/08/logo.png");
                 case "ruinsmagus" -> context.embedBuilder.setThumbnail("https://www.gematsu.com/wp-content/uploads/2022/03/RUINSMAGUS_2022_03-24-22_009.png");
-                //what a crappy unity name, its bro falls
-                case "run" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg");
+                case "run" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1410686748494024704/5BD8YvYN_400x400.jpg"); //what a crappy unity name, its bro falls
                 case "runes:theforgottenpath" -> context.embedBuilder.setThumbnail("https://www.gematsu.com/wp-content/uploads/2022/03/RUINSMAGUS_2022_03-24-22_009.png");
                 case "sable" -> context.embedBuilder.setThumbnail("https://upload.wikimedia.org/wikipedia/en/4/4c/Sable_cover_art.jpg");
                 case "scpsl" -> context.embedBuilder.setThumbnail("https://scpslgame.com/wp-content/uploads/revslider/slider-1/main_logo_large_glow.png");
                 case "secretneighbor" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/ap/rnd/202103/1711/dC3wH7bU7ghkcQeVszD18hFL.png");
                 case "shredders" -> context.embedBuilder.setThumbnail("https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2022/03/shredders-hero-image-01.jpg");
+                case "signalsimulator" -> context.embedBuilder.setThumbnail("https://thumbnails.pcgamingwiki.com/e/e0/Signal_Simulator_cover.jpg/300px-Signal_Simulator_cover.jpg");
                 case "stickfight:thegame" -> context.embedBuilder.setThumbnail("https://toppng.com//public/uploads/preview/color-stick-fight-the-game-115629098126na96uprb2.png");
                 case "stumbleguys" -> context.embedBuilder.setThumbnail("https://cdn.now.gg/apps-content/com.kitkagames.fallbuddies/logo/stumble-guys-multiplayer-royale.png");
                 case "superautopets" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1714040/capsule_616x353.jpg");
                 case "superliminal" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/875463746833772554/Superliminal.png");
                 case "synthriders" -> context.embedBuilder.setThumbnail("https://synthridersvr.com/wp-content/uploads/2020/08/Synth-Riders-logo.png");
                 case "theforest" -> context.embedBuilder.setThumbnail("https://www.logolynx.com/images/logolynx/f6/f6b42ce3f8dc299e74bd3c77bc0ec54a.png");
-                //Golf Club 2019 has anticheats
-                case "thegolfclub2019protee" -> context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png");
+                case "thegolfclub2019protee" -> context.embedBuilder.setThumbnail("https://www.thegolfclub2019.com/wp-content/uploads/2018/05/TheGolfClub2019_Overview_logo_update.png"); //Golf Club 2019 has anticheats
                 case "thelongdark" -> context.embedBuilder.setThumbnail("https://puu.sh/HAj1H/e2f9018e69.png");
                 case "thesandboxmaker" -> context.embedBuilder.setThumbnail("https://www.sandbox.game/img/13_Create/GameMaker/game-maker-iso.png");
                 case "townscaper" -> context.embedBuilder.setThumbnail("https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Townscaper_OskarStlberg_S3_2560x1440-558540cb0b62cb5520f1f9e5b4c7a204");
                 case "ultrakill" -> context.embedBuilder.setThumbnail("https://cdn2.steamgriddb.com/file/sgdb-cdn/logo/a295a55e7c3b2af6f363711442900b96.png");
                 case "umamusume" -> context.embedBuilder.setThumbnail("https://images.fanart.tv/fanart/uma-musume-pretty-derby-5c7fd37409c73.png");
+                case "unknown" -> context.embedBuilder.setThumbnail("");
                 case "uno" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                 case "voxmachinae" -> context.embedBuilder.setThumbnail("https://www.gmw3.com/wp-content/uploads/2016/08/splash1-300x149.png");
                 case "vrchat" -> context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
