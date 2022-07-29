@@ -78,6 +78,7 @@ public class MelonScannerApisManager {
         // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
         apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
+        apis.add(api = new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
         apis.add(api = new CurseforgeApi("Demeo", 78135));
         api.setPostReadPass(context -> { // TODO move this to a lua script
             for (LogsModDetails logsModDetails : context.loadedMods.values()) {

@@ -518,7 +518,7 @@ public final class MelonScanner {
                 case "townscaper" -> context.embedBuilder.setThumbnail("https://cdn1.epicgames.com/salesEvent/salesEvent/EGS_Townscaper_OskarStlberg_S3_2560x1440-558540cb0b62cb5520f1f9e5b4c7a204");
                 case "ultrakill" -> context.embedBuilder.setThumbnail("https://cdn2.steamgriddb.com/file/sgdb-cdn/logo/a295a55e7c3b2af6f363711442900b96.png");
                 case "umamusume" -> context.embedBuilder.setThumbnail("https://images.fanart.tv/fanart/uma-musume-pretty-derby-5c7fd37409c73.png");
-                case "unknown" -> context.embedBuilder.setThumbnail("");
+                case "unknown" -> { }
                 case "uno" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/934636524954329183/934640238960189440/UMG.png");
                 case "voxmachinae" -> context.embedBuilder.setThumbnail("https://www.gmw3.com/wp-content/uploads/2016/08/splash1-300x149.png");
                 case "vrchat" -> context.embedBuilder.setThumbnail("https://puu.sh/HAiW4/bb2a98afdc.png");
