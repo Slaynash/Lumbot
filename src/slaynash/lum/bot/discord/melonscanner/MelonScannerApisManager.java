@@ -95,7 +95,7 @@ public class MelonScannerApisManager {
         apis.add(api = new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
         apis.add(api = new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
-        apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
+        // apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
     }
 
     public static void startFetchingThread() {
