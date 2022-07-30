@@ -461,6 +461,7 @@ public final class MelonScanner {
                 case "fe" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/vulcan/img/rnd/202010/2621/CU5vdYEq51HmaGuE7ktHjXtW.png");
                 case "feign" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1436990/header.jpg");
                 case "firewatch" -> context.embedBuilder.setThumbnail("https://w7.pngwing.com/pngs/347/28/png-transparent-firewatch-video-game-gog-com-adventure-game-pc-game-slipknot-logo-game-text-orange.png");
+                case "forewarned" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1372265300977184776/Oue3UwqG_400x400.jpg");
                 case "genshinimpact" -> context.embedBuilder.setThumbnail("https://gmedia.playstation.com/is/image/SIEPDC/genshin-impact-logo-01-en-3sep21?$native--t$");
                 case "ghosthunterscorp" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1618540/header.jpg");
                 case "godsofgravity" -> context.embedBuilder.setThumbnail("https://cdn.sidequestvr.com/file/140588/cover-art-landscape-calltoaction.png");

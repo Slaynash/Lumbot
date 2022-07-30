@@ -321,7 +321,7 @@ public class ServerMessagesHandler {
             MessageDigest digester = MessageDigest.getInstance("SHA-256");
             String hash = MelonScannerApisManager.bytesToHex(digester.digest(data));
             System.out.println("Attached DLL has the hash of: " + hash);
-            return MelonScannerApisManager.getMods("VRChat").stream().anyMatch(m -> hash.equalsIgnoreCase(m.versions[0].hash)); //TODO loop through all Unity games with hashes
+            return MelonScannerApisManager.getMods("ChilloutVR").stream().anyMatch(m -> hash.equalsIgnoreCase(m.versions[0].hash)); //TODO loop through all Unity games with hashes
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed attachment hash check", e);
