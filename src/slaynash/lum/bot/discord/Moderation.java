@@ -8,6 +8,7 @@ import java.util.List;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PermissionOverride;
 import net.dv8tion.jda.api.entities.Role;
@@ -21,14 +22,20 @@ public class Moderation {
     public static void voiceJoin(GuildVoiceJoinEvent event) {
         Long guildID = event.getGuild().getIdLong();
         if (GuildConfigurations.noMicChannels.containsKey(guildID) && event.getMember().hasPermission(Permission.MESSAGE_WRITE)) {
-            event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().putPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE), null).queue();
+            GuildChannel vc = event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID));
+            if (vc != null) {
+                vc.getManager().putPermissionOverride(event.getMember(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_READ, Permission.MESSAGE_WRITE), null).queue();
+            }
         }
     }
 
     public static void voiceLeave(GuildVoiceLeaveEvent event) {
         Long guildID = event.getGuild().getIdLong();
         if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
-            event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID)).getManager().removePermissionOverride(event.getMember()).queue();
+            GuildChannel vc = event.getGuild().getGuildChannelById(GuildConfigurations.noMicChannels.get(guildID));
+            if (vc != null) {
+                vc.getManager().removePermissionOverride(event.getMember()).queue();
+            }
         }
     }
 

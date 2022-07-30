@@ -1,10 +1,13 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.concurrent.Task;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -42,6 +45,7 @@ public class AddMissingRoles extends Command {
 
     public void addMissing(MessageReceivedEvent event) {
         AtomicInteger runCount = new AtomicInteger(0);
+        List<Task<Void>> tasks = new ArrayList<>();
         CommandManager.autoScreeningRoles.forEach((k, v) -> {
             Guild guild = JDAManager.getJDA().getGuildById(k);
             if (guild == null)
@@ -54,17 +58,22 @@ public class AddMissingRoles extends Command {
                 //TODO announce that Lum can not interact with role
                 return;
             }
-            guild.loadMembers(m -> {
-                if (!m.getUser().isBot() && !m.isPending() && !m.getRoles().contains(role)) {
-                    try {
-                        guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, z -> System.out.println("Failed to regive role to " + m.getUser().getAsTag() + " in " + guild.getName()));
-                        System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
-                        runCount.getAndIncrement();
+            tasks.add(
+                guild.loadMembers(m -> {
+                    if (!m.getUser().isBot() && !m.isPending() && !m.getRoles().contains(role)) {
+                        try {
+                            guild.addRoleToMember(m, role).reason("User has agreed to Membership Screening requirements while Lum was rebooting").queue(null, z -> System.out.println("Failed to regive role to " + m.getUser().getAsTag() + " in " + guild.getName()));
+                            System.out.println("Giving role " + role.getName() + " to " + m.getEffectiveName() + " in " + guild.getName());
+                            runCount.getAndIncrement();
+                        }
+                        catch (Exception ignored) { }
                     }
-                    catch (Exception ignored) { }
-                }
-            });
+                })
+            );
         });
+        for (Task<Void> task : tasks) {
+            task.get();
+        }
         if (event != null) {
             event.getMessage().reply("Added roles to " + runCount.get() + " members").queue();
         }
