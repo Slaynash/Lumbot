@@ -25,7 +25,7 @@ public final class ConfigManager {
     public static String dbPassword;
 
     public static String discordPrefix;
-    public static String vrcmgBlacklist;
+    public static String cvrmgBlacklist;
 
     public static String curseforgeApiKey;
 
@@ -55,7 +55,7 @@ public final class ConfigManager {
             dbPassword = properties.getProperty("DB_PASSWORD");
 
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
-            vrcmgBlacklist = properties.getProperty("VRCMG_BLACKLIST");
+            cvrmgBlacklist = properties.getProperty("CVRMG_BLACKLIST");
 
             curseforgeApiKey = properties.getProperty("CURSEFORGE_API_KEY");
 

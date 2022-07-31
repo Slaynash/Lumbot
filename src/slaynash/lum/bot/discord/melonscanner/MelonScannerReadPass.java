@@ -245,13 +245,13 @@ public final class MelonScannerReadPass {
             if (context.listingPlugins) {
                 if (context.tmpModName != null && MelonScannerApisManager.badPlugin.stream().anyMatch(context.tmpModName::equalsIgnoreCase))
                     context.badPlugins.add(context.tmpModName);
-                if (context.tmpModName != null && context.tmpModAuthor != null && MelonScannerApisManager.badPluginAuthor.stream().anyMatch(context.tmpModAuthor.toLowerCase()::contains))
+                if (context.tmpModName != null && context.tmpModAuthor != null && MelonScannerApisManager.badAuthor.stream().anyMatch(context.tmpModAuthor.toLowerCase()::contains))
                     context.badPlugins.add(context.tmpModName);
             }
             else {
                 if (context.tmpModName != null && MelonScannerApisManager.badMod.stream().anyMatch(context.tmpModName::equalsIgnoreCase))
                     context.badMods.add(context.tmpModName);
-                if (context.tmpModName != null && context.tmpModAuthor != null && MelonScannerApisManager.badModAuthor.stream().anyMatch(context.tmpModAuthor.toLowerCase()::contains))
+                if (context.tmpModName != null && context.tmpModAuthor != null && MelonScannerApisManager.badAuthor.stream().anyMatch(context.tmpModAuthor.toLowerCase()::contains))
                     context.badMods.add(context.tmpModName);
             }
 

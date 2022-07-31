@@ -41,6 +41,8 @@ import org.luaj.vm2.lib.jse.JseMathLib;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -52,8 +54,7 @@ public class MelonScannerApisManager {
     public static final List<String> brokenMods = new ArrayList<>();
     public static final List<String> retiredMods = new ArrayList<>();
     public static List<String> badMod = new ArrayList<>();
-    public static List<String> badModAuthor = new ArrayList<>();
-    public static List<String> badPluginAuthor = new ArrayList<>();
+    public static List<String> badAuthor = new ArrayList<>();
     public static List<String> badPlugin = new ArrayList<>();
 
     private static final List<MelonScannerApi> apis = new ArrayList<>();
@@ -94,7 +95,6 @@ public class MelonScannerApisManager {
         apis.add(api = new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         apis.add(api = new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
-        apis.add(api = new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
         // apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
     }
 
@@ -367,20 +367,26 @@ public class MelonScannerApisManager {
                 try {
                     HttpRequest.Builder blbuilder = HttpRequest.newBuilder()
                         .GET()
-                        .uri(URI.create(ConfigManager.vrcmgBlacklist))
+                        .uri(URI.create(ConfigManager.cvrmgBlacklist))
                         .setHeader("User-Agent", "LUM Bot")
                         .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                         .setHeader("Pragma", "no-cache")
                         .setHeader("Expires", "-1")
                         .timeout(Duration.ofSeconds(45));
-                    String blDataRaw = new String(downloadRequest(blbuilder.build(), "blacklist").body());
-                    String[] blSplit = blDataRaw.split("\n");
 
-                    badMod = Arrays.asList(blSplit[0].split("\\|"));
-                    badModAuthor = Arrays.asList(blSplit[1].split("\\|"));
-                    badPluginAuthor = Arrays.asList(blSplit[2].split("\\|"));
-                    badPlugin = Arrays.asList(blSplit[3].split("\\|"));
+                    JsonObject parsed = JsonParser.parseString(new String(downloadRequest(blbuilder.build(), "blacklist").body())).getAsJsonObject();
 
+                    List<String> tempbadMod = new ArrayList<>();
+                    List<String> tempbadAuthor = new ArrayList<>();
+                    List<String> tempbadPlugin = new ArrayList<>();
+
+                    parsed.get("ModName").getAsJsonArray().forEach(o -> tempbadMod.add(o.getAsString()));
+                    parsed.get("PluginName").getAsJsonArray().forEach(o -> tempbadPlugin.add(o.getAsString()));
+                    parsed.get("Author").getAsJsonArray().forEach(o -> tempbadAuthor.add(o.getAsString()));
+
+                    badMod = tempbadMod;
+                    badAuthor = tempbadAuthor;
+                    badPlugin = tempbadPlugin;
                 }
                 catch (Exception e) {
                     e.printStackTrace();
