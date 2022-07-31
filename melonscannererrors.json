@@ -507,6 +507,12 @@
                 "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
             }
         ],
+        "ChilloutVR": [
+            {
+                "regex": ".*\\[CVRLogger] \\[Error].*",
+                "error": "CVRLogger is printing an error line but it is most likely thrown by CVR."
+            }
+        ],
         "Demeo": [
             {
                 "regex": "HouseRules.*Could not load file or assembly 'Newtonsoft.*",
