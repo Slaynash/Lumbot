@@ -43,7 +43,15 @@ public class Ban extends Command {
                 event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days) (reason)").queue();
                 return;
             }
-            if (parts.length >= 3) {
+            if (parts.length == 3) {
+                if (parts[2].matches("^\\d{1,2}$")) { //l!ban ID 9 reason
+                    delDays = Math.min(Integer.parseInt(parts[2]), 7);
+                }
+                else {
+                    reason = parts[2];
+                }
+            }
+            else if (parts.length > 3) {
                 if (parts[2].matches("^\\d{1,2}$")) { //l!ban ID 9 reason
                     delDays = Math.min(Integer.parseInt(parts[2]), 7);
                     reason = parts[3];
