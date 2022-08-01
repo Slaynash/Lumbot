@@ -198,6 +198,9 @@ public class ChattyLum {
             handleHelp(message, event))
             return true;
 
+        if (event.getMessage().isEdited())
+            return false;
+
         if (message.contains("padoru")) {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920891104281374780/Gura_Padoru.mp4").queue();
             return true;

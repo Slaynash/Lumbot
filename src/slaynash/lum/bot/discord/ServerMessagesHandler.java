@@ -170,7 +170,6 @@ public class ServerMessagesHandler {
                 if (message.startsWith("!loggif")) {
                     System.out.println("log GIF printed");
                     event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/1002485820478980157/1002508618500943882/browselocal.gif").queue();
-                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/967195766923878450/loggif2.gif").queue();
                     event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/1002485820478980157/1002509011075211334/getlog.gif").queue();
                     event.getChannel().sendMessage("The file will either be named Latest or Latest.log depending on your system settings").queue();
                     return;
