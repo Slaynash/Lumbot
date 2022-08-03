@@ -514,6 +514,10 @@
             {
                 "regex": ".*\\[CVRLogger] \\[Error].*",
                 "error": "CVRLogger is printing an error line but it is most likely thrown by CVR."
+            },
+            {
+                "regex": ".*Unable to set profile picture.*404 Not Found",
+                "error": "Failed to download a profile picture from ABI servers. Default was used and no action needs to be taken."
             }
         ],
         "Demeo": [
