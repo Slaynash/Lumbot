@@ -113,8 +113,11 @@
             "error": "AutoWebProxyScriptEngine Error. Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
         },
         {
-            "regex": ".*System.Net.Sockets.SocketException.*",
+            "regex": ".*System.Net.Sockets.SocketException(?! \\(0x8).*",
             "error": "SocketException. Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
+        },
+        {
+            "regex": ".*SocketException \\(0x8.*"
         },
         {
             "regex": ".*due to: Could not load file or assembly '(?!ReMod.Core).*",
