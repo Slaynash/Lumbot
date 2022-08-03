@@ -188,12 +188,6 @@ public final class MelonScannerReadPass {
             }
             System.out.println(context.remainingModCount + " " + (context.listingPlugins ? "plugins" : "mods") + " loaded on this pass");
             context.linesToSkip += 1; // Skip line separator
-            if (!context.vrcmuModsMismatch && context.vrcmuMods >= 0 && context.vrcmuMods != context.remainingModCount) {
-                context.vrcmuModsMismatch = true;
-                context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("vrcmuMods does not match remainingModCount\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\nvrcmuMods: " + context.vrcmuMods + " remainingModCount:" + context.remainingModCount).queue();
-                //TODO: Uncomment when ready
-                //context.editedLog = true;
-            }
             return true;
         }
         else if (context.listingModsPlugins && context.tmpModName == null) {
@@ -330,13 +324,7 @@ public final class MelonScannerReadPass {
 
         if (line.matches("\\[[\\d.:]+] \\[ERROR] No MelonInfoAttribute Found in.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Load Assembly for.*") || line.matches("\\[[\\d.:]+] \\[ERROR] Invalid Author given to MelonInfoAttribute.*") || line.matches("\\[[\\d.:]+] \\[WARNING] No Compatibility Layer for.*")) {
             String oldName = splitName(line);
-            if (oldName.equalsIgnoreCase("ReMod Core"))
-                context.errors.add(new MelonLoaderError("ReMod.Core.dll should stay in the UserLibs folder. Please delete it from your Mods folder."));
-            else if (oldName.equalsIgnoreCase("ReModCE"))
-                context.errors.add(new MelonLoaderError("ReModCE.dll should stay in the UserLibs folder. Please delete it from your Mods folder."));
-            else if (oldName.equalsIgnoreCase("emmVRC"))
-                context.errors.add(new MelonLoaderError("emmVRC.dll needs to stay in the Dependencies folder. Please delete it from your Mods folder."));
-            else if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
+            if (oldName.equalsIgnoreCase("Facepunch Steamworks Win64"))
                 context.errors.add(new MelonLoaderError("Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
@@ -721,16 +709,17 @@ public final class MelonScannerReadPass {
             }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
-            if (m.namedGroups().size() > 0) {
-                for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
-                    errorMess = errorMess.replace(entry.getKey(), entry.getValue());
-            }
-            MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
             if (m.matches()) {
-                if (context.errors != null && !context.errors.contains(newerror))
+                if (m.namedGroups().size() > 0) {
+                    for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                        errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+                }
+                MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
+                if (context.errors != null && !context.errors.contains(newerror)) {
+                    System.out.println("Found known error");
                     context.errors.add(newerror);
-                System.out.println("Found known error");
-                context.hasErrors = true;
+                    context.hasErrors = true;
+                }
                 return true;
             }
         }
@@ -758,14 +747,6 @@ public final class MelonScannerReadPass {
                     return true;
                 }
             }
-        }
-        List<String> errorTerms = Arrays.asList("  at ", "[ERROR]", "[WARNING]", "File name:", "System.", "Newtonsoft.", "--- ", "---> ", "Trace:   ", "Parameter name:", "File name:", "lock gameobject", "instance of an object", "out-of-date", "host con", "```", "garbage collected", "SocketException", "Trace:", "Object name: ");
-        if (!context.missingErrorHeader && context.line.startsWith("  at ") && errorTerms.stream().noneMatch(context.lastLine::contains)) {
-            context.missingErrorHeader = true;
-            context.messageReceivedEvent.getJDA().getGuildById(760342261967487066L).getTextChannelById(868658280409473054L).sendMessage("Missing error header\n" + context.messageReceivedEvent.getMessage().getJumpUrl() + "\n" + context.lastLine).queue();
-            //TODO: Uncomment when ready
-            //context.editedLog = true;
-            return true;
         }
         return false;
     }
