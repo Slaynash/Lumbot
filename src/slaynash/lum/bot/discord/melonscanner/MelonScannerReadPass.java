@@ -682,17 +682,18 @@ public final class MelonScannerReadPass {
             }
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
-            if (m.namedGroups().size() > 0) {
-                for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
-                    errorMess = errorMess.replace(entry.getKey(), entry.getValue());
-            }
-            MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
             if (m.matches()) {
-                if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated)
+                if (m.namedGroups().size() > 0) {
+                    for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                        errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+                }
+                MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
+                if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated) {
+                    System.out.println("Found known unhollower error");
                     context.errors.add(newerror);
-                System.out.println("Found known unhollower error");
-                context.hasErrors = true;
-                context.assemblyGenerationFailed = true;
+                    context.hasErrors = true;
+                    context.assemblyGenerationFailed = true;
+                }
                 return true;
             }
         }
@@ -734,16 +735,17 @@ public final class MelonScannerReadPass {
                 }
                 String errorMess = knownGameError.error;
                 Matcher m = Pattern.compile(knownGameError.regex).matcher(context.line);
-                if (m.namedGroups().size() > 0) {
-                    for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
-                        errorMess = errorMess.replace(entry.getKey(), entry.getValue());
-                }
-                MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex, errorMess);
                 if (m.matches()) {
-                    if (context.errors != null && !context.errors.contains(newerror))
+                    if (m.namedGroups().size() > 0) {
+                        for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
+                            errorMess = errorMess.replace(entry.getKey(), entry.getValue());
+                    }
+                    MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex, errorMess);
+                    if (context.errors != null && !context.errors.contains(newerror)) {
+                        System.out.println("Found known game error");
                         context.errors.add(newerror);
-                    System.out.println("Found known game error");
-                    context.hasErrors = true;
+                        context.hasErrors = true;
+                    }
                     return true;
                 }
             }

@@ -169,11 +169,15 @@ public class ScamShield {
         if (event.getMessage().getInvites().size() > 0) {
             ssFoundTerms.put("Invite", 1);
             for (String invcode : event.getMessage().getInvites()) {
-                Invite inv = Invite.resolve(event.getJDA(), invcode).complete();
-                if (inv.getGuild() == null || inv.getGuild().getName() == null) continue;
-                if (badGuildNames.stream().anyMatch(s -> inv.getGuild().getName().toLowerCase().contains(s))) {
-                    ssFoundTerms.put("InviteBadGuild", 2);
+                try {
+                    Invite inv = Invite.resolve(event.getJDA(), invcode).complete();
+                    if (inv.getGuild() == null || inv.getGuild().getName() == null)
+                        continue;
+                    if (badGuildNames.stream().anyMatch(s -> inv.getGuild().getName().toLowerCase().contains(s))) {
+                        ssFoundTerms.put("InviteBadGuild", 2);
+                    }
                 }
+                catch (Exception ignored) { }
             }
         }
         int tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
