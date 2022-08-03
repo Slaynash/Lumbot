@@ -31,6 +31,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.MentionType;
@@ -120,10 +121,10 @@ public class ScamShield {
             put("discord", 1);
         }};
 
-    public static ScamResults ssValue(MessageReceivedEvent event) {
-        // I found a simple referral and you can loot skins there\nhttp://csgocyber.ru/simlpebonus\nIf it's not difficult you can then throw me a trade and I'll give you the money
-        //@everyone Hello I am leaving CS:GO and giving away my skins to people who send trade offers. For first people I will give away my 3 knifes. Don't be greedy and take few skins :  https://streancommunuty.ru/tradoffer/new/?partner=1284276379&token=iMDdLkoe
+    // must be lowercase
+    private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celebrity");
 
+    public static ScamResults ssValue(MessageReceivedEvent event) {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         String msg = event.getMessage().getContentStripped();
         if (event.isFromGuild()) {
@@ -136,7 +137,6 @@ public class ScamShield {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
-        // System.out.println("SS final Message: " + finalMessage);
 
         long crossPost = 0;
         if (!event.isFromType(ChannelType.PRIVATE)) {
@@ -166,15 +166,21 @@ public class ScamShield {
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
+        if (event.getMessage().getInvites().size() > 0) {
+            ssFoundTerms.put("Invite", 1);
+            for (String invcode : event.getMessage().getInvites()) {
+                Invite inv = Invite.resolve(event.getJDA(), invcode).complete();
+                if (inv.getGuild() == null || inv.getGuild().getName() == null) continue;
+                if (badGuildNames.stream().anyMatch(s -> inv.getGuild().getName().toLowerCase().contains(s))) {
+                    ssFoundTerms.put("InviteBadGuild", 2);
+                }
+            }
+        }
         int tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
         if (tempval > 0 && tempval < instaKick) {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge * 3);
-        }
-        tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
-        if (tempval > 0 && event.getMessage().getInvites().size() > 0) {
-            ssFoundTerms.put("Invite", 1);
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
@@ -245,7 +251,7 @@ public class ScamShield {
         if (suspiciousResults.suspiciousValue > 0)
             JDAManager.mainGuild.getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
                 + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
-        if (suspiciousResults.suspiciousValue <= 3)
+        if (suspiciousResults.suspiciousValue < 3)
             return false;
 
         return handleCrossBan(event, suspiciousResults);
