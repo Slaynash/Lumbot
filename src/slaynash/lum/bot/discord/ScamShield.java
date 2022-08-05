@@ -122,7 +122,7 @@ public class ScamShield {
         }};
 
     // must be lowercase
-    private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celebrity");
+    private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb");
 
     public static ScamResults ssValue(MessageReceivedEvent event) {
         Map<String, Integer> ssFoundTerms = new HashMap<>();

@@ -486,6 +486,7 @@ public final class MelonScanner {
                 case "killtheking" -> context.embedBuilder.setThumbnail("https://kill-the-king.com/imgs/KTK_Logos/logo_KTK-hamburger.png");
                 case "maj" -> context.embedBuilder.setThumbnail("https://mahjongsoul.yo-star.com/img/Mahjong_logo.d393a548.png");
                 case "minecraft" -> context.embedBuilder.setThumbnail("https://play-lh.googleusercontent.com/VSwHQjcAttxsLE47RuS4PqpC4LT7lCoSjE7Hx5AW_yCxtDvcnsHHvm5CTuL5BPN-uRTP");
+                case "monstrum" -> context.embedBuilder.setThumbnail("https://image.api.playstation.com/gs2-sec/appkgo/prod/CUSA12695_00/2/i_80e7fd345507c7804632c1bbb55838b7b80011b45235dc014a41c26dcab96ebc/i/icon0.png");
                 case "musedash" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487068/863664777918545940/musedash.png");
                 case "myfriendlyneighborhood" -> context.embedBuilder.setThumbnail("https://cdn.cloudflare.steamstatic.com/steam/apps/1574260/header.jpg");
                 case "neonabyss" -> context.embedBuilder.setThumbnail("https://cdn2.unrealengine.com/egs-neonabyss-veewogames-ic1-400x234-431037467.png");

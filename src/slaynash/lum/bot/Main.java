@@ -56,7 +56,6 @@ import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
 import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
-import slaynash.lum.bot.discord.TicketTool;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
@@ -120,7 +119,6 @@ public class Main extends ListenerAdapter {
         JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
         JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
-        TicketTool.start();
 
         SlashManager.registerCommands();
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
