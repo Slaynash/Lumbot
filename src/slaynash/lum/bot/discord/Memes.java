@@ -5,6 +5,7 @@ import java.util.List;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
@@ -14,6 +15,7 @@ public class Memes {
     private static String upArrow = ":UNOUpVote:936073450815111208";
     private static String downArrow = ":UNODownVote:936073450676703282";
     private static long memeChannelID = 1002766110350917682L;
+    private static long memeReportChannelID = 1007540894506946581L;
 
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
@@ -38,9 +40,19 @@ public class Memes {
 
         float reactionVotes = getPercentage(upReactions.size(), downReactions.size());
 
-        if (reactionVotes < removalPercent)
+        if (reactionVotes < removalPercent) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(message.getAuthor().getName()).append(" ").append(message.getAuthor().getId()).append("\n");
+            sb.append(message.getContentRaw() + "\n");
+            for (Attachment attach : message.getAttachments()) {
+                sb.append(attach.getUrl() + "\n");
+            }
+            if (upReactions.size() > 0)
+                sb.append("\nup voted:\n" + upReactions + "\n");
+            sb.append("\ndown voted:\n" + downReactions + "\n");
+            message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString()).queue();
             message.delete().reason("Meme was voted out").queue();
-        //TODO add reporting
+        }
     }
 
     private static float getPercentage(int up, int down) {
