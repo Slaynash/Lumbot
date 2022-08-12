@@ -33,6 +33,10 @@ public final class DBConnectionManagerLum {
     public static void init() {
         try {
             System.out.println("Connecting to Database...");
+            if (ConfigManager.dbAddress.isBlank() || ConfigManager.dbPort.isBlank() || ConfigManager.dbDatabaseLum.isBlank() || ConfigManager.dbLogin.isBlank() || ConfigManager.dbPassword.isBlank()) {
+                System.err.println("Database configuration is missing!");
+                return;
+            }
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
             connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum + "?useUnicode=true&characterEncoding=UTF-8", ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("Connection to Database initialised");

@@ -50,6 +50,7 @@ import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.Memes;
 import slaynash.lum.bot.discord.MessageProxy;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
@@ -381,6 +382,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+        Memes.memeReaction(event);
+
         // Don't react to self roles
         if (event.getUser().getIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
             return;

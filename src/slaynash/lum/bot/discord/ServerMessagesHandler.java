@@ -51,6 +51,8 @@ public class ServerMessagesHandler {
             }
             if (ABCpolice.abcPolice(event))
                 return;
+            if (Memes.memeRecieved(event))
+                return;
 
             long guildID = event.getGuild().getIdLong();
             String guildIDstr = event.getGuild().getId();
