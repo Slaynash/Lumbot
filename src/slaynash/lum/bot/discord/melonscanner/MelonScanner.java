@@ -93,6 +93,8 @@ public final class MelonScanner {
             if (attachment == null)
                 return;
 
+            LogCounter.addMLCounter(attachment);
+
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
 
             if ("message.txt".equals(attachment.getFileName()))
@@ -166,7 +168,6 @@ public final class MelonScanner {
             }
 
             if (context.embedBuilder.getFields().size() > 0) {
-                LogCounter.addMLCounter(attachment);
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageBuilder messageBuilder = new MessageBuilder();
@@ -391,6 +392,8 @@ public final class MelonScanner {
     private static void checkForPirate(MelonScanContext context) {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.editedLog = true; //trigger the `dont edit the log` message
+            context.pirate = true;
+            return;
         }
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             return;
