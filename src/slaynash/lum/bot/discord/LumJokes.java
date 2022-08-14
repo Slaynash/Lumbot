@@ -32,6 +32,7 @@ public class LumJokes {
             String joke = "";
             String punchLine = "";
             HttpResponse<byte[]> response = null;
+            String site = "blank";
 
             int type;
             if (message.contains("dad"))
@@ -52,6 +53,7 @@ public class LumJokes {
             switch (type) {
                 case 0:
                     try {
+                        site = "DADJOKE";
                         response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
                         joke = new String(response.body());
                     }
@@ -61,6 +63,7 @@ public class LumJokes {
                     break;
                 case 1:
                     try {
+                        site = "JokeAPI";
                         response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
@@ -79,6 +82,7 @@ public class LumJokes {
                     break;
                 case 2:
                     try {
+                        site = "SpookyJokeAPI";
                         response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
@@ -97,6 +101,7 @@ public class LumJokes {
                     break;
                 case 3:
                     try {
+                        site = "ChristmasJokeAPI";
                         response = MelonScannerApisManager.downloadRequest(christmasjokeAPIRequest, "ChristmasJokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
@@ -114,9 +119,11 @@ public class LumJokes {
                     }
                     break;
                 case 69:
+                    site = "Dad_jokes.mp4";
                     joke = "https://cdn.discordapp.com/attachments/509655431787053057/963596823858135100/Dad_jokes.mp4";
                     break;
                 default:
+                    site = "fucky wucky";
                     joke = "<@240701606977470464> OOPSIE WOOPSIE!! Uwu I make a fucky wucky!!";
             }
             if (!joke.isEmpty()) {
@@ -138,7 +145,7 @@ public class LumJokes {
                 }
             }
             else
-                ExceptionUtils.reportException("Joke is empty :( in " + event.getGuild().getName() + " from " + response.uri());
+                ExceptionUtils.reportException("Joke is empty :( in " + event.getGuild().getName() + " from " + site);
         }).start();
         return true;
     }

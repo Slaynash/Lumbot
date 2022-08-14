@@ -3,11 +3,14 @@ package slaynash.lum.bot.discord;
 import java.util.List;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.requests.restaction.MessageAction;
+import net.dv8tion.jda.api.utils.AttachmentOption;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Memes {
     private static float removalPercent = 0.3f;
@@ -44,13 +47,18 @@ public class Memes {
             StringBuilder sb = new StringBuilder();
             sb.append(message.getAuthor().getName()).append(" ").append(message.getAuthor().getId()).append("\n");
             sb.append(message.getContentRaw() + "\n");
-            for (Attachment attach : message.getAttachments()) {
-                sb.append(attach.getUrl() + "\n");
-            }
             if (upReactions.size() > 0)
                 sb.append("\nup voted:\n" + upReactions + "\n");
             sb.append("\ndown voted:\n" + downReactions + "\n");
-            message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString()).queue();
+            MessageAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());
+            for (Attachment attach : message.getAttachments()) {
+                try {
+                    ma.addFile(attach.retrieveInputStream().get(), attach.getFileName(), AttachmentOption.SPOILER);
+                } catch (Exception e) {
+                    ExceptionUtils.reportException("Failed reattaching meme", e);
+                }
+            }
+            ma.queue();
             message.delete().reason("Meme was voted out").queue();
         }
     }
