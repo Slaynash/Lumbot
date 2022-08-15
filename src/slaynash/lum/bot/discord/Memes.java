@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Memes {
-    private static float removalPercent = 0.3f;
+    private static float removalPercent = 0.2f;
     private static int minVotes = 5;
     private static String upArrow = ":UNOUpVote:936073450815111208";
     private static String downArrow = ":UNODownVote:936073450676703282";

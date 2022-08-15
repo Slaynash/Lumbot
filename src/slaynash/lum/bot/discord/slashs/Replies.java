@@ -60,9 +60,9 @@ public class Replies extends Slash {
         }
         long muserid = event.getUser().getIdLong();
         long guildid = event.getGuild().getIdLong();
-        String regex = event.getOption("regex") == null ? null : event.getOption("regex").getAsString().replace("\\n", "\n");
-        String contains = event.getOption("contains") == null ? null : event.getOption("contains").getAsString().replace("\\n", "\n");
-        String equals = event.getOption("equals") == null ? null : event.getOption("equals").getAsString().replace("\\n", "\n");
+        String regex = event.getOption("regex") == null ? null : event.getOption("regex").getAsString().replace("\\n", "\n").toLowerCase();
+        String contains = event.getOption("contains") == null ? null : event.getOption("contains").getAsString().replace("\\n", "\n").toLowerCase();
+        String equals = event.getOption("equals") == null ? null : event.getOption("equals").getAsString().replace("\\n", "\n").toLowerCase();
         String message = event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n");
         String user = event.getOption("user") == null ? null : event.getOption("user").getAsUser().getId();
         String channel = event.getOption("channel") == null ? null : event.getOption("channel").getAsMessageChannel().getId();
