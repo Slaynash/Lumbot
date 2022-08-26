@@ -99,7 +99,7 @@ public class ScamShield {
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
             put("standoutinyourfavoritesdiscord", 2);
-            put("heyyummmidkwhathappenedorifitsreallyyoubutitwasyournameandthesameavatar", 10);
+            put("idkwhathappenedorifitsreallyyoubutitwasyournameandthesameavatar", 10);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*invest.*crypto.*", 1);

@@ -252,7 +252,9 @@ public class Steam {
                         else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
-                            description.append("[").append(changedBranch.getKey()).append("] Branch ").append(oldBranchDetails.buildid < newBranchDetails.buildid ? "updated" : "downgraded").append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
+                            String grade = oldBranchDetails.buildid < newBranchDetails.buildid ? "upgraded" : "downgraded";
+                            if (oldBranchDetails.buildid == newBranchDetails.buildid) grade = "updated";
+                            description.append("[").append(changedBranch.getKey()).append("] Branch ").append(grade).append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
                             if (newBranchDetails.description != null && !newBranchDetails.description.isBlank()) // I don't think this is ever null but nice to have
                                 description.append(" - Description: ").append(newBranchDetails.description).append("\n");
                             if (newBranchDetails.pwdrequired == null || !newBranchDetails.pwdrequired) {

@@ -23,9 +23,9 @@ public class MessageProxy {
         Guild mainguild = JDAManager.mainGuild;
 
         User author = event.getAuthor();
-        String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getIdLong()).toLowerCase()
+        String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getId()).toLowerCase()
                 .replaceAll("[^a-z0-9\\-_]", "").replace(" ", "-").replace("--", "-");
-        TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().endsWith(author.getId())).findFirst().orElse(null);
+        TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
         String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
         for (Attachment attachment : event.getMessage().getAttachments()) {
@@ -49,6 +49,7 @@ public class MessageProxy {
         }
         if (guildchannel == null) {
             System.out.println("Creating DM Channel " + channelName);
+            System.out.println("Number of Channels: " + mainguild.getTextChannels().size());
             StringBuilder sb = new StringBuilder();
             event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
                     .forEach(m -> {

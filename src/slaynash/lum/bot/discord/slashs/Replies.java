@@ -19,7 +19,7 @@ import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-//TODO add more replacements like username
+//TODO add more replacements like username, server age
 
 public class Replies extends Slash {
     @Override

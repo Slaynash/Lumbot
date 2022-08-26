@@ -481,6 +481,7 @@ public final class MelonScanner {
                 case "hiredops" -> context.embedBuilder.setThumbnail("https://www.hiredops.com/themes/hiredops/images/logo.png");
                 case "hotdogshorseshoesandhandgrenades" -> context.embedBuilder.setThumbnail("https://cdn.discordapp.com/attachments/760342261967487069/871468287144390698/Hot_Dogs_Horseshoes_and_Hand_Grenades.png");
                 case "houseparty" -> context.embedBuilder.setThumbnail("https://pbs.twimg.com/profile_images/1186376117357305856/ZlgsB9ag_400x400.jpg");
+                case "hover" -> context.embedBuilder.setThumbnail("https://q6c8e2f7.rocketcdn.me/wp-content/uploads/sites/10/2017/12/Hover-logo.png");
                 case "ieytd" -> context.embedBuilder.setThumbnail("https://cdn.schellgames.com/images/Media-Kits/i-expect-you-to-die/IEYTD_Logo_Square.png");
                 case "jobsimulator" -> context.embedBuilder.setThumbnail("https://i.imgur.com/0kmohjK.png");
                 case "karlson" -> context.embedBuilder.setThumbnail("https://i.redd.it/ldxbkjuziad51.png");
