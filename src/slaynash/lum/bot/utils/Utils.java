@@ -162,7 +162,7 @@ public class Utils {
     public static List<String> extractUrls(String text) {
         //https://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
         List<String> containedUrls = new ArrayList<>();
-        String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w\\d:#@%/;$()~_?+-=\\\\.&]*)";
+        String urlRegex = "((https?|ftp|gopher|telnet|file):((//)|(\\\\))+[\\w:#@%/;$()~_?+-=\\\\.&]*)";
         Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
         Matcher urlMatcher = pattern.matcher(text);
 

@@ -13,12 +13,12 @@ import net.dv8tion.jda.api.utils.AttachmentOption;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Memes {
-    private static float removalPercent = 0.2f;
-    private static int minVotes = 5;
-    private static String upArrow = ":UNOUpVote:936073450815111208";
-    private static String downArrow = ":UNODownVote:936073450676703282";
-    private static long memeChannelID = 1002766110350917682L;
-    private static long memeReportChannelID = 1007540894506946581L;
+    private static final float removalPercent = 0.2f;
+    private static final int minVotes = 5;
+    private static final String upArrow = ":UNOUpVote:936073450815111208";
+    private static final String downArrow = ":UNODownVote:936073450676703282";
+    private static final long memeChannelID = 1002766110350917682L;
+    private static final long memeReportChannelID = 1007540894506946581L;
 
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
@@ -46,15 +46,17 @@ public class Memes {
         if (reactionVotes < removalPercent) {
             StringBuilder sb = new StringBuilder();
             sb.append(message.getAuthor().getName()).append(" ").append(message.getAuthor().getId()).append("\n");
-            sb.append(message.getContentRaw() + "\n");
+            sb.append(message.getContentRaw()).append("\n");
             if (upReactions.size() > 0)
-                sb.append("\nup voted:\n" + upReactions + "\n");
-            sb.append("\ndown voted:\n" + downReactions + "\n");
+                sb.append("\nup voted:\n").append(upReactions).append("\n");
+            sb.append("\ndown voted:\n").append(downReactions).append("\n");
+            long memeReportChannelID = 1007540894506946581L;
             MessageAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());
             for (Attachment attach : message.getAttachments()) {
                 try {
                     ma.addFile(attach.retrieveInputStream().get(), attach.getFileName(), AttachmentOption.SPOILER);
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     ExceptionUtils.reportException("Failed reattaching meme", e);
                 }
             }

@@ -20,9 +20,7 @@ public class AddMissingRoles extends Command {
         if (!includeInHelp(event))
             return;
 
-        Thread thread = new Thread(() -> {
-            addMissing(event);
-        }, "APIThread");
+        Thread thread = new Thread(() -> addMissing(event), "APIThread");
         thread.setDaemon(false);
         thread.start();
     }

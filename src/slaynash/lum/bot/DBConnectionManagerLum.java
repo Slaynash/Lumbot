@@ -78,7 +78,7 @@ public final class DBConnectionManagerLum {
         return ps;
     }
 
-    /** SELECT
+    /** SELECT, CALL
      *
      * @param statement The SQL statement to execute
      * @param args Replacements for the ? in the statement

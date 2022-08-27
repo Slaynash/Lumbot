@@ -16,7 +16,7 @@ import slaynash.lum.bot.Main;
 public class JDAManager {
 
     private static JDA jda;
-    public static long mainGuildID = 633588473433030666L;
+    public static final long mainGuildID = 633588473433030666L;
     private static boolean init = false;
 
     public static void init(String token) throws LoginException, IllegalArgumentException, InterruptedException {

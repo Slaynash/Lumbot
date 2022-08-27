@@ -24,7 +24,7 @@ public class MessageProxy {
 
         User author = event.getAuthor();
         String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getId()).toLowerCase()
-                .replaceAll("[^a-z0-9\\-_]", "").replace(" ", "-").replace("--", "-");
+                .replaceAll("[^a-z\\d\\-_]", "").replace(" ", "-").replace("--", "-");
         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
         String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();

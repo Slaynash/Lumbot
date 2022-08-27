@@ -86,8 +86,7 @@ public class MelonScannerApisManager {
                 String version = logsModDetails.version;
                 if (version.contains(" (")) {
                     String[] parts = version.split(" \\(");
-                    String id = parts[1].trim().replace(")", "");
-                    logsModDetails.id = id;
+                    logsModDetails.id = parts[1].trim().replace(")", "");
                     logsModDetails.version = parts[0];
                 }
             }
@@ -282,7 +281,7 @@ public class MelonScannerApisManager {
                                     ++modsCount;
                                 }
 
-                                if (api.maxPagination > 0 && modsCount < api.maxPagination || api.maxPagination <= 0) {
+                                if (api.maxPagination <= 0 || modsCount < api.maxPagination) {
                                     doneFetching = true;
                                 }
                             }
@@ -417,7 +416,7 @@ public class MelonScannerApisManager {
         public final String endpoint;
         public final boolean compareUsingHashes;
 
-        public boolean isGZip = false;
+        public final boolean isGZip = false;
         public int maxPagination;
         public List<String> customHeaders = new ArrayList<>();
 

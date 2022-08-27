@@ -1,10 +1,10 @@
 package slaynash.lum.bot.discord.melonscanner;
 
 public class LogsModDetails {
-    public String name;
+    public final String name;
     public String version;
-    public String author;
-    public String hash;
+    public final String author;
+    public final String hash;
 
     public String id;
 

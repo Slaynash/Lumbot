@@ -31,7 +31,7 @@ public class LumJokes {
         new Thread(() -> {
             String joke = "";
             String punchLine = "";
-            HttpResponse<byte[]> response = null;
+            HttpResponse<byte[]> response;
             String site = "blank";
 
             int type;
