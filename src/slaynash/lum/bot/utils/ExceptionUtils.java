@@ -75,7 +75,7 @@ public final class ExceptionUtils {
         if (exception != null)
             exception.printStackTrace();
 
-        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED || JDAManager.mainGuild == null)
+        if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
             queuedExceptions.add(new QueuedException(title, comment, exception, textChannel));
         else {
             processExceptionQueue();
@@ -113,9 +113,9 @@ public final class ExceptionUtils {
             MessageEmbed embed = embedBuilder.setDescription(exceptionString).build();
             if (!embed.isEmpty()) {
                 if (exceptionString.contains("gotten status code") || exceptionString.contains("request timed out") || exceptionString.contains("connect timed out"))
-                    JDAManager.mainGuild.getTextChannelById(912757433913454612L).sendMessageEmbeds(embed).queue();
+                    JDAManager.getJDA().getGuildById(JDAManager.mainGuildID).getTextChannelById(912757433913454612L).sendMessageEmbeds(embed).queue();
                 else
-                    JDAManager.mainGuild.getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
+                    JDAManager.getJDA().getGuildById(JDAManager.mainGuildID).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
             }
 
             if (textChannel != null) {

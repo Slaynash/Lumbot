@@ -210,8 +210,8 @@ public class UnityVersionMonitor {
                             StringBuilder message = new StringBuilder("New Unity version published:");
                             for (UnityVersion newVersion : newVersions)
                                 message.append("\n - ").append(newVersion.version);
-                            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
-                            JDAManager.mainGuild.getTextChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
+                            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+                            JDAManager.getJDA().getTextChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
                         }
                         else
                             initialisingUnityVersions = true;
@@ -222,7 +222,7 @@ public class UnityVersionMonitor {
                     if (isRunningCheck) {
                         while (isRunningCheck)
                             Thread.sleep(100);
-                        JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+                        JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
                     }
                     isRunningCheck = true;
 
@@ -263,7 +263,7 @@ public class UnityVersionMonitor {
                             sb.append(version).append("\n---------------------------------------------------------------------------------------\n");
                         }
 
-                        JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
                         ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
                     }
@@ -284,7 +284,7 @@ public class UnityVersionMonitor {
                             StringBuilder results = new StringBuilder();
                             for (MonoStructRow msr : msi.rows)
                                 results.append("\n\n`").append(String.join("`, `", msr.unityVersions)).append("`\n```\n").append(String.join("\n", msr.fields)).append("```");
-                            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                                 Utils.wrapMessageInEmbed("MonoStruct checks results for " + msi.name + ":" + results, Color.gray)
                             ).queue();
                         }
@@ -318,7 +318,7 @@ public class UnityVersionMonitor {
                 catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
         }
         isRunningCheck = true;
         loadIcalls();
@@ -337,7 +337,7 @@ public class UnityVersionMonitor {
                 runICallChecker(version, sb);
             }
 
-            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
             ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
         }
@@ -622,7 +622,7 @@ public class UnityVersionMonitor {
         p.waitFor();
 
         if (results == null) {
-            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("HashChecker has reported no result for Unity " + unityVersion, Color.red)
             ).queue();
             return;
@@ -643,13 +643,13 @@ public class UnityVersionMonitor {
         }
 
         if (reports.length() > 0) {
-            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Failed to validate all hashes for Unity " + unityVersion + ":\n\n" + reports, Color.red)
             ).queue();
         }
         else {
             if (!initialisingUnityVersions) {
-                JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                     Utils.wrapMessageInEmbed("Hash check succeeded for Unity " + unityVersion, Color.green)
                 ).queue();
             }
@@ -776,7 +776,7 @@ public class UnityVersionMonitor {
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icalls have no definition for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
                 else
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
@@ -785,7 +785,7 @@ public class UnityVersionMonitor {
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed types for Unity ").append(unityVersion).append(":**").append(reportNoType);
                 else
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
                     ).queue();
             }
@@ -794,7 +794,7 @@ public class UnityVersionMonitor {
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed methods for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
                 else
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
@@ -803,7 +803,7 @@ public class UnityVersionMonitor {
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icall methods mismatch for Unity ").append(unityVersion).append(":**").append(reportMismatchingParams);
                 else
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                     Utils.wrapMessageInEmbed("**The following icall methods mismatch for Unity " + unityVersion + ":**" + reportMismatchingParams, Color.red)
                 ).queue();
             }
@@ -812,7 +812,7 @@ public class UnityVersionMonitor {
                 if (stringBuilder != null)
                     stringBuilder.append("ICall check succeeded for Unity ").append(unityVersion);
                 else
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("ICall check succeeded for Unity " + unityVersion, Color.green)
                     ).queue();
         }
@@ -897,7 +897,7 @@ public class UnityVersionMonitor {
                     String oldUnityVersions = String.join("`, `", msrTarget.unityVersions);
                     msrTarget.unityVersions.add(unityVersion);
                     if (!initialisingUnityVersions)
-                        JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("New Minimal Unity versions for MonoStruct " + msi.name + ":\n**OLD:** `" + oldUnityVersions + "`\n**NEW:** `" + String.join("`, `", msrTarget.unityVersions) + "`", Color.red)
                         ).queue();
                 }
@@ -920,7 +920,7 @@ public class UnityVersionMonitor {
                     String oldUnityVersions = String.join("`, `", msrTarget.unityVersions);
                     msrTarget.unityVersions.add(unityVersion);
                     if (!initialisingUnityVersions)
-                        JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("New Minimal Unity versions for MonoStruct " + msi.name + ":\n**OLD:** `" + oldUnityVersions + "`\n**NEW:** `" + String.join("`, `", msrTarget.unityVersions) + "`", Color.red)
                         ).queue();
                 }
@@ -932,7 +932,7 @@ public class UnityVersionMonitor {
                         report.append(field).append("\n");
                     report.append("```");
                     if (!initialisingUnityVersions)
-                        JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                        JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
                         ).queue();
                 }
@@ -946,14 +946,14 @@ public class UnityVersionMonitor {
                     report.append(field).append("\n");
                 report.append("```");
                 if (!initialisingUnityVersions)
-                    JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                         Utils.wrapMessageInEmbed("New MonoStructs " + msi.name + " for Unity " + unityVersion + ":\n\n" + report, Color.red)
                     ).queue();
             }
         }
 
         if (!initialisingUnityVersions && successfullChecks == monoStructs.size()) {
-            JDAManager.mainGuild.getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("MonoStruct checks succeeded for Unity " + unityVersion, Color.green)
             ).queue();
         }

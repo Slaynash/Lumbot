@@ -12,7 +12,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class ClearDMs extends TimerTask {
     public void run() {
-        Guild mainGuild = JDAManager.mainGuild;
+        Guild mainGuild = JDAManager.getJDA().getGuildById(JDAManager.mainGuildID);
         if (mainGuild == null)
             return;
         List<TextChannel> channels = mainGuild.getCategoryById(924780998124798022L).getTextChannels();

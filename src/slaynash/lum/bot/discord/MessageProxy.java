@@ -20,12 +20,12 @@ import slaynash.lum.bot.utils.Utils;
 public class MessageProxy {
 
     public static void fromDM(MessageReceivedEvent event) {
-        Guild mainguild = JDAManager.mainGuild;
+        Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
 
         User author = event.getAuthor();
         String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getId()).toLowerCase()
                 .replaceAll("[^a-z0-9\\-_]", "").replace(" ", "-").replace("--", "-");
-        TextChannel guildchannel = mainguild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
+        TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
         String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
         for (Attachment attachment : event.getMessage().getAttachments()) {
@@ -49,7 +49,7 @@ public class MessageProxy {
         }
         if (guildchannel == null) {
             System.out.println("Creating DM Channel " + channelName);
-            System.out.println("Number of Channels: " + mainguild.getTextChannels().size());
+            System.out.println("Number of Channels: " + mainGuild.getTextChannels().size());
             StringBuilder sb = new StringBuilder();
             event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
                     .forEach(m -> {
@@ -61,13 +61,13 @@ public class MessageProxy {
                     });
             final String finalMessage = message;
             if (sb.toString().isBlank())
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L))
+                mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L))
                         .flatMap(tc -> tc
                                 .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
                                 .flatMap(ababa -> tc.sendMessage(finalMessage)))
                         .queue();
             else
-                mainguild.createTextChannel(channelName, mainguild.getCategoryById(924780998124798022L))
+                mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L))
                         .flatMap(tc -> tc
                                 .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
                                 .addFile(sb.toString().getBytes(), author.getName() + ".txt")
@@ -122,9 +122,10 @@ public class MessageProxy {
     }
 
     public static void proxyTyping(UserTypingEvent event) {
-        if (JDAManager.mainGuild == null)
+        Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
+        if (mainGuild == null)
             return;
-        TextChannel guildchannel = JDAManager.mainGuild.getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
+        TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().endsWith(event.getUser().getId())).findFirst().orElse(null);
         if (guildchannel == null) {
             return;
         }
