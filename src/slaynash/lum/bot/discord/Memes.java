@@ -50,7 +50,6 @@ public class Memes {
             if (upReactions.size() > 0)
                 sb.append("\nup voted:\n").append(upReactions).append("\n");
             sb.append("\ndown voted:\n").append(downReactions).append("\n");
-            long memeReportChannelID = 1007540894506946581L;
             MessageAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());
             for (Attachment attach : message.getAttachments()) {
                 try {

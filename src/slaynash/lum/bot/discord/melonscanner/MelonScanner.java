@@ -253,7 +253,7 @@ public final class MelonScanner {
     }
 
     private static boolean getModsFromApi(MelonScanContext context) {
-        if (context.game.equalsIgnoreCase("bloonstd6-epic"))
+        if (context.game != null && context.game.equalsIgnoreCase("bloonstd6-epic"))
             context.game = "BloonsTD6";
         return (context.modDetails = MelonScannerApisManager.getMods(context.game)) != null;
     }
