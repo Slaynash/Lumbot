@@ -157,7 +157,14 @@ public class ChattyLum {
 
     private static final ArrayList<String> wah = new ArrayList<>(Arrays.asList(
         "https://tenor.com/view/suisei-hololive-hoshimachi-hoshimachisuisei-wah-gif-21759617",
-        "https://tenor.com/view/raiden-shogun-gif-23244583"
+        "https://tenor.com/view/raiden-shogun-gif-23244583",
+        "https://tenor.com/view/yep-yes-yeah-yas-nods-gif-21488628",
+        "https://tenor.com/view/wah-butters-stotch-south-park-s15e6-city-sushi-gif-23109025",
+        "https://tenor.com/view/stufflistings-santigo-mukul-sharma-mukul-wah-gif-21778846",
+        "https://tenor.com/view/lucy-weird-cry-dramatic-wah-gif-15506705",
+        "https://tenor.com/view/jagyasini-singh-findnewjag-wah-wahh-annoyed-face-gif-19102274",
+        "https://tenor.com/view/crybaby-billy-butcher-karl-urban-the-boys-wah-wah-gif-17866102",
+        "https://tenor.com/view/ninomae-inanis-ina-ninomae-wah-tako-gif-25633638"
     ));
 
     private static final ArrayList<String> what = new ArrayList<>(Arrays.asList(
