@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 02, 2022 at 01:55 AM
+-- Generation Time: Sep 02, 2022 at 06:44 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -20,24 +20,38 @@ SET time_zone = "+00:00";
 --
 -- Database: `lum`
 --
-CREATE DATABASE IF NOT EXISTS `lum` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+CREATE DATABASE IF NOT EXISTS `lum` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `lum`;
 
 DELIMITER $$
 --
 -- Procedures
 --
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `FetchIcon` (IN `name` CHAR(128))  BEGIN
+SELECT IconURL,PirateURL FROM Icons WHERE `UnityName` = name;
+UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = name;
+END$$
+
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber` INT UNSIGNED, IN `GameID` INT UNSIGNED)  BEGIN
 	UPDATE `Config` SET `value` = ChangeNumber WHERE `Config`.`setting` = 'LastSteamChange';
 	SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = GameID;
 END$$
 
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `Tickets Leaderboard` ()  BEGIN
+	SELECT `UserID`,`ChannelName`,`TS`,(`Closed`-`Created`)/1000 AS 'Duration' FROM `TicketTool`
+	WHERE (`Closed`-`Created`) IS NOT NULL AND `Completed` IS NOT NULL
+	ORDER BY (`Closed`-`Created`) ASC;
+END$$
+
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
-	SELECT * FROM `TicketTool`
-    WHERE `Closed` IS NULL
-    AND ((`Completed` IS NULL
-   	AND `Created` + (30*60*1000) < currentTime)
-    OR `Completed` + (7*60*1000) < currentTime);
+	SELECT *
+    FROM `TicketTool`
+    WHERE ( `ChannelName` LIKE '%reset%' OR `ChannelName` LIKE '%export%' OR `ChannelName` LIKE '%wipe%' OR `ChannelName` LIKE '%deletion%' )
+    	AND `Closed` IS NULL
+        AND (
+            ( `Completed` IS NULL AND `Created` + (60 * 60 * 1000) < currentTime )
+            OR `Completed` + (15 * 60 * 1000) < currentTime
+        );
 END$$
 
 DELIMITER ;
@@ -49,10 +63,10 @@ DELIMITER ;
 --
 
 CREATE TABLE IF NOT EXISTS `blacklistusername` (
-  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'all usernames must be lowercase',
+  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'all usernames must be lowercase',
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -61,11 +75,11 @@ CREATE TABLE IF NOT EXISTS `blacklistusername` (
 --
 
 CREATE TABLE IF NOT EXISTS `Config` (
-  `setting` varchar(32) NOT NULL,
+  `setting` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
   `value` int NOT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`setting`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -89,7 +103,23 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
   `DadJokes` tinyint(1) NOT NULL DEFAULT '0',
   `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `GuildID` (`GuildID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Icons`
+--
+
+CREATE TABLE IF NOT EXISTS `Icons` (
+  `UnityName` char(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'must be all lowercase and no spaces',
+  `IconURL` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `PirateURL` text COLLATE utf8mb4_unicode_ci,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `LastUsed` timestamp NULL DEFAULT NULL,
+  `Counter` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`UnityName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -128,12 +158,12 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
   `GameID` bigint UNSIGNED NOT NULL,
   `ServerID` bigint UNSIGNED NOT NULL,
   `ChannelID` bigint UNSIGNED NOT NULL,
-  `publicMention` varchar(1024) DEFAULT NULL,
-  `betaMention` varchar(1024) DEFAULT NULL,
-  `otherMention` varchar(1024) DEFAULT NULL,
+  `publicMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `betaMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `otherMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `ukey` (`ukey`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -142,10 +172,10 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
 --
 
 CREATE TABLE IF NOT EXISTS `strings` (
-  `string` text NOT NULL,
-  `value` text NOT NULL,
+  `string` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` text COLLATE utf8mb4_unicode_ci NOT NULL,
   UNIQUE KEY `string` (`string`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -156,14 +186,14 @@ CREATE TABLE IF NOT EXISTS `strings` (
 CREATE TABLE IF NOT EXISTS `TicketTool` (
   `ukey` int NOT NULL AUTO_INCREMENT,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ChannelName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `ChannelName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `ChannelID` bigint NOT NULL,
   `UserID` bigint DEFAULT NULL,
   `Created` bigint DEFAULT NULL,
   `Completed` bigint DEFAULT NULL,
   `Closed` bigint DEFAULT NULL,
   UNIQUE KEY `ukey` (`ukey`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 --
 -- Database: `shorturls`
 --
