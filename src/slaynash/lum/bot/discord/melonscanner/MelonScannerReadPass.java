@@ -438,7 +438,6 @@ public final class MelonScannerReadPass {
             context.mlVersion = split[1].split(" ")[0].trim();
             context.alpha = line.toLowerCase().contains("alpha");
             System.out.println("ML " + context.mlVersion + " (>= 0.3.0). Alpha: " + context.alpha);
-            context.isMLOutdated = context.mlVersion != null && !(context.mlVersion.equals(MelonScanner.latestMLVersionRelease) || context.mlVersion.equals(MelonScanner.latestMLVersionAlpha) && VersionUtils.compareVersion(MelonScanner.latestMLVersionAlpha, MelonScanner.latestMLVersionRelease) == 1/* If Alpha is more recent */);
             return true;
         }
         return false;
@@ -688,7 +687,7 @@ public final class MelonScannerReadPass {
                         errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
-                if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated) {
+                if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror)) {
                     System.out.println("Found known unhollower error " + knownError.error);
                     context.errors.add(newerror);
                     context.hasErrors = true;
@@ -764,7 +763,7 @@ public final class MelonScannerReadPass {
 
     private static void unknownErrorCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[\\d.:]+] \\[MelonLoader] \\[(Error|ERROR)].*")) {
+        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[\\d.:]+] \\[MelonLoader|Il2CppAssemblyGenerator] \\[(Error|ERROR)].*")) {
             String[] split = line.split("\\[[\\d.:]+]( \\[MelonLoader])? \\[", 2);
             if (split.length < 2) return;
             String mod = split[1].split("]", 2)[0].replace("_", " ");

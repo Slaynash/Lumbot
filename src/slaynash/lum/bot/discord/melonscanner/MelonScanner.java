@@ -495,8 +495,10 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        if (context.mlVersion != null && context.mlVersion.equals("0.5.5") && context.game.equalsIgnoreCase("BloonsTD6")) // TODO Remove this temporary line when ML 0.5.6 is released
-                return false;
+        if (context.mlVersion != null && context.mlVersion.equals("0.5.5") && context.game.equalsIgnoreCase("BloonsTD6")) { // TODO Remove this temporary line when ML 0.5.6 is released
+            context.isMLOutdated = false;
+            return false;
+        }
         context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
 
         if (context.isMLOutdated || context.modifiedML) {
