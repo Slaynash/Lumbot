@@ -21,12 +21,12 @@
             "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
         },
         {
-            "regex": ".*Access to the path .* is denied.*",
-            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $MLRelease$."
-        },
-        {
             "regex": ".*System\\.UnauthorizedAccessException: Access to the path.*is denied\\.",
             "error": "Access is denied. Make sure that your Virus scanner is not blocking or removing MelonLoader files and try reinstalling MelonLoader."
+        },
+        {
+            "regex": ".*Access to the path .* is denied.*",
+            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $MLRelease$."
         },
         {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",

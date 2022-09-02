@@ -763,7 +763,7 @@ public final class MelonScannerReadPass {
 
     private static void unknownErrorCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[\\d.:]+] \\[MelonLoader|Il2CppAssemblyGenerator] \\[(Error|ERROR)].*")) {
+        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[[^\\[]+] \\[(Error|ERROR)].*") && !line.matches("\\[[\\d.:]+] \\[(MelonLoader|Il2CppAssemblyGenerator)] \\[(Error|ERROR)].*")) {
             String[] split = line.split("\\[[\\d.:]+]( \\[MelonLoader])? \\[", 2);
             if (split.length < 2) return;
             String mod = split[1].split("]", 2)[0].replace("_", " ");
