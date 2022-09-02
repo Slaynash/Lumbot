@@ -429,6 +429,9 @@ public class EmojiUtils {
     }
 
     public static boolean containsEmoji(String str) {
+        if (str == null || str.isBlank()) {
+            return false;
+        }
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
         for (int index = 0; index < cpCnt; ++index) {
@@ -444,6 +447,9 @@ public class EmojiUtils {
     }
 
     public static String removeEmoji(String str) {
+        if (str == null) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
@@ -460,6 +466,9 @@ public class EmojiUtils {
     }
 
     public static boolean isOneEmoji(String str) {
+        if (str == null || str.isBlank()) {
+            return false;
+        }
         // unicode can be at most 2 Java Char(utf-16), use code point
         int cpCnt = str.codePointCount(0, str.length());
         if (cpCnt != 1)
