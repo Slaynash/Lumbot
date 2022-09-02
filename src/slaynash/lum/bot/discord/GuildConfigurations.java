@@ -52,6 +52,6 @@ public class GuildConfigurations {
             put(600298024425619456L /* emmVRC */,       682379676106096678L /* no-mic */);
             put(663449315876012052L /* MelonLoader */,  701494833495408640L /* voice-chat */);
             // put(716536783621587004L /* Totally Wholesome */, 943694417016000552L /* mute-voice */);
-            put(1001388809184870441L /* CVRMG */,       1002672344663326780L /* voice-text */);
+            //put(1001388809184870441L /* CVRMG */,       1002672344663326780L /* voice-text */);
         }};
 }

@@ -689,7 +689,7 @@ public final class MelonScannerReadPass {
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
                 if (context.errors != null && !context.assemblyGenerationFailed && !context.errors.contains(newerror) && !context.isMLOutdated) {
-                    System.out.println("Found known unhollower error");
+                    System.out.println("Found known unhollower error " + knownError.error);
                     context.errors.add(newerror);
                     context.hasErrors = true;
                     context.assemblyGenerationFailed = true;
@@ -717,7 +717,7 @@ public final class MelonScannerReadPass {
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownError.regex, errorMess);
                 if (context.errors != null && !context.errors.contains(newerror)) {
-                    System.out.println("Found known error");
+                    System.out.println("Found known error " + knownError.error);
                     context.errors.add(newerror);
                     context.hasErrors = true;
                 }
@@ -742,7 +742,7 @@ public final class MelonScannerReadPass {
                     }
                     MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex, errorMess);
                     if (context.errors != null && !context.errors.contains(newerror)) {
-                        System.out.println("Found known game error");
+                        System.out.println("Found known game error " + knownGameError.error);
                         context.errors.add(newerror);
                         context.hasErrors = true;
                     }
@@ -770,13 +770,13 @@ public final class MelonScannerReadPass {
             String mod = split[1].split("]", 2)[0].replace("_", " ");
             if (!context.modsThrowingErrors.contains(mod))
                 context.modsThrowingErrors.add(mod);
-            //System.out.println("Found mod error, caused by " + mod + ": " + line);
+            System.out.println("Found mod error, caused by " + mod + ": " + line);
             context.hasErrors = true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\[(Error|ERROR)].*")) {
+            System.out.println("Found non-mod error: " + line);
             context.hasErrors = true;
             context.hasNonModErrors = true;
-            //System.out.println("Found non-mod error: " + line);
         }
         else if (line.startsWith("  at ")) {
             String[] modt = line.substring(5).split("\\.");
