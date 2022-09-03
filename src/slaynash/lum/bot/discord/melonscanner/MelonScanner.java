@@ -495,12 +495,19 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        if (context.mlVersion != null && context.mlVersion.equals("0.5.5") && context.game.equalsIgnoreCase("BloonsTD6")) { // TODO Remove this temporary line when ML 0.5.6 is released
-            context.isMLOutdated = false;
-            return false;
-        }
+        String templatestMLVersionRelease = latestMLVersionRelease;
         context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
-
+        if (context.mlVersion != null && context.game.equalsIgnoreCase("BloonsTD6")) { // TODO Remove this temporary line when ML 0.5.6 is released
+            if (context.mlVersion.equals("0.5.5")) {
+                context.isMLOutdated = false;
+                return false;
+            }
+            else {
+                latestMLVersionRelease = "0.5.5";
+                context.isMLOutdated = true;
+                return true;
+            }
+        }
         if (context.isMLOutdated || context.modifiedML) {
             int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
             switch (result) {
@@ -518,6 +525,7 @@ public final class MelonScanner {
                     break;
                 default:
             }
+            latestMLVersionAlpha = templatestMLVersionRelease;
             return true;
         }
         return false;
