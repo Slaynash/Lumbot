@@ -496,36 +496,34 @@ public final class MelonScanner {
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         String templatestMLVersionRelease = latestMLVersionRelease;
-        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */);
+        context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(templatestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, templatestMLVersionRelease) == 1/* If Alpha is more recent */);
         if (context.mlVersion != null && context.game.equalsIgnoreCase("BloonsTD6")) { // TODO Remove this temporary line when ML 0.5.6 is released
             if (context.mlVersion.equals("0.5.5")) {
                 context.isMLOutdated = false;
                 return false;
             }
             else {
-                latestMLVersionRelease = "0.5.5";
+                templatestMLVersionRelease = "0.5.5";
                 context.isMLOutdated = true;
-                return true;
             }
         }
         if (context.isMLOutdated || context.modifiedML) {
-            int result = VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion);
+            int result = VersionUtils.compareVersion(templatestMLVersionRelease, context.mlVersion);
             switch (result) {
                 case 1: //left more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), templatestMLVersionRelease), false);
                     break;
                 case 0: //identicals
                     if (context.alpha)
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha, CommandManager.melonLoaderVRCMinDate), false);
                     else
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, latestMLVersionRelease), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, templatestMLVersionRelease), false);
                     break;
                 case -1: //right more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : latestMLVersionRelease), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : templatestMLVersionRelease), false);
                     break;
                 default:
             }
-            latestMLVersionRelease = templatestMLVersionRelease;
             return true;
         }
         return false;
