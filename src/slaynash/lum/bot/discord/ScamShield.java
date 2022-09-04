@@ -65,7 +65,7 @@ public class ScamShield {
             put("offer", 1);
             put("btc", 1);
             put("bitcoin", 1);
-            put("cryptomarket", 1);
+            put("cryptomarket", 2);
             put("$40000", 1);
             put("nitro", 1);
             put("1month", 1);
@@ -100,6 +100,10 @@ public class ScamShield {
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
             put("standoutinyourfavoritesdiscord", 2);
+            put("interestedonhowtoearn$", 2);
+            put("!whenyoureceiveyourprofit!", 2);
+            put("ifinterestedsendmeadirectmessage", 2);
+            put("neweventbyfacepunchandtwitchhasbeenannounced", 5);
             put("idkwhathappenedorifitsreallyyoubutitwasyournameandthesameavatar", 10);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
