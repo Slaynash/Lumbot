@@ -525,7 +525,7 @@ public final class MelonScanner {
                     break;
                 default:
             }
-            latestMLVersionAlpha = templatestMLVersionRelease;
+            latestMLVersionRelease = templatestMLVersionRelease;
             return true;
         }
         return false;
