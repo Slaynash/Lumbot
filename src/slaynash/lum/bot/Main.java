@@ -142,7 +142,7 @@ public class Main extends ListenerAdapter {
         //chunk members for mutuals after loading to prevent Lum from being unresponsive
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
             guild.loadMembers();
-            Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom for funny number
+            Thread.sleep(609); //rate limit is 100 chuck per minute, gave a little headroom
         }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
