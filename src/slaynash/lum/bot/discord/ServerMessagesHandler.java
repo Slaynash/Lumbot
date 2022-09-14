@@ -132,8 +132,10 @@ public class ServerMessagesHandler {
             }
             message = sb.toString().trim();
 
-            if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
-                event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
+            if (guildconfig.LumReplies()) {
+                if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
+                    event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
+            }
 
             if (handleReplies(event, message))
                 return;
