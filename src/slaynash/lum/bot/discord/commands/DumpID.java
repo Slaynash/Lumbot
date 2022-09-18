@@ -9,6 +9,7 @@ import java.util.regex.PatternSyntaxException;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.Command;
 
@@ -48,7 +49,7 @@ public class DumpID extends Command {
         for (Member m : members) {
             sb.append(m.getUser().getId()).append(" ").append(m.getUser().getName()).append(m.getNickname() != null ? " nickname: " + m.getNickname() : "").append("\n");
         }
-        event.getMessage().reply(sb.toString().getBytes(), event.getGuild().getName() + " " + regex + ".txt").queue();
+        event.getMessage().replyFiles(FileUpload.fromData(sb.toString().getBytes(), event.getGuild().getName() + " " + regex + ".txt")).queue();
     }
 
     @Override

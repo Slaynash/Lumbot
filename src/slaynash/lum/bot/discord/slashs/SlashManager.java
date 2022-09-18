@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -18,9 +18,9 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SlashManager {
     private static final List<Slash> slashes = new ArrayList<>();
 
-    public static void slashRun(SlashCommandEvent event) {
+    public static void slashRun(SlashCommandInteractionEvent event) {
         System.out.println("Slash " + event.getName() + (event.getSubcommandName() == null ? "" : " " + event.getSubcommandName()) + " options:" + event.getOptions() + " in " + (event.getGuild() == null ? "DM " + event.getUser().getId() : event.getGuild().getName()));
-        if (event.getChannelType() == ChannelType.TEXT && !event.getTextChannel().canTalk())
+        if (event.getChannelType() == ChannelType.TEXT && !event.getChannel().asTextChannel().canTalk())
             return;  //Lum can't talk in this channel
         for (Slash slash : slashes) {
             CommandData global = slash.globalSlashData();
@@ -39,8 +39,8 @@ public class SlashManager {
         event.reply("Unknown command").queue();
     }
 
-    public static void buttonClicked(ButtonClickEvent event) {
-        if (event.getChannelType() != ChannelType.PRIVATE && !event.getTextChannel().canTalk())
+    public static void buttonClicked(ButtonInteractionEvent event) {
+        if (event.getChannelType() != ChannelType.PRIVATE && !event.getChannel().asTextChannel().canTalk())
             return; //Lum can't talk in this channel
 
         for (Slash slash : slashes) {

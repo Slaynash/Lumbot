@@ -1,18 +1,22 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.util.concurrent.ExecutionException;
 
-import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageSticker;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.Utils;
@@ -41,7 +45,7 @@ public class MessageProxy {
                 return;
             }
         }
-        for (MessageSticker sticker : event.getMessage().getStickers()) {
+        for (StickerItem sticker : event.getMessage().getStickers()) {
             message = message.concat("\n").concat(sticker.getIconUrl());
         }
         if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
@@ -51,7 +55,7 @@ public class MessageProxy {
             System.out.println("Creating DM Channel " + channelName);
             System.out.println("Number of Channels: " + mainGuild.getTextChannels().size());
             StringBuilder sb = new StringBuilder();
-            event.getPrivateChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
+            event.getChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
                     .forEach(m -> {
                         sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ")
                                 .append(m.getContentRaw()).append(" ");
@@ -70,18 +74,19 @@ public class MessageProxy {
                 mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L))
                         .flatMap(tc -> tc
                                 .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
-                                .addFile(sb.toString().getBytes(), author.getName() + ".txt")
-                                .flatMap(ababa -> tc.sendMessage(finalMessage)))
+                                .addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt"))
+                                .flatMap(ababa -> tc.sendMessage(finalMessage))
+                        )
                         .queue();
-            event.getMessage().addReaction(":Neko_cat_wave:851938087353188372").queue();
+            event.getMessage().addReaction(Emoji.fromCustom("Neko_cat_wave", 851938087353188372L, false)).queue();
         }
         else {
             guildchannel.sendMessage(message).queue();
-            event.getMessage().addReaction(":Neko_cat_okay:851938634327916566").queue();
+            event.getMessage().addReaction(Emoji.fromCustom("Neko_cat_okay", 851938634327916566L, false)).queue();
         }
     }
 
-    public static boolean fromDev(MessageReceivedEvent event) {
+    public static boolean fromDev(MessageReceivedEvent event) throws InterruptedException, ExecutionException {
         if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
                 event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&
@@ -94,9 +99,12 @@ public class MessageProxy {
             }
             Message message = event.getMessage();
             try {
-                message.getEmotes().forEach(emote -> {
-                    if (!emote.canInteract(emote.getGuild().getSelfMember())) {
+                message.getMentions().getCustomEmojis().forEach(emote -> {
+                    RichCustomEmoji richemote = (RichCustomEmoji) emote; //this will throw an exception if the emote is not in a server with lum
+                    richemote.getGuild().getName();
+                    if (!richemote.canInteract(richemote.getGuild().getSelfMember())) { //Check if lum has perms to use the emote
                         message.reply("Lum can not use that emote.").queue();
+                        // return true;
                     }
                 });
             }
@@ -104,12 +112,13 @@ public class MessageProxy {
                 message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
                 return true;
             }
-            MessageBuilder messageBuilder = new MessageBuilder(message);
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
+            messageBuilder.setContent(message.getContentRaw());
             for (Attachment attachment : message.getAttachments()) {
-                messageBuilder.append("\n").append(attachment.getUrl());
+                messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
             }
-            for (MessageSticker sticker : event.getMessage().getStickers()) {
-                messageBuilder.append("\n").append(sticker.getIconUrl());
+            for (StickerItem sticker : event.getMessage().getStickers()) {
+                messageBuilder.setContent(messageBuilder.getContent() + "\n" + sticker.getIconUrl());
             }
             user.openPrivateChannel().queue(
                     channel -> channel.sendMessage(messageBuilder.build()).queue(null,
@@ -134,11 +143,11 @@ public class MessageProxy {
                 guildchannel.sendTyping().queue();
             }
         }
-        else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getTextChannel().getParent() != null && event.getTextChannel().getParent().getIdLong() == 924780998124798022L) {
+        else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().asTextChannel().getParentCategory() != null && event.getChannel().asTextChannel().getParentCategory().getIdLong() == 924780998124798022L) {
             event.getUser().openPrivateChannel().queue(
                 channel -> channel.sendTyping().queue(null,
-                        e -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
-                error -> event.getTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
+                        e -> event.getChannel().asTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
+                error -> event.getChannel().asTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
         }
 
     }

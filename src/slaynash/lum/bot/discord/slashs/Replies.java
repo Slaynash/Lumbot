@@ -9,13 +9,16 @@ import com.google.code.regexp.Pattern;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -24,7 +27,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class Replies extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return new CommandData("reply", "Custom Replies")
+        return Commands.slash("reply", "Custom Replies")
             .addSubcommands(new SubcommandData("list", "List all current replies"))
             .addSubcommands(new SubcommandData("add", "Add or Update reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to update existing Reply", false)
@@ -44,11 +47,11 @@ public class Replies extends Slash {
             )
             .addSubcommands(new SubcommandData("delete", "Remove a reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to delete existing Reply", true))
-            .setDefaultEnabled(false);
+            .setDefaultPermissions(DefaultMemberPermissions.DISABLED);
     }
 
     @Override
-    public void slashRun(SlashCommandEvent event) {
+    public void slashRun(SlashCommandInteractionEvent event) {
         System.out.println("Options size: " + event.getOptions().size());
         if (event.getChannelType() == ChannelType.PRIVATE) {
             event.reply("Replies currently does not work in DMs").queue();
@@ -65,13 +68,13 @@ public class Replies extends Slash {
         String equals = event.getOption("equals") == null ? null : event.getOption("equals").getAsString().replace("\\n", "\n").toLowerCase();
         String message = event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n");
         String user = event.getOption("user") == null ? null : event.getOption("user").getAsUser().getId();
-        String channel = event.getOption("channel") == null ? null : event.getOption("channel").getAsMessageChannel().getId();
+        String channel = event.getOption("channel") == null ? null : event.getOption("channel").getAsChannel().getId();
         String ignorerole = event.getOption("ignorerole") == null ? null : event.getOption("ignorerole").getAsRole().getId();
 
         boolean delete = false;
         if (event.getOption("delete") != null && event.getOption("delete").getAsBoolean()) {
             delete = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
                 event.reply("I don't have the `MESSAGE_MANAGE` permission in this channel. I won't be able to delete the triggered message.").queue();
                 return;
             }
@@ -79,7 +82,7 @@ public class Replies extends Slash {
         boolean kick = false;
         if (event.getOption("kick") != null && event.getOption("kick").getAsBoolean()) {
             kick = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.KICK_MEMBERS)) {
                 event.reply("I don't have the `KICK_MEMBERS` permission in this channel. I won't be able to kick the user.").queue();
                 return;
             }
@@ -87,7 +90,7 @@ public class Replies extends Slash {
         boolean ban = false;
         if (event.getOption("ban") != null && event.getOption("ban").getAsBoolean()) {
             ban = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.BAN_MEMBERS)) {
                 event.reply("I don't have the `BAN_MEMBERS` permission in this channel. I won't be able to ban the user.").queue();
                 return;
             }
@@ -137,7 +140,7 @@ public class Replies extends Slash {
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to get reply to List", e, event.getTextChannel());
+                ExceptionUtils.reportException("Failed to get reply to List", e, event.getChannel().asTextChannel());
                 return;
             }
 
@@ -145,8 +148,8 @@ public class Replies extends Slash {
                 event.reply("No replies in this guild").queue();
             }
             else {
-                if (event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_ATTACH_FILES))
-                    event.reply("").addFile(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt").queue();
+                if (event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_ATTACH_FILES))
+                    event.replyFiles(FileUpload.fromData(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt")).queue();
                 else
                     event.reply("I cant send logs into this channel. Please give me MESSAGE_ATTACH_FILES perms and try again.").queue();
             }
@@ -173,7 +176,7 @@ public class Replies extends Slash {
                 Pattern p = Pattern.compile("<a?:\\w+:(?<id>\\d+)>", Pattern.CASE_INSENSITIVE);
                 Matcher m = p.matcher(message);
                 while (m.find()) {
-                    Emote emote = event.getJDA().getEmoteById(m.group("id"));
+                    RichCustomEmoji emote = event.getJDA().getEmojiById(m.group("id"));
                     try {
                         if (!emote.canInteract(emote.getGuild().getSelfMember())) {
                             event.reply("Lum can not use that emote.").queue();
@@ -189,7 +192,7 @@ public class Replies extends Slash {
 
             if (event.getOption("ukey") == null) {
                 if (event.getOption("regex") == null && event.getOption("contains") == null && event.getOption("equals") == null)
-                    event.getTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
+                    event.getChannel().asTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
                 try {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, muserid);
 
@@ -202,7 +205,7 @@ public class Replies extends Slash {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to Add reply", e, event.getTextChannel());
+                    ExceptionUtils.reportException("Failed to Add reply", e, event.getChannel().asTextChannel());
                 }
             }
             else {
@@ -217,7 +220,7 @@ public class Replies extends Slash {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to check for reply", e, event.getTextChannel());
+                    ExceptionUtils.reportException("Failed to check for reply", e, event.getChannel().asTextChannel());
                     return;
                 }
 
@@ -250,7 +253,7 @@ public class Replies extends Slash {
                     event.reply("Reply " + ukey + " updated!").queue();
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to Update reply", e, event.getTextChannel());
+                    ExceptionUtils.reportException("Failed to Update reply", e, event.getChannel().asTextChannel());
                 }
             }
         }
@@ -262,7 +265,7 @@ public class Replies extends Slash {
                 deleted = DBConnectionManagerLum.sendUpdate(update);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to Delete reply", e, event.getTextChannel());
+                ExceptionUtils.reportException("Failed to Delete reply", e, event.getChannel().asTextChannel());
                 return;
             }
             if (deleted == 0) {

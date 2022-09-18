@@ -41,6 +41,7 @@ import mono.cecil.ParameterDefinition;
 import mono.cecil.ReaderParameters;
 import mono.cecil.ReadingMode;
 import mono.cecil.TypeDefinition;
+import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -265,7 +266,7 @@ public class UnityVersionMonitor {
 
                         JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                             Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
-                        ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
+                        ).addFiles(FileUpload.fromData(sb.toString().getBytes(), "icall_init_report.txt")).queue();
                     }
 
                     // MonoStruct init check
@@ -339,7 +340,7 @@ public class UnityVersionMonitor {
 
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
-            ).addFile(sb.toString().getBytes(), "icall_init_report.txt").queue();
+            ).addFiles(FileUpload.fromData(sb.toString().getBytes(), "icall_init_report.txt")).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 
@@ -18,7 +19,7 @@ public class ABCpolice {
             return true;
         String message = event.getMessage().getContentStripped().trim();
         System.out.println(event.getMember().getEffectiveName() + ": " + message);
-        List<Message> history = new ArrayList<>(event.getTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
+        List<Message> history = new ArrayList<>(event.getChannel().asTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
         find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());
@@ -41,13 +42,13 @@ public class ABCpolice {
         }
         else if ((int) currentLetter != (int) previousLetter + 1) {
             System.out.println("abc does not match");
-            event.getMessage().addReaction(":bonk:907068295868477551").queue();
+            event.getMessage().addReaction(Emoji.fromCustom("bonk", 907068295868477551L, false)).queue();
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " just broke the chain, it should have been `" + Character.toUpperCase((char) (previousLetter + 1)) + "`  <:Neko_sad:865328470652485633> Start back to `A`").queue();
             return true;
         }
         else if (!brokenChain && message.length() == 1) {
             System.out.println("abc hey that is cheating");
-            event.getMessage().addReaction(":baka:828070018935685130").queue();
+            event.getMessage().addReaction(Emoji.fromCustom("baka", 828070018935685130L, false)).queue();
             event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`").queue();
             return true;
         }

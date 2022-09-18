@@ -58,7 +58,7 @@ public class LumJokes {
                         joke = new String(response.body());
                     }
                     catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getChannel().asTextChannel());
                     }
                     break;
                 case 1:
@@ -77,7 +77,7 @@ public class LumJokes {
                             throw new Exception("json was not as expected from JokeAPI");
                     }
                     catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getChannel().asTextChannel());
                     }
                     break;
                 case 2:
@@ -96,7 +96,7 @@ public class LumJokes {
                             throw new Exception("json was not as expected from JokeAPI");
                     }
                     catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while while getting Spooky JokeAPI:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred while while getting Spooky JokeAPI:", e, event.getChannel().asTextChannel());
                     }
                     break;
                 case 3:
@@ -115,7 +115,7 @@ public class LumJokes {
                             throw new Exception("json was not as expected from JokeAPI");
                     }
                     catch (Exception e) {
-                        ExceptionUtils.reportException("An error has occurred while while getting Christmas JokeAPI:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred while while getting Christmas JokeAPI:", e, event.getChannel().asTextChannel());
                     }
                     break;
                 case 69:
@@ -135,12 +135,12 @@ public class LumJokes {
                     System.out.println(joke + "\n" + punchLine);
                     try {
                         Message sentJoke = event.getChannel().sendMessage(joke).complete();
-                        event.getTextChannel().sendTyping().queue(); //sends typing for 10 seconds
+                        event.getChannel().asTextChannel().sendTyping().queue(); //sends typing for 10 seconds
                         Thread.sleep(10 * 1000);
                         sentJoke.editMessage(joke + "\n\n||" + punchLine + "||").queue();
                     }
                     catch (InterruptedException e) {
-                        ExceptionUtils.reportException("An error has occurred sending JokeAPI:", e, event.getTextChannel());
+                        ExceptionUtils.reportException("An error has occurred sending JokeAPI:", e, event.getChannel().asTextChannel());
                     }
                 }
             }

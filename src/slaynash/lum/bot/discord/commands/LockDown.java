@@ -19,29 +19,29 @@ public class LockDown extends Command {
         if (!includeInHelp(event))
             return;
 
-        if (event.getGuild().getPublicRole().hasPermission(Permission.MESSAGE_WRITE)) {
-            event.getChannel().sendMessage("@everyone has send message and lockdown will not work").allowedMentions(Collections.emptyList()).queue();
+        if (event.getGuild().getPublicRole().hasPermission(Permission.MESSAGE_SEND)) {
+            event.getChannel().sendMessage("@everyone has send message and lockdown will not work").mention(Collections.emptyList()).queue();
             return;
         }
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         Long lockDownRoleID = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
         if (lockDownRoleID == null) {
-            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").allowedMentions(Collections.emptyList()).queue();
+            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").mention(Collections.emptyList()).queue();
         }
         Role lockDownRole = event.getGuild().getRoleById(lockDownRoleID);
         if (!event.getGuild().getSelfMember().canInteract(lockDownRole)) {
             event.getChannel().sendMessage("I can not interact with the role " + lockDownRole.getName()).queue();
             return;
         }
-        boolean lockDownState = lockDownRole.hasPermission(Permission.MESSAGE_WRITE);
+        boolean lockDownState = lockDownRole.hasPermission(Permission.MESSAGE_SEND);
 
         if (lockDownState)
-            lockDownRole.getManager().revokePermissions(Permission.MESSAGE_WRITE).complete();
+            lockDownRole.getManager().revokePermissions(Permission.MESSAGE_SEND).complete();
         else
-            lockDownRole.getManager().givePermissions(Permission.MESSAGE_WRITE).complete();
+            lockDownRole.getManager().givePermissions(Permission.MESSAGE_SEND).complete();
 
-        if (!Objects.equals(reportChannel, event.getTextChannel().getId()))
+        if (!Objects.equals(reportChannel, event.getChannel().asTextChannel().getId()))
             event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server in " + event.getChannel().getName()).queue();
         event.getChannel().sendMessage("User " + event.getAuthor().getAsTag() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server.").queue();
     }
