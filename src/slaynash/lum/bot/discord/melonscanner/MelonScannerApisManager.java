@@ -41,8 +41,8 @@ import org.luaj.vm2.lib.jse.JseMathLib;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+//import com.google.gson.JsonObject;
+//import com.google.gson.JsonParser;
 
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -363,6 +363,7 @@ public class MelonScannerApisManager {
                 }
 
                 // fetch Blacklist from API and parse it
+                /*
                 try {
                     HttpRequest.Builder blbuilder = HttpRequest.newBuilder()
                         .GET()
@@ -390,7 +391,7 @@ public class MelonScannerApisManager {
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                */
                 doneFirstInit = true;
 
             }
