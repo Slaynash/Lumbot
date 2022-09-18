@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.LumGoneCommand;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -314,7 +315,7 @@ public class ChattyLum {
         }
         if (message.matches(".*\\b(cookie)\\b.*")) {
             System.out.println("Lum Cookie");
-            event.getMessage().addReaction("🍪").queue();
+            event.getMessage().addReaction(Emoji.fromUnicode("🍪")).queue();
             return true;
         }
         if (message.matches(".*\\b(handcuf).*")) {
@@ -345,7 +346,7 @@ public class ChattyLum {
 
     private static boolean handleThanks(String message, MessageReceivedEvent event) {
         if (message.matches(".*\\b(th(ank|x)|neat|cool|nice|(?<!(not|n'?t|get) )help|epic|work(s|ed)|ty(|sm)|fixed|rad.*|th(at|is) bot|awesome|wow)\\b.*")) {
-            if (event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum")) && wasHelpedRecently(event) || message.matches(".*\\blum\\b.*")) {
+            if (event.getMessage().getReferencedMessage() == null && event.getMessage().getMentions().getUsers().isEmpty() && wasHelpedRecently(event) || message.matches(".*\\blum\\b.*")) {
                 System.out.println("Thanks was detected");
                 String sentence;
                 boolean rare = random.nextInt(100) == 69;
@@ -357,7 +358,7 @@ public class ChattyLum {
                         ? thankedSentencesRare.get(random.nextInt(thankedSentencesRare.size()))
                         : thankedSentences.    get(random.nextInt(thankedSentences.size()));
                 }
-                event.getChannel().sendMessage(sentence).allowedMentions(Collections.emptyList()).queue();
+                event.getChannel().sendMessage(sentence).mention(Collections.emptyList()).queue();
                 return true;
             }
         }
@@ -367,7 +368,7 @@ public class ChattyLum {
 
     private static boolean handleHelp(String message, MessageReceivedEvent event) {
         if (message.matches(".*\\b(help|fix|what (do|should))\\b.*")) {
-            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && (event.getMessage().getMentionedUsers().size() == 0 || event.getMessage().getMentionedUsers().get(0).getName().equals("Lum"))) {
+            if (wasHelpedRecently(event) && event.getMessage().getReferencedMessage() == null && event.getMessage().getMentions().getUsers().isEmpty()) {
                 System.out.println("Help was detected");
                 String sentence;
                 boolean rare = random.nextInt(1000) == 420;

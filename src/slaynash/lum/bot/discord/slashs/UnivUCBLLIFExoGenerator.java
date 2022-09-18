@@ -18,13 +18,15 @@ import java.util.Random;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
@@ -56,10 +58,10 @@ public class UnivUCBLLIFExoGenerator extends Slash {
                 new SubcommandData("solve", "Affiche le corrigé d'un exercice")
                         .addOptions(Collections.singleton(optionUCBLLIF))
                         .addOption(OptionType.STRING, "ticket", "Ticket d'identification de l'exercice", true));
-        return Collections.singletonMap(624635229222600717L, new CommandData("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF));
+        return Collections.singletonMap(624635229222600717L, Commands.slash("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF));
     }
 
-    public void onCommand(SlashCommandEvent event) {
+    public void onCommand(SlashCommandInteractionEvent event) {
         // ₁₂₃₄₅₆₇₈₉
 
         event.deferReply().queue(success -> interactionhook = success);
@@ -124,9 +126,9 @@ public class UnivUCBLLIFExoGenerator extends Slash {
             byte[] imageData = Base64.getDecoder().decode(imageDataStr);
 
             if (interactionhook != null)
-                interactionhook.sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
+                interactionhook.sendMessage("Ticket: " + ticketReturned).addFiles(FileUpload.fromData(imageData, "exercice_" + ticketReturned + ".png")).queue();
             else
-                event.getChannel().sendMessage("Ticket: " + ticketReturned).addFile(imageData, "exercice_" + ticketReturned + ".png").queue();
+                event.getChannel().sendMessage("Ticket: " + ticketReturned).addFiles(FileUpload.fromData(imageData, "exercice_" + ticketReturned + ".png")).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("UCBLLIF command failed", e);

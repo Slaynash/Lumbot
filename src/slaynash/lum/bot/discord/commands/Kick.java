@@ -58,7 +58,7 @@ public class Kick extends Command {
         }
 
         if (!event.getGuild().getSelfMember().canInteract(kickMember)) {
-            event.getMessage().reply("Can not kick " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") because they are a higher role than my role").allowedMentions(Collections.emptyList()).queue();
+            event.getMessage().reply("Can not kick " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") because they are a higher role than my role").mention(Collections.emptyList()).queue();
             return;
         }
 
@@ -68,8 +68,8 @@ public class Kick extends Command {
             kickMember.kick().reason(event.getAuthor().getName() + " - " + reason).queue();
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!\n" + reason).allowedMentions(Collections.emptyList()).queue();
+        if (reportChannel != null && !reportChannel.equals(event.getChannel().asTextChannel().getId()))
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!\n" + reason).mention(Collections.emptyList()).queue();
         event.getChannel().sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked!\n" + reason).queue();
     }
 

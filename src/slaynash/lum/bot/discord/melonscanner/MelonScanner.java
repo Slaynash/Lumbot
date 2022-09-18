@@ -18,12 +18,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
@@ -171,8 +171,8 @@ public final class MelonScanner {
             if (context.embedBuilder.getFields().size() > 0) {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
-                MessageBuilder messageBuilder = new MessageBuilder();
-                messageBuilder.append(messageReceivedEvent.getAuthor().getAsMention());
+                MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
+                messageBuilder.setContent(messageReceivedEvent.getAuthor().getAsMention());
                 messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
@@ -183,7 +183,7 @@ public final class MelonScanner {
         catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while reading attachment of message:",
-                exception, messageReceivedEvent.getTextChannel());
+                exception, messageReceivedEvent.getChannel().asTextChannel());
         }
     }
 
@@ -1045,7 +1045,7 @@ public final class MelonScanner {
             referenced.editMessageEmbeds(editEmbed.build()).queue();
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Exception while translating log:", e, event.getTextChannel());
+            ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel().asTextChannel());
         }
     }
 }

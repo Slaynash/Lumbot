@@ -3,8 +3,8 @@ package slaynash.lum.bot.discord.slashs;
 import java.util.List;
 import java.util.Map;
 
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 public abstract class Slash {
@@ -20,8 +20,8 @@ public abstract class Slash {
         return null;
     }
 
-    protected void slashRun(SlashCommandEvent event) {
+    protected void slashRun(SlashCommandInteractionEvent event) {
     }
-    protected void buttonClick(ButtonClickEvent event) {
+    protected void buttonClick(ButtonInteractionEvent event) {
     }
 }

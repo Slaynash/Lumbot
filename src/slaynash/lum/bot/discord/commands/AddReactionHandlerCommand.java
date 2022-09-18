@@ -5,9 +5,9 @@ import java.awt.Color;
 import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
@@ -61,7 +61,7 @@ public class AddReactionHandlerCommand extends Command {
                 if(params[2].matches("^<:.*:[0-9]+>$")) {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
                     //success.getReactions().removeIf(mr -> mr.getReactionEmote().getId().equals(emoteId) && mr.get);
-                    //success.rea(paramMessageReceivedEvent.getGuild().getEmoteById(emoteId));
+                    //success.rea(paramMessageReceivedEvent.getGuild().getEmojiById(emoteId));
                 }
                 else
                     success.addReaction(params[2]);
@@ -86,20 +86,20 @@ public class AddReactionHandlerCommand extends Command {
 
                 if (params[2].matches("^<a?:\\w+:\\d+>$")) {
                     String emoteId = params[2].split(":")[2].split(">", 2)[0];
-                    Emote emote = paramMessageReceivedEvent.getGuild().getEmoteById(emoteId);
+                    Emoji emote = paramMessageReceivedEvent.getGuild().getEmojiById(emoteId);
                     if (emote == null) {
                         paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Emote not found on current server", Color.RED)).queue();
                         System.out.println("Emote not found on current server");
                         return;
                     }
-                    success.addReaction(paramMessageReceivedEvent.getGuild().getEmoteById(emoteId)).queue();
+                    success.addReaction(paramMessageReceivedEvent.getGuild().getEmojiById(emoteId)).queue();
                 }
                 else
-                    success.addReaction(params[2]).queue();
+                    success.addReaction(Emoji.fromUnicode(params[2])).queue();
 
                 CommandManager.reactionListeners.add(react);
-                if (paramMessageReceivedEvent.getChannelType() == ChannelType.TEXT && paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getTextChannel(), Permission.MESSAGE_WRITE))
-                    paramMessageReceivedEvent.getTextChannel().sendMessage("Successfully added reaction listener to the target message").queue();
+                if (paramMessageReceivedEvent.getChannelType() == ChannelType.TEXT && paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asTextChannel(), Permission.MESSAGE_SEND))
+                    paramMessageReceivedEvent.getChannel().sendMessage("Successfully added reaction listener to the target message").queue();
                 System.out.println("Successfully added reaction listener to the target message");
             }
             CommandManager.saveReactions();

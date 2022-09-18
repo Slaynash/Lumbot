@@ -5,12 +5,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.steam.SteamChannel;
@@ -19,23 +21,23 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SteamWatcher extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return new CommandData("steam", "Steam Watcher")
+        return Commands.slash("steam", "Steam Watcher")
             .addOption(OptionType.STRING, "gameid", "Enter Game ID, blank for list", false)
             .addOption(OptionType.STRING, "public", "Enter Mention/Message for public changes", false)
             .addOption(OptionType.STRING, "beta", "Enter Mention/Message for public beta", false)
             .addOption(OptionType.STRING, "other", "Enter Mention/Message for non-public changes", false)
-            .setDefaultEnabled(false);
+            .setDefaultPermissions(DefaultMemberPermissions.DISABLED);
     }
 
     @Override
-    public void slashRun(SlashCommandEvent event) {
+    public void slashRun(SlashCommandInteractionEvent event) {
         if (event.getChannelType() == ChannelType.PRIVATE) {
             event.reply("Steam Watch currently does not work in DMs").queue();
             return;
         }
         InteractionHook interactionhook = event.deferReply().complete();
         String guildID = event.getGuild().getId();
-        String channelID = event.getTextChannel().getId();
+        String channelID = event.getChannel().asTextChannel().getId();
         List<OptionMapping> gameID = event.getOptionsByName("gameid");
         List<OptionMapping> publicMess = event.getOptionsByName("public");
         List<OptionMapping> betaMess = event.getOptionsByName("beta");
@@ -49,7 +51,7 @@ public class SteamWatcher extends Slash {
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getTextChannel());
+                ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getChannel().asTextChannel());
             }
             if (channels.isEmpty()) {
                 interactionhook.sendMessage("No steam watch channels set up").queue();
@@ -78,7 +80,7 @@ public class SteamWatcher extends Slash {
             found = DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `GameID` = ? AND `ServerID` = ? AND `ChannelID` = ?", gameIDstr, guildID, channelID);
         }
         catch (SQLException e) {
-            ExceptionUtils.reportException("Failed to remove steam watch", e, event.getTextChannel());
+            ExceptionUtils.reportException("Failed to remove steam watch", e, event.getChannel().asTextChannel());
         }
 
         String publicString;
@@ -104,7 +106,7 @@ public class SteamWatcher extends Slash {
                 interactionhook.sendMessage("Added " + new Steam().getGameName(gameIDint) + " to Steam Watch").queue();
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to add steam watch", e, event.getTextChannel());
+                ExceptionUtils.reportException("Failed to add steam watch", e, event.getChannel().asTextChannel());
             }
             new Steam().intDetails(gameIDint);
         }

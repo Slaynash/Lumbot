@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -50,12 +50,12 @@ public class Blacklist extends Command {
                     event.getGuild().loadMembers(m -> {
                         if (m.getNickname() != null && Junidecode.unidecode(m.getNickname()).toLowerCase().equals(username)) {
                             members.add(m);
-                            m.kick("Lum: Remove existing Scammers").queue();
+                            m.kick().reason("Lum: Remove existing Scammers").queue();
                             return;
                         }
                         if (Junidecode.unidecode(m.getUser().getName()).toLowerCase().equals(username)) {
                             members.add(m);
-                            m.kick("Lum: Remove existing Scammers").queue();
+                            m.kick().reason("Lum: Remove existing Scammers").queue();
                         }
                     });
                     if (members.size() > 0) {
@@ -65,14 +65,14 @@ public class Blacklist extends Command {
                         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
                         if (reportchannel == null) return;
                         for (Member m : members) {
-                            reportchannel.sendMessage("Kicked " + m.getUser().getAsTag() + " by setting blacklist").allowedMentions(Collections.emptyList()).queue();
+                            reportchannel.sendMessage("Kicked " + m.getUser().getAsTag() + " by setting blacklist").mention(Collections.emptyList()).queue();
                         }
                     }
                 }
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Failed to add blacklist", e, event.getTextChannel());
+            ExceptionUtils.reportException("Failed to add blacklist", e, event.getChannel().asTextChannel());
         }
     }
 

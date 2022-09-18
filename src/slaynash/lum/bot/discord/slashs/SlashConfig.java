@@ -5,15 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.GuildConfiguration;
 import slaynash.lum.bot.discord.Moderation;
@@ -22,10 +24,10 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SlashConfig extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return new CommandData("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false).setDefaultEnabled(false);
+        return Commands.slash("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED);
     }
 
-    public void sendReply(SlashCommandEvent event, String guildID) {
+    public void sendReply(SlashCommandInteractionEvent event, String guildID) {
         try {
             if (!guildID.matches("^\\d{18,19}$")) {
                 event.reply("Invalid Guild ID. Please make sure that you are using the digit ID. https://support.discord.com/hc/en-us/articles/206346498").setEphemeral(true).queue();
@@ -66,7 +68,7 @@ public class SlashConfig extends Slash {
     }
 
     @Override
-    public void slashRun(SlashCommandEvent event) {
+    public void slashRun(SlashCommandInteractionEvent event) {
         String guildID;
         List<OptionMapping> guildOption = event.getOptionsByName("guild");
         if (event.getChannelType() == ChannelType.PRIVATE) {
@@ -92,7 +94,7 @@ public class SlashConfig extends Slash {
     }
 
     @Override
-    public void buttonClick(ButtonClickEvent event) {
+    public void buttonClick(ButtonInteractionEvent event) {
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
@@ -165,7 +167,7 @@ public class SlashConfig extends Slash {
         }
     }
 
-    private void checkBanPerm(ButtonClickEvent event, Guild guild, boolean ban) {
+    private void checkBanPerm(ButtonInteractionEvent event, Guild guild, boolean ban) {
         String message = "";
         if (ban) {
             if (!guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
@@ -184,21 +186,21 @@ public class SlashConfig extends Slash {
         if (message.isEmpty())
             return;
         final String finalMessage = message;
-        if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+        if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) {
             event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(finalMessage)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         }
         else {
-            event.getTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue(null, e -> { });
+            event.getChannel().asTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue(null, e -> { });
         }
     }
-    private void checkDllRemovePerm(ButtonClickEvent event, Guild guild) {
+    private void checkDllRemovePerm(ButtonInteractionEvent event, Guild guild) {
         if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             final String message = "I don't have manage message permission so I can't remove dll and zip files.";
-            if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) {
+            if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) {
                 event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue(null, e -> { });
             }
             else {
-                event.getTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                event.getChannel().asTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
             }
         }
     }

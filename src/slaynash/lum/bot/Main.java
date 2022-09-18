@@ -20,10 +20,11 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.ReconnectedEvent;
@@ -36,13 +37,13 @@ import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEv
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -381,16 +382,16 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-        Memes.memeReaction(event);
-
+    public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
         // Don't react to self roles
         if (event.getUser().getIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
             return;
 
+        Memes.memeReaction(event);
+
         // System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + (event.getReactionEmote().isEmote() ? "isEmote id:" + event.getReactionEmote().getId() : "") + (EmojiUtils.containsEmoji(event.getReactionEmote().getName()) ? " is Emoji" : ""));
         for (ReactionListener rl : CommandManager.reactionListeners) {
-            if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
+            if (event.getMessageId().equals(rl.messageId) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null) {
                     event.getGuild().addRoleToMember(event.getMember(), role).reason("User clicked role reaction").queue();
@@ -417,12 +418,12 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
+    public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event) {
         for (ReactionListener rl : CommandManager.reactionListeners) {
-            if (event.getMessageId().equals(rl.messageId) && (event.getReactionEmote().isEmote() ? event.getReactionEmote().getEmote().getId().equals(rl.emoteId) : event.getReactionEmote().getName().equals(rl.emoteId))) {
+            if (event.getMessageId().equals(rl.messageId) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId))) {
                 Role role = event.getGuild().getRoleById(rl.roleId);
                 if (role != null && event.getUser() != null) {
-                    event.getGuild().removeRoleFromMember(event.getUserId(), role).reason("User removed role reaction").queue();
+                    event.getGuild().removeRoleFromMember(event.getUser(), role).reason("User removed role reaction").queue();
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
                 else
@@ -462,7 +463,7 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
             else {
-                net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner(false).complete();
+                net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner().complete();
                 owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
             }
         }
@@ -477,12 +478,12 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         SlashManager.slashRun(event);
     }
 
     @Override
-    public void onButtonClick(@NotNull ButtonClickEvent event) {
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         SlashManager.buttonClicked(event);
     }
 
@@ -538,11 +539,11 @@ public class Main extends ListenerAdapter {
         }
 
         if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
-            event.getMember().kick("Lum: Scammer joined").queue();
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).mention(Collections.emptyList()).queue();
+            event.getMember().kick().reason("Lum: Scammer joined").queue();
         }
         else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
         }
     }
 
@@ -571,11 +572,11 @@ public class Main extends ListenerAdapter {
         }
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
         if (foundblacklist) {
-            event.getMember().kick("Lum: User changed nickname to known Scam").queue();
+            event.getMember().kick().reason("Lum: User changed nickname to known Scam").queue();
         }
     }
 
@@ -607,12 +608,12 @@ public class Main extends ListenerAdapter {
             }
 
             if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").allowedMentions(Collections.emptyList()).queue();
-                guild.kick(guild.getMemberById(event.getUser().getIdLong()), "Lum: Scammer started scamming").queue();
+                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").mention(Collections.emptyList()).queue();
+                guild.kick(event.getUser()).reason("Lum: Scammer started scamming").queue();
                 return;
             }
             if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).allowedMentions(Collections.emptyList()).queue();
+                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
             }
         }
     }

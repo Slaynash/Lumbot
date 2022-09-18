@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
@@ -12,13 +13,13 @@ public class AutoPublish extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {
-        if (!paramMessageReceivedEvent.getTextChannel().isNews()) {
+        if (paramMessageReceivedEvent.getChannel().getType() != ChannelType.NEWS) {
             paramMessageReceivedEvent.getMessage().reply("This is not an announcement channel.").queue();
             return;
         }
-        if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
+        if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
             paramMessageReceivedEvent.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage(
-                "Lum does not have the proper permissions to publish messages in " + paramMessageReceivedEvent.getTextChannel().getName() + " Please make sure that Lum has Message Read, Write, and Manage Permissions.")).queue(null, m -> System.out.println("failed to open DM"));
+                "Lum does not have the proper permissions to publish messages in " + paramMessageReceivedEvent.getChannel().asTextChannel().getName() + " Please make sure that Lum has Message Read, Write, and Manage Permissions.")).queue(null, m -> System.out.println("failed to open DM"));
             return;
         }
 

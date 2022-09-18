@@ -24,14 +24,14 @@ public final class MelonScannerReadPass {
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
         if (context.attachment.getUrl().contains("/%")) {
-            ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getTextChannel());
+            ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getChannel().asTextChannel());
             return false;
         }
         if (context.attachment.getSize() > 15000000) {
             Utils.replyEmbed("Log size is too large. Not reading anything over 15MB", null, context.messageReceivedEvent);
             return false;
         }
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.retrieveInputStream().get()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.getProxy().download().get()))) {
             context.bufferedReader = br;
             context.nextLine = "";
             context.line = "";
@@ -662,10 +662,10 @@ public final class MelonScannerReadPass {
             System.out.println("COMPROMISED ML");
             if (!context.errors.contains(MelonLoaderError.mlCompromised))
                 context.errors.add(MelonLoaderError.mlCompromised);
-            if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getTextChannel(), Permission.MESSAGE_MANAGE))
+            if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE))
                 context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
             else
-                context.messageReceivedEvent.getTextChannel().sendMessage("This is a compromised MelonLoader log. I can not remove that log, please delete that log for your own safety").queue();
+                context.messageReceivedEvent.getChannel().asTextChannel().sendMessage("This is a compromised MelonLoader log. I can not remove that log, please delete that log for your own safety").queue();
             return true;
         }
         return false;

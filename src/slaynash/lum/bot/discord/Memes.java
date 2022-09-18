@@ -4,19 +4,21 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.requests.restaction.MessageAction;
-import net.dv8tion.jda.api.utils.AttachmentOption;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
+import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
+import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Memes {
     private static final float removalPercent = 0.2f;
     private static final int minVotes = 5;
-    private static final String upArrow = ":UNOUpVote:936073450815111208";
-    private static final String downArrow = ":UNODownVote:936073450676703282";
+    private static final CustomEmoji upArrow = Emoji.fromCustom("UNOUpVote", 936073450815111208L, false);
+    private static final CustomEmoji downArrow = Emoji.fromCustom("UNODownVote", 936073450676703282L, false);
     private static final long memeChannelID = 1002766110350917682L;
     private static final long memeReportChannelID = 1007540894506946581L;
 
@@ -29,7 +31,8 @@ public class Memes {
         return true;
     }
 
-    public static void memeReaction(GuildMessageReactionAddEvent event) {
+    public static void memeReaction(GenericMessageReactionEvent event) {
+        Emoji.fromCustom("UNOUpVote", 936073450815111208L, false);
         if (event.getUser().isBot()) return;
         if (event.getChannel().getIdLong() != memeChannelID) return;
         Message message = event.retrieveMessage().complete();
@@ -50,10 +53,10 @@ public class Memes {
             if (upReactions.size() > 0)
                 sb.append("\nup voted:\n").append(upReactions).append("\n");
             sb.append("\ndown voted:\n").append(downReactions).append("\n");
-            MessageAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());
+            MessageCreateAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());
             for (Attachment attach : message.getAttachments()) {
                 try {
-                    ma.addFile(attach.retrieveInputStream().get(), attach.getFileName(), AttachmentOption.SPOILER);
+                    ma.addFiles(FileUpload.fromData(attach.getProxy().download().get(), attach.getFileName()).asSpoiler());
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Failed reattaching meme", e);

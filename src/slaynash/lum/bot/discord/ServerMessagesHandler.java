@@ -6,20 +6,22 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import com.coder4.emoji.EmojiUtils;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
-import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
@@ -38,7 +40,7 @@ public class ServerMessagesHandler {
             if (MessageProxy.fromDev(event))
                 return;
             CommandManager.runAsServer(event);
-            if (event.getTextChannel().isNews()) {
+            if (event.getChannel().getType() == ChannelType.NEWS) {
                 handleAP(event);
                 return;
             }
@@ -66,14 +68,14 @@ public class ServerMessagesHandler {
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
-                    event.getTextChannel().getName(),
+                    event.getChannel().asTextChannel().getName(),
                     event.getAuthor().getAsTag(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
 
-            if (!event.getTextChannel().canTalk())
+            if (!event.getChannel().asTextChannel().canTalk())
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
@@ -103,7 +105,7 @@ public class ServerMessagesHandler {
                             MelonScanner.scanMessage(event);
                         }
                         catch (Exception e) {
-                            ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getTextChannel());
+                            ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getChannel().asTextChannel());
                         }
                     }).start();
                 }
@@ -115,7 +117,7 @@ public class ServerMessagesHandler {
             if (guildconfig.ScamShield())
                 new Thread(() -> ScamShield.checkForFishing(event)).start();
 
-            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
@@ -133,7 +135,7 @@ public class ServerMessagesHandler {
             message = sb.toString().trim();
 
             if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
-                event.getMessage().addReaction(":baka:828070018935685130").queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
+                event.getMessage().addReaction(Emoji.fromCustom("baka", 828070018935685130L, false)).queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
 
             if (handleReplies(event, message))
                 return;
@@ -163,7 +165,7 @@ public class ServerMessagesHandler {
                         return;
                     }
                     if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !CrossServerUtils.checkIfStaff(event)) {
-                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFile(new File("images/Phasmo_folder.png")).queue();
+                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFiles(FileUpload.fromData(new File("images/Phasmo_folder.png"), "Phasmo_folder.png")).queue();
                         return;
                     }
                 }
@@ -201,7 +203,7 @@ public class ServerMessagesHandler {
                     else
                         temp = "here";
                     sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest` or `Latest.log`\n- drag and drop that file " + temp;
-                    event.getChannel().sendMessage(sendMessage).allowedMentions(Collections.emptyList()).queue();
+                    event.getChannel().sendMessage(sendMessage).mention(Collections.emptyList()).queue();
                     return;
                 }
 
@@ -219,7 +221,7 @@ public class ServerMessagesHandler {
 
                 if (message.startsWith("!proxy")) {
                     System.out.println("Proxy printed");
-                    event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFile(new File("images/proxy.png")).queue();
+                    event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFiles(FileUpload.fromData(new File("images/proxy.png"), "proxy.png")).queue();
                     return;
                 }
 
@@ -315,7 +317,7 @@ public class ServerMessagesHandler {
 
     public static boolean checkHash(Attachment attachment) {
         try {
-            InputStream is = attachment.retrieveInputStream().get();
+            InputStream is = attachment.getProxy().download().get();
             byte[] data = is.readAllBytes(); //Blocks so maybe limit large downloads
             is.close();
             MessageDigest digester = MessageDigest.getInstance("SHA-256");
@@ -333,8 +335,8 @@ public class ServerMessagesHandler {
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong() || event.getMessage().getContentRaw().startsWith("l!"))
             return;
         try {
-            if (event.getTextChannel().isNews() && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_READ, Permission.MESSAGE_WRITE, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {
-                System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getTextChannel().getName());
+            if (event.getChannel().getType() == ChannelType.NEWS && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {
+                System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getChannel().asTextChannel().getName());
                 event.getMessage().crosspost().queue();
             }
         }
@@ -397,7 +399,7 @@ public class ServerMessagesHandler {
                     }
                     if (channel > 69420) {
                         System.out.println("Channel: " + channel + " " + event.getChannel().getIdLong());
-                        if (event.getChannel().getIdLong() != channel && (event.getTextChannel() == null || event.getTextChannel().getParent() == null || event.getTextChannel().getParent().getIdLong() != channel)) {
+                        if (event.getChannel().getIdLong() != channel && (event.getChannel().asTextChannel() == null || event.getChannel().asTextChannel().getParentCategory() == null || event.getChannel().asTextChannel().getParentCategory().getIdLong() != channel)) {
                             continue;
                         }
                     }
@@ -410,32 +412,32 @@ public class ServerMessagesHandler {
                         continue;
                     }
 
-                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_MANAGE)) {
+                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
                         event.getMessage().delete().queue();
                     }
-                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.KICK_MEMBERS)) {
+                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.KICK_MEMBERS)) {
                         event.getMember().kick().queue();
                     }
-                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.BAN_MEMBERS)) {
-                        event.getMember().ban(0).queue();
+                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.BAN_MEMBERS)) {
+                        event.getMember().ban(0, TimeUnit.DAYS).queue();
                     }
                     if (EmojiUtils.isOneEmoji(message))
-                        event.getMessage().addReaction(message).queue();
+                        event.getMessage().addReaction(Emoji.fromUnicode(message)).queue();
                     else if (message.matches("^<a?:\\w+:\\d+>$")) {
                         System.out.println("Emoji: " + message);
-                        Emote emote = event.getJDA().getEmoteById(message.replace(">", "").split(":")[2]);
+                        RichCustomEmoji emote = event.getJDA().getEmojiById(message.replace(">", "").split(":")[2]);
                         try {
                             if (emote.canInteract(emote.getGuild().getSelfMember()))
                                 event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
                             else
-                                event.getTextChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
+                                event.getChannel().asTextChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
                         }
                         catch (Exception e) {
-                            event.getTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
+                            event.getChannel().asTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
                         }
                     }
                     else if (!message.isBlank()) {
-                        event.getTextChannel().sendMessage(message).allowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                        event.getChannel().asTextChannel().sendMessage(message).queue();
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                     return true;
@@ -444,7 +446,7 @@ public class ServerMessagesHandler {
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to check replies", e, event.getTextChannel());
+                ExceptionUtils.reportException("Failed to check replies", e, event.getChannel().asTextChannel());
             }
         }
         catch (Exception e) {

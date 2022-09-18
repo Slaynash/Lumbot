@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +27,10 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message.MentionType;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
@@ -177,7 +176,7 @@ public class Steam {
                         TextChannel channel = guild.getTextChannelById(sc.channelId);
                         if (channel.canTalk())
                             channel.sendMessageEmbeds(eb.build()).queue(s -> {
-                                if (channel.isNews())
+                                if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
                         else
@@ -268,7 +267,7 @@ public class Steam {
                         }
                     }
                     eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
-                    MessageBuilder mb = new MessageBuilder();
+                    MessageCreateBuilder mb = new MessageCreateBuilder();
                     mb.setEmbeds(eb.build());
 
                     for (SteamChannel sc : channels) {
@@ -282,8 +281,8 @@ public class Steam {
 
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
-                                if (channel.isNews())
+                            channel.sendMessage(mb.build()).queue(s -> {
+                                if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
                         mb.setContent("");
@@ -298,14 +297,14 @@ public class Steam {
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle(gameDetail.common.name + " Review Percentage " + (Integer.parseInt(oldCommon.review_percentage) > Integer.parseInt(newCommon.review_percentage) ? "decreased" : "increased"));
                         eb.setDescription(oldCommon.review_percentage + " -> " + newCommon.review_percentage);
-                        MessageBuilder mb = new MessageBuilder();
+                        MessageCreateBuilder mb = new MessageCreateBuilder();
                         mb.setEmbeds(eb.build());
 
                         for (SteamChannel sc : channels) {
                             TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                             if (channel.canTalk())
-                                channel.sendMessage(mb.build()).allowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
-                                    if (channel.isNews())
+                                channel.sendMessage(mb.build()).queue(s -> {
+                                    if (channel.getType() == ChannelType.NEWS)
                                         s.crosspost().queue();
                                 });
                             mb.setContent("");

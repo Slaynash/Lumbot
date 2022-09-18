@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -88,18 +89,18 @@ public class Ban extends Command {
         }
 
         if (!event.getGuild().getSelfMember().canInteract(banMember)) {
-            event.getMessage().reply("Can not ban " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") because they are a higher role than my role").allowedMentions(Collections.emptyList()).queue();
+            event.getMessage().reply("Can not ban " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") because they are a higher role than my role").mention(Collections.emptyList()).queue();
             return;
         }
 
         if (reason.isBlank())
-            banMember.ban(delDays).reason("Banned by " + event.getAuthor().getName()).queue();
+            banMember.ban(delDays, TimeUnit.DAYS).reason("Banned by " + event.getAuthor().getName()).queue();
         else
-            banMember.ban(delDays).reason(event.getAuthor().getName() + " - " + reason).queue(); //reason limit is 512 chars
+            banMember.ban(delDays, TimeUnit.DAYS).reason(event.getAuthor().getName() + " - " + reason).queue(); //reason limit is 512 chars
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null && !reportChannel.equals(event.getTextChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).allowedMentions(Collections.emptyList()).queue();
+        if (reportChannel != null && !reportChannel.equals(event.getChannel().asTextChannel().getId()))
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).mention(Collections.emptyList()).queue();
         event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!\n" + reason).queue();
     }
 

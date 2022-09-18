@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
@@ -82,14 +82,14 @@ public class CommandManager {
                     rcmd.onClient(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asTextChannel());
                 }
             }
         }
     }
 
     protected static void runAsServer(MessageReceivedEvent event) {
-        if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getTextChannel(), Permission.MESSAGE_WRITE)) //every command sends a message so lets require send message perms
+        if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) //every command sends a message so lets require send message perms
             return;
         String command = event.getMessage().getContentRaw();
         if (command.startsWith("l!ping")) command = command.substring(6).trim();
@@ -100,7 +100,7 @@ public class CommandManager {
                     rcmd.onServer(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getTextChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asTextChannel());
                 }
             }
         }

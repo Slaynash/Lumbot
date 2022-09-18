@@ -67,7 +67,7 @@
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>4.4.0_352</version>
+      <version>5.0.0-alpha.19</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId> <!-- Exclude DISCORD AUDIO -->

@@ -7,9 +7,9 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public abstract class LuaPackages {
@@ -105,7 +105,7 @@ public abstract class LuaPackages {
         discord.set("getChannelId", new GetChannelIdFunction(event.getChannel()));
         discord.set("getChannelName", new GetChannelNameFunction(event.getChannel()));
         discord.set("getAuthorId", new GetAuthorIdFunction(event.getAuthor()));
-        discord.set("isChannelNSFW", new IsChannelNSFWFunction(event.getTextChannel()));
+        discord.set("isChannelNSFW", new IsChannelNSFWFunction(event.getChannel().asTextChannel()));
         if (event.getMessage().getContentRaw().split(" ", 2).length > 1) {
             discord.set("getArguments",
                     new GetArgumentsFunction(event.getMessage().getContentRaw().split(" ", 2)[1].split(" ")));
@@ -124,7 +124,7 @@ public abstract class LuaPackages {
         discord.set("getChannelId", new GetChannelIdFunction(event.getChannel()));
         discord.set("getChannelName", new GetChannelNameFunction(event.getChannel()));
         discord.set("getAuthorId", new GetAuthorIdFunction(event.getAuthor()));
-        discord.set("isChannelNSFW", new IsChannelNSFWFunction(event.getTextChannel()));
+        discord.set("isChannelNSFW", new IsChannelNSFWFunction(event.getChannel().asTextChannel()));
         if (event.getMessage().getContentRaw().toLowerCase().substring(2).split(" ", 2).length > 1) {
             discord.set("getArguments", new GetArgumentsFunction(
                     event.getMessage().getContentRaw().substring(2).split(" ", 2)[1].split(" ")));
