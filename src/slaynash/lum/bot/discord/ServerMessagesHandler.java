@@ -75,7 +75,7 @@ public class ServerMessagesHandler {
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
 
-            if (!event.getChannel().asTextChannel().canTalk())
+            if (!event.getChannel().canTalk())
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
