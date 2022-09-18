@@ -68,7 +68,7 @@ public class ServerMessagesHandler {
 
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
-                    event.getChannel().asTextChannel().getName(),
+                    event.getChannel().getName(),
                     event.getAuthor().getAsTag(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
