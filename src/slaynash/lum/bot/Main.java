@@ -129,8 +129,6 @@ public class Main extends ListenerAdapter {
             UnityVersionMonitor.start();
 
             new Steam().start();
-
-            new AddMissingRoles().addMissing(null);
         }
 
         Timer timer = new Timer();
@@ -151,6 +149,7 @@ public class Main extends ListenerAdapter {
         }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+            new AddMissingRoles().addMissing(null);
             Moderation.voiceStartup();
             JDAManager.getJDA()
                 .getTextChannelById(808076226064941086L)

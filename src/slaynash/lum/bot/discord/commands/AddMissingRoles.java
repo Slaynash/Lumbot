@@ -12,6 +12,7 @@ import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class AddMissingRoles extends Command {
 
@@ -72,6 +73,12 @@ public class AddMissingRoles extends Command {
                     }
                 })
             );
+            try {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e) {
+                ExceptionUtils.reportException("Was Interrupted in AddMissing", e);
+            }
         });
         for (Task<Void> task : tasks) {
             task.get();
