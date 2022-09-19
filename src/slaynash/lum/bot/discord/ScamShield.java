@@ -382,14 +382,14 @@ public class ScamShield {
                             messagelist.add(m.messageReceivedEvent.getMessage());
                         }
                         else if (!m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
-                            System.out.println("Lum does not have MESSAGE_MANAGE perm in " + m.messageReceivedEvent.getChannel().asTextChannel().getName());
+                            System.out.println("Lum does not have MESSAGE_MANAGE perm in " + m.messageReceivedEvent.getChannel().getName());
                             String temp = "";
                             if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
                                 temp = embedBuilder.getDescriptionBuilder() + "\n";
-                            embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms for the channel " + m.messageReceivedEvent.getChannel().asTextChannel().getName());
+                            embedBuilder.setDescription(temp + "Lum failed to remove messages from **" + usernameWithTag + "** (*" + userId + "*) because I don't have manage message perms for the channel " + m.messageReceivedEvent.getChannel().getName());
                         }
                         else {
-                            System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getChannel().asTextChannel().getName());
+                            System.out.println("Lum does not have VIEW_CHANNEL perm in " + m.messageReceivedEvent.getChannel().getName());
                             String temp = "";
                             if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
                                 temp = embedBuilder.getDescriptionBuilder() + "\n";
