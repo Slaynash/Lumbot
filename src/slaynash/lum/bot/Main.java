@@ -143,7 +143,7 @@ public class Main extends ListenerAdapter {
         //chunk members for mutuals after loading to prevent Lum from being unresponsive
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
             if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
-                guild.loadMembers();
+                guild.loadMembers().get();
                 Thread.sleep(1000); //rate limit is 100 chuck per minute, gave a little headroom
             }
         }

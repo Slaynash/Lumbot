@@ -212,7 +212,7 @@ public class UnityVersionMonitor {
                             for (UnityVersion newVersion : newVersions)
                                 message.append("\n - ").append(newVersion.version);
                             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
-                            JDAManager.getJDA().getTextChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
+                            JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
                         }
                         else
                             initialisingUnityVersions = true;
