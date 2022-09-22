@@ -89,7 +89,7 @@ public class Ban extends Command {
         }
 
         if (!event.getGuild().getSelfMember().canInteract(banMember)) {
-            event.getMessage().reply("Can not ban " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") because they are a higher role than my role").mention(Collections.emptyList()).queue();
+            event.getMessage().reply("Can not ban " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") because they are a higher role than my role").setAllowedMentions(Collections.emptyList()).queue();
             return;
         }
 
@@ -100,7 +100,7 @@ public class Ban extends Command {
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         if (reportChannel != null && !reportChannel.equals(event.getChannel().asTextChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).mention(Collections.emptyList()).queue();
+            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).setAllowedMentions(Collections.emptyList()).queue();
         event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!\n" + reason).queue();
     }
 

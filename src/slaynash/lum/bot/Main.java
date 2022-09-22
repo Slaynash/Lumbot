@@ -144,7 +144,7 @@ public class Main extends ListenerAdapter {
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
             if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
                 guild.loadMembers().get();
-                Thread.sleep(1000); //rate limit is 100 chuck per minute, gave a little headroom
+                Thread.sleep(609); //rate limit is 100 chuck per minute, gave a little headroom
             }
         }
 
@@ -542,11 +542,11 @@ public class Main extends ListenerAdapter {
         }
 
         if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).mention(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
             event.getMember().kick().reason("Lum: Scammer joined").queue();
         }
         else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
         }
     }
 
@@ -575,7 +575,7 @@ public class Main extends ListenerAdapter {
         }
 
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
         }
         if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
         if (foundblacklist) {
@@ -611,12 +611,12 @@ public class Main extends ListenerAdapter {
             }
 
             if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").mention(Collections.emptyList()).queue();
+                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").setAllowedMentions(Collections.emptyList()).queue();
                 guild.kick(event.getUser()).reason("Lum: Scammer started scamming").queue();
                 return;
             }
             if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).mention(Collections.emptyList()).queue();
+                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
             }
         }
     }

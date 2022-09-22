@@ -358,7 +358,7 @@ public class ChattyLum {
                         ? thankedSentencesRare.get(random.nextInt(thankedSentencesRare.size()))
                         : thankedSentences.    get(random.nextInt(thankedSentences.size()));
                 }
-                event.getChannel().sendMessage(sentence).mention(Collections.emptyList()).queue();
+                event.getChannel().sendMessage(sentence).setAllowedMentions(Collections.emptyList()).queue();
                 return true;
             }
         }

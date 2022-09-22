@@ -74,7 +74,7 @@ public class AddMissingRoles extends Command {
                 })
             );
             try {
-                Thread.sleep(1000);
+                Thread.sleep(609);
             }
             catch (InterruptedException e) {
                 ExceptionUtils.reportException("Was Interrupted in AddMissing", e);

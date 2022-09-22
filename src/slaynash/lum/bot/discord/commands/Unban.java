@@ -42,7 +42,7 @@ public class Unban extends Command {
 
             String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
             if (reportChannel != null && !reportChannel.equals(event.getChannel().asTextChannel().getId()))
-                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").mention(Collections.emptyList()).queue();
+                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").setAllowedMentions(Collections.emptyList()).queue();
             event.getChannel().sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned!").queue();
         }).start();
     }

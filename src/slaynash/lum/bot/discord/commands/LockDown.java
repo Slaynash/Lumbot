@@ -20,14 +20,14 @@ public class LockDown extends Command {
             return;
 
         if (event.getGuild().getPublicRole().hasPermission(Permission.MESSAGE_SEND)) {
-            event.getChannel().sendMessage("@everyone has send message and lockdown will not work").mention(Collections.emptyList()).queue();
+            event.getChannel().sendMessage("@everyone has send message and lockdown will not work").setAllowedMentions(Collections.emptyList()).queue();
             return;
         }
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
         Long lockDownRoleID = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
         if (lockDownRoleID == null) {
-            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").mention(Collections.emptyList()).queue();
+            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").setAllowedMentions(Collections.emptyList()).queue();
         }
         Role lockDownRole = event.getGuild().getRoleById(lockDownRoleID);
         if (!event.getGuild().getSelfMember().canInteract(lockDownRole)) {

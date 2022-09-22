@@ -65,7 +65,7 @@ public class Blacklist extends Command {
                         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
                         if (reportchannel == null) return;
                         for (Member m : members) {
-                            reportchannel.sendMessage("Kicked " + m.getUser().getAsTag() + " by setting blacklist").mention(Collections.emptyList()).queue();
+                            reportchannel.sendMessage("Kicked " + m.getUser().getAsTag() + " by setting blacklist").setAllowedMentions(Collections.emptyList()).queue();
                         }
                     }
                 }

@@ -4,6 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -175,7 +177,7 @@ public class Steam {
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID);
                         TextChannel channel = guild.getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessageEmbeds(eb.build()).queue(s -> {
+                            channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
@@ -281,7 +283,7 @@ public class Steam {
 
                         TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                         if (channel.canTalk())
-                            channel.sendMessage(mb.build()).queue(s -> {
+                            channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
@@ -303,7 +305,7 @@ public class Steam {
                         for (SteamChannel sc : channels) {
                             TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID).getTextChannelById(sc.channelId);
                             if (channel.canTalk())
-                                channel.sendMessage(mb.build()).queue(s -> {
+                                channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                     if (channel.getType() == ChannelType.NEWS)
                                         s.crosspost().queue();
                                 });

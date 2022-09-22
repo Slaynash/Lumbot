@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +16,7 @@ import com.coder4.emoji.EmojiUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -205,7 +207,7 @@ public class ServerMessagesHandler {
                     else
                         temp = "here";
                     sendMessage = sendMessage + "How to find your Log file:\n\n- go to your game's root folder. It's the folder that contains your `Mods` folder\n- open the `MelonLoader` folder\n- find the file called `Latest` or `Latest.log`\n- drag and drop that file " + temp;
-                    event.getChannel().sendMessage(sendMessage).mention(Collections.emptyList()).queue();
+                    event.getChannel().sendMessage(sendMessage).setAllowedMentions(Collections.emptyList()).queue();
                     return;
                 }
 
@@ -439,7 +441,7 @@ public class ServerMessagesHandler {
                         }
                     }
                     else if (!message.isBlank()) {
-                        event.getChannel().asTextChannel().sendMessage(message).queue();
+                        event.getChannel().asTextChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                     return true;
