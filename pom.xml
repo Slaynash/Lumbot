@@ -95,12 +95,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.36</version>
+      <version>2.0.0</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.11</version>
+      <version>1.4.1</version>
     </dependency>
     <dependency>
       <groupId>com.github.lastrix</groupId>
@@ -110,7 +110,7 @@
     <dependency>
       <groupId>com.github.tony19</groupId>
       <artifactId>named-regexp</artifactId>
-      <version>0.2.6</version>
+      <version>0.2.7</version>
     </dependency>
 
   </dependencies>

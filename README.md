@@ -8,6 +8,8 @@ Make a file in the working path called `.settings.conf` with the following conte
 
 ```
 DISCORD_TOKEN=
+MAIN_BOT=
+PING_URL=
 
 DB_ADDRESS=
 DB_PORT=
@@ -17,10 +19,7 @@ DB_LOGIN=
 DB_PASSWORD=
 
 DISCORD_PREFIX=l!
-
-VRCMG_BLACKLIST=
 CVRMG_BLACKLIST=
-
 CURSEFORGE_API_KEY=
 ```
 

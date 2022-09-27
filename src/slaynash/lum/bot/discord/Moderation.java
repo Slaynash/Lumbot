@@ -20,7 +20,7 @@ public class Moderation {
         if (GuildConfigurations.noMicChannels.containsKey(guildID) && event.getMember().hasPermission(Permission.MESSAGE_SEND)) {
             VoiceChannel vc = event.getGuild().getVoiceChannelById(GuildConfigurations.noMicChannels.get(guildID));
             if (vc != null) {
-                vc.getManager().putMemberPermissionOverride(event.getMember().getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).queue();
+                vc.getManager().putMemberPermissionOverride(event.getMember().getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).queue();
             }
         }
     }

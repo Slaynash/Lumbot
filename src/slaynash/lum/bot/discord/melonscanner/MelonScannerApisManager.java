@@ -53,9 +53,9 @@ public class MelonScannerApisManager {
 
     public static final List<String> brokenMods = new ArrayList<>();
     public static final List<String> retiredMods = new ArrayList<>();
-    public static List<String> badMod = new ArrayList<>();
-    public static List<String> badAuthor = new ArrayList<>();
-    public static List<String> badPlugin = new ArrayList<>();
+    public static final List<String> badMod = new ArrayList<>();
+    public static final List<String> badAuthor = new ArrayList<>();
+    public static final List<String> badPlugin = new ArrayList<>();
 
     private static final List<MelonScannerApi> apis = new ArrayList<>();
 
@@ -419,7 +419,7 @@ public class MelonScannerApisManager {
 
         public final boolean isGZip = false;
         public int maxPagination;
-        public List<String> customHeaders = new ArrayList<>();
+        public final List<String> customHeaders = new ArrayList<>();
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 

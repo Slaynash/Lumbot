@@ -16,6 +16,8 @@ public final class ConfigManager {
     private static final Properties properties = new Properties();
 
     public static String discordToken;
+    public static boolean mainBot;
+    public static String pingURL;
 
     public static String dbAddress;
     public static String dbPort;
@@ -46,6 +48,8 @@ public final class ConfigManager {
             properties.load(fis);
 
             discordToken = properties.getProperty("DISCORD_TOKEN");
+            mainBot = Boolean.parseBoolean(properties.getProperty("MAIN_BOT"));
+            pingURL = properties.getProperty("PING_URL");
 
             dbAddress = properties.getProperty("DB_ADDRESS");
             dbPort = properties.getProperty("DB_PORT");

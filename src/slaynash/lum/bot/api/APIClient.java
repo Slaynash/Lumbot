@@ -121,7 +121,7 @@ public class APIClient {
                             for (Entry<String, Endpoint> entry : API.endpoints.entrySet()) {
                                 if (requestUrl[0].matches(entry.getKey())) {
                                     WebResponse response = entry.getValue().handle(request);
-                                    System.out.println("[Connection " + id + " (" + socket.getPort() + ")] Response: " + new String(response.data, StandardCharsets.UTF_8));
+                                    System.out.println("[Connection " + id + " (" + request.clientIpAddress + ":" + socket.getPort() + ")] Response: " + new String(response.data, StandardCharsets.UTF_8));
                                     sendResponse(response, request.method != RequestMethod.HEAD);
                                     return true;
                                 }

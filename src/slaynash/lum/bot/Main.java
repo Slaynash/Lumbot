@@ -4,15 +4,17 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.ResultSet;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
-
-import javax.security.auth.login.LoginException;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -63,6 +65,7 @@ import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.slashs.SlashManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
@@ -74,7 +77,7 @@ import slaynash.lum.bot.utils.Utils;
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
 
-    public static void main(String[] args) throws LoginException, IllegalArgumentException, InterruptedException {
+    public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
         LogSystem.init();
@@ -84,8 +87,7 @@ public class Main extends ListenerAdapter {
 
             JDA jda = JDAManager.getJDA();
             if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
-                JDAManager.getJDA()
-                    .getTextChannelById(808076226064941086L)
+                jda.getTextChannelById(808076226064941086L)
                     .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                     .complete();
 
@@ -123,7 +125,10 @@ public class Main extends ListenerAdapter {
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         SlashManager.registerCommands();
+        Main mainEvents = new Main();
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+            if (ConfigManager.mainBot)
+                JDAManager.getJDA().getEventManager().register(mainEvents);
 
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
@@ -137,8 +142,6 @@ public class Main extends ListenerAdapter {
             java.util.Calendar.getInstance().getTime(),
             1000 * 60 * 60
         );
-
-        Thread.sleep(10000);
 
         //chunk members for mutuals after loading to prevent Lum from being unresponsive
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
@@ -157,6 +160,23 @@ public class Main extends ListenerAdapter {
                 .queue();
         }
         System.out.println("LUM Started!");
+        if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
+            HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
+            while (true) {
+                Thread.sleep(1000 * 15);
+                if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED)
+                    continue;
+                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+                if (response.statusCode() == 200) {
+                    if (!JDAManager.getJDA().getEventManager().getRegisteredListeners().contains(mainEvents))
+                        JDAManager.getJDA().getEventManager().register(mainEvents);
+                }
+                else {
+                    if (JDAManager.getJDA().getEventManager().getRegisteredListeners().contains(mainEvents))
+                        JDAManager.getJDA().getEventManager().unregister(mainEvents);
+                }
+            }
+        }
     }
 
     private static void loadReactionsList() {
