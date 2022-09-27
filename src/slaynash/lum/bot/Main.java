@@ -129,6 +129,8 @@ public class Main extends ListenerAdapter {
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             if (ConfigManager.mainBot)
                 JDAManager.getJDA().getEventManager().register(mainEvents);
+            else
+                System.out.println("Starting Lum as a backup bot, monitoring main bot...");
 
             VRCApiVersionScanner.init();
             UnityVersionMonitor.start();
@@ -146,8 +148,15 @@ public class Main extends ListenerAdapter {
         //chunk members for mutuals after loading to prevent Lum from being unresponsive
         for (Guild guild : JDAManager.getJDA().getGuilds()) {
             if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
-                guild.loadMembers().get();
-                Thread.sleep(609); //rate limit is 100 chuck per minute, gave a little headroom
+                try {
+                    guild.loadMembers().get();
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
+                    Thread.sleep(1000);
+                    guild.loadMembers().get(); // try again
+                }
+                Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
             }
         }
 
