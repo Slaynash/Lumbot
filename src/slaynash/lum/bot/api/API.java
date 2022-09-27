@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import slaynash.lum.bot.Main;
+import slaynash.lum.bot.api.endpoints.PingEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadMelonScannerErrorsEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadTranslationsEndpoint;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -22,7 +23,7 @@ public class API {
 
     public static Gson gson;
 
-    private static ServerSocket socket;
+    private static ServerSocket socket = null;
     private static int totalConnectionCount;
 
 
@@ -35,8 +36,17 @@ public class API {
         try {
             endpoints.put("/api/1/internal/reloadtranslations", new ReloadTranslationsEndpoint());
             endpoints.put("/api/1/internal/reloadmelonscannererrors", new ReloadMelonScannerErrorsEndpoint());
+            endpoints.put("/api/1/ping", new PingEndpoint());
 
-            socket = new ServerSocket();
+            while (socket == null) {
+                try {
+                    socket = new ServerSocket();
+                }
+                catch (Exception e) {
+                    System.err.println("Error while creating socket: " + e.getMessage());
+                    Thread.sleep(60 * 1000);
+                }
+            }
             socket.setReuseAddress(true);
             socket.bind(new InetSocketAddress(28644));
         }
