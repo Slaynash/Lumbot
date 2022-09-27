@@ -96,6 +96,8 @@ public class UnityVersionMonitor {
                 else
                     try {
                         Thread.sleep(60 * 60 * 1000);
+                        if (!JDAManager.isEventsEnabled())
+                            continue;
                     }
                     catch (Exception e) {
                         e.printStackTrace();

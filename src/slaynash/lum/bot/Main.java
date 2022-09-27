@@ -86,7 +86,7 @@ public class Main extends ListenerAdapter {
             isShuttingDown = true;
 
             JDA jda = JDAManager.getJDA();
-            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L) // Lum (blue)
+            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L && ConfigManager.mainBot) // Lum (blue)
                 jda.getTextChannelById(808076226064941086L)
                     .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                     .complete();
@@ -125,10 +125,10 @@ public class Main extends ListenerAdapter {
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         SlashManager.registerCommands();
-        Main mainEvents = new Main();
+
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             if (ConfigManager.mainBot)
-                JDAManager.getJDA().getEventManager().register(mainEvents);
+                JDAManager.enableEvents();
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");
 
@@ -154,7 +154,7 @@ public class Main extends ListenerAdapter {
                 catch (Exception e) {
                     System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
                     Thread.sleep(1000);
-                    guild.loadMembers().get(); // try again
+                    // guild.loadMembers().get(); // try again
                 }
                 Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
             }
@@ -163,10 +163,11 @@ public class Main extends ListenerAdapter {
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             new AddMissingRoles().addMissing(null);
             Moderation.voiceStartup();
-            JDAManager.getJDA()
-                .getTextChannelById(808076226064941086L)
-                .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
-                .queue();
+            if (ConfigManager.mainBot)
+                JDAManager.getJDA()
+                    .getTextChannelById(808076226064941086L)
+                    .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
+                    .queue();
         }
         System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
@@ -177,12 +178,12 @@ public class Main extends ListenerAdapter {
                     continue;
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
                 if (response.statusCode() == 200) {
-                    if (!JDAManager.getJDA().getEventManager().getRegisteredListeners().contains(mainEvents))
-                        JDAManager.getJDA().getEventManager().register(mainEvents);
+                    if (!JDAManager.isEventsEnabled())
+                        JDAManager.enableEvents();
                 }
                 else {
-                    if (JDAManager.getJDA().getEventManager().getRegisteredListeners().contains(mainEvents))
-                        JDAManager.getJDA().getEventManager().unregister(mainEvents);
+                    if (JDAManager.isEventsEnabled())
+                        JDAManager.disableEvents();
                 }
             }
         }

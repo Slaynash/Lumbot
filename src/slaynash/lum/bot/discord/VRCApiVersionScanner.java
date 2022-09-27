@@ -73,6 +73,9 @@ public class VRCApiVersionScanner {
                         lastBVT = config.buildVersionTag;
                         lastDG = config.deploymentGroup;
 
+                        if (!JDAManager.isEventsEnabled())
+                            continue;
+
                         for (TextChannel tc : apiGuilds) {
                             if (tc.canTalk()) {
                                 if (tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS))

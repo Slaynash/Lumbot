@@ -120,6 +120,10 @@ public class APIClient {
                         if (requestUrl[0].length() > 0) {
                             for (Entry<String, Endpoint> entry : API.endpoints.entrySet()) {
                                 if (requestUrl[0].matches(entry.getKey())) {
+                                    if (entry.getKey().contains("internal") && !request.clientIpAddress.equals("127.0.0.1")) {
+                                        System.err.println("[Connection " + id + " (" + request.clientIpAddress + ":" + socket.getPort() + ")] " + request.path + " internal API request from non-local IP");
+                                        return false;
+                                    }
                                     WebResponse response = entry.getValue().handle(request);
                                     System.out.println("[Connection " + id + " (" + request.clientIpAddress + ":" + socket.getPort() + ")] Response: " + new String(response.data, StandardCharsets.UTF_8));
                                     sendResponse(response, request.method != RequestMethod.HEAD);

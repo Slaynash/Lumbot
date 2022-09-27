@@ -167,6 +167,8 @@ public class Steam {
                 catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
                 }
+                if (!JDAManager.isEventsEnabled())
+                    continue;
                 if (channels.size() != 0) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + getGameName(gameID) + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
@@ -214,6 +216,9 @@ public class Steam {
                 }
 
                 if (channels.size() == 0)
+                    return;
+
+                if (!JDAManager.isEventsEnabled())
                     return;
 
                 SteamAppDetails newAppDetails = new SteamAppDetails(app.getValue().getKeyValues());

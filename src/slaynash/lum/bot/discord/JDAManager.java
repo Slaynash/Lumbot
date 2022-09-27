@@ -9,12 +9,14 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.messages.MessageRequest;
+import slaynash.lum.bot.Main;
 
 public class JDAManager {
 
     private static JDA jda;
     public static final long mainGuildID = 633588473433030666L;
     private static boolean init = false;
+    private static Main mainEvents = new Main();
 
     public static void init(String token) throws InterruptedException {
         if (!init) init = true;
@@ -33,4 +35,13 @@ public class JDAManager {
         return jda;
     }
 
+    public static void enableEvents() {
+        jda.getEventManager().register(mainEvents);
+    }
+    public static void disableEvents() {
+        jda.getEventManager().unregister(mainEvents);
+    }
+    public static boolean isEventsEnabled() {
+        return jda.getEventManager().getRegisteredListeners().contains(mainEvents);
+    }
 }
