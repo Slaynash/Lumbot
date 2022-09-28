@@ -56,11 +56,6 @@ public class MelonScanContext {
     public String game;
     public String gameBuild;
 
-    // VRChat / emmVRC
-    public String emmVRCVRChatBuild;
-    public String emmVRCVersion;
-    public int vrcmuMods = -1;
-
     // Mod listing - temp
     public boolean listingPlugins = false;
     public boolean preListingModsPlugins = false;
@@ -102,8 +97,6 @@ public class MelonScanContext {
 
     // Thinkering pass
     public boolean isMLOutdatedVRC = false;
-    public boolean vrcmuModsMismatch = false;
-    public boolean missingErrorHeader = false;
     public List<MelonApiMod> modDetails;
     public final List<LogsModDetails> unknownMods = new ArrayList<>();
     public final List<String> brokenMods = new ArrayList<>();

@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
 
 public final class ExceptionUtils {
@@ -87,8 +88,11 @@ public final class ExceptionUtils {
 
     private static void reportDiscord(String title, String comment, Throwable exception, GuildChannel guildChannel) {
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L)
+        if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L || !JDAManager.isEventsEnabled())
             return;
+
+        if (!ConfigManager.mainBot)
+            title = "BACKUP: " + title;
 
         String exceptionString = "";
         try {

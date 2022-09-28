@@ -15,7 +15,6 @@ import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 
 import net.dv8tion.jda.api.Permission;
-import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
@@ -23,10 +22,6 @@ public final class MelonScannerReadPass {
     private static final int omitLineCount = 1200;
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
-        if (context.attachment.getUrl().contains("/%")) {
-            ExceptionUtils.reportException("PLEASE DO NOT USE CANARY, IT BROKY!!!!", null, null, context.messageReceivedEvent.getChannel().asTextChannel());
-            return false;
-        }
         if (context.attachment.getSize() > 15000000) {
             Utils.replyEmbed("Log size is too large. Not reading anything over 15MB", null, context.messageReceivedEvent);
             return false;
@@ -84,7 +79,6 @@ public final class MelonScannerReadPass {
                     mlHashCodeCheck(context) ||
                     modPre3EndmodCheck(context) ||
                     gameVersionCheck(context) ||
-                    emmVRCVersionCheck(context) ||
                     modPreListingCheck(context) ||
                     misplacedCheck(context) ||
                     duplicateCheck(context) ||
@@ -196,15 +190,6 @@ public final class MelonScannerReadPass {
             split = split[1].split(" v", 2);
             context.tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0].trim();
             context.tmpModVersion = split.length > 1 ? split[1] : null;
-            /*
-            String matchedName = MelonLoaderScanner.modNameMatcher.get(context.tmpModName.trim());
-            context.tmpModName = (matchedName != null) ? matchedName : context.tmpModName;
-            */
-            long guildid = context.messageReceivedEvent.getGuild().getIdLong();
-            if (context.tmpModName.equalsIgnoreCase("ReMod") && (guildid == 439093693769711616L || guildid == 600298024425619456L || guildid == 663449315876012052L || guildid == 716536783621587004L)) {
-                System.out.println("ReMod detected out of the ReMod Discord server");
-                context.messageReceivedEvent.getMessage().delete().reason("Log not in ReMod discord").queue();
-            }
             return true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? by .*")) {
@@ -290,9 +275,6 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
         if (line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
-            if (context.vrcmuMods > 0) {
-                context.vrcmuMods--;
-            }
             if (line.contains("Could not load file or assembly '")) {
                 String[] split = line.split("Could not load file or assembly '");
                 if (split.length < 2) return true;
@@ -328,28 +310,11 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("Please move Facepunch.Steamworks.Win64.dll into the Managed folder."));
             else if (!context.oldMods.contains(oldName))
                 context.oldMods.add(oldName);
-            if (context.vrcmuMods > 0 && !line.contains("Compatibility Layer")) {
-                context.vrcmuMods--;
-            }
-            return true;
-        }
-        if (line.matches("\\[[\\d.:]+] Failed to read assembly .*\\.dll")) {
-            if (context.vrcmuMods >= 0) {
-                context.vrcmuMods++;
-            }
             return true;
         }
         if (line.matches("\\[[\\d.:]+] \\[ERROR] Incompatible Platform Domain for Mod: .*\\\\(?<modname>\\w+).dll")) {
             String modname = splitName(line);
             context.errors.add(new MelonLoaderError(modname + " is incompatible with this game type. Are sure sure this is a mod for this game?"));
-            if (context.vrcmuMods > 0) {
-                context.vrcmuMods--;
-            }
-            return true;
-        }
-
-        if (line.matches(".*Hi. This is ReMod's Honeypot. ?")) {
-            context.errors.add(new MelonLoaderError("You've been honeypotted, cope with it and don't report it to me. <:Neko_dab:865328473719439381>"));
             return true;
         }
         return false;
@@ -556,38 +521,10 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean emmVRCVersionCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[\\d.:]+] \\[emmVRCLoader] VRChat build is.*")) {
-            String[] split = context.line.split(":", 4);
-            if (split.length < 4) return true;
-            context.emmVRCVRChatBuild = split[3].trim();
-            System.out.println("VRChat " + context.emmVRCVRChatBuild);
-            return true;
-        }
-        else if (context.line.matches("\\[[\\d.:]+] \\[emmVRCLoader] You are running version .*")) {
-            String[] split = context.line.split("version", 2);
-            if (split.length < 2) return true;
-            context.emmVRCVersion = split[1].trim();
-            System.out.println("EmmVRC " + context.emmVRCVersion);
-            return true;
-        }
-        return false;
-    }
-
     public static boolean modPreListingCheck(MelonScanContext context) {
         if (!context.pre3 && (context.line.matches("\\[[\\d.:]+] Loading.*Plugins...") || context.line.matches("\\[[\\d.:]+] Loading.*Mods..."))) {
             context.preListingModsPlugins = true;
             System.out.println("Starting to pre-list " + (context.line.contains("Plugins") ? "plugins" : "mods"));
-            return true;
-        }
-        Matcher m = Pattern.compile("\\[[0-9.:]+] Found (?<vrcmumods>\\d+) unique non-dev mods installed").matcher(context.line);
-        if (m.namedGroups().size() > 0) {
-            context.vrcmuMods = Integer.parseInt(m.namedGroups().get(0).get("vrcmumods"));
-            return true;
-        }
-        Matcher m2 = Pattern.compile("\\[[0-9.:]+] Found (?<outdated>\\d+) outdated mods \\| (?<broken>\\d+) broken mods \\| (?<fixed>\\d+) fixed mods").matcher(context.line);
-        if (m2.namedGroups().size() > 0) {
-            context.vrcmuMods += Integer.parseInt(m2.namedGroups().get(0).get("fixed"));
             return true;
         }
         return false;
@@ -623,9 +560,6 @@ public final class MelonScannerReadPass {
             String tmpModName = line.substring(line.lastIndexOf(":") + 2);
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
-            if (context.vrcmuMods > 0) {
-                context.vrcmuMods--;
-            }
             return true;
         }
         else if (line.matches("\\[[\\d.:]+] \\[(WARNING|ERROR)] Duplicate (File|Mod|Plugin).*")) {
@@ -633,13 +567,6 @@ public final class MelonScannerReadPass {
             String tmpModName = line.substring(line.lastIndexOf("\\") + 1).replace(".dll", "");
             if (context.duplicatedMods.stream().noneMatch(d -> d.hasName(tmpModName)))
                 context.duplicatedMods.add(new MelonDuplicateMod(tmpModName));
-            if (context.vrcmuMods > 0) {
-                context.vrcmuMods--;
-            }
-            return true;
-        }
-        else if (context.vrcmuMods > 0 && line.matches(".* - Moving to Broken folder")) {
-            context.vrcmuMods--;
             return true;
         }
         return false;

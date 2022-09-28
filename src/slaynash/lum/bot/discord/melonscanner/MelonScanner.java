@@ -545,20 +545,6 @@ public final class MelonScanner {
                 return true;
             }
         }
-        //for pre0.4.0 VRChat version checking with emmVRC
-        else if (context.emmVRCVRChatBuild != null) {
-            int compare = VersionUtils.compareVersion(context.emmVRCVRChatBuild, CommandManager.vrchatBuild);
-            if (compare == -1) {
-                context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, CrossServerUtils.sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
-                context.embedColor = Color.ORANGE;
-                return true;
-            }
-            else if (compare == 1) {
-                context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, CrossServerUtils.sanitizeInputString(context.emmVRCVRChatBuild), CommandManager.vrchatBuild), false);
-                context.embedColor = Color.ORANGE;
-                return true;
-            }
-        }
         return false;
     }
 
@@ -963,9 +949,6 @@ public final class MelonScanner {
                 }
                 else
                     error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
-            }
-            if (context.loadedMods.containsKey("BTKCompanionLoader") && context.loadedMods.containsKey("BTKSANameplateMod")) {
-                error += Localization.get("Remove BTKSANameplateMod as it is included with BTKCompanionLoader", context.lang) + "\n";
             }
             if (context.hasNonModErrors && context.errors.size() == 0) {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
