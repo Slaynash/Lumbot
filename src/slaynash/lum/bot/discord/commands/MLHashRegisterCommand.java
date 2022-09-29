@@ -1,8 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
-import java.util.List;
-
-import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
@@ -72,12 +70,8 @@ public class MLHashRegisterCommand extends Command {
         if (event.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
             return false;
 
-        List<Role> memberRoles = event.getMember().getRoles();
-        for (Role memberRole : memberRoles) {
-            if (memberRole.getIdLong() == 663450403194798140L) { // Lava Gang
-                return true;
-            }
-        }
+        if (event.getMember().hasPermission(Permission.ADMINISTRATOR))
+            return true;
 
         return false;
     }

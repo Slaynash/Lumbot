@@ -80,6 +80,8 @@ public class UnityVersionMonitor {
     private static boolean isRunningCheck = false;
 
     public static void start() {
+        if (!ConfigManager.mainBot)
+            return;
 
         loadInstalledVersionCache();
         loadMonoStructCache();
@@ -96,8 +98,6 @@ public class UnityVersionMonitor {
                 else
                     try {
                         Thread.sleep(60 * 60 * 1000);
-                        if (!JDAManager.isEventsEnabled())
-                            continue;
                     }
                     catch (Exception e) {
                         e.printStackTrace();
