@@ -76,6 +76,8 @@ import slaynash.lum.bot.utils.Utils;
 
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
+    private static HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
+
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
@@ -127,38 +129,46 @@ public class Main extends ListenerAdapter {
         SlashManager.registerCommands();
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
-            if (ConfigManager.mainBot)
+            if (ConfigManager.mainBot) {
                 JDAManager.enableEvents();
+                UnityVersionMonitor.start();
+                VRCApiVersionScanner.init();
+                Timer timer = new Timer();
+                timer.schedule(
+                    new ClearDMs(),
+                    java.util.Calendar.getInstance().getTime(),
+                    1000 * 60 * 60
+                );
+            }
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");
-
-            VRCApiVersionScanner.init();
-            UnityVersionMonitor.start();
-
             new Steam().start();
         }
 
-        Timer timer = new Timer();
-        timer.schedule(
-            new ClearDMs(),
-            java.util.Calendar.getInstance().getTime(),
-            1000 * 60 * 60
-        );
-
-        //chunk members for mutuals after loading to prevent Lum from being unresponsive
-        for (Guild guild : JDAManager.getJDA().getGuilds()) {
-            if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
-                try {
-                    guild.loadMembers().get();
-                }
-                catch (Exception e) {
-                    System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
-                    Thread.sleep(1000);
-                    // guild.loadMembers().get(); // try again
-                }
-                Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
+        if (!ConfigManager.mainBot) {
+            HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+            while (response.statusCode() != 200) {
+                System.out.println("PingChecker: " + response.statusCode() + " " + response.body());
+                response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+                Thread.sleep(1000 * 15);
             }
+            JDAManager.enableEvents();
         }
+        else
+            //chunk members for mutuals after loading to prevent Lum from being unresponsive
+            for (Guild guild : JDAManager.getJDA().getGuilds()) {
+                if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
+                    try {
+                        guild.loadMembers().get();
+                    }
+                    catch (Exception e) {
+                        System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
+                        Thread.sleep(1000);
+                        // guild.loadMembers().get(); // try again
+                    }
+                    Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
+                }
+            }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             new AddMissingRoles().addMissing(null);
@@ -171,7 +181,6 @@ public class Main extends ListenerAdapter {
         }
         System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
-            HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
             while (true) {
                 Thread.sleep(1000 * 15);
                 if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED)
