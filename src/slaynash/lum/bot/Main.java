@@ -76,8 +76,6 @@ import slaynash.lum.bot.utils.Utils;
 
 public class Main extends ListenerAdapter {
     public static boolean isShuttingDown = false;
-    private static HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
-
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
@@ -145,6 +143,7 @@ public class Main extends ListenerAdapter {
             new Steam().start();
         }
 
+        HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
             HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
             while (response.statusCode() != 200) {
