@@ -70,10 +70,7 @@ public class MLHashRegisterCommand extends Command {
         if (event.getGuild().getIdLong() != 663449315876012052L) // MelonLoader
             return false;
 
-        if (event.getMember().hasPermission(Permission.ADMINISTRATOR))
-            return true;
-
-        return false;
+        return event.getMember().hasPermission(Permission.ADMINISTRATOR);
     }
 
     @Override

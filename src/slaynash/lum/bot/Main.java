@@ -146,14 +146,14 @@ public class Main extends ListenerAdapter {
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
             HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
-            while (response.statusCode() != 200) {
-                System.out.println("PingChecker: " + response.statusCode() + " " + response.body());
+            while (response.statusCode() == 200) {
                 response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
                 Thread.sleep(1000 * 15);
             }
+            System.out.println("PingChecker: Ping failed, starting backup...");
             JDAManager.enableEvents();
         }
-        else
+        else {
             //chunk members for mutuals after loading to prevent Lum from being unresponsive
             for (Guild guild : JDAManager.getJDA().getGuilds()) {
                 if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
@@ -168,6 +168,7 @@ public class Main extends ListenerAdapter {
                     Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
                 }
             }
+        }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             new AddMissingRoles().addMissing(null);
@@ -563,10 +564,6 @@ public class Main extends ListenerAdapter {
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
-        if (event.getUser().getName() == null) {
-            ExceptionUtils.reportException("Member joined with null name");
-            return;
-        }
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
 
         boolean foundblacklist = false;
@@ -643,10 +640,6 @@ public class Main extends ListenerAdapter {
             String report = CommandManager.mlReportChannels.get(guild.getIdLong());
             TextChannel reportchannel = guild.getTextChannelById(report);
             if (reportchannel == null) return;
-            if (event.getNewName() == null) {
-                ExceptionUtils.reportException("Member changed their name to null");
-                return;
-            }
 
             if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").setAllowedMentions(Collections.emptyList()).queue();

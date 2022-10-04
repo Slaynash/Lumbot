@@ -16,7 +16,7 @@ public class JDAManager {
     private static JDA jda;
     public static final long mainGuildID = 633588473433030666L;
     private static boolean init = false;
-    private static Main mainEvents = new Main();
+    private static final Main mainEvents = new Main();
 
     public static void init(String token) throws InterruptedException {
         if (!init) init = true;
@@ -36,9 +36,11 @@ public class JDAManager {
     }
 
     public static void enableEvents() {
+        System.out.println("Enabling events");
         jda.getEventManager().register(mainEvents);
     }
     public static void disableEvents() {
+        System.out.println("Disabling events");
         jda.getEventManager().unregister(mainEvents);
     }
     public static boolean isEventsEnabled() {

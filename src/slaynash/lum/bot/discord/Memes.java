@@ -25,7 +25,6 @@ public class Memes {
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         if (event.getAuthor().isBot()) return false;
-        if (channel == null) return false;
         if (channel.getIdLong() != memeChannelID) return false;
         event.getMessage().addReaction(upArrow).queue(c -> event.getMessage().addReaction(downArrow).queue());
         return true;
