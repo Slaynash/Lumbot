@@ -137,10 +137,10 @@ public class Main extends ListenerAdapter {
                     java.util.Calendar.getInstance().getTime(),
                     1000 * 60 * 60
                 );
+                new Steam().start();
             }
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");
-            new Steam().start();
         }
 
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();

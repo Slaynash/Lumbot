@@ -114,7 +114,7 @@ public class ScamShield {
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put("@everyone(Hey,)?(join(this|my)(friend's)?server)?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
+            put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("http", 1);
@@ -450,7 +450,8 @@ public class ScamShield {
         ".edu",
         "telegra.ph",
         "robydrinks.be",
-        "bxlblog.be"
+        "bxlblog.be",
+        "meap.gg"
     );
 
     private static int domainAgeCheck(String message) {
@@ -516,8 +517,12 @@ public class ScamShield {
 
     public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete
         long mID = event.getMessageIdLong();
-        allMessages.removeIf(m -> mID == m.getMessage().getIdLong());
-        handledMessages.removeIf(m -> mID == m.messageReceivedEvent.getMessageIdLong());
+        handledMessages.stream().forEach(m -> {
+            if (m.messageReceivedEvent.getMessage().getIdLong() == mID) {
+                m.suspiciousResults.ssFoundTerms.put("Deleted Message", -1);
+                m.suspiciousResults.suspiciousValue = m.suspiciousResults.ssFoundTerms.values().stream().reduce(0, Integer::sum);
+            }
+        });
     }
 
     public static class ScamResults {
@@ -526,7 +531,7 @@ public class ScamShield {
             this.suspiciousValue = suspiciousValue;
             this.massPing = massPing;
         }
-        public final int suspiciousValue;
+        public int suspiciousValue;
         public int calulatedValue;
         public int totalSuspicionCount;
         public final Map<String, Integer> ssFoundTerms;
