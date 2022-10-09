@@ -95,13 +95,13 @@ public class Purge extends Command {
                             }
                         }
                         catch (Exception e) {
-                            ExceptionUtils.reportException("An error has occurred while purging messages:", e, event.getChannel().asTextChannel());
+                            ExceptionUtils.reportException("An error has occurred while purging messages:", e, event.getChannel().asGuildMessageChannel());
                         }
                     }
                 }
             }
             catch (Exception e) {
-                ExceptionUtils.reportException("An error has occurred while running purge:", e, event.getChannel().asTextChannel());
+                ExceptionUtils.reportException("An error has occurred while running purge:", e, event.getChannel().asGuildMessageChannel());
             }
         }, "Purge").start();
     }

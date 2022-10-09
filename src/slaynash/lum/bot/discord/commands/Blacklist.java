@@ -72,7 +72,7 @@ public class Blacklist extends Command {
             }
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Failed to add blacklist", e, event.getChannel().asTextChannel());
+            ExceptionUtils.reportException("Failed to add blacklist", e, event.getChannel().asGuildMessageChannel());
         }
     }
 

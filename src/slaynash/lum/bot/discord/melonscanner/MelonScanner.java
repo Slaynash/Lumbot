@@ -1017,7 +1017,7 @@ public final class MelonScanner {
             referenced.editMessageEmbeds(editEmbed.build()).queue();
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel().asTextChannel());
+            ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel().asGuildMessageChannel());
         }
     }
 }

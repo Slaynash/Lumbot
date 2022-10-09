@@ -82,14 +82,14 @@ public class CommandManager {
                     rcmd.onClient(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asTextChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asGuildMessageChannel());
                 }
             }
         }
     }
 
     protected static void runAsServer(MessageReceivedEvent event) {
-        if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) //every command sends a message so lets require send message perms
+        if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND)) //every command sends a message so lets require send message perms
             return;
         String command = event.getMessage().getContentRaw();
         if (command.startsWith("l!ping")) command = command.substring(6).trim();
@@ -100,7 +100,7 @@ public class CommandManager {
                     rcmd.onServer(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asTextChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asGuildMessageChannel());
                 }
             }
         }
