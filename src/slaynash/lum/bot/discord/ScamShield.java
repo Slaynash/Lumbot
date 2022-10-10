@@ -129,7 +129,7 @@ public class ScamShield {
         }};
 
     // must be lowercase
-    private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb");
+    private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
     public static ScamResults ssValue(MessageReceivedEvent event) {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
@@ -517,7 +517,7 @@ public class ScamShield {
 
     public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete
         long mID = event.getMessageIdLong();
-        handledMessages.stream().forEach(m -> {
+        handledMessages.forEach(m -> {
             if (m.messageReceivedEvent.getMessage().getIdLong() == mID) {
                 m.suspiciousResults.ssFoundTerms.put("Deleted Message", -1);
                 m.suspiciousResults.suspiciousValue = m.suspiciousResults.ssFoundTerms.values().stream().reduce(0, Integer::sum);

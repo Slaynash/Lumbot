@@ -395,10 +395,9 @@ public final class MelonScanner {
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.editedLog = true; //trigger the `dont edit the log` message
             context.pirate = true;
-            return;
         }
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
-            return;
+            context.pirate = false;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
             if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
@@ -921,6 +920,8 @@ public final class MelonScanner {
     }
 
     private static boolean minorErrorsHandling(MelonScanContext context) {
+        if (context.mlHashCode.equals("57545710048555350515452101521025297995653101559949575755515399509950") && (context.loadedMods.containsKey("Action Menu") || context.loadedMods.containsKey("CameraAnimation") || context.loadedMods.containsKey("FreezeFrame")))
+            context.embedBuilder.addField("AM issue", "There is an issue with ML 0.5.5. Please try the latest [nightly build of ML](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip) or maybe downgrade to 0.5.4.", false);
         if (!context.assemblyGenerationFailed && !context.isMLOutdated && !context.isMLOutdatedVRC && context.duplicatedMods.size() == 0 && context.outdatedMods.size() == 0) {
             String error = "";
             if (context.noMods && context.missingMods.size() == 0 && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))

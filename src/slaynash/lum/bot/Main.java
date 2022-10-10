@@ -181,6 +181,7 @@ public class Main extends ListenerAdapter {
         }
         System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
+            //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.sleep(1000 * 15);
                 if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED)
