@@ -178,6 +178,10 @@
             "error": "Failed to execute Cpp2IL. Downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
         },
         {
+            "regex": " {4}- 'Il2Cppmscorlib' v0\\.0\\.0\\.0",
+            "error": "Failed to find some dependancies. If using Proton, please downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
+        },
+        {
             "previousLineRegex": "\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.",
             "regex": ".*at AssemblyUnhollower.Contexts.AssemblyRewriteContext.*",
             "error": "AssemblyUnhollower NRE. Please reinstall MelonLoader and make sure that a virus scanner is not removing files."
