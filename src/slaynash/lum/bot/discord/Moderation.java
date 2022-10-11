@@ -10,27 +10,25 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.PermissionOverride;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 
 public class Moderation {
-    public static void voiceJoin(GuildVoiceJoinEvent event) {
+    public static void voiceEvent(GuildVoiceUpdateEvent event) {
         Long guildID = event.getGuild().getIdLong();
-        if (GuildConfigurations.noMicChannels.containsKey(guildID) && event.getMember().hasPermission(Permission.MESSAGE_SEND)) {
-            VoiceChannel vc = event.getGuild().getVoiceChannelById(GuildConfigurations.noMicChannels.get(guildID));
-            if (vc != null) {
-                vc.getManager().putMemberPermissionOverride(event.getMember().getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).queue();
+        if (event.getChannelJoined() != null) {
+            if (GuildConfigurations.noMicChannels.containsKey(guildID) && event.getMember().hasPermission(Permission.MESSAGE_SEND)) {
+                TextChannel vcmute = event.getGuild().getTextChannelById(GuildConfigurations.noMicChannels.get(guildID));
+                if (vcmute != null) {
+                    vcmute.getManager().putMemberPermissionOverride(event.getMember().getIdLong(), EnumSet.of(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), null).queue();
+                }
             }
         }
-    }
-
-    public static void voiceLeave(GuildVoiceLeaveEvent event) {
-        Long guildID = event.getGuild().getIdLong();
-        if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
-            VoiceChannel vc = event.getGuild().getVoiceChannelById(GuildConfigurations.noMicChannels.get(guildID));
-            if (vc != null) {
-                vc.getManager().removePermissionOverride(event.getMember().getIdLong()).queue();
+        else if (event.getChannelLeft() != null) {
+            if (GuildConfigurations.noMicChannels.containsKey(guildID)) {
+                TextChannel vcmute = event.getGuild().getTextChannelById(GuildConfigurations.noMicChannels.get(guildID));
+                if (vcmute != null) {
+                    vcmute.getManager().removePermissionOverride(event.getMember().getIdLong()).queue();
+                }
             }
         }
     }
