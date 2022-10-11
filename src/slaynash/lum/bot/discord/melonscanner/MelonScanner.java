@@ -920,7 +920,7 @@ public final class MelonScanner {
     }
 
     private static boolean minorErrorsHandling(MelonScanContext context) {
-        if (context.mlHashCode.equals("57545710048555350515452101521025297995653101559949575755515399509950") && (context.loadedMods.containsKey("Action Menu") || context.loadedMods.containsKey("CameraAnimation") || context.loadedMods.containsKey("FreezeFrame")))
+        if (context.mlHashCode != null && context.mlHashCode.equals("57545710048555350515452101521025297995653101559949575755515399509950") && (context.loadedMods.containsKey("Action Menu") || context.loadedMods.containsKey("CameraAnimation") || context.loadedMods.containsKey("FreezeFrame")))
             context.embedBuilder.addField("AM issue", "There is an issue with ML 0.5.5. Please try the latest [nightly build of ML](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip) or maybe downgrade to 0.5.4.", false);
         if (!context.assemblyGenerationFailed && !context.isMLOutdated && !context.isMLOutdatedVRC && context.duplicatedMods.size() == 0 && context.outdatedMods.size() == 0) {
             String error = "";

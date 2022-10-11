@@ -22,7 +22,7 @@ public class WebResponse {
     }
 
     public void setData(String data) {
-        System.out.println("SetData: " + data);
+        //System.out.println("SetData: " + data);
         setData(data.getBytes(StandardCharsets.UTF_8));
     }
 
