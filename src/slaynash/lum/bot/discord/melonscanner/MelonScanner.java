@@ -231,10 +231,10 @@ public final class MelonScanner {
 
                 boolean hasVRChat1043ReadyML = false;
                 for (MLHashPair mlHashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
-                    if (mlHashes.x64.equals(CommandManager.melonLoaderVRCHash))
+                    if (mlHashes.x64().equals(CommandManager.melonLoaderVRCHash))
                         hasVRChat1043ReadyML = true;
 
-                    if (mlHashes.x64.equals(context.mlHashCode)) {
+                    if (mlHashes.x64().equals(context.mlHashCode)) {
                         System.out.println("matching hash found");
                         if (hasVRChat1043ReadyML)
                             context.isMLOutdatedVRC = false;
@@ -372,7 +372,7 @@ public final class MelonScanner {
             return;
 
         for (MLHashPair hashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
-            if (context.mlHashCode.equals(hashes.x64) || context.mlHashCode.equals(hashes.x86)) {
+            if (context.mlHashCode.equals(hashes.x64()) || context.mlHashCode.equals(hashes.x86())) {
                 System.out.println("ML hash found in known hashes");
                 return;
             }

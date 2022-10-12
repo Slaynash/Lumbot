@@ -48,7 +48,7 @@ public class AddReactionHandlerCommand extends Command {
 
             ReactionListener react = null;
             for (ReactionListener rl : CommandManager.reactionListeners) {
-                if (rl.messageId.equals(params[1]) && rl.emoteId.equals(params[2].matches("^<a?:\\w+:\\d+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2])) {
+                if (rl.messageId().equals(params[1]) && rl.emoteId().equals(params[2].matches("^<a?:\\w+:\\d+>$") ? params[2].split(":")[2].split(">", 2)[0] : params[2])) {
                     react = rl;
                     break;
                 }

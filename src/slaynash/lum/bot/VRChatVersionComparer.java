@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
 import mono.cecil.AssemblyDefinition;
@@ -41,13 +42,12 @@ public class VRChatVersionComparer {
 
         File steamdlfolder = new File("vrcdecomp/VRChat");
         if (steamdlfolder.exists()) {
-            try {
-                Files.walk(steamdlfolder.toPath())
-                    .sorted(Comparator.reverseOrder())
+            try (Stream<Path> filesToDelete = Files.walk(steamdlfolder.toPath())) {
+                filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to delete old vrchat download folder", e);
                 return;
             }
@@ -120,13 +120,12 @@ public class VRChatVersionComparer {
                 return;
             }
 
-            try {
-                Files.walk(steamdlfolder.toPath())
-                    .sorted(Comparator.reverseOrder())
+            try (Stream<Path> filesToDelete = Files.walk(steamdlfolder.toPath())) {
+                filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to delete vrchat download folder", e);
                 return;
             }

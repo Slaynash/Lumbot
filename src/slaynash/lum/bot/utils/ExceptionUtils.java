@@ -17,18 +17,7 @@ import slaynash.lum.bot.discord.JDAManager;
 
 public final class ExceptionUtils {
 
-    private static class QueuedException {
-        public final String title;
-        public final String comment;
-        public final Throwable exception;
-        public final GuildChannel guildChannel;
-
-        public QueuedException(String title, String comment, Throwable exception, GuildChannel guildChannel) {
-            this.title = title;
-            this.comment = comment;
-            this.exception = exception;
-            this.guildChannel = guildChannel;
-        }
+    private record QueuedException(String title, String comment, Throwable exception, GuildChannel guildChannel) {
     }
 
     private static final Queue<QueuedException> queuedExceptions = new LinkedList<>();

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -137,7 +138,7 @@ public class UnityVersionMonitor {
                             continue;
 
                         String subline = line.substring(hrefIdentifierIndex + hrefIdentifier.length());
-                        String foundUrl = "https://download.unity3d.com/" + subline.split("\"", 2)[0];
+                        String foundUrl;
                         int extensionIndex;
                         if ((extensionIndex = subline.indexOf(".exe")) < 0)
                             continue;
@@ -358,26 +359,24 @@ public class UnityVersionMonitor {
         File targetFile = new File(downloadPath + "/" + uv.version);
         File targetFileTmp = new File(downloadPath + "/" + uv.version + "_tmp");
         if (targetFile.exists()) {
-            try {
-                Files.walk(targetFile.toPath())
-                    .sorted(Comparator.reverseOrder())
+            try (Stream<Path> filesToDelete = Files.walk(targetFile.toPath())) {
+                filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 ExceptionUtils.reportException("Failed to delete unity folder " + uv.version, e);
                 return;
             }
         }
 
         if (targetFileTmp.exists()) {
-            try {
-                Files.walk(targetFileTmp.toPath())
-                    .sorted(Comparator.reverseOrder())
+            try (Stream<Path> filesToDelete = Files.walk(targetFileTmp.toPath())) {
+                filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (IOException e) {
+            catch (Exception e) {
                 ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
                 return;
             }
@@ -427,13 +426,12 @@ public class UnityVersionMonitor {
             saveInstalledVersionCache(uv.version, "windows il2cpp");
         }
 
-        try {
-            Files.walk(targetFileTmp.toPath())
-                .sorted(Comparator.reverseOrder())
+        try (Stream<Path> filesToDelete = Files.walk(targetFileTmp.toPath())) {
+            filesToDelete.sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
                 .forEach(File::delete);
         }
-        catch (IOException e) {
+        catch (Exception e) {
             ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
             return;
         }
@@ -1063,18 +1061,7 @@ public class UnityVersionMonitor {
         return false;
     }
 
-    private static class UnityVersion {
-        public final String version;
-        public final String fullVersion;
-        public final String downloadUrl;
-        public final String downloadUrlIl2CppWin;
-
-        public UnityVersion(String version, String fullVersion, String downloadUrl, String downloadUrlIl2CppWin) {
-            this.version = version;
-            this.fullVersion = fullVersion;
-            this.downloadUrl = downloadUrl;
-            this.downloadUrlIl2CppWin = downloadUrlIl2CppWin;
-        }
+    private record UnityVersion(String version, String fullVersion, String downloadUrl, String downloadUrlIl2CppWin) {
     }
 
     private static class UnityICall {

@@ -12,8 +12,8 @@ public class VerifyCommandCommand extends Command {
         VerifyPair pair = CommandManager.verifyChannels.get(paramMessageReceivedEvent.getGuild().getIdLong());
         if (pair != null) {
             //System.out.println("Server has registered verify command with channel " + pair.channelId + " and role " + pair.roleId);
-            if (paramMessageReceivedEvent.getChannel().getId().equals(pair.channelId)) {
-                paramMessageReceivedEvent.getGuild().addRoleToMember(paramMessageReceivedEvent.getAuthor(), paramMessageReceivedEvent.getGuild().getRoleById(pair.roleId)).queue();
+            if (paramMessageReceivedEvent.getChannel().getId().equals(pair.channelId())) {
+                paramMessageReceivedEvent.getGuild().addRoleToMember(paramMessageReceivedEvent.getAuthor(), paramMessageReceivedEvent.getGuild().getRoleById(pair.roleId())).queue();
                 paramMessageReceivedEvent.getChannel().sendMessage("You are now verified!").queue();
             }
         }

@@ -266,6 +266,7 @@ public class ServerMessagesHandler {
             }
 
             if (guildconfig.LumReplies() && ChattyLum.handle(message, event))
+                //noinspection UnnecessaryReturnStatement
                 return;
         }
         catch (Exception e) {

@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public abstract class Command {
     protected Command instance = this;
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     protected abstract boolean matchPattern(String paramString);
 
     protected void onClient(String paramString, MessageReceivedEvent paramMessageReceivedEvent) {

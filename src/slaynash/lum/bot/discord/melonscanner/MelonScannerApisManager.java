@@ -71,11 +71,11 @@ public class MelonScannerApisManager {
 
     static {
         MelonScannerApi api;
-        apis.add(api = new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
+        apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
-        apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
-        apis.add(api = new ThunderstoreApi("BONEWORKS", "boneworks"));
-        apis.add(api = new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
+        apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
         apis.add(api = new CurseforgeApi("Demeo", 78135));
         api.setPostReadPass(context -> { // TODO move this to a lua script
             for (LogsModDetails logsModDetails : context.loadedMods.values()) {
@@ -87,10 +87,10 @@ public class MelonScannerApisManager {
                 }
             }
         });
-        apis.add(api = new ThunderstoreApi("Hard Bullet", "hard-bullet"));
-        apis.add(api = new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
-        apis.add(api = new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
-        // apis.add(api = new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
+        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
+        apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
+        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
+        // apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
     }
 
     public static void startFetchingThread() {

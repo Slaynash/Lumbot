@@ -150,7 +150,7 @@ public class CommandManager {
     public static void saveReactions() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/rolereactions.txt"))) {
             for (ReactionListener rl : reactionListeners) {
-                writer.write(rl.messageId + " " + rl.emoteId + " " + rl.roleId + "\n");
+                writer.write(rl.messageId() + " " + rl.emoteId() + " " + rl.roleId() + "\n");
             }
         }
         catch (IOException e) {
@@ -194,10 +194,10 @@ public class CommandManager {
     public static void saveMLHashes() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlhashes.txt"))) {
             for (MLHashPair s : melonLoaderHashes)
-                writer.write("r " + s.x86 + " " + s.x64 + "\n");
+                writer.write("r " + s.x86() + " " + s.x64() + "\n");
 
             for (MLHashPair s : melonLoaderAlphaHashes)
-                writer.write("a " + s.x86 + " " + s.x64 + "\n");
+                writer.write("a " + s.x86() + " " + s.x64() + "\n");
 
         }
         catch (IOException e) {
@@ -227,7 +227,7 @@ public class CommandManager {
     public static void saveVerifyChannels() {
         try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/verifychannels.txt"))) {
             for (Entry<Long, VerifyPair> verifychannel : verifyChannels.entrySet()) {
-                writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId + " " + verifychannel.getValue().roleId + "\n");
+                writer.write(verifychannel.getKey() + " " + verifychannel.getValue().channelId() + " " + verifychannel.getValue().roleId() + "\n");
             }
         }
         catch (IOException e) {

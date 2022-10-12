@@ -432,14 +432,14 @@ public class Main extends ListenerAdapter {
 
         // System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + (event.getReactionEmote().isEmote() ? "isEmote id:" + event.getReactionEmote().getId() : "") + (EmojiUtils.containsEmoji(event.getReactionEmote().getName()) ? " is Emoji" : ""));
         for (ReactionListener rl : CommandManager.reactionListeners) {
-            if (event.getMessageId().equals(rl.messageId) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId))) {
-                Role role = event.getGuild().getRoleById(rl.roleId);
+            if (event.getMessageId().equals(rl.messageId()) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId()) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId()))) {
+                Role role = event.getGuild().getRoleById(rl.roleId());
                 if (role != null) {
                     event.getGuild().addRoleToMember(event.getMember(), role).reason("User clicked role reaction").queue();
                     writeLogMessage(event.getGuild(), "Added role `" + role.getName() + "` to " + event.getUser().getAsMention());
                 }
                 else
-                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId + "` not found");
+                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId() + "` not found");
                 return;
             }
         }
@@ -461,14 +461,14 @@ public class Main extends ListenerAdapter {
     @Override
     public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event) {
         for (ReactionListener rl : CommandManager.reactionListeners) {
-            if (event.getMessageId().equals(rl.messageId) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId))) {
-                Role role = event.getGuild().getRoleById(rl.roleId);
+            if (event.getMessageId().equals(rl.messageId()) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId()) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId()))) {
+                Role role = event.getGuild().getRoleById(rl.roleId());
                 if (role != null && event.getUser() != null) {
                     event.getGuild().removeRoleFromMember(event.getUser(), role).reason("User removed role reaction").queue();
                     writeLogMessage(event.getGuild(), "Removed role `" + role.getName() + "` from " + event.getUser().getAsMention());
                 }
                 else
-                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId + "` not found");
+                    writeLogMessage(event.getGuild(), "Role `" + rl.roleId() + "` not found");
                 return;
             }
         }

@@ -46,7 +46,7 @@ public final class DBConnectionManagerLum {
         }
     }
 
-    public static Connection getConnection() {
+    private static Connection getConnection() {
         try {
             if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
                 if (connection != null && !connection.isClosed()) connection.close();
