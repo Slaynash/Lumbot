@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public final class Localization {

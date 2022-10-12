@@ -9,7 +9,6 @@ import java.util.Random;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;

@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -49,6 +47,7 @@ import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.gcardone.junidecode.Junidecode;
+import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;

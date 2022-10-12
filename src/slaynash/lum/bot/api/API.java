@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import slaynash.lum.bot.Main;
 import slaynash.lum.bot.api.endpoints.PingEndpoint;
 import slaynash.lum.bot.api.endpoints.ReloadMelonScannerErrorsEndpoint;

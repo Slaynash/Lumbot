@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CheckStyle-IDEA" serialisationVersion="2">
+    <checkstyleVersion>8.44</checkstyleVersion>
+    <scanScope>JavaOnly</scanScope>
+    <suppressErrors>true</suppressErrors>
+    <copyLibs>true</copyLibs>
+    <option name="thirdPartyClasspath" />
+    <option name="activeLocationIds">
+      <option value="bf1a203a-3636-482d-bbc8-f821cb23d6c2" />
+    </option>
+    <option name="locations">
+      <list>
+        <ConfigurationLocation id="bf1a203a-3636-482d-bbc8-f821cb23d6c2" type="PROJECT_RELATIVE" scope="All" description="Lum">$PROJECT_DIR$/checkstyle.xml</ConfigurationLocation>
+      </list>
+    </option>
+  </component>
+</project>

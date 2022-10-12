@@ -1,4 +1,5 @@
 {
+	"java.completion.importOrder": ["java", "javax"],
     "java.configuration.updateBuildConfiguration": "automatic",
     "Lua.diagnostics.globals": [
         "data",

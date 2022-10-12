@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutionException;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
-
 import net.dv8tion.jda.api.Permission;
 import slaynash.lum.bot.utils.Utils;
 

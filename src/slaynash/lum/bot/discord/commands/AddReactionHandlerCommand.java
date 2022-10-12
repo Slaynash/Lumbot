@@ -3,7 +3,6 @@ package slaynash.lum.bot.discord.commands;
 import java.awt.Color;
 
 import com.coder4.emoji.EmojiUtils;
-
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;

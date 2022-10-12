@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;

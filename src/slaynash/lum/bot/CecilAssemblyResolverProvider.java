@@ -6,16 +6,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang3.NotImplementedException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import mono.cecil.AssemblyDefinition;
 import mono.cecil.AssemblyNameReference;
 import mono.cecil.IAssemblyResolver;
 import mono.cecil.IAssemblyResolverProvider;
 import mono.cecil.ModuleDefinition;
 import mono.cecil.ReaderParameters;
+import org.apache.commons.lang3.NotImplementedException;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider {
     @Override

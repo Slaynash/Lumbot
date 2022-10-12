@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-
 import mono.cecil.AssemblyDefinition;
 import mono.cecil.FieldDefinition;
 import mono.cecil.MethodDefinition;

@@ -2,11 +2,10 @@ package slaynash.lum.bot.discord.commands;
 
 import java.io.File;
 
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
-
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.LuaPackages;
 import slaynash.lum.bot.utils.ExceptionUtils;

@@ -17,7 +17,6 @@ import java.util.Random;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
-
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.Command;

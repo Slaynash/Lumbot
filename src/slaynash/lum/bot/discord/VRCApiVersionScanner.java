@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.Gson;
-
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
