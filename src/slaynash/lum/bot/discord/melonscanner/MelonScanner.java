@@ -168,6 +168,9 @@ public final class MelonScanner {
                 context.embedColor = Color.RED;
             }
 
+            if (context.game != null)
+                ServerMessagesHandler.handleReplies(messageReceivedEvent, context.game);
+
             if (context.embedBuilder.getFields().size() > 0) {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
@@ -495,6 +498,12 @@ public final class MelonScanner {
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         String templatestMLVersionRelease = latestMLVersionRelease;
         context.isMLOutdated = context.mlVersion != null && !(CrossServerUtils.sanitizeInputString(context.mlVersion).equals(templatestMLVersionRelease) || CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, templatestMLVersionRelease) == 1/* If Alpha is more recent */);
+        if (context.mlVersion != null && context.game != null && context.game.equalsIgnoreCase("BONEWORKS")) { // TODO Remove this temporary line when ML 0.5.6 is released
+            if (context.mlVersion.equals("0.5.5")) {
+                context.isMLOutdated = true;
+                return false;
+            }
+        }
         if (context.isMLOutdated || context.modifiedML) {
             int result = VersionUtils.compareVersion(templatestMLVersionRelease, context.mlVersion);
             switch (result) {
