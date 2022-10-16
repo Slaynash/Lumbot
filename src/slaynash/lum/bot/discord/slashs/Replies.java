@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -19,9 +20,11 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 //TODO add more replacements like username, server age
+//TODO figure out a way to remove a option, you can't send an empty option
 
 public class Replies extends Slash {
     @Override
@@ -42,6 +45,7 @@ public class Replies extends Slash {
                 .addOption(OptionType.BOOLEAN, "edit", "Allow replying to when member edits their message", false)
                 .addOption(OptionType.CHANNEL, "channel", "Allow reply in only a single channel", false)
                 .addOption(OptionType.ROLE,    "ignorerole", "Prevent triggering if user has role", false)
+                .addOption(OptionType.BOOLEAN, "report", "Report if this reply was triggered", false)
             //  .addOption(OptionType.INTEGER, "repeat", "Trigger if repeated command", false) //todo Maybe later
             )
             .addSubcommands(new SubcommandData("delete", "Remove a reply")
@@ -96,6 +100,14 @@ public class Replies extends Slash {
         }
         boolean bot = event.getOption("bot") != null && event.getOption("bot").getAsBoolean();
         boolean edit = event.getOption("edit") != null && event.getOption("edit").getAsBoolean();
+        boolean report = event.getOption("report") != null && event.getOption("report").getAsBoolean();
+        if (report) {
+            TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
+            if (reportChannel == null) {
+                event.reply("I can't find the report channel. Please set it with `l!setmlreportchannel` in the log channel").queue();
+                return;
+            }
+        }
 
         if (event.getSubcommandName().equals("list")) {
             int c = 0;
@@ -112,6 +124,7 @@ public class Replies extends Slash {
                     sb.append(rs.getBoolean("bban") ? "\tban" : "");
                     sb.append(rs.getBoolean("bbot") ? "\tbot" : "");
                     sb.append(rs.getBoolean("bedit") ? "\tedit" : "");
+                    sb.append(rs.getBoolean("breport") ? "\treport" : "");
                     sb.append("\n");
                     if (rs.getString("regex") != null) {
                         sb.append("\tRegex: ").append(rs.getString("regex").replace("\n", "\n\t\t")).append("\n");
@@ -193,7 +206,7 @@ public class Replies extends Slash {
                 if (event.getOption("regex") == null && event.getOption("contains") == null && event.getOption("equals") == null)
                     event.getChannel().asTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
                 try {
-                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, muserid);
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `breport`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, report, muserid);
 
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ukey` FROM `Replies` WHERE `guildID` = ? ORDER BY `ukey` DESC LIMIT 1", guildid);
                     rs.next();
@@ -249,6 +262,8 @@ public class Replies extends Slash {
                         DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bbot = ? WHERE `Replies`.`ukey` = ?", bot, ukey);
                     if (event.getOption("edit") != null)
                         DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set bedit = ? WHERE `Replies`.`ukey` = ?", edit, ukey);
+                    if (event.getOption("report") != null)
+                        DBConnectionManagerLum.sendUpdate("UPDATE `Replies` Set breport = ? WHERE `Replies`.`ukey` = ?", report, ukey);
                     event.reply("Reply " + ukey + " updated!").queue();
                 }
                 catch (SQLException e) {

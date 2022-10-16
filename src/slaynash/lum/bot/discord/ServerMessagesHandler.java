@@ -6,18 +6,21 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.coder4.emoji.EmojiUtils;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -378,6 +381,7 @@ public class ServerMessagesHandler {
                     boolean kick = rs.getBoolean("bkick");
                     boolean ban = rs.getBoolean("bban");
                     boolean edit = rs.getBoolean("bedit");
+                    boolean report = rs.getBoolean("breport");
                     if (!edit && event.getMessage().isEdited()) {
                         continue;
                     }
@@ -442,6 +446,21 @@ public class ServerMessagesHandler {
                     }
                     else if (!message.isBlank()) {
                         event.getChannel().asTextChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                    }
+                    if (report) {
+                        TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
+                        if (reportChannel != null) {
+                            EmbedBuilder eb = new EmbedBuilder();
+                            eb.setTitle("Reply Report");
+                            eb.addField("User", event.getAuthor().getAsTag() + " (" + event.getAuthor().getId() + ")", false);
+                            eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
+                            eb.addField("Message", event.getMessage().getContentRaw(), false);
+                            eb.addField("Reply", message, false);
+                            eb.setFooter("Reply ID: " + ukey);
+                            eb.setColor(Color.orange);
+                            eb.setTimestamp(Instant.now());
+                            reportChannel.sendMessageEmbeds(eb.build()).queue();
+                        }
                     }
                     DBConnectionManagerLum.closeRequest(rs);
                     return true;
