@@ -143,9 +143,17 @@ public class Main extends ListenerAdapter {
 
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
-            HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
-            while (response.statusCode() == 200) {
-                response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+            HttpResponse<byte[]> response = null;
+            while (response == null || response.statusCode() == 200) {
+                try {
+                    response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+                    System.out.println("PingChecker: " + response.statusCode());
+                }
+                catch (Exception e) {
+                    System.out.println("Failed to contact main bot, starting up...");
+                    break;
+                }
+
                 Thread.sleep(1000 * 15);
             }
             System.out.println("PingChecker: Ping failed, starting backup...");
@@ -182,14 +190,25 @@ public class Main extends ListenerAdapter {
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.sleep(1000 * 15);
-                if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED)
+                if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED) {
+                    System.out.println("Not Connected to Discord...");
                     continue;
+                }
+                int statusCode;
+                try {
+                    statusCode = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker").statusCode();
+                }
+                catch (Exception e) {
+                    statusCode = 0;
+                }
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
-                if (response.statusCode() == 200) {
+                if (statusCode == 200) {
+                    System.out.println("PingChecker: Ping successful, shutting down...");
                     if (!JDAManager.isEventsEnabled())
                         JDAManager.enableEvents();
                 }
                 else {
+                    System.out.println("PingChecker: Ping failed, starting backup...");
                     if (JDAManager.isEventsEnabled())
                         JDAManager.disableEvents();
                 }

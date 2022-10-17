@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Sep 02, 2022 at 06:44 PM
+-- Generation Time: Oct 17, 2022 at 12:22 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -141,6 +141,7 @@ CREATE TABLE IF NOT EXISTS `Replies` (
   `bban` tinyint(1) NOT NULL DEFAULT '0',
   `bbot` tinyint(1) NOT NULL DEFAULT '0',
   `bedit` tinyint(1) NOT NULL DEFAULT '0',
+  `breport` tinyint(1) NOT NULL DEFAULT '0',
   `channel` bigint DEFAULT NULL,
   `ignorerole` bigint DEFAULT NULL,
   `lastedited` bigint DEFAULT NULL,
