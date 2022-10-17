@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.utils.FileUpload;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -55,6 +56,10 @@ public class Replies extends Slash {
 
     @Override
     public void slashRun(SlashCommandInteractionEvent event) {
+        if (!ConfigManager.mainBot) {
+            event.reply("Lum is running on Backup mode. Replies is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            return;
+        }
         System.out.println("Options size: " + event.getOptions().size());
         if (event.getChannelType() == ChannelType.PRIVATE) {
             event.reply("Replies currently does not work in DMs").queue();

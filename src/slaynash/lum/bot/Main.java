@@ -177,13 +177,14 @@ public class Main extends ListenerAdapter {
         }
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
-            new AddMissingRoles().addMissing(null);
             Moderation.voiceStartup();
-            if (ConfigManager.mainBot)
+            if (ConfigManager.mainBot) {
+                new AddMissingRoles().addMissing(null);
                 JDAManager.getJDA()
-                    .getTextChannelById(808076226064941086L)
-                    .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
-                    .queue();
+                        .getTextChannelById(808076226064941086L)
+                        .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
+                        .queue();
+            }
         }
         System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over

@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.steam.SteamChannel;
@@ -31,6 +32,10 @@ public class SteamWatcher extends Slash {
 
     @Override
     public void slashRun(SlashCommandInteractionEvent event) {
+        if (!ConfigManager.mainBot) {
+            event.reply("Lum is running on Backup mode. SteamWatcher is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            return;
+        }
         if (event.getChannelType() == ChannelType.PRIVATE) {
             event.reply("Steam Watch currently does not work in DMs").queue();
             return;

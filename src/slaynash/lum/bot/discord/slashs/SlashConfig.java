@@ -16,6 +16,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.GuildConfiguration;
 import slaynash.lum.bot.discord.Moderation;
@@ -28,6 +29,10 @@ public class SlashConfig extends Slash {
     }
 
     public void sendReply(SlashCommandInteractionEvent event, String guildID) {
+        if (!ConfigManager.mainBot) {
+            event.reply("Lum is running on Backup mode. Config is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            return;
+        }
         try {
             if (!guildID.matches("^\\d{18,19}$")) {
                 event.reply("Invalid Guild ID. Please make sure that you are using the digit ID. https://support.discord.com/hc/en-us/articles/206346498").setEphemeral(true).queue();
@@ -95,6 +100,10 @@ public class SlashConfig extends Slash {
 
     @Override
     public void buttonClick(ButtonInteractionEvent event) {
+        if (!ConfigManager.mainBot) {
+            event.reply("Lum is running on Backup mode. Config is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            return;
+        }
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
