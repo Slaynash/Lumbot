@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.ResultSet;
@@ -141,12 +142,13 @@ public class Main extends ListenerAdapter {
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");
         }
 
+        HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).followRedirects(HttpClient.Redirect.ALWAYS).connectTimeout(Duration.ofSeconds(20)).build();
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
             HttpResponse<byte[]> response = null;
             while (response == null || response.statusCode() == 200) {
                 try {
-                    response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
+                    response = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker",2);
                     System.out.println("PingChecker: " + response.statusCode());
                 }
                 catch (Exception e) {
@@ -197,12 +199,11 @@ public class Main extends ListenerAdapter {
                 }
                 int statusCode;
                 try {
-                    statusCode = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker").statusCode();
+                    statusCode = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker",2).statusCode();
                 }
                 catch (Exception e) {
                     statusCode = 0;
                 }
-                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(pingCheckRequest, "PingChecker");
                 if (statusCode == 200) {
                     System.out.println("PingChecker: Ping successful, shutting down...");
                     if (!JDAManager.isEventsEnabled())

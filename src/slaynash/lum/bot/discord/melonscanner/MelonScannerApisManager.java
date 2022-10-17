@@ -518,9 +518,11 @@ public class MelonScannerApisManager {
         return downloadRequest(httpClient, request, source);
     }
     public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
+        return downloadRequest(httpClient, request, source, 3);
+    }
+    public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source, int attempts) throws Exception {
         HttpResponse<byte[]> response;
         Exception exception = null;
-        int attempts = 3;
         for (int i = 0; i < attempts; i++) {
             try {
                 response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
