@@ -148,7 +148,7 @@ public class Main extends ListenerAdapter {
             HttpResponse<byte[]> response = null;
             while (response == null || response.statusCode() == 200) {
                 try {
-                    response = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker",2);
+                    response = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker", 2);
                     System.out.println("PingChecker: " + response.statusCode());
                 }
                 catch (Exception e) {
@@ -199,7 +199,7 @@ public class Main extends ListenerAdapter {
                 }
                 int statusCode;
                 try {
-                    statusCode = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker",2).statusCode();
+                    statusCode = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker", 2).statusCode();
                 }
                 catch (Exception e) {
                     statusCode = 0;

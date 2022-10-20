@@ -9,6 +9,7 @@ import java.util.Date;
 import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -48,6 +49,7 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
 
     public static void updateCounter() {
         try {
+            if (!JDAManager.isEventsEnabled()) return;
             if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
                 return;
             if (!JDAManager.getJDA().getStatus().equals(Status.CONNECTED)) return;
@@ -80,7 +82,7 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
             sslogCount = directory.listFiles().length;
 
             if (logCount != previousLogCount || sslogCount != previousSSCount)
-                JDAManager.getJDA().getPresence().setActivity(Activity.watching(logCount + " melons squashed and removed "
+                JDAManager.getJDA().getPresence().setActivity(Activity.watching((ConfigManager.mainBot ? "" : "BACKUP") + logCount + " melons squashed and removed "
                     + sslogCount + " scammers in 24 hours. In " + JDAManager.getJDA().getGuilds().size() + " guilds!"));
             previousLogCount = logCount;
             previousSSCount = sslogCount;

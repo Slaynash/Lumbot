@@ -1,14 +1,14 @@
 package slaynash.lum.bot;
 
-import static slaynash.lum.bot.DBConnectionManagerLum.formatStatement;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -56,6 +56,24 @@ public final class DBConnectionManagerShortUrls {
             ExceptionUtils.reportException("Failed to get database connection", e);
         }
         return null;
+    }
+
+    public static PreparedStatement formatStatement(String statement, Object... args) throws SQLException {
+        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
+        for (int i = 0; i < args.length; i++) {
+            if (args[i] == null)
+                ps.setNull(i + 1, Types.VARCHAR);
+            else if (args[i].getClass() == String.class)
+                ps.setString(i + 1, (String) args[i]);
+            else if (args[i].getClass() == Integer.class)
+                ps.setInt(i + 1, (int) args[i]);
+            else if (args[i].getClass() == Boolean.class)
+                ps.setBoolean(i + 1, (boolean) args[i]);
+            else if (args[i].getClass() == Long.class)
+                ps.setLong(i + 1, (long) args[i]);
+            else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
+        }
+        return ps;
     }
 
     /** SELECT, CALL
