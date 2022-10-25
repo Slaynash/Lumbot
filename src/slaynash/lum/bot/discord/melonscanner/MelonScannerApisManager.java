@@ -72,6 +72,7 @@ public class MelonScannerApisManager {
     static {
         MelonScannerApi api;
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
+        apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
         // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
@@ -102,7 +103,7 @@ public class MelonScannerApisManager {
 
                 for (MelonScannerApi api : apis) {
 
-                    System.out.println("Fetching " + api.name);
+                    System.out.println("Fetching " + api.game + " : " + api.name);
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .GET()
@@ -167,7 +168,7 @@ public class MelonScannerApisManager {
 
                             HttpRequest request = builder.build();
 
-                            HttpResponse<byte[]> response = downloadRequest(request, api.name);
+                            HttpResponse<byte[]> response = downloadRequest(request, api.game + " : " + api.name);
                             byte[] responseBody = response.body();
                             if (api.isGZip) {
                                 ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
@@ -205,7 +206,7 @@ public class MelonScannerApisManager {
                             if (modsLuaRaw == LuaValue.FALSE || modsLuaRaw == LuaValue.NIL) {
                                 if (apiMods.isEmpty())
                                     apiMods = api.cachedMods;
-                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.name, constructedURI);
+                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.game + " : " + api.name, constructedURI);
                                 doneFetching = true;
                             }
                             else {
@@ -286,7 +287,6 @@ public class MelonScannerApisManager {
                                 Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
                             else if (!apiMods.isEmpty()) {
                                 if (api.name.equals("vrcmg") && pagingOffset == 0) {
-                                    //apiMods.add(new MelonApiMod("ReMod", null, null, null, null, "Mod", false)); // ReMod uses Lum embed for outdated version
                                     apiMods.add(new MelonApiMod(null, "WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
                                 }
 
@@ -343,17 +343,17 @@ public class MelonScannerApisManager {
                             Thread.sleep(1000);
                     }
                     catch (HttpTimeoutException exception) {
-                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.name + ", " + constructedURI);
+                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + api.name + ", " + constructedURI);
                     }
                     catch (IOException exception) {
                         if (exception.getMessage().contains("GOAWAY")) {
-                            ExceptionUtils.reportException(api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
+                            ExceptionUtils.reportException(api.game + " : " + api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                         }
                         else
-                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.name + ", " + constructedURI, exception.getMessage());
+                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + api.name + ", " + constructedURI, exception.getMessage());
                     }
                     catch (Exception exception) {
-                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.name + ", " + constructedURI, exception);
+                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + api.name + ", " + constructedURI, exception);
                     }
 
                 }
