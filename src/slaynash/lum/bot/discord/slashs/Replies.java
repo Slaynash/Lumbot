@@ -110,7 +110,9 @@ public class Replies extends Slash {
             TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
             if (reportChannel == null) {
                 event.reply("I can't find the report channel. Please set it with `l!setmlreportchannel` in the log channel").queue();
-                return;
+            }
+            if (!event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+                event.reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
             }
         }
 

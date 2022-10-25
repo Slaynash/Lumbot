@@ -67,7 +67,7 @@
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>5.0.0-alpha.21</version>
+      <version>5.0.0-alpha.22</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId> <!-- Exclude DISCORD AUDIO -->
@@ -105,7 +105,7 @@
     <dependency>
       <groupId>com.github.tony19</groupId>
       <artifactId>named-regexp</artifactId>
-      <version>0.2.7</version>
+      <version>0.2.8</version>
     </dependency>
 
   </dependencies>

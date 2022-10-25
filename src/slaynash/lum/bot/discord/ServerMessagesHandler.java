@@ -450,16 +450,21 @@ public class ServerMessagesHandler {
                     if (report) {
                         TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
                         if (reportChannel != null) {
-                            EmbedBuilder eb = new EmbedBuilder();
-                            eb.setTitle("Reply Report");
-                            eb.addField("User", event.getAuthor().getAsTag() + " (" + event.getAuthor().getId() + ")", false);
-                            eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
-                            eb.addField("Message", event.getMessage().getContentRaw(), false);
-                            eb.addField("Reply", message, false);
-                            eb.setFooter("Reply ID: " + ukey);
-                            eb.setColor(Color.orange);
-                            eb.setTimestamp(Instant.now());
-                            reportChannel.sendMessageEmbeds(eb.build()).queue();
+                            if (!event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+                                event.getMessage().reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
+                            }
+                            else {
+                                EmbedBuilder eb = new EmbedBuilder();
+                                eb.setTitle("Reply Report");
+                                eb.addField("User", event.getAuthor().getAsTag() + " (" + event.getAuthor().getId() + ")", false);
+                                eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
+                                eb.addField("Message", event.getMessage().getContentRaw(), false);
+                                eb.addField("Reply", message, false);
+                                eb.setFooter("Reply ID: " + ukey);
+                                eb.setColor(Color.orange);
+                                eb.setTimestamp(Instant.now());
+                                reportChannel.sendMessageEmbeds(eb.build()).queue();
+                            }
                         }
                     }
                     DBConnectionManagerLum.closeRequest(rs);

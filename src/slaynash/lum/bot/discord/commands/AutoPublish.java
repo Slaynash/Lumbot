@@ -17,7 +17,7 @@ public class AutoPublish extends Command {
             paramMessageReceivedEvent.getMessage().reply("This is not an announcement channel.").queue();
             return;
         }
-        if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
+        if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asNewsChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL)) {
             paramMessageReceivedEvent.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage(
                 "Lum does not have the proper permissions to publish messages in " + paramMessageReceivedEvent.getChannel().getName() + " Please make sure that Lum has Message Read, Write, and Manage Permissions.")).queue(null, m -> System.out.println("failed to open DM"));
             return;
