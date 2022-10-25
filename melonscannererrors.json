@@ -50,7 +50,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Execute Assembly Generator!",
-            "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/vrchat) and tell us if it loads."
+            "error": "The assembly generation failed. This is most likely caused by your anti-virus. Add an exception or disable it, then try again. If that wasn't the issue then try accessing [this site](https://api.melonloader.com/api/v1/game/) and tell us if it loads."
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Load GameAssembly!",
@@ -118,10 +118,6 @@
         },
         {
             "regex": ".*SocketException \\(0x8.*"
-        },
-        {
-            "regex": ".*due to: Could not load file or assembly '(?!ReMod.Core).*",
-            "error": "Failed to load critical files. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner. Make sure that there is no ` (#)` in any mod dll name."
         },
         {
             "regex": ".*Exception initializing LibCpp2IL.*",
@@ -241,8 +237,8 @@
             "error": "Please redownload the installer from [GitHub](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) and try to install ML with it."
         },
         {
-            "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Load Assembly for.*VRCModUpdater.Core.dll.*",
-            "error": "Please do not move VRCModUpdater.Core.dll out of your `VRChat\\UserData` folder."
+            "regex": "\\[[\\d.:]+] \\[ERROR] Failed to Load Assembly for.*CVRModUpdater.Core.dll.*",
+            "error": "Please do not move CVRModUpdater.Core.dll out of your `ChilloutVR\\UserData` folder."
         },
         {
             "regex": ".*\\\\MelonLoader(.x64|.x32).zip/.*",
@@ -282,218 +278,6 @@
         }
     ],
     "gameSpecificErrors": {
-        "VRChat": [
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Update notice failed."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System locale:.*"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Config semver:.*"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Error produced: System.ArgumentOutOfRangeException: startIndex must be less than length of string.",
-                "error": "EmmVRC failed to download changelog. This does not cause any issues."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[OculusPlayspaceMover] \\[ERROR] OVRCameraRig not found, this mod only work (i|o)n Oculus( for now!|! If u are using SteamVR, use the OVR Advanced Settings!)",
-                "error": "OculusPlayspaceMover does not work in SteamVR. Instead, it is recommended to use [OVR Advanced Settings](https://store.steampowered.com/app/1009850/) for playspace mover <https://youtu.be/E4ZByfPWTuM>."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[VRCX_Companion] \\[ERROR] Failed to connect to VRCX IPC Server.*",
-                "error": "VRCX Companion can not find VRCX. Make sure VRCX is running or [install VRCX](https://github.com/Natsumi-sama/VRCX#how-to-install-vrcx)"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.*",
-                "error": "Please download [emmVRCLoader.dll](https://dl.emmvrc.com/downloads/emmVRCLoader.dll) and move to **Mods** folder\nor [VRCModUpdater](https://s.slaynash.fr/VRCMULatest) and move it to the **Plugins** folder."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(503\\) Backend unavailable.*",
-                "error": "emmVRC Network is unavailable right now (or when this log was generated). Please try again later."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] You have emmVRC's Stealth Mode enabled.*",
-                "error": "You have emmVRC's Stealth Mode enabled. To access the functions menu, press the \"Report World\" button. Most visual functions of emmVRC have been disabled."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: SecureChannelFailure.*",
-                "error": "emmVRC failed to connect to emmVRC network. Please make sure that emmvrc.com is not blocked or try a VPN."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(PopulateList\\)} failed with exception.*",
-                "error": "emmVRC failed to load your emmVRC favorites. Please make sure that emmvrc.com is not blocked or try a VPN."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(SearchAvatars\\)} failed with exception.*",
-                "error": "emmVRC failed to search for avatars. Please make sure that emmvrc.com is not blocked or try a VPN."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Free-floating Task \\(Login\\)} failed with exception.*",
-                "error": "emmVRC failed to Login. Try turning off the network in the emmVRC setting and turning it back on."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] There was an issue initializing the network config\\. Using defaults.*",
-                "error": "emmVRC failed to initialize network config."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: TrustFailure.*",
-                "error": "Failed to validate the emmVRC server certificate. Make sure [thetrueyoshifan.com](https://thetrueyoshifan.com/mods/emmvrc/) is accessible, or try re-setting the Set Automatically option in your computer's Date & Time settings."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(502\\) Bad Gateway.*",
-                "error": "Please open Window's \"Change Proxy Settings\" and disable all three toggles. It also could be a firewall blocking the connection. Type `!proxy` if you need more help."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] Your instance history file is invalid. It will be wiped.",
-                "error": "emmVRC instance history became corrupted and has been reset."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] System.Net.WebException: Error: ConnectFailure \\(A connection attempt failed because the connected party did not properly respond after a period of time.*",
-                "error": "emmVRC servers timed out. There is either a heavy load or emmVRC servers are having some issues. Please wait while staff looks into the issue."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[ERROR] emmVRC could not be accessed. Loading from disk, if possible...",
-                "error": "emmVRC failed to access emmVRC servers and attempted to load cached copy."
-            },
-            {
-                "regex": "  at emmVRC.Hacks.CustomAvatarFavorites+<JumpToStart>.*",
-                "error": "emmVRC failed to load Favorites. Please verify the integrity of VRChat or reinstall MelonLoader $MLRelease$"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[ERROR] Exception in coroutine of type emmVRC.Hacks.EmojiFavourites.*",
-                "error": "emmVRC's Emoji Favorites is currently not working. We are working on fixing this issue."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[emmVRCLoader] \\[emmVRCLoader] Error occur+ed while trying to update emmVRC: System.IO.(DirectoryNotFoundException|FileNotFoundException).*",
-                "error": "emmVRC Dev mode is on. Please make sure that the launch options are cleared."
-            },
-            {
-                "regex": ".*emmVRC is currently running with developer mode enabled.*",
-                "error": "emmVRC Dev mode is on. Please make sure that the launch options are cleared as this can cause issues."
-            },
-            {
-                "regex": ".*\\[emmVRCLoader] \\[ERROR] Unable to find field \"currentPage\" in QuickMenu",
-                "error": "Please click on the button UI Elements then try to dismiss the emmVRC notifications."
-            },
-            {
-                "regex": ".*\\[emmVRCLoader] \\[ERROR] Error with platform icon: System\\.NullReferenceException.*",
-                "error": "emmVRC failed to retrieve avatar's PC/Quest icon. This is a non-game breaking error and the emmVRC team is aware of this issue."
-            },
-            {
-                "regex": ".*\\[emmVRCLoader] \\[ERROR] Could not load the programs JSON file. Please make sure everything is correctly formatted!",
-                "error": "emmVRC Programs is not formatted correctly. Try deleting `VRChat\\UserData\\emmVRC\\programs.json` and relaunch VRChat."
-            },
-            {
-                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of \"emmVRC.Functions.PlayerHacks.FBTSaving\":",
-                "error": "emmVRC fbt saving errored due to fbt saving now part of VRChat."
-            },
-            {
-                "regex": ".*emmVRC encountered an exception while running OnSceneLoad of.*",
-                "error": "emmVRC is having some issues because of the update. Please reinstall MelonLoader $MLRelease$."
-            },
-            {
-                "regex": "  at VRChatUtilityKit.Utilities.VRCUtils.EndEmmCheck \\(System.IAsyncResult asyncResult\\) \\[0x00022].*",
-                "error": "VRChatUtilityKit failed to check API. Please make sure that VRChatUtilityKit is up to date."
-            },
-            {
-                "regex": ".*Exception in IL2CPP-to-Managed trampoline.*NullReferenceException.*",
-                "nextLineRegex": "  at emmVRC.*",
-                "error": "emmVRC is throwing some harmless errors."
-            },
-            {
-                "regex": ".*\\[FavCat] \\[WARNING] Image cache trim failed; assuming cache corrupted.*",
-                "error": "FavCat Image cache trim failed. Please delete `VRChat\\UserData\\favcat-images.db` and restart VRChat."
-            },
-            {
-                "regex": ".*InstanceHistory.json file is corrupted and will need to be manually deleted.*",
-                "error": "It is likely that your `InstanceHistory.json` file is corrupted and will need to be manually deleted. Find it in the `VRChat/UserData` folder."
-            },
-            {
-                "regex": "'MoarBones: I hear you like bones~' *",
-                "error": "MoarBones is enabled. It is most likely the cause of your issues as it is an April fools joke."
-            },
-            {
-                "regex": ".*Win32 IO returned 1224\\. Path: (?<ReModCorePath>.*)",
-                "error": "IO error 1224, try deleting:\n`ReModCorePath`"
-            },
-            {
-                "regex": ".*VRC.*set_field_Private_MenuStateController_0.*",
-                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[ReMod] \\[ERROR] System.MissingMethodException.*",
-                "error": "ReMod.Core is outdated. Please delete the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
-            },
-            {
-                "regex": ".*Could not resolve type.*ReMod.Core.*",
-                "error": "ReMod.Core is erroring. Please delete the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
-            },
-            {
-                "regex": ".*not passing it to il2cpp: System.MissingMethodException: (void )?(ReMod|VRC.UI).Core.*",
-                "error": "ReMod.Core is erroring. Please delete the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
-            },
-            {
-                "regex": ".*Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.ArgumentException: method argument length mismatch",
-                "error": "Maybe ReMod.Core is erroring. Try deleting the file `VRChat\\UserLibs\\ReMod.Core.dll` and relaunch VRChat"
-            },
-            {
-                "regex": ".*Could not load file or assembly 'ReMod.Core.*",
-                "error": "ReMod.Core is missing. Please download ReMod.Core.Updater into `VRChat\\Plugins`"
-            },
-            {
-                "regex": ".*An internal error occurred. If this keeps happening, please contact Requi.*",
-                "error": "An internal error occurred. If this keeps happening, please contact Requi"
-            },
-            {
-                "regex": ".*ReModX is outdated - Download current version from the ReMod Discord!",
-                "error": "ReModX is outdated - Download current version from <#917473100403204116>"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[ReModCE] \\[ERROR] Could not login to ReModCE API:.*",
-                "error": "Failed to log into ReModCE API. Try restarting VRChat and log into ReModCE again."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[ReModCE] \\[ERROR] .*without having set a pin or being logged in.*",
-                "error": "No pin set for ReModCE. Open ReModCE's Avatar submenu and click on the set or enter your pin button."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[ReModCE] \\[ERROR] Failed creating AvatarHistoryComponent:",
-                "error": "Failed creating AvatarHistoryComponent. Delete recent_avatars.bin in VRChat\\UserData\\ReModCE"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[Advanced_Safety] \\[ERROR] Exception in IL2CPP-to-Managed trampoline, not passing it to il2cpp: System.MissingMethodException: bool Il2CppSystem.Object.ReferenceEquals\\(Il2CppSystem.Object,Il2CppSystem.Object\\)",
-                "error": "Advanced Safety can get spammy in the console. Disabling \"Enforce default sorting layer\" in settings fixes that for now."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[Advanced_Safety] Verifier process failed with exit code.*",
-                "error": "Advanced Safety failed to load a bundle and prevented the bad avatar from loading."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[WholesomeLoader] \\[ERROR] Newtonsoft.Json.JsonReaderException: Error reading JObject from JsonReader.*",
-                "error": "Your TotallyWholesomeConfig.json is corrupted, you can delete it from `VRChat/UserData/TotallyWholesomeConfig.json`"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[WholesomeLoader] \\[ERROR] Your WholesomeLoader mod is not up to date.*",
-                "error": "Your WholesomeLoader mod is not up to date"
-            },
-            {
-                "regex": ".*TotallyWholesome is currently using UIX mode.",
-                "error": "TotallyWholesome is currently using UIX mode."
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[PrivateServer] \\[ERROR] System.ArgumentException: The specified path is not of a legal form \\(empty\\).",
-                "error": "PrivateServer mod is not yet setup, Please follow [these step to set PrivateServer up](https://gitlab.com/george/privateservermod#configuration)"
-            },
-            {
-                "regex": "\\[[\\d.:]+] \\[PlayerList] \\[WARNING] Couldn't get player entry in OnSetupFlagsReceived",
-                "error": "PlayerList is throwing some harmless warnings. It is safe to ignore these."
-            },
-            {
-                "regex": ".*TabExtension is missing.*",
-                "error": "[TabExtension](https://api.vrcmg.com/v1/mods/download/280) is missing, to fix broken quick menu tabs, install [TabExtension](https://api.vrcmg.com/v1/mods/download/280)"
-            }
-        ],
         "BloonsTD6": [
             {
                 "regex": "\\[[\\d.:]+] \\[ERROR] System.ArgumentException: No target method specified for class NKHook6.*",

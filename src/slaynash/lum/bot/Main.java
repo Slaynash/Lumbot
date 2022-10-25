@@ -105,9 +105,7 @@ public class Main extends ListenerAdapter {
         loadScreeningRolesList();
         loadMelonLoaderVersions();
         loadMLHashes();
-        loadMLVRCHash();
         loadMLReportChannels();
-        loadVRCBuild();
         loadAPChannels();
         loadReplies();
         CrossServerUtils.loadGuildCount();
@@ -275,35 +273,6 @@ public class Main extends ListenerAdapter {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load MelonLoader Hashes", e);
-        }
-    }
-
-    private static void loadMLVRCHash() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/mlvrchash.txt"));
-            CommandManager.melonLoaderVRCHash = reader.readLine();
-            CommandManager.melonLoaderVRCMinDate = reader.readLine();
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load VRChat Hash", e);
-        }
-    }
-
-    private static void loadVRCBuild() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/vrchatbuild.txt"));
-            String line = reader.readLine();
-            if (line != null)
-                CommandManager.vrchatBuild = line.trim();
-            else
-                CommandManager.vrchatBuild = "1";
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load VRChat Build infos", e);
         }
     }
 

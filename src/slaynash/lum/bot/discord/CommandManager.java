@@ -26,15 +26,12 @@ import slaynash.lum.bot.discord.commands.Kick;
 import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.LumGoneCommand;
 import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
-import slaynash.lum.bot.discord.commands.MLSetMinForVRC;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
-import slaynash.lum.bot.discord.commands.SetVRCBuild;
-import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.UnityCheckCommand;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
@@ -60,11 +57,6 @@ public class CommandManager {
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
-
-    public static String melonLoaderVRCHash = "25881";
-    public static String melonLoaderVRCMinDate = "feb. 6, 2021 at 10.01pm CET";
-
-    public static String vrchatBuild = "1";
 
     protected static void registerCommand(Command command) {
         synchronized (commands) {
@@ -127,8 +119,6 @@ public class CommandManager {
 
         CommandManager.registerCommand(new MLHashRegisterCommand());
         CommandManager.registerCommand(new SetMLReportChannelCommand());
-        CommandManager.registerCommand(new MLSetMinForVRC());
-        CommandManager.registerCommand(new SetVRCBuild());
 
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new Purge());
@@ -138,7 +128,6 @@ public class CommandManager {
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
 
-        CommandManager.registerCommand(new TestVRCObfmap());
         CommandManager.registerCommand(new UnityCheckCommand());
         CommandManager.registerCommand(new AddMissingRoles());
         CommandManager.registerCommand(new Blacklist());
@@ -212,15 +201,6 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
-        }
-    }
-
-    public static void saveMLVRCHash() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlvrchash.txt"))) {
-            writer.write(melonLoaderVRCHash + "\n" + melonLoaderVRCMinDate);
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save VRChat Hash", e);
         }
     }
 

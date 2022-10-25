@@ -96,7 +96,6 @@ public class MelonScanContext {
     public final List<String> misplacedPlugins = new ArrayList<>();
 
     // Thinkering pass
-    public boolean isMLOutdatedVRC = false;
     public List<MelonApiMod> modDetails;
     public final List<LogsModDetails> unknownMods = new ArrayList<>();
     public final List<String> brokenMods = new ArrayList<>();

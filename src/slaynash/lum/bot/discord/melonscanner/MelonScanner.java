@@ -101,13 +101,8 @@ public final class MelonScanner {
             if ("message.txt".equals(attachment.getFileName()))
                 context.consoleCopyPaste = true;
 
-            if (oldEmmVRCLogCheck(context))
-                return;
-
             if (!MelonScannerReadPass.doPass(context))
                 return;
-
-            vrcHashCheck(context);
 
             postReadApiPass(context);
 
@@ -125,7 +120,6 @@ public final class MelonScanner {
             boolean issueFound;
             if  (!context.pirate) {
                 issueFound  = mlOutdatedCheck(context);
-                issueFound |= vrchatVersionCheck(context);
                 issueFound |= knownErrorsCheck(context);
                 issueFound |= duplicatedModsCheck(context);
                 issueFound |= missingModsCheck(context);
@@ -145,7 +139,7 @@ public final class MelonScanner {
                 issueFound |= minorErrorsHandling(context);
 
                 if (issueFound) {
-                    if (context.isMLOutdatedVRC || context.isMLOutdated)
+                    if (context.isMLOutdated)
                         context.embedColor = melonPink;
 
                     if (!context.unidentifiedErrors)
@@ -206,14 +200,6 @@ public final class MelonScanner {
         return false;
     }
 
-    private static boolean oldEmmVRCLogCheck(MelonScanContext context) {
-        if (context.attachment.getFileName().startsWith("emmVRC")) {
-            Utils.replyEmbed(Localization.get("melonscanner.vrchat.oldemmvrc", context.lang), Color.orange, context.messageReceivedEvent);
-            return true;
-        }
-        return false;
-    }
-
     public static boolean isValidFileFormat(Attachment attachment, boolean strict) {
         if (attachment.getFileExtension() == null) return false;
         if (!attachment.getFileExtension().equalsIgnoreCase("log") && !attachment.getFileExtension().equalsIgnoreCase("txt")) return false;
@@ -222,30 +208,6 @@ public final class MelonScanner {
         return fileName.startsWith("latest") ||
             fileName.startsWith("melonloader") ||
             fileName.startsWith("mlinstall");
-    }
-
-
-    // Logs thinkering
-    private static void vrcHashCheck(MelonScanContext context) {
-        if ("VRChat".equals(context.game)) {
-            context.isMLOutdatedVRC = true;
-            if (context.mlHashCode != null) {
-                System.out.println("game is vrc, checking hash");
-
-                boolean hasVRChat1043ReadyML = false;
-                for (MLHashPair mlHashes : context.alpha ? CommandManager.melonLoaderAlphaHashes : CommandManager.melonLoaderHashes) {
-                    if (mlHashes.x64().equals(CommandManager.melonLoaderVRCHash))
-                        hasVRChat1043ReadyML = true;
-
-                    if (mlHashes.x64().equals(context.mlHashCode)) {
-                        System.out.println("matching hash found");
-                        if (hasVRChat1043ReadyML)
-                            context.isMLOutdatedVRC = false;
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     private static void postReadApiPass(MelonScanContext context) {
@@ -512,7 +474,7 @@ public final class MelonScanner {
                     break;
                 case 0: //identicals
                     if (context.alpha)
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha, CommandManager.melonLoaderVRCMinDate), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha), false);
                     else
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, templatestMLVersionRelease), false);
                     break;
@@ -522,25 +484,6 @@ public final class MelonScanner {
                 default:
             }
             return true;
-        }
-        return false;
-    }
-
-    private static boolean vrchatVersionCheck(MelonScanContext context) {
-        if (context.gameBuild != null && "VRChat".equals(context.game)) {
-            String[] tempString = context.gameBuild.split("-", 3);
-            context.gameBuild = tempString.length > 1 ? tempString[1] : "0"; //VRChat build number
-            int compare = VersionUtils.compareVersion(context.gameBuild, CommandManager.vrchatBuild);
-            if (compare == -1) {
-                context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.outdated", context.lang, CrossServerUtils.sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
-                context.embedColor = Color.ORANGE;
-                return true;
-            }
-            else if (compare == 1) {
-                context.embedBuilder.addField("VRChat:", Localization.getFormat("melonscanner.vrcversioncheck.overdated", context.lang, CrossServerUtils.sanitizeInputString(context.gameBuild), CommandManager.vrchatBuild), false);
-                context.embedColor = Color.ORANGE;
-                return true;
-            }
         }
         return false;
     }
@@ -587,9 +530,7 @@ public final class MelonScanner {
             for (int i = 0; i < context.missingMods.size() && i < (context.missingMods.size() == 11 ? 11 : 10); ++i) {
                 String missingModName = context.missingMods.get(i);
                 String missingModDownloadLink = MelonScannerApisManager.getDownloadLinkForMod(context.game, missingModName);
-                if (missingModName.replace(" ", ".").equalsIgnoreCase("ReMod.Core") && !context.loadedMods.containsKey("ReMod.Core.Updater"))
-                    error.append("- ReMod.Core - Put [ReMod.Core.Updater](https://github.com/PennyBunny/ReMod.Core.Updater/releases/latest/download/ReMod.Core.Updater.dll) in `Plugins` or manually install [ReMod.Core](https://github.com/RequiDev/ReMod.Core/releases/latest/download/ReMod.Core.dll) into `UserLibs`").append("\n");
-                else if (missingModDownloadLink != null)
+                if (missingModDownloadLink != null)
                     error.append("- [").append(CrossServerUtils.sanitizeInputString(missingModName)).append("](").append(missingModDownloadLink).append(")\n");
                 else
                     error.append("- ").append(CrossServerUtils.sanitizeInputString(missingModName)).append("\n");
@@ -676,7 +617,7 @@ public final class MelonScanner {
 
     private static boolean oldModsCheck(MelonScanContext context) {
         boolean reinstallML = context.errors.stream().filter(i -> i.error != null).anyMatch(e -> e.error.contains("reinstall"));
-        if (context.oldMods.size() > 0 && !(context.isMLOutdatedVRC || context.isMLOutdated) || context.modifiedML || reinstallML) {
+        if (context.oldMods.size() > 0 && !context.isMLOutdated || context.modifiedML || reinstallML) {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             boolean added = false;
@@ -788,15 +729,15 @@ public final class MelonScanner {
         if (context.outdatedMods.size() > 0) {
             String muMessage;
             switch (context.game) {
-                case "VRChat":
-                    if (context.misplacedPlugins.contains("VRCModUpdater.Loader"))
+                case "ChilloutVR":
+                    if (context.misplacedPlugins.contains("CVRModUpdater.Loader"))
                         muMessage = "";
-                    else if (context.loadedMods.containsKey("VRCModUpdater.Loader"))
+                    else if (context.loadedMods.containsKey("CVRModUpdater.Loader"))
                         muMessage = "";
                     else if (context.loadedMods.containsKey("UpdateChecker"))
                         muMessage = "";
                     else
-                        muMessage = Localization.get("melonscanner.outdatedmods.vrcmuwarning", context.lang);
+                        muMessage = Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
                     break;
                 case "TheLongDark":
                     if (context.misplacedPlugins.contains("AutoUpdatingPlugin"))
@@ -913,7 +854,7 @@ public final class MelonScanner {
 
     private static boolean modsThrowingErrorsCheck(MelonScanContext context) {
         context.modsThrowingErrors.removeAll(context.brokenMods);
-        if (context.modsThrowingErrors.size() > 0 && !context.isMLOutdated && !context.isMLOutdatedVRC) {
+        if (context.modsThrowingErrors.size() > 0 && !context.isMLOutdated) {
             context.modsThrowingErrors.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.modsThrowingErrors.size() && i < (context.modsThrowingErrors.size() == 11 ? 11 : 10); ++i)
@@ -931,16 +872,14 @@ public final class MelonScanner {
     private static boolean minorErrorsHandling(MelonScanContext context) {
         if (context.mlHashCode != null && context.mlHashCode.equals("57545710048555350515452101521025297995653101559949575755515399509950") && (context.loadedMods.containsKey("Action Menu") || context.loadedMods.containsKey("CameraAnimation") || context.loadedMods.containsKey("FreezeFrame")))
             context.embedBuilder.addField("AM issue", "There is an issue with ML 0.5.5. Please try the latest [nightly build of ML](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip) or maybe downgrade to 0.5.4.", false);
-        if (!context.assemblyGenerationFailed && !context.isMLOutdated && !context.isMLOutdatedVRC && context.duplicatedMods.size() == 0 && context.outdatedMods.size() == 0) {
+        if (!context.assemblyGenerationFailed && !context.isMLOutdated && context.duplicatedMods.size() == 0 && context.outdatedMods.size() == 0) {
             String error = "";
             if (context.noMods && context.missingMods.size() == 0 && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
             if (context.noMods && context.misplacedMods.size() == 0 && !context.preListingModsPlugins && context.errors.size() == 0) {
                 long guildID = context.messageReceivedEvent.getGuild().getIdLong();
-                if (guildID == 600298024425619456L)
-                    error += Localization.get("melonscanner.othererrors.nomodsemmvrc", context.lang) + "\n";
-                else if (guildID == 439093693769711616L)
+                if (guildID == 439093693769711616L)
                     error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
                 else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
                     error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
@@ -965,11 +904,6 @@ public final class MelonScanner {
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
 
-            }
-            if (context.mlVersion != null && context.messageReceivedEvent.getGuild().getIdLong() == 819950183784644618L /* ReMod */ && !context.loadedMods.containsKey("ReMod") && !(context.preListingModsPlugins || context.listingModsPlugins)) {
-                context.embedBuilder.addField(Localization.get("You don't have ReMod", context.lang), Localization.get("ReMod is missing from your Mods folder. Please download it from <#841105987004006401> and put it into your Mods folder.", context.lang), false);
-                if (context.embedColor == Color.BLUE)
-                    context.embedColor = Color.ORANGE;
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
