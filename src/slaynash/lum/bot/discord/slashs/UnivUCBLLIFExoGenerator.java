@@ -60,7 +60,8 @@ public class UnivUCBLLIFExoGenerator extends Slash {
         return Collections.singletonMap(624635229222600717L, Commands.slash("exo", "Génère ou affiche le corrigé d'un exercice").addSubcommands(subUCBLLIF));
     }
 
-    public void onCommand(SlashCommandInteractionEvent event) {
+    @Override
+    public void slashRun(SlashCommandInteractionEvent event) {
         // ₁₂₃₄₅₆₇₈₉
 
         event.deferReply().queue(success -> interactionhook = success);

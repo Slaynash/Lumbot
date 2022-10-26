@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -42,8 +41,10 @@ public class SlashManager {
     }
 
     public static void buttonClicked(ButtonInteractionEvent event) {
-        if (event.getChannelType() != ChannelType.PRIVATE && !event.getChannel().asTextChannel().canTalk())
+        if (!event.getChannel().canTalk()) {
+            event.reply("I can't talk in this channel!").setEphemeral(true).queue();  // Ephemeral message will work even without any permissions
             return; //Lum can't talk in this channel
+        }
 
         for (Slash slash : slashes) {
             if (slash.buttonList() != null && slash.buttonList().contains(event.getComponentId())) {
