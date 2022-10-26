@@ -20,8 +20,10 @@ public class SlashManager {
 
     public static void slashRun(SlashCommandInteractionEvent event) {
         System.out.println("Slash " + event.getName() + (event.getSubcommandName() == null ? "" : " " + event.getSubcommandName()) + " options:" + event.getOptions() + " in " + (event.getGuild() == null ? "DM " + event.getUser().getId() : event.getGuild().getName()));
-        if (event.getChannelType() == ChannelType.TEXT && !event.getChannel().asTextChannel().canTalk())
-            return;  //Lum can't talk in this channel
+        if (!event.getChannel().canTalk()) {
+            event.reply("I can't talk in this channel!").setEphemeral(true).queue();  // Ephemeral message will work even without any permissions
+            return;
+        }
         for (Slash slash : slashes) {
             CommandData global = slash.globalSlashData();
             if (global != null && event.getName().equals(global.getName())) {
