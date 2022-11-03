@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord;
 
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -86,6 +87,9 @@ public class VRCApiVersionScanner {
                                 ExceptionUtils.reportException("Can not post VRCAPI in " + tc.getGuild().getName());
                         }
                     }
+                }
+                catch (ConnectException e) {
+                    System.out.println("VRCAPI: " + e.getMessage());
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);

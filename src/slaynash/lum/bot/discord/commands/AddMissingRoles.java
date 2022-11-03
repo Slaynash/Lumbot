@@ -1,13 +1,10 @@
 package slaynash.lum.bot.discord.commands;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.utils.concurrent.Task;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -48,7 +45,6 @@ public class AddMissingRoles extends Command {
 
     public void addMissing(MessageReceivedEvent event) {
         AtomicInteger runCount = new AtomicInteger(0);
-        List<Task<Void>> tasks = new ArrayList<>();
         CommandManager.autoScreeningRoles.forEach((k, v) -> {
             Guild guild = JDAManager.getJDA().getGuildById(k);
             if (guild == null)
@@ -61,7 +57,7 @@ public class AddMissingRoles extends Command {
                 //TODO announce that Lum can not interact with role
                 return;
             }
-            tasks.add(
+            try {
                 guild.loadMembers(m -> {
                     if (!m.getUser().isBot() && !m.isPending() && !m.getRoles().contains(role)) {
                         try {
@@ -71,8 +67,11 @@ public class AddMissingRoles extends Command {
                         }
                         catch (Exception ignored) { }
                     }
-                })
-            );
+                }).get();
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("loadMembers failed during AddMissingRoles", e);
+            }
             try {
                 Thread.sleep(690);
             }
@@ -80,9 +79,6 @@ public class AddMissingRoles extends Command {
                 ExceptionUtils.reportException("Was Interrupted in AddMissing", e);
             }
         });
-        for (Task<Void> task : tasks) {
-            task.get();
-        }
         if (event != null) {
             event.getMessage().reply("Added roles to " + runCount.get() + " members").queue();
         }

@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
 import java.net.URI;
@@ -168,7 +169,14 @@ public class MelonScannerApisManager {
 
                             HttpRequest request = builder.build();
 
-                            HttpResponse<byte[]> response = downloadRequest(request, api.game + " : " + api.name);
+                            HttpResponse<byte[]> response;
+                            try {
+                                response = downloadRequest(request, api.game + " : " + api.name);
+                            }
+                            catch (ConnectException e) {
+                                System.out.println("MLAPI: " + e.getMessage());
+                                break;
+                            }
                             byte[] responseBody = response.body();
                             if (api.isGZip) {
                                 ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
