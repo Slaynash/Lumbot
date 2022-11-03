@@ -169,7 +169,7 @@ public final class MelonScannerReadPass {
 
             return true;
         }
-        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Plugins? (l|L)oaded.?") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Mods? (l|L)oaded.?"))) {
+        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ (Mod|Plugin)s? (l|L)oaded.?"))) {
             String[] split = line.split(" ");
             if (split.length < 2) return true;
             context.remainingModCount = Integer.parseInt(split[1]);
@@ -521,7 +521,7 @@ public final class MelonScannerReadPass {
     }
 
     public static boolean modPreListingCheck(MelonScanContext context) {
-        if (!context.pre3 && (context.line.matches("\\[[\\d.:]+] Loading.*Plugins...") || context.line.matches("\\[[\\d.:]+] Loading.*Mods..."))) {
+        if (!context.pre3 && (context.line.matches("\\[[\\d.:]+] Loading.*(Mod|Plugin)s...") || context.line.matches("\\[[\\d.:]+] Loading.*(Mod|Plugin)s from .*"))) {
             context.preListingModsPlugins = true;
             System.out.println("Starting to pre-list " + (context.line.contains("Plugins") ? "plugins" : "mods"));
             return true;
