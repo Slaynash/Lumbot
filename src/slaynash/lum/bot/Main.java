@@ -156,7 +156,7 @@ public class Main extends ListenerAdapter {
 
                 Thread.sleep(1000 * 15);
             }
-            System.out.println("PingChecker: Ping failed, starting backup...");
+            System.out.println("PingChecker: Ping failed, starting up backup...");
             JDAManager.enableEvents();
         }
         else {
@@ -204,13 +204,13 @@ public class Main extends ListenerAdapter {
                 }
                 if (statusCode == 200) {
                     System.out.println("PingChecker: Ping successful, shutting down...");
-                    if (!JDAManager.isEventsEnabled())
-                        JDAManager.enableEvents();
+                    if (JDAManager.isEventsEnabled())
+                        JDAManager.disableEvents();
                 }
                 else {
                     System.out.println("PingChecker: Ping failed, starting backup...");
-                    if (JDAManager.isEventsEnabled())
-                        JDAManager.disableEvents();
+                    if (!JDAManager.isEventsEnabled())
+                        JDAManager.enableEvents();
                 }
             }
         }
