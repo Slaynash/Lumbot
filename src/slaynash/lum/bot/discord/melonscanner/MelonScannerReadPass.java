@@ -169,7 +169,7 @@ public final class MelonScannerReadPass {
 
             return true;
         }
-        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Plugins? Loaded") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Mods? Loaded"))) {
+        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Plugins? (l|L)oaded.?") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ Mods? (l|L)oaded.?"))) {
             String[] split = line.split(" ");
             if (split.length < 2) return true;
             context.remainingModCount = Integer.parseInt(split[1]);
