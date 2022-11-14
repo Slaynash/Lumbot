@@ -451,7 +451,7 @@ public final class MelonScanner {
 
         context.embedBuilder.setDescription(context.reportMessage);
 
-        if (context.remainingModCount != 0 || context.editedLog) {
+        if (context.editedLog) {
             context.embedBuilder.addField(Localization.get("melonscanner.readerror.fieldname", context.lang), Localization.get("melonscanner.readerror.field", context.lang), false);
             context.embedColor = Color.RED;
         }

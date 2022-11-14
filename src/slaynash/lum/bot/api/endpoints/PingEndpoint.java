@@ -12,6 +12,10 @@ public class PingEndpoint extends Endpoint {
     public WebResponse handle(WebRequest request) {
         WebResponse r = new WebResponse();
         r.addHeader("Content-Type", "text/plain");
+        if (JDAManager.getJDA() == null) {
+            r.returnCode = 569;
+            r.setData("Lum is Booting");
+        }
         if (JDAManager.getJDA().getStatus() == Status.CONNECTED) {
             r.setData("pong " + JDAManager.getJDA().getGatewayPing());
         }

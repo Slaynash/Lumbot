@@ -151,12 +151,26 @@ public final class MelonScannerReadPass {
         if (line.isBlank())
             return true;
 
-        else if (context.preListingModsPlugins && line.matches("\\[[\\d.:]+] -{30}")) return true;
-        else if (line.matches("\\[[\\d.:]+] -{30}") && context.lastLine.matches("\\[[\\d.:]+] -{30}")) { // If some idiot removes a mod but keeps the separator
-            context.editedLog = true;
+        else if (context.preListingModsPlugins && line.matches("\\[[\\d.:]+] -{30,}")) {
             return true;
         }
-        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? No Plugins Loaded!") || line.matches("\\[[\\d.:]+]( \\[MelonLoader])? No Mods Loaded!"))) {
+        else if (line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
+            if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
+                System.out.println("editedLog");
+                context.editedLog = true;
+            }
+            else { // Skipping separator
+                return true;
+            }
+            return true;
+        }
+        else if (line.matches("\\[[\\d.:]+] Melon Assembly loaded: .*")) {
+            context.preListingModsPlugins = false;
+            context.listingModsPlugins = true;
+            context.linesToSkip++;
+            return true;
+        }
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? (No|0) (Mod|Plugin)s? [lL]oaded.?")) {
             context.remainingModCount = 0;
             context.preListingModsPlugins = false;
             context.listingModsPlugins = false;
@@ -169,21 +183,21 @@ public final class MelonScannerReadPass {
 
             return true;
         }
-        else if (context.preListingModsPlugins && (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ (Mod|Plugin)s? [lL]oaded.?"))) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? \\d+ (Mod|Plugin)s? [lL]oaded.?")) {
             String[] split = line.split(" ");
             if (split.length < 2) return true;
             context.remainingModCount = Integer.parseInt(split[1]);
             context.listingPlugins = line.contains("Plugin");
             context.preListingModsPlugins = false;
-            context.listingModsPlugins = true;
-            if (context.remainingModCount <= 0) {
+            context.listingModsPlugins = context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0;
+            if (context.listingModsPlugins && context.remainingModCount <= 0) {
                 context.editedLog = true;
             }
             System.out.println(context.remainingModCount + " " + (context.listingPlugins ? "plugins" : "mods") + " loaded on this pass");
             context.linesToSkip += 1; // Skip line separator
             return true;
         }
-        else if (context.listingModsPlugins && context.tmpModName == null) {
+        else if (context.listingModsPlugins && context.tmpModName == null && !line.matches("\\[[\\d.:]+] -{30,}")) {
             String[] split = line.split(" ", 2);
             if (split.length < 2) return true;
             split = split[1].split(" v", 2);
@@ -208,7 +222,12 @@ public final class MelonScannerReadPass {
             context.tmpModHash = split[3];
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? -{30}")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? -{30,}")) {
+
+            if (context.tmpModName == null) {
+                System.out.println("Mod/Plugin Name: null");
+                return true;
+            }
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
 
@@ -238,7 +257,7 @@ public final class MelonScannerReadPass {
             context.tmpModAuthor = null;
             context.tmpModHash = null;
 
-            if (--context.remainingModCount == 0) {
+            if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0 && --context.remainingModCount == 0) {
                 context.preListingModsPlugins = false;
                 context.listingModsPlugins = false;
                 System.out.println("Done scanning mods");
