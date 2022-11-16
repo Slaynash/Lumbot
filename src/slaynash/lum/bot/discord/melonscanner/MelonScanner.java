@@ -124,7 +124,7 @@ public final class MelonScanner {
                 issueFound |= duplicatedModsCheck(context);
                 issueFound |= missingModsCheck(context);
                 issueFound |= incompatibleModsCheck(context);
-                issueFound |= corruptedModsCheck(context);
+                //issueFound |= corruptedModsCheck(context); // Disabled for now
                 issueFound |= brokenModsCheck(context);
                 issueFound |= retiredModsCheck(context);
                 issueFound |= oldModsCheck(context);
