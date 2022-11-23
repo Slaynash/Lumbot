@@ -154,7 +154,7 @@ public final class MelonScannerReadPass {
         else if (context.preListingModsPlugins && line.matches("\\[[\\d.:]+] -{30,}")) {
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
+        else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
             if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
                 System.out.println("editedLog");
                 context.editedLog = true;

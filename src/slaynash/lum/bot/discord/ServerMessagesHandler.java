@@ -121,7 +121,7 @@ public class ServerMessagesHandler {
             if (guildconfig.ScamShield())
                 new Thread(() -> ScamShield.checkForFishing(event)).start();
 
-            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
+            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
                 event.getMessage().delete().queue();
                 event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
                 return;
