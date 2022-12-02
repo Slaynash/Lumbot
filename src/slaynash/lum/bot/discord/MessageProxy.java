@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
@@ -44,6 +45,9 @@ public class MessageProxy {
                             .queue();
                 return;
             }
+        }
+        for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
+            message = message.concat("\n").concat(emoji.getImageUrl());
         }
         for (StickerItem sticker : event.getMessage().getStickers()) {
             message = message.concat("\n").concat(sticker.getIconUrl());

@@ -128,7 +128,7 @@ public class LumJokes {
             if (!joke.isEmpty()) {
                 if (punchLine.isEmpty()) {
                     event.getChannel().sendMessage(joke).queue();
-                    System.out.println(joke);
+                    System.out.println(site + " " + joke);
                 }
                 else {
                     System.out.println(joke + "\n" + punchLine);

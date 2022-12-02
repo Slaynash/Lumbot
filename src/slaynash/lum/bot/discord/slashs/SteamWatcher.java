@@ -33,7 +33,7 @@ public class SteamWatcher extends Slash {
     @Override
     public void slashRun(SlashCommandInteractionEvent event) {
         if (!ConfigManager.mainBot) {
-            event.reply("Lum is running on Backup mode. SteamWatcher is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            event.reply("Lum is running on Backup mode. SteamWatcher is in readonly mode and changes won't be applied when main bot comes back.").setEphemeral(true).queue();
             return;
         }
         if (event.getChannelType() == ChannelType.PRIVATE) {
