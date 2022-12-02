@@ -119,7 +119,12 @@ public class MessageProxy {
             MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
             messageBuilder.setContent(message.getContentRaw());
             for (Attachment attachment : message.getAttachments()) {
-                messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
+                if (attachment.getSize() > 8000000) {
+                    messageBuilder.setContent(messageBuilder.getContent().concat("\n").concat(attachment.getUrl()));
+                }
+                else {
+                    messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
+                }
             }
             for (StickerItem sticker : event.getMessage().getStickers()) {
                 messageBuilder.setContent(messageBuilder.getContent() + "\n" + sticker.getIconUrl());

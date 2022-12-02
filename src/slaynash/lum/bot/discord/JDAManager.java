@@ -36,14 +36,23 @@ public class JDAManager {
     }
 
     public static void enableEvents() {
+        if (jda == null) {
+            return;
+        }
         System.out.println("Enabling events");
         jda.getEventManager().register(mainEvents);
     }
     public static void disableEvents() {
+        if (jda == null) {
+            return;
+        }
         System.out.println("Disabling events");
         jda.getEventManager().unregister(mainEvents);
     }
     public static boolean isEventsEnabled() {
+        if (jda == null) {
+            return false;
+        }
         return jda.getEventManager().getRegisteredListeners().contains(mainEvents);
     }
 }

@@ -40,14 +40,14 @@ public class API {
             while (socket == null) {
                 try {
                     socket = new ServerSocket();
+                    socket.setReuseAddress(true);
+                    socket.bind(new InetSocketAddress(28644));
                 }
                 catch (Exception e) {
                     System.err.println("Error while creating socket: " + e.getMessage());
                     Thread.sleep(60 * 1000);
                 }
             }
-            socket.setReuseAddress(true);
-            socket.bind(new InetSocketAddress(28644));
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to start up API", e);
@@ -68,7 +68,7 @@ public class API {
                 }
             }
             try {
-                System.out.print("Closing API socket...");
+                System.out.println("Closing API socket...");
                 socket.close();
             }
             catch (IOException e) {
