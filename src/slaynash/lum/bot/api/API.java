@@ -45,6 +45,7 @@ public class API {
                 }
                 catch (Exception e) {
                     System.err.println("Error while creating socket: " + e.getMessage());
+                    socket = null;
                     Thread.sleep(60 * 1000);
                 }
             }

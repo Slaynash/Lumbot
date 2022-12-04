@@ -152,7 +152,7 @@ public class MessageProxy {
                 guildchannel.sendTyping().queue();
             }
         }
-        else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().asTextChannel().getParentCategory() != null && event.getChannel().asTextChannel().getParentCategory().getIdLong() == 924780998124798022L) {
+        else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && ChannelType.TEXT.equals(event.getChannel().getType()) && event.getChannel().asTextChannel().getParentCategory() != null && event.getChannel().asTextChannel().getParentCategory().getIdLong() == 924780998124798022L) {
             event.getUser().openPrivateChannel().queue(
                 channel -> channel.sendTyping().queue(null,
                         e -> event.getChannel().asTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
