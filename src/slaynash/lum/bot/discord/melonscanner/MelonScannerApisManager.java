@@ -194,7 +194,7 @@ public class MelonScannerApisManager {
                                 responseBody = decompressedStream.toByteArray();
                             }
 
-                            JsonElement data = gson.fromJson(responseBody.toString(), JsonElement.class);
+                            JsonElement data = gson.fromJson(new String(responseBody), JsonElement.class);
 
                             // Script pass
 
