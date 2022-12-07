@@ -61,563 +61,194 @@ public class Junidecode {
             map = cache[hi];
             if (null == map) {
                 switch (hi) {
-                    case 0x00:
-                        map = X00.map;
-                        break;
-                    case 0x01:
-                        map = X01.map;
-                        break;
-                    case 0x02:
-                        map = X02.map;
-                        break;
-                    case 0x03:
-                        map = X03.map;
-                        break;
-                    case 0x04:
-                        map = X04.map;
-                        break;
-                    case 0x05:
-                        map = X05.map;
-                        break;
-                    case 0x06:
-                        map = X06.map;
-                        break;
-                    case 0x07:
-                        map = X07.map;
-                        break;
-                    case 0x09:
-                        map = X09.map;
-                        break;
-                    case 0x0a:
-                        map = X0a.map;
-                        break;
-                    case 0x0b:
-                        map = X0b.map;
-                        break;
-                    case 0x0c:
-                        map = X0c.map;
-                        break;
-                    case 0x0d:
-                        map = X0d.map;
-                        break;
-                    case 0x0e:
-                        map = X0e.map;
-                        break;
-                    case 0x0f:
-                        map = X0f.map;
-                        break;
-                    case 0x10:
-                        map = X10.map;
-                        break;
-                    case 0x11:
-                        map = X11.map;
-                        break;
-                    case 0x12:
-                        map = X12.map;
-                        break;
-                    case 0x13:
-                        map = X13.map;
-                        break;
-                    case 0x14:
-                        map = X14.map;
-                        break;
-                    case 0x15:
-                        map = X15.map;
-                        break;
-                    case 0x16:
-                        map = X16.map;
-                        break;
-                    case 0x17:
-                        map = X17.map;
-                        break;
-                    case 0x18:
-                        map = X18.map;
-                        break;
-                    case 0x19:
-                        map = X19.map;
-                        break;
-                    case 0x1a:
-                        map = X1a.map;
-                        break;
-                    case 0x1b:
-                        map = X1b.map;
-                        break;
-                    case 0x1c:
-                        map = X1c.map;
-                        break;
-                    case 0x1d:
-                        map = X1d.map;
-                        break;
-                    case 0x1e:
-                        map = X1e.map;
-                        break;
-                    case 0x1f:
-                        map = X1f.map;
-                        break;
-                    case 0x20:
-                        map = X20.map;
-                        break;
-                    case 0x21:
-                        map = X21.map;
-                        break;
-                    case 0x22:
-                        map = X22.map;
-                        break;
-                    case 0x23:
-                        map = X23.map;
-                        break;
-                    case 0x24:
-                        map = X24.map;
-                        break;
-                    case 0x25:
-                        map = X25.map;
-                        break;
-                    case 0x26:
-                        map = X26.map;
-                        break;
-                    case 0x27:
-                        map = X27.map;
-                        break;
-                    case 0x28:
-                        map = X28.map;
-                        break;
-                    case 0x2e:
-                        map = X2e.map;
-                        break;
-                    case 0x2f:
-                        map = X2f.map;
-                        break;
-                    case 0x30:
-                        map = X30.map;
-                        break;
-                    case 0x31:
-                        map = X31.map;
-                        break;
-                    case 0x32:
-                        map = X32.map;
-                        break;
-                    case 0x33:
-                        map = X33.map;
-                        break;
-                    case 0x4d:
-                        map = X4d.map;
-                        break;
-                    case 0x4e:
-                        map = X4e.map;
-                        break;
-                    case 0x4f:
-                        map = X4f.map;
-                        break;
-                    case 0x50:
-                        map = X50.map;
-                        break;
-                    case 0x51:
-                        map = X51.map;
-                        break;
-                    case 0x52:
-                        map = X52.map;
-                        break;
-                    case 0x53:
-                        map = X53.map;
-                        break;
-                    case 0x54:
-                        map = X54.map;
-                        break;
-                    case 0x55:
-                        map = X55.map;
-                        break;
-                    case 0x56:
-                        map = X56.map;
-                        break;
-                    case 0x57:
-                        map = X57.map;
-                        break;
-                    case 0x58:
-                        map = X58.map;
-                        break;
-                    case 0x59:
-                        map = X59.map;
-                        break;
-                    case 0x5a:
-                        map = X5a.map;
-                        break;
-                    case 0x5b:
-                        map = X5b.map;
-                        break;
-                    case 0x5c:
-                        map = X5c.map;
-                        break;
-                    case 0x5d:
-                        map = X5d.map;
-                        break;
-                    case 0x5e:
-                        map = X5e.map;
-                        break;
-                    case 0x5f:
-                        map = X5f.map;
-                        break;
-                    case 0x60:
-                        map = X60.map;
-                        break;
-                    case 0x61:
-                        map = X61.map;
-                        break;
-                    case 0x62:
-                        map = X62.map;
-                        break;
-                    case 0x63:
-                        map = X63.map;
-                        break;
-                    case 0x64:
-                        map = X64.map;
-                        break;
-                    case 0x65:
-                        map = X65.map;
-                        break;
-                    case 0x66:
-                        map = X66.map;
-                        break;
-                    case 0x67:
-                        map = X67.map;
-                        break;
-                    case 0x68:
-                        map = X68.map;
-                        break;
-                    case 0x69:
-                        map = X69.map;
-                        break;
-                    case 0x6a:
-                        map = X6a.map;
-                        break;
-                    case 0x6b:
-                        map = X6b.map;
-                        break;
-                    case 0x6c:
-                        map = X6c.map;
-                        break;
-                    case 0x6d:
-                        map = X6d.map;
-                        break;
-                    case 0x6e:
-                        map = X6e.map;
-                        break;
-                    case 0x6f:
-                        map = X6f.map;
-                        break;
-                    case 0x70:
-                        map = X70.map;
-                        break;
-                    case 0x71:
-                        map = X71.map;
-                        break;
-                    case 0x72:
-                        map = X72.map;
-                        break;
-                    case 0x73:
-                        map = X73.map;
-                        break;
-                    case 0x74:
-                        map = X74.map;
-                        break;
-                    case 0x75:
-                        map = X75.map;
-                        break;
-                    case 0x76:
-                        map = X76.map;
-                        break;
-                    case 0x77:
-                        map = X77.map;
-                        break;
-                    case 0x78:
-                        map = X78.map;
-                        break;
-                    case 0x79:
-                        map = X79.map;
-                        break;
-                    case 0x7a:
-                        map = X7a.map;
-                        break;
-                    case 0x7b:
-                        map = X7b.map;
-                        break;
-                    case 0x7c:
-                        map = X7c.map;
-                        break;
-                    case 0x7d:
-                        map = X7d.map;
-                        break;
-                    case 0x7e:
-                        map = X7e.map;
-                        break;
-                    case 0x7f:
-                        map = X7f.map;
-                        break;
-                    case 0x80:
-                        map = X80.map;
-                        break;
-                    case 0x81:
-                        map = X81.map;
-                        break;
-                    case 0x82:
-                        map = X82.map;
-                        break;
-                    case 0x83:
-                        map = X83.map;
-                        break;
-                    case 0x84:
-                        map = X84.map;
-                        break;
-                    case 0x85:
-                        map = X85.map;
-                        break;
-                    case 0x86:
-                        map = X86.map;
-                        break;
-                    case 0x87:
-                        map = X87.map;
-                        break;
-                    case 0x88:
-                        map = X88.map;
-                        break;
-                    case 0x89:
-                        map = X89.map;
-                        break;
-                    case 0x8a:
-                        map = X8a.map;
-                        break;
-                    case 0x8b:
-                        map = X8b.map;
-                        break;
-                    case 0x8c:
-                        map = X8c.map;
-                        break;
-                    case 0x8d:
-                        map = X8d.map;
-                        break;
-                    case 0x8e:
-                        map = X8e.map;
-                        break;
-                    case 0x8f:
-                        map = X8f.map;
-                        break;
-                    case 0x90:
-                        map = X90.map;
-                        break;
-                    case 0x91:
-                        map = X91.map;
-                        break;
-                    case 0x92:
-                        map = X92.map;
-                        break;
-                    case 0x93:
-                        map = X93.map;
-                        break;
-                    case 0x94:
-                        map = X94.map;
-                        break;
-                    case 0x95:
-                        map = X95.map;
-                        break;
-                    case 0x96:
-                        map = X96.map;
-                        break;
-                    case 0x97:
-                        map = X97.map;
-                        break;
-                    case 0x98:
-                        map = X98.map;
-                        break;
-                    case 0x99:
-                        map = X99.map;
-                        break;
-                    case 0x9a:
-                        map = X9a.map;
-                        break;
-                    case 0x9b:
-                        map = X9b.map;
-                        break;
-                    case 0x9c:
-                        map = X9c.map;
-                        break;
-                    case 0x9d:
-                        map = X9d.map;
-                        break;
-                    case 0x9e:
-                        map = X9e.map;
-                        break;
-                    case 0x9f:
-                        map = X9f.map;
-                        break;
-                    case 0xa0:
-                        map = Xa0.map;
-                        break;
-                    case 0xa1:
-                        map = Xa1.map;
-                        break;
-                    case 0xa2:
-                        map = Xa2.map;
-                        break;
-                    case 0xa3:
-                        map = Xa3.map;
-                        break;
-                    case 0xa4:
-                        map = Xa4.map;
-                        break;
-                    case 0xac:
-                        map = Xac.map;
-                        break;
-                    case 0xad:
-                        map = Xad.map;
-                        break;
-                    case 0xae:
-                        map = Xae.map;
-                        break;
-                    case 0xaf:
-                        map = Xaf.map;
-                        break;
-                    case 0xb0:
-                        map = Xb0.map;
-                        break;
-                    case 0xb1:
-                        map = Xb1.map;
-                        break;
-                    case 0xb2:
-                        map = Xb2.map;
-                        break;
-                    case 0xb3:
-                        map = Xb3.map;
-                        break;
-                    case 0xb4:
-                        map = Xb4.map;
-                        break;
-                    case 0xb5:
-                        map = Xb5.map;
-                        break;
-                    case 0xb6:
-                        map = Xb6.map;
-                        break;
-                    case 0xb7:
-                        map = Xb7.map;
-                        break;
-                    case 0xb8:
-                        map = Xb8.map;
-                        break;
-                    case 0xb9:
-                        map = Xb9.map;
-                        break;
-                    case 0xba:
-                        map = Xba.map;
-                        break;
-                    case 0xbb:
-                        map = Xbb.map;
-                        break;
-                    case 0xbc:
-                        map = Xbc.map;
-                        break;
-                    case 0xbd:
-                        map = Xbd.map;
-                        break;
-                    case 0xbe:
-                        map = Xbe.map;
-                        break;
-                    case 0xbf:
-                        map = Xbf.map;
-                        break;
-                    case 0xc0:
-                        map = Xc0.map;
-                        break;
-                    case 0xc1:
-                        map = Xc1.map;
-                        break;
-                    case 0xc2:
-                        map = Xc2.map;
-                        break;
-                    case 0xc3:
-                        map = Xc3.map;
-                        break;
-                    case 0xc4:
-                        map = Xc4.map;
-                        break;
-                    case 0xc5:
-                        map = Xc5.map;
-                        break;
-                    case 0xc6:
-                        map = Xc6.map;
-                        break;
-                    case 0xc7:
-                        map = Xc7.map;
-                        break;
-                    case 0xc8:
-                        map = Xc8.map;
-                        break;
-                    case 0xc9:
-                        map = Xc9.map;
-                        break;
-                    case 0xca:
-                        map = Xca.map;
-                        break;
-                    case 0xcb:
-                        map = Xcb.map;
-                        break;
-                    case 0xcc:
-                        map = Xcc.map;
-                        break;
-                    case 0xcd:
-                        map = Xcd.map;
-                        break;
-                    case 0xce:
-                        map = Xce.map;
-                        break;
-                    case 0xcf:
-                        map = Xcf.map;
-                        break;
-                    case 0xd0:
-                        map = Xd0.map;
-                        break;
-                    case 0xd1:
-                        map = Xd1.map;
-                        break;
-                    case 0xd2:
-                        map = Xd2.map;
-                        break;
-                    case 0xd3:
-                        map = Xd3.map;
-                        break;
-                    case 0xd4:
-                        map = Xd4.map;
-                        break;
-                    case 0xd5:
-                        map = Xd5.map;
-                        break;
-                    case 0xd6:
-                        map = Xd6.map;
-                        break;
-                    case 0xd7:
-                        map = Xd7.map;
-                        break;
-                    case 0xf9:
-                        map = Xf9.map;
-                        break;
-                    case 0xfa:
-                        map = Xfa.map;
-                        break;
-                    case 0xfb:
-                        map = Xfb.map;
-                        break;
-                    case 0xfc:
-                        map = Xfc.map;
-                        break;
-                    case 0xfd:
-                        map = Xfd.map;
-                        break;
-                    case 0xfe:
-                        map = Xfe.map;
-                        break;
-                    case 0xff:
-                        map = Xff.map;
-                        break;
-                    default:
+                    case 0x00 -> map = X00.map;
+                    case 0x01 -> map = X01.map;
+                    case 0x02 -> map = X02.map;
+                    case 0x03 -> map = X03.map;
+                    case 0x04 -> map = X04.map;
+                    case 0x05 -> map = X05.map;
+                    case 0x06 -> map = X06.map;
+                    case 0x07 -> map = X07.map;
+                    case 0x09 -> map = X09.map;
+                    case 0x0a -> map = X0a.map;
+                    case 0x0b -> map = X0b.map;
+                    case 0x0c -> map = X0c.map;
+                    case 0x0d -> map = X0d.map;
+                    case 0x0e -> map = X0e.map;
+                    case 0x0f -> map = X0f.map;
+                    case 0x10 -> map = X10.map;
+                    case 0x11 -> map = X11.map;
+                    case 0x12 -> map = X12.map;
+                    case 0x13 -> map = X13.map;
+                    case 0x14 -> map = X14.map;
+                    case 0x15 -> map = X15.map;
+                    case 0x16 -> map = X16.map;
+                    case 0x17 -> map = X17.map;
+                    case 0x18 -> map = X18.map;
+                    case 0x19 -> map = X19.map;
+                    case 0x1a -> map = X1a.map;
+                    case 0x1b -> map = X1b.map;
+                    case 0x1c -> map = X1c.map;
+                    case 0x1d -> map = X1d.map;
+                    case 0x1e -> map = X1e.map;
+                    case 0x1f -> map = X1f.map;
+                    case 0x20 -> map = X20.map;
+                    case 0x21 -> map = X21.map;
+                    case 0x22 -> map = X22.map;
+                    case 0x23 -> map = X23.map;
+                    case 0x24 -> map = X24.map;
+                    case 0x25 -> map = X25.map;
+                    case 0x26 -> map = X26.map;
+                    case 0x27 -> map = X27.map;
+                    case 0x28 -> map = X28.map;
+                    case 0x2e -> map = X2e.map;
+                    case 0x2f -> map = X2f.map;
+                    case 0x30 -> map = X30.map;
+                    case 0x31 -> map = X31.map;
+                    case 0x32 -> map = X32.map;
+                    case 0x33 -> map = X33.map;
+                    case 0x4d -> map = X4d.map;
+                    case 0x4e -> map = X4e.map;
+                    case 0x4f -> map = X4f.map;
+                    case 0x50 -> map = X50.map;
+                    case 0x51 -> map = X51.map;
+                    case 0x52 -> map = X52.map;
+                    case 0x53 -> map = X53.map;
+                    case 0x54 -> map = X54.map;
+                    case 0x55 -> map = X55.map;
+                    case 0x56 -> map = X56.map;
+                    case 0x57 -> map = X57.map;
+                    case 0x58 -> map = X58.map;
+                    case 0x59 -> map = X59.map;
+                    case 0x5a -> map = X5a.map;
+                    case 0x5b -> map = X5b.map;
+                    case 0x5c -> map = X5c.map;
+                    case 0x5d -> map = X5d.map;
+                    case 0x5e -> map = X5e.map;
+                    case 0x5f -> map = X5f.map;
+                    case 0x60 -> map = X60.map;
+                    case 0x61 -> map = X61.map;
+                    case 0x62 -> map = X62.map;
+                    case 0x63 -> map = X63.map;
+                    case 0x64 -> map = X64.map;
+                    case 0x65 -> map = X65.map;
+                    case 0x66 -> map = X66.map;
+                    case 0x67 -> map = X67.map;
+                    case 0x68 -> map = X68.map;
+                    case 0x69 -> map = X69.map;
+                    case 0x6a -> map = X6a.map;
+                    case 0x6b -> map = X6b.map;
+                    case 0x6c -> map = X6c.map;
+                    case 0x6d -> map = X6d.map;
+                    case 0x6e -> map = X6e.map;
+                    case 0x6f -> map = X6f.map;
+                    case 0x70 -> map = X70.map;
+                    case 0x71 -> map = X71.map;
+                    case 0x72 -> map = X72.map;
+                    case 0x73 -> map = X73.map;
+                    case 0x74 -> map = X74.map;
+                    case 0x75 -> map = X75.map;
+                    case 0x76 -> map = X76.map;
+                    case 0x77 -> map = X77.map;
+                    case 0x78 -> map = X78.map;
+                    case 0x79 -> map = X79.map;
+                    case 0x7a -> map = X7a.map;
+                    case 0x7b -> map = X7b.map;
+                    case 0x7c -> map = X7c.map;
+                    case 0x7d -> map = X7d.map;
+                    case 0x7e -> map = X7e.map;
+                    case 0x7f -> map = X7f.map;
+                    case 0x80 -> map = X80.map;
+                    case 0x81 -> map = X81.map;
+                    case 0x82 -> map = X82.map;
+                    case 0x83 -> map = X83.map;
+                    case 0x84 -> map = X84.map;
+                    case 0x85 -> map = X85.map;
+                    case 0x86 -> map = X86.map;
+                    case 0x87 -> map = X87.map;
+                    case 0x88 -> map = X88.map;
+                    case 0x89 -> map = X89.map;
+                    case 0x8a -> map = X8a.map;
+                    case 0x8b -> map = X8b.map;
+                    case 0x8c -> map = X8c.map;
+                    case 0x8d -> map = X8d.map;
+                    case 0x8e -> map = X8e.map;
+                    case 0x8f -> map = X8f.map;
+                    case 0x90 -> map = X90.map;
+                    case 0x91 -> map = X91.map;
+                    case 0x92 -> map = X92.map;
+                    case 0x93 -> map = X93.map;
+                    case 0x94 -> map = X94.map;
+                    case 0x95 -> map = X95.map;
+                    case 0x96 -> map = X96.map;
+                    case 0x97 -> map = X97.map;
+                    case 0x98 -> map = X98.map;
+                    case 0x99 -> map = X99.map;
+                    case 0x9a -> map = X9a.map;
+                    case 0x9b -> map = X9b.map;
+                    case 0x9c -> map = X9c.map;
+                    case 0x9d -> map = X9d.map;
+                    case 0x9e -> map = X9e.map;
+                    case 0x9f -> map = X9f.map;
+                    case 0xa0 -> map = Xa0.map;
+                    case 0xa1 -> map = Xa1.map;
+                    case 0xa2 -> map = Xa2.map;
+                    case 0xa3 -> map = Xa3.map;
+                    case 0xa4 -> map = Xa4.map;
+                    case 0xac -> map = Xac.map;
+                    case 0xad -> map = Xad.map;
+                    case 0xae -> map = Xae.map;
+                    case 0xaf -> map = Xaf.map;
+                    case 0xb0 -> map = Xb0.map;
+                    case 0xb1 -> map = Xb1.map;
+                    case 0xb2 -> map = Xb2.map;
+                    case 0xb3 -> map = Xb3.map;
+                    case 0xb4 -> map = Xb4.map;
+                    case 0xb5 -> map = Xb5.map;
+                    case 0xb6 -> map = Xb6.map;
+                    case 0xb7 -> map = Xb7.map;
+                    case 0xb8 -> map = Xb8.map;
+                    case 0xb9 -> map = Xb9.map;
+                    case 0xba -> map = Xba.map;
+                    case 0xbb -> map = Xbb.map;
+                    case 0xbc -> map = Xbc.map;
+                    case 0xbd -> map = Xbd.map;
+                    case 0xbe -> map = Xbe.map;
+                    case 0xbf -> map = Xbf.map;
+                    case 0xc0 -> map = Xc0.map;
+                    case 0xc1 -> map = Xc1.map;
+                    case 0xc2 -> map = Xc2.map;
+                    case 0xc3 -> map = Xc3.map;
+                    case 0xc4 -> map = Xc4.map;
+                    case 0xc5 -> map = Xc5.map;
+                    case 0xc6 -> map = Xc6.map;
+                    case 0xc7 -> map = Xc7.map;
+                    case 0xc8 -> map = Xc8.map;
+                    case 0xc9 -> map = Xc9.map;
+                    case 0xca -> map = Xca.map;
+                    case 0xcb -> map = Xcb.map;
+                    case 0xcc -> map = Xcc.map;
+                    case 0xcd -> map = Xcd.map;
+                    case 0xce -> map = Xce.map;
+                    case 0xcf -> map = Xcf.map;
+                    case 0xd0 -> map = Xd0.map;
+                    case 0xd1 -> map = Xd1.map;
+                    case 0xd2 -> map = Xd2.map;
+                    case 0xd3 -> map = Xd3.map;
+                    case 0xd4 -> map = Xd4.map;
+                    case 0xd5 -> map = Xd5.map;
+                    case 0xd6 -> map = Xd6.map;
+                    case 0xd7 -> map = Xd7.map;
+                    case 0xf9 -> map = Xf9.map;
+                    case 0xfa -> map = Xfa.map;
+                    case 0xfb -> map = Xfb.map;
+                    case 0xfc -> map = Xfc.map;
+                    case 0xfd -> map = Xfd.map;
+                    case 0xfe -> map = Xfe.map;
+                    case 0xff -> map = Xff.map;
+                    default -> {
                         continue;
+                    }
                 }
                 /*
                  * Cache the new map using the high byte of the code point

@@ -284,8 +284,8 @@
                 "error": "NKHook6 is no longer working. Please remove NKHook6 from your Mods folder."
             },
             {
-                "regex": "  at alldartling.Main+Awake_Patch.Postfix.*",
-                "error": "all dartling is throwing a error and should be removed."
+                "regex": ".*is already injected. Don't inject the same type twice, or use a different namespace",
+                "error": "2 mods are conflicting with each other because they use the same namespace. (this is a common problem with datjanedoe's old mods)."
             }
         ],
         "BONEWORKS": [
@@ -327,6 +327,7 @@
 
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
         "NKHook6": "NKHook6 is broken and should be removed from the mods folder.",
+        "GoldVillage": "GoldVillage takes a long time to load on start, it may look like your game is crashing/freezing, but you just need to wait.",
 
         "Custom Items Framework": "Please replace Custom Items Framework with [ModThatIsNotMod](https://boneworks.thunderstore.io/package/gnonme/ModThatIsNotMod/).",
         "EasyMenu": "Please replace EasyMenu with [ModThatIsNotMod](https://boneworks.thunderstore.io/package/gnonme/ModThatIsNotMod/)."

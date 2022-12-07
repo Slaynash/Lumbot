@@ -50,7 +50,7 @@ public class LumJokes {
             }
 
             switch (type) {
-                case 0:
+                case 0 -> {
                     try {
                         site = "DADJOKE";
                         response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
@@ -59,8 +59,8 @@ public class LumJokes {
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting Dad joke:", e, event.getChannel().asGuildMessageChannel());
                     }
-                    break;
-                case 1:
+                }
+                case 1 -> {
                     try {
                         site = "JokeAPI";
                         response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
@@ -78,8 +78,8 @@ public class LumJokes {
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting JokeAPI:", e, event.getChannel().asGuildMessageChannel());
                     }
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     try {
                         site = "SpookyJokeAPI";
                         response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
@@ -97,8 +97,8 @@ public class LumJokes {
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting Spooky JokeAPI:", e, event.getChannel().asGuildMessageChannel());
                     }
-                    break;
-                case 3:
+                }
+                case 3 -> {
                     try {
                         site = "ChristmasJokeAPI";
                         response = MelonScannerApisManager.downloadRequest(christmasjokeAPIRequest, "ChristmasJokeAPI");
@@ -116,14 +116,15 @@ public class LumJokes {
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred while while getting Christmas JokeAPI:", e, event.getChannel().asGuildMessageChannel());
                     }
-                    break;
-                case 69:
+                }
+                case 69 -> {
                     site = "Dad_jokes.mp4";
                     joke = "https://cdn.discordapp.com/attachments/509655431787053057/963596823858135100/Dad_jokes.mp4";
-                    break;
-                default:
+                }
+                default -> {
                     site = "fucky wucky";
                     joke = "<@240701606977470464> OOPSIE WOOPSIE!! Uwu I make a fucky wucky!!";
+                }
             }
             if (!joke.isEmpty()) {
                 if (punchLine.isEmpty()) {

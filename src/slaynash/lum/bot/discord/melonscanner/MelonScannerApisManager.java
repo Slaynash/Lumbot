@@ -194,12 +194,7 @@ public class MelonScannerApisManager {
                                 responseBody = decompressedStream.toByteArray();
                             }
 
-
-                            String apiDataRaw = new String(responseBody);
-                            //System.out.println("API retured body: " + apiDataRaw);
-                            //System.out.println("API URI: " + response.uri());
-
-                            JsonElement data = gson.fromJson(apiDataRaw, JsonElement.class);
+                            JsonElement data = gson.fromJson(responseBody.toString(), JsonElement.class);
 
                             // Script pass
 

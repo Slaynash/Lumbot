@@ -469,19 +469,18 @@ public final class MelonScanner {
         if (context.isMLOutdated || context.modifiedML) {
             int result = VersionUtils.compareVersion(templatestMLVersionRelease, context.mlVersion);
             switch (result) {
-                case 1: //left more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), templatestMLVersionRelease), false);
-                    break;
-                case 0: //identicals
+                case 1 -> //left more recent
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), templatestMLVersionRelease), false);
+                case 0 -> { //identicals
                     if (context.alpha)
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha), false);
                     else
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, templatestMLVersionRelease), false);
-                    break;
-                case -1: //right more recent
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : templatestMLVersionRelease), false);
-                    break;
-                default:
+                }
+                case -1 -> //right more recent
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : templatestMLVersionRelease), false);
+                default -> {
+                }
             }
             return true;
         }
@@ -729,7 +728,7 @@ public final class MelonScanner {
         if (context.outdatedMods.size() > 0) {
             String muMessage;
             switch (context.game) {
-                case "ChilloutVR":
+                case "ChilloutVR" -> {
                     if (context.misplacedPlugins.contains("CVRModUpdater.Loader"))
                         muMessage = "";
                     else if (context.loadedMods.containsKey("CVRModUpdater.Loader"))
@@ -738,16 +737,14 @@ public final class MelonScanner {
                         muMessage = "";
                     else
                         muMessage = Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
-                    break;
-                case "TheLongDark":
+                }
+                case "TheLongDark" -> {
                     if (context.misplacedPlugins.contains("AutoUpdatingPlugin"))
                         muMessage = "";
                     else
                         muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
-                    break;
-                default:
-                    muMessage = "";
-                    break;
+                }
+                default -> muMessage = "";
             }
 
             StringBuilder error = new StringBuilder();

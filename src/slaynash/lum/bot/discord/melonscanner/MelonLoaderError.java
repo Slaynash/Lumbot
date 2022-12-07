@@ -151,16 +151,20 @@ public class MelonLoaderError {
 
     public String error(String lang) {
         switch (lang) {
-            case "fr":
+            case "fr" -> {
                 return Utils.translate("en", "fr", error);
-            case "de":
+            }
+            case "de" -> {
                 return Utils.translate("en", "de", error);
-            case "sga":
+            }
+            case "sga" -> {
                 return Localization.toStandardGalacticAlphabet(error);
-            case "owo":
-            case "uwu":
+            }
+            case "owo", "uwu" -> {
                 return Localization.toOwOify(error);
-            default:
+            }
+            default -> {
+            }
         }
         return error;
     }
