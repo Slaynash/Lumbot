@@ -166,6 +166,7 @@ public class Steam {
                 }
                 catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                    continue;
                 }
                 if (!JDAManager.isEventsEnabled())
                     continue;
@@ -177,7 +178,11 @@ public class Steam {
                         if (testChannel(sc))
                             continue;
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
+                        if (guild == null)
+                            continue;
                         TextChannel channel = guild.getTextChannelById(sc.channelId());
+                        if (channel == null)
+                            continue;
                         if (channel.canTalk())
                             channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
@@ -204,6 +209,7 @@ public class Steam {
                 }
                 catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                    continue;
                 }
 
                 printKeyValue(app.getValue().getKeyValues(), 1);
@@ -286,7 +292,14 @@ public class Steam {
                             mb.setContent(sc.otherMessage());
                         }
 
-                        TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID()).getTextChannelById(sc.channelId());
+                        TextChannel channel;
+                        try {
+                            channel = JDAManager.getJDA().getGuildById(sc.guildID()).getTextChannelById(sc.channelId());
+                        }
+                        catch (Exception e) {
+                            ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                            continue;
+                        }
                         if (channel.canTalk())
                             channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
@@ -309,6 +322,7 @@ public class Steam {
 
                         for (SteamChannel sc : channels) {
                             TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID()).getTextChannelById(sc.channelId());
+                            if (channel == null) continue;
                             if (channel.canTalk())
                                 channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                     if (channel.getType() == ChannelType.NEWS)
@@ -337,6 +351,7 @@ public class Steam {
             }
             catch (SQLException e) {
                 e.printStackTrace();
+                return false;
             }
             return true;
         }
@@ -348,6 +363,7 @@ public class Steam {
             }
             catch (SQLException e) {
                 e.printStackTrace();
+                return false;
             }
             return true;
         }
@@ -427,6 +443,7 @@ public class Steam {
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
+                return "error";
             }
         }
         if (!gameDetails.containsKey(gameID)) //timed out
