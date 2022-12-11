@@ -5,13 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import com.google.gson.Gson;
 import in.dragonbra.javasteam.enums.EResult;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSChangeData;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSProductInfo;
@@ -51,7 +51,6 @@ public class Steam {
 
     private int previousChangeNumber;
 
-    private static final Map<Integer, SteamAppDetails> gameDetails = new HashMap<>();
     private static final CopyOnWriteArrayList<Integer> intGameIDs = new CopyOnWriteArrayList<>();
 
     public Steam() {
@@ -119,12 +118,11 @@ public class Steam {
             isLoggedOn = true;
             System.out.println("Logged in, current valve time is " + callback.getServerTime() + " UTC");
 
-            try { //initialize all depos
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT `GameID` FROM `SteamWatch` WHERE 1");
+            try { //initialize all missing depos
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT s.`GameID` FROM `SteamWatch` s WHERE s.`GameID` NOT IN (SELECT `GameID` FROM `SteamApp`)");
                 while (rs.next()) {
                     Integer gameID = rs.getInt("GameID");
-                    if (gameDetails.get(gameID) == null)
-                        apps.picsGetProductInfo(gameID, null, false, false);
+                    apps.picsGetProductInfo(gameID, null, false, false);
                 }
                 DBConnectionManagerLum.closeRequest(rs);
             }
@@ -158,7 +156,8 @@ public class Steam {
                 List<SteamChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)", previousChangeNumber, gameID);
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Config` SET `value` = ? WHERE `Config`.`setting` = 'LastSteamChange';", callback.getCurrentChangeNumber());
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
@@ -201,7 +200,7 @@ public class Steam {
                 System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
                 List<SteamChannel> channels = new ArrayList<>();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("CALL `GetSteamWatch`(?,?)", previousChangeNumber, app.getKey());
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", app.getKey());
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                     }
@@ -213,11 +212,12 @@ public class Steam {
                 }
 
                 printKeyValue(app.getValue().getKeyValues(), 1);
-                SteamAppDetails gameDetail = gameDetails.get(app.getKey());
+                SteamAppDetails gameDetail = getGameDetails(app.getKey());
+
 
                 if (gameDetail == null) { //for startup and first time added
                     gameDetail = new SteamAppDetails(app.getValue().getKeyValues());
-                    gameDetails.put(app.getKey(), gameDetail);
+                    setGameDetails(app.getKey(), gameDetail);
                     return;
                 }
 
@@ -333,7 +333,7 @@ public class Steam {
                     }
                 }
                 if (newAppDetails != null)
-                    gameDetails.put(app.getKey(), newAppDetails);
+                    setGameDetails(app.getKey(), newAppDetails);
             }
         });
     }
@@ -350,8 +350,7 @@ public class Steam {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = ?", sc.guildID());
             }
             catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+                ExceptionUtils.reportException("Failed to remove missing Guild: " + sc.guildID());
             }
             return true;
         }
@@ -362,8 +361,7 @@ public class Steam {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", sc.channelId());
             }
             catch (SQLException e) {
-                e.printStackTrace();
-                return false;
+                ExceptionUtils.reportException("Failed to remove missing Channel: " + sc.channelId());
             }
             return true;
         }
@@ -395,8 +393,18 @@ public class Steam {
 
     public void intDetails(Integer gameID) {
         // For some reason, SteamKit ignores picsGetProductInfo if it is called outside of a callback
-        if (!gameDetails.containsKey(gameID))
-            intGameIDs.add(gameID);
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TS` FROM `SteamApp` WHERE `GameID` = ?", gameID);
+            if (!rs.next()) {
+                System.out.println("Init SteamApp for " + gameID);
+                // apps.picsGetProductInfo(gameID, null, false, false);
+                intGameIDs.add(gameID);
+            }
+            DBConnectionManagerLum.closeRequest(rs);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to int Steam Details", e);
+        }
     }
 
     private void startChangesRequesterThread() {
@@ -428,29 +436,64 @@ public class Steam {
     public String getGameName(Integer gameID) {
         if (gameID == null)
             return "null";
-        if (gameDetails.containsKey(gameID)) {
-            SteamAppDetails appDetails = gameDetails.get(gameID);
-            if (appDetails.common != null && appDetails.common.name != null)
-                return new String(appDetails.common.name.getBytes(), StandardCharsets.UTF_8);
+        SteamAppDetails gameDetail = getGameDetails(gameID);
+        if (gameDetail != null) {
+            if (gameDetail.common != null && gameDetail.common.name != null)
+                return gameDetail.common.name;
             else
                 return gameID.toString();
         }
         intDetails(gameID);
         long timestamp = System.currentTimeMillis();
-        while (!gameDetails.containsKey(gameID) && System.currentTimeMillis() - timestamp < 6900) {
+        while ((gameDetail = getGameDetails(gameID)) == null && System.currentTimeMillis() - timestamp < 6900) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(420);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
                 return "error";
             }
         }
-        if (!gameDetails.containsKey(gameID)) //timed out
+        if (gameDetail == null) //timed out
             return gameID.toString();
-        SteamAppDetails appDetails = gameDetails.get(gameID);
-        if (appDetails.common != null && appDetails.common.name != null)
-            return new String(appDetails.common.name.getBytes(), StandardCharsets.UTF_8);
+        if (gameDetail.common != null && gameDetail.common.name != null)
+            return gameDetail.common.name;
         return gameID.toString();
+    }
+    private SteamAppDetails getGameDetails(Integer gameID) {
+        if (gameID == null)
+            return null;
+        SteamAppDetails appDetails = null;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamApp` WHERE `GameID` = ?", gameID);
+            if (rs.next()) {
+                appDetails = new Gson().fromJson(rs.getString("Depot"), SteamAppDetails.class);
+            }
+            DBConnectionManagerLum.closeRequest(rs);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to get Game Details", e);
+        }
+        return appDetails;
+    }
+    private boolean setGameDetails(Integer gameID, SteamAppDetails appDetails) {
+        if (gameID == null)
+            return false;
+        if (appDetails == null)
+            return false;
+        try {
+            String json = new Gson().toJson(appDetails);
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TS` FROM `SteamApp` WHERE `GameID` = ?", gameID);
+            if (rs.next())
+                DBConnectionManagerLum.sendUpdate("UPDATE `SteamApp` SET `Depot` = ? WHERE `SteamApp`.`GameID` = ?", json, gameID);
+            else
+                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamApp` (`GameID`, `Depot`) VALUES (?, ?)", gameID, json);
+            DBConnectionManagerLum.closeRequest(rs);
+            return true;
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to set Game Details", e);
+            return false;
+        }
     }
 }

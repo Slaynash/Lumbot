@@ -75,7 +75,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
         // apis.add(api = new MelonScannerApi("BloonsTD6", "btd6_gurrenm4", "https://raw.githubusercontent.com/gurrenm3/MelonLoader-BTD-Mods/main/mods.json"));
-        // apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
         apis.add(api = new CurseforgeApi("Demeo", 78135));
@@ -187,14 +187,17 @@ public class MelonScannerApisManager {
                                 }
                                 catch (Exception e) {
                                     ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
-                                    //ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to decompress current deobfuscation map", e);
-                                    return;
+                                    break;
                                 }
 
                                 responseBody = decompressedStream.toByteArray();
                             }
-
-                            JsonElement data = gson.fromJson(new String(responseBody), JsonElement.class);
+                            String responseString = new String(responseBody);
+                            if (responseString.charAt(0) == '<') {
+                                ExceptionUtils.reportException("Received HTML for " + api.name);
+                                break;
+                            }
+                            JsonElement data = gson.fromJson(responseString, JsonElement.class);
 
                             // Script pass
 

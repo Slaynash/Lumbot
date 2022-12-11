@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 17, 2022 at 12:22 AM
+-- Generation Time: Dec 11, 2022 at 11:56 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -30,28 +30,6 @@ DELIMITER $$
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `FetchIcon` (IN `name` CHAR(128))  BEGIN
 SELECT IconURL,PirateURL FROM Icons WHERE `UnityName` = name;
 UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = name;
-END$$
-
-CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber` INT UNSIGNED, IN `GameID` INT UNSIGNED)  BEGIN
-	UPDATE `Config` SET `value` = ChangeNumber WHERE `Config`.`setting` = 'LastSteamChange';
-	SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = GameID;
-END$$
-
-CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `Tickets Leaderboard` ()  BEGIN
-	SELECT `UserID`,`ChannelName`,`TS`,(`Closed`-`Created`)/1000 AS 'Duration' FROM `TicketTool`
-	WHERE (`Closed`-`Created`) IS NOT NULL AND `Completed` IS NOT NULL
-	ORDER BY (`Closed`-`Created`) ASC;
-END$$
-
-CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
-	SELECT *
-    FROM `TicketTool`
-    WHERE ( `ChannelName` LIKE '%reset%' OR `ChannelName` LIKE '%export%' OR `ChannelName` LIKE '%wipe%' OR `ChannelName` LIKE '%deletion%' )
-    	AND `Closed` IS NULL
-        AND (
-            ( `Completed` IS NULL AND `Created` + (60 * 60 * 1000) < currentTime )
-            OR `Completed` + (15 * 60 * 1000) < currentTime
-        );
 END$$
 
 DELIMITER ;
@@ -146,6 +124,19 @@ CREATE TABLE IF NOT EXISTS `Replies` (
   `ignorerole` bigint DEFAULT NULL,
   `lastedited` bigint DEFAULT NULL,
   PRIMARY KEY (`ukey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SteamApp`
+--
+
+CREATE TABLE IF NOT EXISTS `SteamApp` (
+  `GameID` bigint UNSIGNED NOT NULL,
+  `Depot` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `GameID` (`GameID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
