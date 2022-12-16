@@ -365,8 +365,11 @@ public final class MelonScanner {
             context.pirate = false;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps")) {
+            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.gamePath.contains("\\Epic Games\\BloonsTD6")) {
                 context.pirate = true;
+            }
+            else if (context.gamePath.contains("\\Epic Games\\BloonsTD6")) { //TODO: remove this when epic games stops being a pain (lol thanks CoPilot)
+                context.embedBuilder.addField("Epic Games Store", "You are using the Epic Games Store version of Bloons TD 6. This is not supported by MelonLoader. Please use the Steam version instead for now.", false);
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
