@@ -15,17 +15,17 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@release
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
       - name: Checkout
-        uses: actions/checkout@release
+        uses: actions/checkout@v2.6.0
       - name: Set up JDK 17
-        uses: actions/setup-java@release
+        uses: actions/setup-java@1.0.0
         with:
           java-version: 17
       - name: Cache local Maven repository
-        uses: actions/cache@release
+        uses: actions/cache@v3.2.0-beta.1
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -37,7 +37,7 @@ jobs:
         run: echo buildname=$(ls /home/runner/work/Lumbot/Lumbot/target | grep bot) >> $GITHUB_ENV
 
       - name: Upload to artifacts
-        uses: actions/upload-artifact@release
+        uses: actions/upload-artifact@v3.1.1
         with:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}

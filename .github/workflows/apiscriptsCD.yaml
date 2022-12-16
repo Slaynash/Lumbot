@@ -16,11 +16,11 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@release
+        uses: styfle/cancel-workflow-action@0.11.0
         with:
           access_token: ${{ github.token }}
       - name: Checkout
-        uses: actions/checkout@release
+        uses: actions/checkout@v2.6.0
 
       - name: Upload to server
         run: |
