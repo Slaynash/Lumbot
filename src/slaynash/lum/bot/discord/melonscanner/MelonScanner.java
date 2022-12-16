@@ -217,8 +217,10 @@ public final class MelonScanner {
     }
 
     private static boolean getModsFromApi(MelonScanContext context) {
-        if (context.game != null && context.game.equalsIgnoreCase("bloonstd6-epic"))
+        if (context.game != null && context.game.equalsIgnoreCase("bloonstd6-epic")) {
             context.game = "BloonsTD6";
+            context.epic = true;
+        }
         return (context.modDetails = MelonScannerApisManager.getMods(context.game)) != null;
     }
 
@@ -365,11 +367,14 @@ public final class MelonScanner {
             context.pirate = false;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.gamePath.contains("\\Epic Games\\BloonsTD6")) {
+            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.epic) {
                 context.pirate = true;
             }
-            else if (context.gamePath.contains("\\Epic Games\\BloonsTD6")) { //TODO: remove this when epic games stops being a pain (lol thanks CoPilot)
+            else if (context.epic) { //TODO: remove this when epic games stops being a pain (lol thanks CoPilot)
                 context.embedBuilder.addField("Epic Games Store", "You are using the Epic Games Store version of Bloons TD 6. This is not supported by MelonLoader. Please use the Steam version instead for now.", false);
+            }
+            else if (context.gameBuild != null && context.gameBuild.startsWith("34")) {
+                context.embedBuilder.addField("BTD6 34", "Currently MelonLoader does not work with BTD6 version 34, Please either remove MelonLoader/Mods or [downgrade to v33](https://github.com/gurrenm3/BTD-Mod-Helper/releases/tag/3.0.9)", false);
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
@@ -380,7 +385,6 @@ public final class MelonScanner {
     }
 
     private static void prepareEmbed(MelonScanContext context) {
-        checkForPirate(context);
         String footer = "Lum Log Scanner";
         if (context.loadedMods.size() > 0) {
             footer += " | " + context.loadedMods.size() + " mods loaded";
@@ -393,7 +397,7 @@ public final class MelonScanner {
         context.embedBuilder.setTitle(Localization.get("melonscanner.logautocheckresult", context.lang))
                             .setTimestamp(Instant.now())
                             .setFooter(footer);
-
+        checkForPirate(context);
         if (context.game != null) {
             String unityName = context.game.replace(" ", "").toLowerCase();
             if (unityName.equals("unknown"))

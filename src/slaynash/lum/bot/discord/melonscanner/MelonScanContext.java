@@ -55,6 +55,7 @@ public class MelonScanContext {
     // Game Infos
     public String game;
     public String gameBuild;
+    public boolean epic = false;
 
     // Mod listing - temp
     public boolean listingPlugins = false;
