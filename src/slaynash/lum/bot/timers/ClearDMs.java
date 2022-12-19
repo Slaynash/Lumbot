@@ -1,4 +1,4 @@
-package slaynash.lum.bot;
+package slaynash.lum.bot.timers;
 
 import java.time.OffsetDateTime;
 import java.util.List;

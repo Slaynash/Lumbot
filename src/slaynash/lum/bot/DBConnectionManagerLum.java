@@ -73,6 +73,8 @@ public final class DBConnectionManagerLum {
                 ps.setBoolean(i + 1, (boolean) args[i]);
             else if (args[i].getClass() == Long.class)
                 ps.setLong(i + 1, (long) args[i]);
+            else if (args[i].getClass() == Timestamp.class)
+                ps.setTimestamp(i + 1, (Timestamp) args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
         return ps;

@@ -11,6 +11,7 @@ import java.net.http.HttpResponse;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +70,8 @@ import slaynash.lum.bot.discord.slashs.SlashManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
+import slaynash.lum.bot.timers.ClearDMs;
+import slaynash.lum.bot.timers.Reminders;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
@@ -135,6 +138,15 @@ public class Main extends ListenerAdapter {
                     1000 * 60 * 60
                 );
                 new Steam().start();
+                Calendar time = Calendar.getInstance();
+                time.set(Calendar.MILLISECOND, 0);
+                time.set(Calendar.SECOND, 0);
+                time.set(Calendar.MINUTE, time.get(Calendar.MINUTE) + 1);
+                timer.schedule(
+                    new Reminders(),
+                    time.getTime(),
+                    1000 * 60
+                );
             }
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");

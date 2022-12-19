@@ -231,6 +231,8 @@ public class CommandManager {
     }
 
     public static Color hex2Rgb(String colorStr) {
-        return new Color(Integer.valueOf(colorStr.substring(1, 3), 16), Integer.valueOf(colorStr.substring(3, 5), 16), Integer.valueOf(colorStr.substring(5, 7), 16));
+        if (colorStr.startsWith("#"))
+            colorStr = colorStr.substring(1);
+        return new Color(Integer.valueOf(colorStr.substring(0, 2), 16), Integer.valueOf(colorStr.substring(2, 4), 16), Integer.valueOf(colorStr.substring(4, 6), 16));
     }
 }

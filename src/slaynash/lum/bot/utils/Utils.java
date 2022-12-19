@@ -52,7 +52,9 @@ public class Utils {
         }
         return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/").replace(" .", ".");
     }
-
+    public static MessageEmbed wrapMessageInEmbed(String message) {
+        return wrapMessageInEmbed(message, null, null);
+    }
     public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
         return wrapMessageInEmbed(message, color, null);
     }
