@@ -17,9 +17,9 @@ public class Purge extends Command {
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
-        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.VIEW_CHANNEL))
+        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.VIEW_CHANNEL))
             return;
-        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
+        if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
             event.getMessage().reply("I need manage message permission to be able to remove messages.").delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
             return;
         }
@@ -37,7 +37,7 @@ public class Purge extends Command {
                 Message replied = message.getReferencedMessage();
                 List<Message> messageList = new ArrayList<>();
                 if (replied != null) {
-                    messageList = event.getChannel().asTextChannel().getIterableHistory().takeUntilAsync(r -> r.equals(replied)).get();
+                    messageList = event.getChannel().asGuildMessageChannel().getIterableHistory().takeUntilAsync(r -> r.equals(replied)).get();
                     messageList.add(replied); //add replied message to be removed
 
                     if (message.getContentRaw().startsWith(getName() + "u")) {
@@ -52,7 +52,7 @@ public class Purge extends Command {
                 // else if author ID #messages
                 else if (params.length > 1 && params[1].matches("^\\d{1,3}$")) {
                     int count = Integer.parseInt(params[1]);
-                    messageList = event.getChannel().asTextChannel().getIterableHistory().takeAsync(count + 1).get();
+                    messageList = event.getChannel().asGuildMessageChannel().getIterableHistory().takeAsync(count + 1).get();
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
@@ -80,7 +80,7 @@ public class Purge extends Command {
                         messageList.get(0).delete().queue();
                     }
                     else if (messageList.size() <= 100) {
-                        event.getChannel().asTextChannel().deleteMessages(messageList).queue();
+                        event.getChannel().asGuildMessageChannel().deleteMessages(messageList).queue();
                     }
                     else { // greater than 100 messages
                         try {
@@ -90,7 +90,7 @@ public class Purge extends Command {
                                     messageList.get(i).delete().queue();
                                     return;
                                 }
-                                event.getChannel().asTextChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size()))).queue();
+                                event.getChannel().asGuildMessageChannel().deleteMessages(messageList.subList(i, Math.min(i + 100, messageList.size()))).queue();
                                 i = i + 100;
                             }
                         }
