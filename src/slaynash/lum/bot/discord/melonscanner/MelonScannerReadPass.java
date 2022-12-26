@@ -485,7 +485,7 @@ public final class MelonScannerReadPass {
         String[] split = context.line.split(":", 4);
         if (split.length < 4) return false;
         if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Hash Code: .*")) {
-            context.mlHashCode = split[3].trim();
+            context.mlHashCode = split[3].trim().toUpperCase();
             System.out.println("Hash Code: " + context.mlHashCode);
             return true;
         }

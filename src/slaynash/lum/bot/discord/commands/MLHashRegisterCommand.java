@@ -26,8 +26,8 @@ public class MLHashRegisterCommand extends Command {
 
         String branch = split[1].trim();
         String version = split[2].trim();
-        String hash86 = split[3].trim();
-        String hash64 = split[4].trim();
+        String hash86 = split[3].trim().toUpperCase();
+        String hash64 = split[4].trim().toUpperCase();
         System.out.println("branch: " + branch + ", hash: " + paramString + " for ML version " + version);
 
         if (!branch.equals("alpha") && !branch.equals("release")) {
@@ -40,7 +40,7 @@ public class MLHashRegisterCommand extends Command {
             return;
         }
 
-        if (!(hash64.matches("^\\d{5,}$") && hash86.matches("^\\d{5,}$"))) {
+        if (!(hash64.matches("^[0-9A-F]{5,}$") && hash86.matches("^[0-9A-F]{5,}$"))) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + usage).queue();
             return;
         }

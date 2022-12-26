@@ -373,8 +373,8 @@ public final class MelonScanner {
             else if (context.epic) { //TODO: remove this when epic games stops being a pain (lol thanks CoPilot)
                 context.embedBuilder.addField("Epic Games Store", "You are using the Epic Games Store version of Bloons TD 6. This is not supported by MelonLoader. Please use the Steam version instead for now.", false);
             }
-            else if (context.gameBuild != null && context.gameBuild.startsWith("34")) {
-                context.embedBuilder.addField("BTD6 34", "Currently MelonLoader does not work with BTD6 version 34, Please either remove MelonLoader/Mods or [downgrade to v33](https://github.com/gurrenm3/BTD-Mod-Helper/releases/tag/3.0.9)", false);
+            else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
+                context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
