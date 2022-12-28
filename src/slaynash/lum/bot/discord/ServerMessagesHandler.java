@@ -431,7 +431,7 @@ public class ServerMessagesHandler {
                     }
                     if (EmojiUtils.isOneEmoji(message))
                         event.getMessage().addReaction(Emoji.fromUnicode(message)).queue();
-                    else if (message.matches("^<a?:\\w+:\\d+>$")) {
+                    else if (message != null && message.matches("^<a?:\\w+:\\d+>$")) {
                         System.out.println("Emoji: " + message);
                         RichCustomEmoji emote = event.getJDA().getEmojiById(message.replace(">", "").split(":")[2]);
                         try {
@@ -444,7 +444,7 @@ public class ServerMessagesHandler {
                             event.getChannel().asTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
                         }
                     }
-                    else if (!message.isBlank()) {
+                    else if (message != null && !message.isBlank()) {
                         event.getChannel().asTextChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     if (report) {
