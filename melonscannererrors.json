@@ -189,6 +189,14 @@
         {
             "regex": ".*ExecutionEngineException: String conversion error: Illegal byte sequence encounted in the input.",
             "error": "Illegal char in path. Please remove any double byte characters from the path like Japanese or ü."
+        },
+        {
+            "regex": ".*il2cpp_init detour failed: One of the dependent libraries is missing.",
+            "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.12-windows-x64-installer)."
+        },
+        {
+            "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
+            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.12)."
         }
     ],
     "knownErrors": [
