@@ -370,9 +370,6 @@ public final class MelonScanner {
             if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.epic) {
                 context.pirate = true;
             }
-            else if (context.epic) { //TODO: remove this when epic games stops being a pain (lol thanks CoPilot)
-                context.embedBuilder.addField("Epic Games Store", "You are using the Epic Games Store version of Bloons TD 6. This is not supported by MelonLoader. Please use the Steam version instead for now.", false);
-            }
             else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
                 context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
@@ -414,8 +411,10 @@ public final class MelonScanner {
                         ExceptionUtils.reportException("No logo found for " + unityName);
                     context.embedBuilder.setThumbnail(url);
                 }
-                else
+                else {
                     context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `UnityGames` (`UnityName`) VALUES (?)", unityName);
+                }
                 DBConnectionManagerLum.closeRequest(result);
             }
             catch (Exception e) {
