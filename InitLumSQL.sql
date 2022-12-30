@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 11, 2022 at 11:56 PM
+-- Generation Time: Dec 30, 2022 at 09:50 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -30,6 +30,28 @@ DELIMITER $$
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `FetchIcon` (IN `name` CHAR(128))  BEGIN
 SELECT IconURL,PirateURL FROM Icons WHERE `UnityName` = name;
 UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = name;
+END$$
+
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber` INT UNSIGNED, IN `GameID` INT UNSIGNED)  BEGIN
+	UPDATE `Config` SET `value` = ChangeNumber WHERE `Config`.`setting` = 'LastSteamChange';
+	SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = GameID;
+END$$
+
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `Tickets Leaderboard` ()  BEGIN
+	SELECT `UserID`,`ChannelName`,`TS`,(`Closed`-`Created`)/1000 AS 'Duration' FROM `TicketTool`
+	WHERE (`Closed`-`Created`) IS NOT NULL AND `Completed` IS NOT NULL
+	ORDER BY (`Closed`-`Created`) ASC;
+END$$
+
+CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
+	SELECT *
+    FROM `TicketTool`
+    WHERE ( `ChannelName` LIKE '%reset%' OR `ChannelName` LIKE '%export%' OR `ChannelName` LIKE '%wipe%' OR `ChannelName` LIKE '%deletion%' )
+    	AND `Closed` IS NULL
+        AND (
+            ( `Completed` IS NULL AND `Created` + (60 * 60 * 1000) < currentTime )
+            OR `Completed` + (15 * 60 * 1000) < currentTime
+        );
 END$$
 
 DELIMITER ;
@@ -91,12 +113,30 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
 
 CREATE TABLE IF NOT EXISTS `Icons` (
   `UnityName` char(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'must be all lowercase and no spaces',
-  `IconURL` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `IconURL` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `PirateURL` text COLLATE utf8mb4_unicode_ci,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `LastUsed` timestamp NULL DEFAULT NULL,
   `Counter` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`UnityName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Reminders`
+--
+
+CREATE TABLE IF NOT EXISTS `Reminders` (
+  `ID` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `UserID` bigint UNSIGNED NOT NULL,
+  `ServerID` bigint UNSIGNED DEFAULT NULL,
+  `ChannelID` bigint UNSIGNED NOT NULL,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `TSend` timestamp NOT NULL,
+  `Message` text COLLATE utf8mb4_unicode_ci,
+  `Color` int DEFAULT '-13223617',
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

@@ -413,7 +413,7 @@ public final class MelonScanner {
                 }
                 else {
                     context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
-                    DBConnectionManagerLum.sendUpdate("INSERT INTO `UnityGames` (`UnityName`) VALUES (?)", unityName);
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Icons` (`UnityName`) VALUES (?)", unityName);
                 }
                 DBConnectionManagerLum.closeRequest(result);
             }
