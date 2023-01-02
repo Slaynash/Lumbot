@@ -120,6 +120,7 @@ public final class MelonScanner {
             boolean issueFound;
             if  (!context.pirate) {
                 issueFound  = mlOutdatedCheck(context);
+                issueFound |= missingEpicCompat(context);
                 issueFound |= knownErrorsCheck(context);
                 issueFound |= duplicatedModsCheck(context);
                 issueFound |= missingModsCheck(context);
@@ -544,6 +545,15 @@ public final class MelonScanner {
                 error.append(Localization.getFormat("melonscanner.missingmods.more", context.lang, context.missingMods.size() - 10));
 
             context.embedBuilder.addField(Localization.get("melonscanner.missingmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.ORANGE;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean missingEpicCompat(MelonScanContext context) {
+        if (context.epic && "BloonsTD6".equalsIgnoreCase(context.game) && !context.loadedMods.containsKey("BTD6 Epic Games Mod Compat") && (context.loadedMods.size() == 0 || context.preListingModsPlugins) && context.errors.size() == 0) {
+            context.embedBuilder.addField("BTD6 Epic Games Mod Compat", "Please add [BTD6 Epic Games Mod Compat](https://github.com/Baydock/BTD6EpicGamesModCompat/#installation) to your Plugins folder", false);
             context.embedColor = Color.ORANGE;
             return true;
         }
