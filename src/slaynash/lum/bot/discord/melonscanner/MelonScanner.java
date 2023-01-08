@@ -163,9 +163,6 @@ public final class MelonScanner {
                 context.embedColor = Color.RED;
             }
 
-            if (context.game != null)
-                ServerMessagesHandler.handleReplies(messageReceivedEvent, context.game);
-
             if (context.embedBuilder.getFields().size() > 0) {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
@@ -175,7 +172,9 @@ public final class MelonScanner {
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
-                ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
+                boolean triggered = ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
+                if (!triggered && context.game != null)
+                    ServerMessagesHandler.handleReplies(messageReceivedEvent, context.game);
             }
         }
         catch (Exception exception) {
@@ -367,6 +366,9 @@ public final class MelonScanner {
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             context.pirate = false;
         }
+        else if (context.gamePath.toLowerCase().contains("steamrip")) {
+            context.pirate = true;
+        }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
             if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.epic) {
                 context.pirate = true;
@@ -378,6 +380,11 @@ public final class MelonScanner {
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
             if (!context.gamePath.contains("steamapps\\common\\BONEWORKS\\BONEWORKS") && !context.gamePath.contains("Software\\stress-level-zero-inc-boneworks")) {
                 context.pirate = true;
+            }
+        }
+        else if (context.game.equalsIgnoreCase("TheLongDark")) {
+            if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) >= 0 && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
+                context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
     }
