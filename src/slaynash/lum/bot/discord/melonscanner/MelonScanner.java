@@ -416,11 +416,13 @@ public final class MelonScanner {
                     else
                         url = result.getString("IconURL");
                     if (url == null || url.isBlank())
-                        ExceptionUtils.reportException("No logo found for " + unityName);
+                        context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
+                                Utils.wrapMessageInEmbed("No logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
                     context.embedBuilder.setThumbnail(url);
                 }
                 else {
-                    context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessage("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl()).queue();
+                    context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
+                            Utils.wrapMessageInEmbed("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.RED)).queue();
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Icons` (`UnityName`) VALUES (?)", unityName);
                 }
                 DBConnectionManagerLum.closeRequest(result);

@@ -92,7 +92,7 @@ public class MelonScannerApisManager {
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
-        // apis.add(new MelonScannerApi("VRChat", "vrcmg", "https://api.vrcmg.com/v1/mods", true));
+        apis.add(new MelonScannerApi("UNO", "uno", "https://mintlily.lgbt/img/rak/uno.json", true));
     }
 
     public static void startFetchingThread() {
