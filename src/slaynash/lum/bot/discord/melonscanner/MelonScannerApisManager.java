@@ -292,10 +292,6 @@ public class MelonScannerApisManager {
                             if (!doneFetching)
                                 Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
                             else if (!apiMods.isEmpty()) {
-                                if (api.name.equals("vrcmg") && pagingOffset == 0) {
-                                    apiMods.add(new MelonApiMod(null, "WholesomeLoader", DBConnectionManagerLum.getString("strings", "string", "value", "TWversion"), "https://discord.com/channels/716536783621587004/716543020035473468", null, DBConnectionManagerLum.getString("strings", "string", "value", "TWhash"), "Mod", false, false));
-                                }
-
                                 api.cachedMods = apiMods;
                             }
                         }
