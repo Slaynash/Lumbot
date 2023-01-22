@@ -180,7 +180,7 @@ public final class MelonScanner {
         catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while reading attachment of message:",
-                exception, messageReceivedEvent.getChannel().asTextChannel());
+                exception, messageReceivedEvent.getChannel().asGuildMessageChannel());
         }
     }
 

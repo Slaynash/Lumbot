@@ -11,7 +11,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -82,11 +81,9 @@ public class MessageProxy {
                                 .flatMap(ababa -> tc.sendMessage(finalMessage))
                         )
                         .queue();
-            event.getMessage().addReaction(Emoji.fromCustom("Neko_cat_wave", 851938087353188372L, false)).queue();
         }
         else {
             guildchannel.sendMessage(message).queue();
-            event.getMessage().addReaction(Emoji.fromCustom("Neko_cat_okay", 851938634327916566L, false)).queue();
         }
     }
 
