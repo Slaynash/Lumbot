@@ -279,7 +279,10 @@ public class Steam {
                             }
                         }
                     }
-                    eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
+                    if (description.length() > 4096)
+                        eb.setDescription(new String(description.substring(0, 4093).concat("...").getBytes(), StandardCharsets.UTF_8));
+                    else
+                        eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
                     MessageCreateBuilder mb = new MessageCreateBuilder();
                     mb.setEmbeds(eb.build());
 
