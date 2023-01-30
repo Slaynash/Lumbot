@@ -69,6 +69,7 @@ public class SlashManager {
         registerSlash(new SteamWatcher());
         registerSlash(new Replies());
         registerSlash(new Reminder());
+        registerSlash(new Ban());
         registerSlash(new UnivUCBLLIFExoGenerator());
 
         try {

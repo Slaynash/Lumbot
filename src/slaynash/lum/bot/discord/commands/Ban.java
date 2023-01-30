@@ -1,5 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +41,30 @@ public class Ban extends Command {
             banMember = replied.getMember();
         }
         else {
+            if (!event.getMessage().getAttachments().isEmpty()) {
+                if (!event.getMessage().getAttachments().get(0).getFileExtension().equalsIgnoreCase("txt")) {
+                    event.getMessage().reply("Please attach a .txt file with the user IDs to ban").queue();
+                    return;
+                }
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(event.getMessage().getAttachments().get(0).getProxy().download().get()))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (line.matches("^\\d{17,19}$")) { // TODO filter out only numbers
+                            try {
+                                banMember = event.getGuild().getMemberById(line);
+                            }
+                            catch (Exception e) {
+                                event.getMessage().reply("Failed to ban " + line).queue();
+                            }
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    event.getMessage().reply("Error reading file").queue();
+                    return;
+                }
+                return;
+            }
             String[] parts = paramString.split(" ", 4);
             if (parts.length < 2) {
                 event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days) (reason)").queue();
