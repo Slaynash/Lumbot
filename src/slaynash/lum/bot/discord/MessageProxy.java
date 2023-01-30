@@ -152,8 +152,8 @@ public class MessageProxy {
         else if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && ChannelType.TEXT.equals(event.getChannel().getType()) && event.getChannel().asTextChannel().getParentCategory() != null && event.getChannel().asTextChannel().getParentCategory().getIdLong() == 924780998124798022L) {
             event.getUser().openPrivateChannel().queue(
                 channel -> channel.sendTyping().queue(null,
-                        e -> event.getChannel().asTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
-                error -> event.getChannel().asTextChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
+                        e -> event.getChannel().asGuildMessageChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
+                error -> event.getChannel().asGuildMessageChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
         }
 
     }

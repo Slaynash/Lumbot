@@ -19,7 +19,7 @@ public class ABCpolice {
             return true;
         String message = event.getMessage().getContentStripped().trim();
         System.out.println(event.getMember().getEffectiveName() + ": " + message);
-        List<Message> history = new ArrayList<>(event.getChannel().asTextChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
+        List<Message> history = new ArrayList<>(event.getChannel().asGuildMessageChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
         boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
         find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());

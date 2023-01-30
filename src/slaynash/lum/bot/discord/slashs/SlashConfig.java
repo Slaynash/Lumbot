@@ -195,21 +195,21 @@ public class SlashConfig extends Slash {
         if (message.isEmpty())
             return;
         final String finalMessage = message;
-        if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) {
+        if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND)) {
             event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(finalMessage)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue();
         }
         else {
-            event.getChannel().asTextChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue(null, e -> { });
+            event.getChannel().asGuildMessageChannel().sendMessage(finalMessage).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue(null, e -> { });
         }
     }
     private void checkDllRemovePerm(ButtonInteractionEvent event, Guild guild) {
         if (!guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE)) {
             final String message = "I don't have manage message permission so I can't remove dll and zip files.";
-            if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND)) {
+            if (event.getChannelType() == ChannelType.PRIVATE || !event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND)) {
                 event.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(message)).delay(Duration.ofSeconds(60)).flatMap(Message::delete).queue(null, e -> { });
             }
             else {
-                event.getChannel().asTextChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
+                event.getChannel().asGuildMessageChannel().sendMessage(message).delay(Duration.ofSeconds(30)).flatMap(Message::delete).queue();
             }
         }
     }

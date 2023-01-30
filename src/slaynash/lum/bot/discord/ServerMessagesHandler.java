@@ -420,13 +420,13 @@ public class ServerMessagesHandler {
                         continue;
                     }
 
-                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
+                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
                         event.getMessage().delete().queue();
                     }
-                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.KICK_MEMBERS)) {
+                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.KICK_MEMBERS)) {
                         event.getMember().kick().queue();
                     }
-                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.BAN_MEMBERS)) {
+                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.BAN_MEMBERS)) {
                         event.getMember().ban(0, TimeUnit.DAYS).queue();
                     }
                     if (EmojiUtils.isOneEmoji(message))
@@ -438,14 +438,14 @@ public class ServerMessagesHandler {
                             if (emote.canInteract(emote.getGuild().getSelfMember()))
                                 event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
                             else
-                                event.getChannel().asTextChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
+                                event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
                         }
                         catch (Exception e) {
-                            event.getChannel().asTextChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
+                            event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
                         }
                     }
                     else if (message != null && !message.isBlank()) {
-                        event.getChannel().asTextChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                        event.getChannel().asGuildMessageChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     if (report) {
                         TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));

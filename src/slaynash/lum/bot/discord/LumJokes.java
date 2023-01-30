@@ -135,7 +135,7 @@ public class LumJokes {
                     System.out.println(joke + "\n" + punchLine);
                     try {
                         Message sentJoke = event.getChannel().sendMessage(joke).complete();
-                        event.getChannel().asTextChannel().sendTyping().queue(); //sends typing for 10 seconds
+                        event.getChannel().asGuildMessageChannel().sendTyping().queue(); //sends typing for 10 seconds
                         Thread.sleep(10 * 1000);
                         sentJoke.editMessage(joke + "\n\n||" + punchLine + "||").queue();
                     }

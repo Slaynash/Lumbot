@@ -305,7 +305,7 @@ public class ScamShield {
         }
         else if (suspiciousResults.massPing) {
             handleBan(event, event.getGuild().getIdLong(), suspiciousResults);
-            event.getChannel().asTextChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
+            event.getChannel().asGuildMessageChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
         }
     }
 
@@ -356,8 +356,8 @@ public class ScamShield {
 
             if (!guild.getSelfMember().canInteract(member)) {
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
-                if (!dm && guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS))
-                    event.getChannel().asTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                if (!dm && guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS))
+                    event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else
                     guild.getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessageEmbeds(embedBuilder.build())).queue(null, m -> System.out.println("Failed to open dms with guild owner to send SS is higher role then Mine."));
             }
@@ -380,10 +380,10 @@ public class ScamShield {
                 if (guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE) && !dm) { // there are no messages in guild if scam came from dm
                     List<Message> messagelist = new ArrayList<>();
                     suspiciousResults.sameauthormessages.forEach(m -> {
-                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asTextChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE)) {
+                        if (m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE)) {
                             messagelist.add(m.messageReceivedEvent.getMessage());
                         }
-                        else if (!m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
+                        else if (!m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
                             System.out.println("Lum does not have MESSAGE_MANAGE perm in " + m.messageReceivedEvent.getChannel().getName());
                             String temp = "";
                             if (!embedBuilder.getDescriptionBuilder().toString().isBlank())
@@ -431,10 +431,10 @@ public class ScamShield {
             }
             else if (!dm && event.getGuild() == guild) {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
-                if (guild.getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_EMBED_LINKS))
-                    event.getChannel().asTextChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-                else if (guild.getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_SEND))
-                    event.getChannel().asTextChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
+                if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS))
+                    event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+                else if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))
+                    event.getChannel().asGuildMessageChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
             }
         }
         catch (Exception e) {

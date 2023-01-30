@@ -99,7 +99,7 @@ public class Ban extends Command {
             banMember.ban(delDays, TimeUnit.DAYS).reason(event.getAuthor().getName() + " - " + reason).queue(); //reason limit is 512 chars
 
         String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null && !reportChannel.equals(event.getChannel().asTextChannel().getId()))
+        if (reportChannel != null && !reportChannel.equals(event.getChannel().asGuildMessageChannel().getId()))
             event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).setAllowedMentions(Collections.emptyList()).queue();
         event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!\n" + reason).queue();
     }

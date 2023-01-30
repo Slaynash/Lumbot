@@ -82,7 +82,7 @@ public class Replies extends Slash {
         boolean delete = false;
         if (event.getOption("delete") != null && event.getOption("delete").getAsBoolean()) {
             delete = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_MANAGE)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
                 event.reply("I don't have the `MESSAGE_MANAGE` permission in this channel. I won't be able to delete the triggered message.").queue();
                 return;
             }
@@ -90,7 +90,7 @@ public class Replies extends Slash {
         boolean kick = false;
         if (event.getOption("kick") != null && event.getOption("kick").getAsBoolean()) {
             kick = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.KICK_MEMBERS)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.KICK_MEMBERS)) {
                 event.reply("I don't have the `KICK_MEMBERS` permission in this channel. I won't be able to kick the user.").queue();
                 return;
             }
@@ -98,7 +98,7 @@ public class Replies extends Slash {
         boolean ban = false;
         if (event.getOption("ban") != null && event.getOption("ban").getAsBoolean()) {
             ban = true;
-            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.BAN_MEMBERS)) {
+            if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.BAN_MEMBERS)) {
                 event.reply("I don't have the `BAN_MEMBERS` permission in this channel. I won't be able to ban the user.").queue();
                 return;
             }
@@ -167,7 +167,7 @@ public class Replies extends Slash {
                 event.reply("No replies in this guild").queue();
             }
             else {
-                if (event.getGuild().getSelfMember().hasPermission(event.getChannel().asTextChannel(), Permission.MESSAGE_ATTACH_FILES))
+                if (event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_ATTACH_FILES))
                     event.replyFiles(FileUpload.fromData(sb.toString().getBytes(), event.getGuild().getName() + " replies.txt")).queue();
                 else
                     event.reply("I cant send logs into this channel. Please give me MESSAGE_ATTACH_FILES perms and try again.").queue();
@@ -211,7 +211,7 @@ public class Replies extends Slash {
 
             if (event.getOption("ukey") == null) {
                 if (event.getOption("regex") == null && event.getOption("contains") == null && event.getOption("equals") == null)
-                    event.getChannel().asTextChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
+                    event.getChannel().asGuildMessageChannel().sendMessage("This will trigger on every message, I hope you know what you are going").queue();
                 try {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `breport`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, report, muserid);
 

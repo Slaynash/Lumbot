@@ -42,7 +42,7 @@ public class SteamWatcher extends Slash {
         }
         InteractionHook interactionhook = event.deferReply().complete();
         String guildID = event.getGuild().getId();
-        String channelID = event.getChannel().asTextChannel().getId();
+        String channelID = event.getChannel().asGuildMessageChannel().getId();
         List<OptionMapping> gameID = event.getOptionsByName("gameid");
         List<OptionMapping> publicMess = event.getOptionsByName("public");
         List<OptionMapping> betaMess = event.getOptionsByName("beta");

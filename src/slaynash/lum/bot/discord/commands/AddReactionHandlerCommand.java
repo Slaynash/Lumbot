@@ -97,7 +97,7 @@ public class AddReactionHandlerCommand extends Command {
                     success.addReaction(Emoji.fromUnicode(params[2])).queue();
 
                 CommandManager.reactionListeners.add(react);
-                if (paramMessageReceivedEvent.getChannelType() == ChannelType.TEXT && paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asTextChannel(), Permission.MESSAGE_SEND))
+                if (paramMessageReceivedEvent.getChannelType() == ChannelType.TEXT && paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))
                     paramMessageReceivedEvent.getChannel().sendMessage("Successfully added reaction listener to the target message").queue();
                 System.out.println("Successfully added reaction listener to the target message");
             }
