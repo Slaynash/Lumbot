@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import in.dragonbra.javasteam.enums.EResult;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSChangeData;
 import in.dragonbra.javasteam.steam.handlers.steamapps.PICSProductInfo;
+import in.dragonbra.javasteam.steam.handlers.steamapps.PICSRequest;
 import in.dragonbra.javasteam.steam.handlers.steamapps.SteamApps;
 import in.dragonbra.javasteam.steam.handlers.steamapps.callback.PICSChangesCallback;
 import in.dragonbra.javasteam.steam.handlers.steamapps.callback.PICSProductInfoCallback;
@@ -121,8 +122,8 @@ public class Steam {
             try { //initialize all missing depos
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT s.`GameID` FROM `SteamWatch` s WHERE s.`GameID` NOT IN (SELECT `GameID` FROM `SteamApp`)");
                 while (rs.next()) {
-                    Integer gameID = rs.getInt("GameID");
-                    apps.picsGetProductInfo(gameID, null, false, false);
+                    int gameID = rs.getInt("GameID");
+                    apps.picsGetProductInfo(new PICSRequest(gameID), null);
                 }
                 DBConnectionManagerLum.closeRequest(rs);
             }
@@ -141,7 +142,7 @@ public class Steam {
         });
         callbackManager.subscribe(PICSChangesCallback.class, callback -> {
             for (Integer intGameID : intGameIDs) {
-                apps.picsGetProductInfo(intGameID, null, false, false);
+                apps.picsGetProductInfo(new PICSRequest(intGameID), null);
                 intGameIDs.remove(intGameID);
             }
             if (previousChangeNumber == callback.getCurrentChangeNumber())
@@ -190,7 +191,7 @@ public class Steam {
                         else
                             System.out.println("Lum can't talk in " + guild.getName() + " " + channel.getName());
                     }
-                    apps.picsGetProductInfo(gameID, null, false, false);
+                    apps.picsGetProductInfo(new PICSRequest(gameID), null);
                 }
             }
         });
