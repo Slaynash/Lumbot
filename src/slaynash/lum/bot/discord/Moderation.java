@@ -42,7 +42,7 @@ public class Moderation {
                 continue;
             }
             for (PermissionOverride override : channel.getMemberPermissionOverrides()) {
-                if (override.isMemberOverride()) {
+                if (override.isMemberOverride() && override.getMember() != null) {
                     if (!override.getMember().getVoiceState().inAudioChannel()) {
                         try {
                             override.delete().queue();
