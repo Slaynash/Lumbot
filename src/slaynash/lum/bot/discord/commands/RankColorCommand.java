@@ -85,7 +85,7 @@ public class RankColorCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES);
+        return event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES) && (event.getGuild().getRolesByName("_COLOR_DEFAULT_", true).size() != 0 || event.getMember().hasPermission(Permission.MANAGE_ROLES));
     }
 
     @Override
