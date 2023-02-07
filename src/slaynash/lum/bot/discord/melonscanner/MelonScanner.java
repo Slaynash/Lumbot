@@ -387,11 +387,6 @@ public final class MelonScanner {
                 context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
-        else if (context.game.equalsIgnoreCase("Farthest Frontier")) {
-            if (VersionUtils.compareVersion("0.6.1", context.mlVersion) > 0) {
-                context.embedBuilder.addField("FF MLALPHA", "Farthest Frontier is currently broken under MelonLoader, please wait for the next release of MelonLoader.", false);
-            }
-        }
     }
 
     private static void prepareEmbed(MelonScanContext context) {
