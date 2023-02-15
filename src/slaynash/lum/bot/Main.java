@@ -151,6 +151,8 @@ public class Main extends ListenerAdapter {
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");
         }
+        else
+            JDAManager.enableEvents();
 
         HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).followRedirects(HttpClient.Redirect.ALWAYS).connectTimeout(Duration.ofSeconds(20)).build();
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
