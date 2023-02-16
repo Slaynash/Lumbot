@@ -109,6 +109,10 @@
             "error": "Failed to contact MelonLoader API. Please make sure MelonLoader is allowed in your Firewall and that you are using MelonLoader $MLRelease$."
         },
         {
+            "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] \\[ERROR] Unhandled Exception: System.NullReferenceException.*",
+            "error": "CPP2IL needs to be updated. Please update MelonLoader to latest [nightly release](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development)."
+        },
+        {
             "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
             "error": "AutoWebProxyScriptEngine Error. Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
         },

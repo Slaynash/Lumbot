@@ -742,6 +742,11 @@ public final class MelonScannerReadPass {
                 }
             }
         }
+        else if (line.toLowerCase().contains("[error]")) {
+            System.out.println("Found random error: " + line);
+            context.hasErrors = true;
+            context.hasNonModErrors = true;
+        }
     }
 
     private static void consoleCopypasteCheck(MelonScanContext context) {
