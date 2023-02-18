@@ -91,8 +91,8 @@ public class ServerMessagesHandler {
                                 memberMention + " Please reupload this log to <#801792974542471168> instead.";
                         case "663449315876012052" -> //MelonLoader
                                 memberMention + " Please reupload this log to <#733305093264375849> instead.";
-                        case "563139253542846474" -> //BoneWorks
-                                memberMention + " Please reupload this log to <#675024565277032449> instead.";
+                        case "563139253542846474" -> //BoneLab
+                                memberMention + " Please create a thread in <#1019659373695475802> and reupload this log to there instead.";
                         case "322211727192358914" -> //TLDModding
                                 memberMention + " Please reupload this log to <#827601339672035408> instead.";
                         case "758553724226109480" -> //1330 Studios
