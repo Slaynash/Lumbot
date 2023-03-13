@@ -42,7 +42,6 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 import slaynash.lum.bot.ConfigManager;
-import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {

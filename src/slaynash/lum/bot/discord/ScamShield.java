@@ -275,11 +275,12 @@ public class ScamShield {
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
                 return false;
+            if (event.getChannelType() == ChannelType.PRIVATE)
+                return false;
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(g.getIdLong());
             if (guildconfig != null)
                 return !guildconfig.ScamShieldCross();
-            else
-                return true;
+            return true;
         });
         boolean status = false;
         for (Guild guild : mutualGuilds) {
