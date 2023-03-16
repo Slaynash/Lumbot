@@ -607,7 +607,7 @@ public final class MelonScannerReadPass {
             System.out.println("COMPROMISED ML");
             if (!context.errors.contains(MelonLoaderError.mlCompromised))
                 context.errors.add(MelonLoaderError.mlCompromised);
-            if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE))
+            if (context.messageReceivedEvent.getGuild() != null && context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(context.messageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE))
                 context.messageReceivedEvent.getMessage().delete().reason("Compromised Log file").queue();
             else
                 context.messageReceivedEvent.getChannel().asGuildMessageChannel().sendMessage("This is a compromised MelonLoader log. I can not remove that log, please delete that log for your own safety").queue();

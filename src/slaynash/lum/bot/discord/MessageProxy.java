@@ -17,8 +17,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
 public class MessageProxy {
@@ -32,19 +34,7 @@ public class MessageProxy {
         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
         String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
-        for (Attachment attachment : event.getMessage().getAttachments()) {
-            message = message.concat("\n").concat(attachment.getUrl());
-            if (MelonScanner.isValidFileFormat(attachment, false)) {
-                event.getMessage().reply(
-                        "Sorry, I do not scan logs in DMs. Please use a server that has MelonLoader log scans enabled.")
-                        .queue();
-                if (guildchannel != null)
-                    guildchannel.sendMessage(
-                            "Sorry, I do not scan logs in DMs. Please use a server that has MelonLoader log scans enabled.")
-                            .queue();
-                return;
-            }
-        }
+
         for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
             message = message.concat("\n").concat(emoji.getImageUrl());
         }
@@ -66,24 +56,28 @@ public class MessageProxy {
                         m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
                         sb.append("\n");
                     });
-            final String finalMessage = message;
+            guildchannel = mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L)).complete();
+
             if (sb.toString().isBlank())
-                mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L))
-                        .flatMap(tc -> tc
-                                .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
-                                .flatMap(ababa -> tc.sendMessage(finalMessage)))
-                        .queue();
+                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).queue();
             else
-                mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L))
-                        .flatMap(tc -> tc
-                                .sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds())
-                                .addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt"))
-                                .flatMap(ababa -> tc.sendMessage(finalMessage))
-                        )
-                        .queue();
+                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
+
         }
-        else {
-            guildchannel.sendMessage(message).queue();
+        guildchannel.sendMessage(message).queue();
+
+        for (Attachment attachment : event.getMessage().getAttachments()) {
+            try {
+                guildchannel.sendFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName())).queue();
+            } catch (Exception e) {
+                ExceptionUtils.reportException("Failed reattaching attachment", e);
+            }
+            if (MelonScanner.isValidFileFormat(attachment, false)) {
+                MessageCreateData scan = MelonScanner.scanMessage(event, attachment);
+                if (scan != null)
+                    event.getChannel().sendMessage(scan).queue();
+                    guildchannel.sendMessage(scan).queue();
+            }
         }
     }
 

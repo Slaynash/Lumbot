@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.UrlShortener;
@@ -58,10 +59,24 @@ public final class MelonScanner {
 
 
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
+        List<Attachment> attachments = messageReceivedEvent.getMessage().getAttachments();
+
+        Attachment attachment = attachments.stream().filter(attach -> isValidFileFormat(attach, true)).findFirst().orElse(null);
+            if (attachment == null)
+                return;
+
+        MessageCreateData message = scanMessage(messageReceivedEvent, attachment);
+        if (message != null)
+            messageReceivedEvent.getChannel().sendMessage(message).queue();
+    }
+
+    public static MessageCreateData scanMessage(MessageReceivedEvent messageReceivedEvent, Attachment attachment) {
+
+        MessageCreateData messageCreateData = null;
 
         try {
             if (messageReceivedEvent.getMessage().getContentDisplay().startsWith("."))
-                return;
+                return messageCreateData;
 
             String lang = "en";
 
@@ -71,7 +86,7 @@ public final class MelonScanner {
                 lang = "de";
 
             long guildID = messageReceivedEvent.getGuild().getIdLong();
-            if ((guildID == 600298024425619456L/*emmVRC*/ || guildID == 439093693769711616L/*VRCMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
+            if ((guildID == 1001388809184870441L/*CVRMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
                 Random random = new Random();
                 if (random.nextInt(1000) == 420)
                     lang = "sga";
@@ -85,14 +100,8 @@ public final class MelonScanner {
                     lang = messagePart.substring(5).toLowerCase();
             }
 
-            List<Attachment> attachments = messageReceivedEvent.getMessage().getAttachments();
-
-            if (multipleLogsCheck(attachments, messageReceivedEvent, lang)) // This should not happen, but just in case
-                return;
-
-            Attachment attachment = attachments.stream().filter(attach -> isValidFileFormat(attach, true)).findFirst().orElse(null);
-            if (attachment == null)
-                return;
+            if (multipleLogsCheck(messageReceivedEvent.getMessage().getAttachments(), messageReceivedEvent, lang)) // don't let people spam logs
+                return messageCreateData;
 
             LogCounter.addMLCounter(attachment);
 
@@ -102,7 +111,7 @@ public final class MelonScanner {
                 context.consoleCopyPaste = true;
 
             if (!MelonScannerReadPass.doPass(context))
-                return;
+                return messageCreateData;
 
             postReadApiPass(context);
 
@@ -168,7 +177,7 @@ public final class MelonScanner {
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
                 messageBuilder.setContent(messageReceivedEvent.getAuthor().getAsMention());
-                messageReceivedEvent.getChannel().sendMessage(messageBuilder.setEmbeds(context.embedBuilder.build()).build()).queue();
+                messageCreateData = messageBuilder.setEmbeds(context.embedBuilder.build()).build();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
                 }
@@ -182,6 +191,7 @@ public final class MelonScanner {
                 "Exception while reading attachment of message:",
                 exception, messageReceivedEvent.getChannel().asGuildMessageChannel());
         }
+        return messageCreateData;
     }
 
 
@@ -370,7 +380,7 @@ public final class MelonScanner {
             context.pirate = true;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.contains("steamapps\\common\\BloonsTD6") && !context.gamePath.contains("steamapps\\common\\Bloons TD 6") && !context.gamePath.contains("Program Files\\WindowsApps") && !context.epic) {
+            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\bloonstd6") && !context.gamePath.toLowerCase().contains("steamapps\\common\\bloons td 6") && !context.gamePath.toLowerCase().contains("program files\\windowsapps") && !context.epic) {
                 context.pirate = true;
             }
             else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
@@ -378,7 +388,7 @@ public final class MelonScanner {
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
-            if (!context.gamePath.contains("steamapps\\common\\BONEWORKS\\BONEWORKS") && !context.gamePath.contains("Software\\stress-level-zero-inc-boneworks")) {
+            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\boneworks\\boneworks") && !context.gamePath.toLowerCase().contains("software\\stress-level-zero-inc-boneworks")) {
                 context.pirate = true;
             }
         }

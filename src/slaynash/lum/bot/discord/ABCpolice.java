@@ -29,7 +29,7 @@ public class ABCpolice {
         Message previousAuthorMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         char currentLetter = convertChar(message);
         char previousLetter = history.size() > 0 ? convertChar(history.get(0).getContentStripped()) : 0;
-        boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(48));
+        boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(30));
 
         if (brokenChain || previousLetter == 0 || previousLetter == 'z')
             previousLetter = 'a' - 1;
