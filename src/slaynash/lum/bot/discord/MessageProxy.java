@@ -69,14 +69,16 @@ public class MessageProxy {
         for (Attachment attachment : event.getMessage().getAttachments()) {
             try {
                 guildchannel.sendFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName())).queue();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 ExceptionUtils.reportException("Failed reattaching attachment", e);
             }
             if (MelonScanner.isValidFileFormat(attachment, false)) {
                 MessageCreateData scan = MelonScanner.scanMessage(event, attachment);
-                if (scan != null)
+                if (scan != null) {
                     event.getChannel().sendMessage(scan).queue();
                     guildchannel.sendMessage(scan).queue();
+                }
             }
         }
     }

@@ -74,7 +74,7 @@ public class CommandManager {
                     rcmd.onClient(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asGuildMessageChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel());
                 }
             }
         }
@@ -92,7 +92,7 @@ public class CommandManager {
                     rcmd.onServer(command, event);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel().asGuildMessageChannel());
+                    ExceptionUtils.reportException("Failed to run command " + command, e, event.getChannel());
                 }
             }
         }

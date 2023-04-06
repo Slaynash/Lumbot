@@ -653,7 +653,7 @@ public class Main extends ListenerAdapter {
     @Override
     public void onGuildUpdateOwner(GuildUpdateOwnerEvent event) {
         if (event.getGuild().getSystemChannel().canTalk()) {
-            event.getGuild().getSystemChannel().sendMessage("Congratulations " + event.getNewOwner().getEffectiveName() + " is the new owner of " + event.getGuild().getName()).queue();
+            event.getGuild().getSystemChannel().sendMessage(event.getNewOwner().getEffectiveName() + " is the new owner of " + event.getGuild().getName()).queue();
         }
     }
 

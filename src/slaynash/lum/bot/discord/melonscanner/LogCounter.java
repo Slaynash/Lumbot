@@ -82,7 +82,7 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
             sslogCount = directory.listFiles().length;
 
             if (logCount != previousLogCount || sslogCount != previousSSCount)
-                JDAManager.getJDA().getPresence().setActivity(Activity.watching((ConfigManager.mainBot ? "" : "BACKUP") + logCount + " melons squashed and removed "
+                JDAManager.getJDA().getPresence().setActivity(Activity.watching((ConfigManager.mainBot ? "" : "BACKUP ") + logCount + " melons squashed and removed "
                     + sslogCount + " scammers in 24 hours. In " + JDAManager.getJDA().getGuilds().size() + " guilds!"));
             previousLogCount = logCount;
             previousSSCount = sslogCount;

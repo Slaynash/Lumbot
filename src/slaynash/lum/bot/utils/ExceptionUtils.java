@@ -11,13 +11,13 @@ import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
 
 public final class ExceptionUtils {
 
-    private record QueuedException(String title, String comment, Throwable exception, GuildChannel guildChannel) {
+    private record QueuedException(String title, String comment, Throwable exception, MessageChannelUnion channel) {
     }
 
     private static final Queue<QueuedException> queuedExceptions = new LinkedList<>();
@@ -25,7 +25,7 @@ public final class ExceptionUtils {
     public static void processExceptionQueue() {
         while (queuedExceptions.peek() != null) {
             QueuedException exception = queuedExceptions.remove();
-            reportDiscord(exception.title, exception.comment, exception.exception, exception.guildChannel);
+            reportDiscord(exception.title, exception.comment, exception.exception, exception.channel);
         }
     }
 
@@ -54,11 +54,11 @@ public final class ExceptionUtils {
     public static void reportException(String title, String comment, Throwable exception) {
         reportException(title, comment, exception, null);
     }
-    public static void reportException(String title, Throwable exception, GuildChannel guildChannel) {
-        reportException(title, null, exception, guildChannel);
+    public static void reportException(String title, Throwable exception, MessageChannelUnion channel) {
+        reportException(title, null, exception, channel);
     }
 
-    public static void reportException(String title, String comment, Throwable exception, GuildChannel guildChannel) {
+    public static void reportException(String title, String comment, Throwable exception, MessageChannelUnion channel) {
         if (comment != null)
             System.err.println(title + ": " + comment + ":");
         else
@@ -68,14 +68,14 @@ public final class ExceptionUtils {
             exception.printStackTrace();
 
         if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
-            queuedExceptions.add(new QueuedException(title, comment, exception, guildChannel));
+            queuedExceptions.add(new QueuedException(title, comment, exception, channel));
         else {
             processExceptionQueue();
-            reportDiscord(title, comment, exception, guildChannel);
+            reportDiscord(title, comment, exception, channel);
         }
     }
 
-    private static void reportDiscord(String title, String comment, Throwable exception, GuildChannel guildChannel) {
+    private static void reportDiscord(String title, String comment, Throwable exception, MessageChannelUnion channel) {
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L || !JDAManager.isEventsEnabled())
             return;
@@ -87,12 +87,16 @@ public final class ExceptionUtils {
         try {
             EmbedBuilder embedBuilder = new EmbedBuilder();
             embedBuilder.setColor(Color.red);
-            if (guildChannel == null) {
+            if (channel == null) {
                 embedBuilder.setTitle(title);
             }
+            else if (channel.getType() == ChannelType.PRIVATE) {
+                String channelName = "PRIVATE #" + channel.asPrivateChannel().getUser().getId();
+                embedBuilder.setTitle(title + " In " + channelName);
+            }
             else {
-                String channelName = guildChannel.getGuild().getName() + " #" + guildChannel.getName() + " > " + guildChannel.getId();
-                embedBuilder.setTitle(title + " In " + channelName, guildChannel.getJumpUrl());
+                String channelName = channel.asGuildMessageChannel().getGuild().getName() + " #" + channel.asGuildMessageChannel().getName() + " > " + channel.getId();
+                embedBuilder.setTitle(title + " In " + channelName, channel.asGuildMessageChannel().getJumpUrl());
             }
             if (comment != null) {
                 if (comment.length() > 1000) // allows space for exception
@@ -106,14 +110,14 @@ public final class ExceptionUtils {
             }
             MessageEmbed embed = embedBuilder.setDescription(exceptionString).build();
             if (!embed.isEmpty()) {
-                if (exceptionString.contains("gotten status code") || exceptionString.contains("request timed out") || exceptionString.contains("connect timed out"))
+                if (exceptionString.contains("gotten status code") || exceptionString.contains("request timed out") || exceptionString.contains("connect timed out") || exceptionString.contains("Not a JSON Object: []"))
                     JDAManager.getJDA().getGuildById(JDAManager.mainGuildID).getTextChannelById(912757433913454612L).sendMessageEmbeds(embed).queue();
                 else
                     JDAManager.getJDA().getGuildById(JDAManager.mainGuildID).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
             }
 
-            if (guildChannel != null && guildChannel.getType() == ChannelType.TEXT) {
-                TextChannel textChannel = (TextChannel) guildChannel;
+            if (channel != null && channel.getType() == ChannelType.TEXT) {
+                TextChannel textChannel = channel.asTextChannel();
                 EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
                 sorryEmbedBuilder.setColor(Color.red);
                 sorryEmbedBuilder.setTitle(title);

@@ -109,7 +109,7 @@ public class ServerMessagesHandler {
                             MelonScanner.scanMessage(event);
                         }
                         catch (Exception e) {
-                            ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getChannel().asGuildMessageChannel());
+                            ExceptionUtils.reportException("An error has occurred while reading logs:", e, event.getChannel());
                         }
                     }).start();
                 }
@@ -474,7 +474,7 @@ public class ServerMessagesHandler {
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to check replies", e, event.getChannel().asGuildMessageChannel());
+                ExceptionUtils.reportException("Failed to check replies", e, event.getChannel());
             }
         }
         catch (Exception e) {

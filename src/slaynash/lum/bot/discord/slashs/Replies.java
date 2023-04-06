@@ -159,7 +159,7 @@ public class Replies extends Slash {
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to get reply to List", e, event.getChannel().asGuildMessageChannel());
+                ExceptionUtils.reportException("Failed to get reply to List", e, event.getChannel());
                 return;
             }
 
@@ -224,7 +224,7 @@ public class Replies extends Slash {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to Add reply", e, event.getChannel().asGuildMessageChannel());
+                    ExceptionUtils.reportException("Failed to Add reply", e, event.getChannel());
                 }
             }
             else {
@@ -239,7 +239,7 @@ public class Replies extends Slash {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to check for reply", e, event.getChannel().asGuildMessageChannel());
+                    ExceptionUtils.reportException("Failed to check for reply", e, event.getChannel());
                     return;
                 }
 
@@ -274,7 +274,7 @@ public class Replies extends Slash {
                     event.reply("Reply " + ukey + " updated!").queue();
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to Update reply", e, event.getChannel().asGuildMessageChannel());
+                    ExceptionUtils.reportException("Failed to Update reply", e, event.getChannel());
                 }
             }
         }
@@ -286,7 +286,7 @@ public class Replies extends Slash {
                 deleted = DBConnectionManagerLum.sendUpdate(update);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to Delete reply", e, event.getChannel().asGuildMessageChannel());
+                ExceptionUtils.reportException("Failed to Delete reply", e, event.getChannel());
                 return;
             }
             if (deleted == 0) {

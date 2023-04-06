@@ -62,8 +62,8 @@ public final class MelonScanner {
         List<Attachment> attachments = messageReceivedEvent.getMessage().getAttachments();
 
         Attachment attachment = attachments.stream().filter(attach -> isValidFileFormat(attach, true)).findFirst().orElse(null);
-            if (attachment == null)
-                return;
+        if (attachment == null)
+            return;
 
         MessageCreateData message = scanMessage(messageReceivedEvent, attachment);
         if (message != null)
@@ -189,7 +189,7 @@ public final class MelonScanner {
         catch (Exception exception) {
             ExceptionUtils.reportException(
                 "Exception while reading attachment of message:",
-                exception, messageReceivedEvent.getChannel().asGuildMessageChannel());
+                exception, messageReceivedEvent.getChannel());
         }
         return messageCreateData;
     }
@@ -988,7 +988,7 @@ public final class MelonScanner {
             referenced.editMessageEmbeds(editEmbed.build()).queue();
         }
         catch (Exception e) {
-            ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel().asGuildMessageChannel());
+            ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel());
         }
     }
 }
