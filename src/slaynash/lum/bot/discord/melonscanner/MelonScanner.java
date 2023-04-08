@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -85,7 +86,7 @@ public final class MelonScanner {
             else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
                 lang = "de";
 
-            long guildID = messageReceivedEvent.getGuild().getIdLong();
+            long guildID = messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : messageReceivedEvent.getGuild().getIdLong();
             if ((guildID == 1001388809184870441L/*CVRMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
                 Random random = new Random();
                 if (random.nextInt(1000) == 420)
@@ -360,7 +361,7 @@ public final class MelonScanner {
     }
 
     private static void badModCheck(MelonScanContext context) {
-        long guildid = context.messageReceivedEvent.getGuild().getIdLong();
+        long guildid = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
         if (guildid != 439093693769711616L && guildid != 600298024425619456L && guildid != 663449315876012052L && guildid != 716536783621587004L && guildid != 936064484391387256L)
             return;
         if (context.badMods.isEmpty() && context.badPlugins.isEmpty())
@@ -905,7 +906,7 @@ public final class MelonScanner {
                 error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
             if (context.noMods && context.misplacedMods.size() == 0 && !context.preListingModsPlugins && context.errors.size() == 0) {
-                long guildID = context.messageReceivedEvent.getGuild().getIdLong();
+                long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
                 if (guildID == 439093693769711616L)
                     error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
                 else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
@@ -954,7 +955,7 @@ public final class MelonScanner {
 
     // Utils
     private static void reportUserModifiedML(MessageReceivedEvent event) {
-        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
+        String reportChannel = CommandManager.mlReportChannels.get(event.getChannelType() == ChannelType.PRIVATE ? "0" :event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
             event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed(
@@ -965,7 +966,7 @@ public final class MelonScanner {
 
     public static void translateLog(MessageReceivedEvent event) {
         try {
-            System.out.println("Translating Log Results Checks in " + event.getGuild().getName());
+            System.out.println("Translating Log Results Checks in " + (event.getChannelType() == ChannelType.PRIVATE ? "PRIVATE" : event.getGuild().getName()));
             String message = event.getMessage().getContentStripped().toLowerCase();
             Message referenced = event.getMessage().getReferencedMessage();
             if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
