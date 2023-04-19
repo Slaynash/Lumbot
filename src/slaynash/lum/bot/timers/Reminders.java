@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
@@ -14,21 +15,29 @@ public class Reminders extends TimerTask {
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Reminders` WHERE `TSend` < CURRENT_TIMESTAMP");
             while (rs.next()) {
+                String message = rs.getString("Message");
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(rs.getInt("Color"));
                 embedBuilder.setTitle("Reminder");
-                embedBuilder.setDescription(rs.getString("Message"));
+                embedBuilder.setDescription(message);
 
                 long userID = rs.getLong("UserID");
                 User user = JDAManager.getJDA().getUserById(userID);
+                long serverID = rs.getLong("ServerID");
+                long channelID = rs.getLong("ChannelID");
                 if (user == null) {
                     user = JDAManager.getJDA().retrieveUserById(userID).complete();
                 }
-                if (rs.getLong("ServerID") == 0) {
+                if (serverID == 0) {
                     user.openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(embedBuilder.build()).queue());
                 }
+                else if (!JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).canTalk()) {
+                    // can't talk in channel, just delete the reminder. Not much I can do
+                }
+                else if (JDAManager.getJDA().getGuildById(serverID).getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
+                    JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).sendMessage(message).addContent(user.getAsMention()).queue();
+                }
                 else {
-                    JDAManager.getJDA().getGuildById(rs.getLong("ServerID")).getTextChannelById(rs.getLong("ChannelID"))
-                            .sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
+                    JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
                 }
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = " + rs.getLong("ID"));
             }
