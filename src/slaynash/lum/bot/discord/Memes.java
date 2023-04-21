@@ -45,7 +45,7 @@ public class Memes {
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", event.getChannel().getIdLong());
             if (rs.next()) {
-                memeReportChannelID = rs.getLong("MemeReportChannel");
+                memeReportChannelID = rs.getLong("ReportChannel");
             }
             else return;
         }

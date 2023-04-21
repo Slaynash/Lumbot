@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 30, 2022 at 09:50 PM
+-- Generation Time: Apr 21, 2023 at 07:14 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -111,6 +111,21 @@ CREATE TABLE IF NOT EXISTS `Icons` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `Memes`
+--
+
+CREATE TABLE IF NOT EXISTS `Memes` (
+  `GuildID` bigint UNSIGNED NOT NULL,
+  `MemeChannel` bigint NOT NULL,
+  `ReportChannel` bigint DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user` bigint NOT NULL,
+  PRIMARY KEY (`GuildID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Reminders`
 --
 
@@ -181,36 +196,6 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
   `betaMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `otherMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `ukey` (`ukey`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `strings`
---
-
-CREATE TABLE IF NOT EXISTS `strings` (
-  `string` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  UNIQUE KEY `string` (`string`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `TicketTool`
---
-
-CREATE TABLE IF NOT EXISTS `TicketTool` (
-  `ukey` int NOT NULL AUTO_INCREMENT,
-  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ChannelName` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `ChannelID` bigint NOT NULL,
-  `UserID` bigint DEFAULT NULL,
-  `Created` bigint DEFAULT NULL,
-  `Completed` bigint DEFAULT NULL,
-  `Closed` bigint DEFAULT NULL,
   UNIQUE KEY `ukey` (`ukey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 --
