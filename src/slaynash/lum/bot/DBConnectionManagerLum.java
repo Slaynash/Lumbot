@@ -181,6 +181,10 @@ public final class DBConnectionManagerLum {
      * @return Number of Rows affected
      */
     public static int sendUpdate(String statement, Object... args) throws SQLException {
+        if (!ConfigManager.mainBot) {
+            throw new SQLException("Backup bot cannot send updates");
+        }
+
         updateCount.incrementAndGet();
         PreparedStatement ps = formatStatement(statement, args);
         int r = ps.executeUpdate();

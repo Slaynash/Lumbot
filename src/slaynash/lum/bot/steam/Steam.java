@@ -1,6 +1,12 @@
 package slaynash.lum.bot.steam;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -56,14 +62,14 @@ public class Steam {
 
     public Steam() {
 
+        BufferedReader reader;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `value` FROM `Config` WHERE `setting` = 'LastSteamChange' LIMIT 1");
-            rs.next();
-            previousChangeNumber = rs.getInt("value");
-            DBConnectionManagerLum.closeRequest(rs);
+            reader = new BufferedReader(new FileReader("storage/previousSteamChange.txt"));
+            previousChangeNumber = Integer.parseInt(reader.readLine());
+            reader.close();
         }
-        catch (SQLException e) {
-            ExceptionUtils.reportException("Failed to initialize last steam depos change#", e);
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to load previousSteamChange", e);
         }
 
         client = new SteamClient();
@@ -156,8 +162,13 @@ public class Steam {
                 Integer gameID = changeDataPair.getKey();
                 List<SteamChannel> channels = new ArrayList<>();
                 System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
+                try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
+                    writer.write(String.valueOf(previousChangeNumber));
+                }
+                catch (IOException e) {
+                    ExceptionUtils.reportException("Failed to save previousSteamChange", e);
+                }
                 try {
-                    DBConnectionManagerLum.sendUpdate("UPDATE `Config` SET `value` = ? WHERE `Config`.`setting` = 'LastSteamChange';", callback.getCurrentChangeNumber());
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
                     while (rs.next()) {
                         channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));

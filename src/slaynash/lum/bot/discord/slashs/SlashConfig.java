@@ -30,7 +30,7 @@ public class SlashConfig extends Slash {
 
     public void sendReply(SlashCommandInteractionEvent event, String guildID) {
         if (!ConfigManager.mainBot) {
-            event.reply("Lum is running on Backup mode. Config is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            event.reply("Lum is running on Backup mode. Database is in readonly mode and can't be changed atm.").setEphemeral(true).queue();
             return;
         }
         try {
@@ -101,7 +101,7 @@ public class SlashConfig extends Slash {
     @Override
     public void buttonClick(ButtonInteractionEvent event) {
         if (!ConfigManager.mainBot) {
-            event.reply("Lum is running on Backup mode. Config is in readonly mode and maybe a bit outdated.").setEphemeral(true).queue();
+            event.reply("Lum is running on Backup mode. Database is in readonly mode and can't be changed atm.").setEphemeral(true).queue();
             return;
         }
         try {

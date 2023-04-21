@@ -71,19 +71,6 @@ CREATE TABLE IF NOT EXISTS `blacklistusername` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Config`
---
-
-CREATE TABLE IF NOT EXISTS `Config` (
-  `setting` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `value` int NOT NULL,
-  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`setting`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `GuildConfigurations`
 --
 
