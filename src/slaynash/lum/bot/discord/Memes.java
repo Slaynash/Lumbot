@@ -26,7 +26,6 @@ public class Memes {
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         if (event.getAuthor().isBot()) return false;
-        if (event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) return false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
             if (rs.next())
@@ -41,6 +40,7 @@ public class Memes {
 
     public static void memeReaction(GenericMessageReactionEvent event) {
         if (event.getUser().isBot()) return;
+        if (event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) return;
         long memeReportChannelID;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", event.getChannel().getIdLong());
