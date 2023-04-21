@@ -28,14 +28,17 @@ public class Memes {
         if (event.getAuthor().isBot()) return false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
-            if (rs.next())
+            if (rs.next()) {
                 event.getMessage().addReaction(upArrow).queue(c -> event.getMessage().addReaction(downArrow).queue());
+                DBConnectionManagerLum.closeRequest(rs);
+                return true;
+            }
             DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to check if channel is meme channel", e);
         }
-        return true;
+        return false;
     }
 
     public static void memeReaction(GenericMessageReactionEvent event) {
