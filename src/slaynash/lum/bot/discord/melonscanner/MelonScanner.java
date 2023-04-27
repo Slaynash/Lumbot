@@ -568,7 +568,7 @@ public final class MelonScanner {
 
     private static boolean missingEpicCompat(MelonScanContext context) {
         if (context.epic && "BloonsTD6".equalsIgnoreCase(context.game) && !context.loadedMods.containsKey("BTD6 Epic Games Mod Compat")) {
-            context.embedBuilder.addField("BTD6 Epic Games Mod Compat", "Please add [BTD6 Epic Games Mod Compat](https://github.com/Baydock/BTD6EpicGamesModCompat/#installation) to your Plugins folder", false);
+            context.embedBuilder.addField("BTD6 Epic Games Mod Compat", "Please add [BTD6 Epic Games Mod Compat](https://github.com/GrahamKracker/BTD6EpicGamesModCompat/#installation) to your Plugins folder", false);
             context.embedColor = Color.ORANGE;
             return true;
         }
