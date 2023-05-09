@@ -199,6 +199,10 @@
             "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.12-windows-x64-installer)."
         },
         {
+            "regex": ".*Please make sure you have installed the .NET 6.0 runtime.",
+            "error": "Please make sure you have installed the [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.12-windows-x64-installer)."
+        },
+        {
             "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
             "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.12)."
         }
