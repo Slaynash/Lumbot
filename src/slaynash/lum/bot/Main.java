@@ -413,8 +413,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent event) {
-        MessageProxy.edits(event);
-        if (!event.isFromType(ChannelType.PRIVATE)) {
+        if (!MessageProxy.edits(event) && !event.isFromType(ChannelType.PRIVATE)) {
             ServerMessagesHandler.handle(event);
         }
     }

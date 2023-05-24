@@ -82,7 +82,7 @@ public class MessageProxy {
             if (MelonScanner.isValidFileFormat(attachment, false)) {
                 MessageCreateData scan = MelonScanner.scanMessage(event, attachment);
                 if (scan != null) {
-                    guildchannel.sendMessage(scan).queue(s1 -> event.getChannel().sendMessage(scan).queue(s2 -> saveIDs(s2.getIdLong(),s1.getIdLong())));
+                    guildchannel.sendMessage(scan).queue(s1 -> event.getChannel().sendMessage(scan).queue(s2 -> saveIDs(s2.getIdLong(), s1.getIdLong())));
                 }
             }
         }
@@ -125,7 +125,7 @@ public class MessageProxy {
         return false;
     }
 
-    private static MessageCreateData prepareMessage (Message message) {
+    private static MessageCreateData prepareMessage(Message message) {
         MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
         messageBuilder.setContent(message.getContentRaw());
         for (Attachment attachment : message.getAttachments()) {
@@ -135,7 +135,8 @@ public class MessageProxy {
             else {
                 try {
                     messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
-                } catch (InterruptedException | ExecutionException e) {
+                }
+                catch (InterruptedException | ExecutionException e) {
                     ExceptionUtils.reportException("failed to proxy attachment", e);
                 }
             }
@@ -167,15 +168,15 @@ public class MessageProxy {
         }
     }
 
-    public static void edits(MessageUpdateEvent event) {
+    public static boolean edits(MessageUpdateEvent event) {
         if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
             // From Devs
-            if (event.getMessage().getContentRaw().startsWith(".")) return;
+            if (event.getMessage().getContentRaw().startsWith(".")) return true;
             String[] userID = event.getChannel().getName().split("-");
             User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
             if (user == null) {
                 event.getChannel().sendMessage("Could not find user's message").queue();
-                return;
+                return true;
             }
             try {
                 PrivateChannel pmChannel = user.openPrivateChannel().complete();
@@ -184,17 +185,19 @@ public class MessageProxy {
                     pmChannel.editMessageById(rs.getLong("OGMessage"), prepareMessage(event.getMessage()).getContent()).queue();
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+                return true;
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("failed to remove proxy message", e);
             }
         }
-        else if (event.isFromType(ChannelType.PRIVATE)){
+        else if (event.isFromType(ChannelType.PRIVATE)) {
             User author = event.getAuthor();
             Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
             TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
             if (guildchannel == null) {
                 ExceptionUtils.reportException("can't find guildchannel");
-                return;
+                return true;
             }
 
             String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
@@ -214,10 +217,13 @@ public class MessageProxy {
                     guildchannel.editMessageById(rs.getLong("DevMessage"), message).queue();
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-            } catch (SQLException e) {
+                return true;
+            }
+            catch (SQLException e) {
                 ExceptionUtils.reportException("failed to remove proxy message", e);
             }
         }
+        return false;
     }
 
     public static void deletes(MessageDeleteEvent event) { //TODO proxy deletion to devs
@@ -236,7 +242,8 @@ public class MessageProxy {
                 pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
             }
             DBConnectionManagerLum.closeRequest(rs);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("failed to remove proxy message", e);
         }
     }
@@ -244,7 +251,8 @@ public class MessageProxy {
     private static void saveIDs(long ogID, long devID) {
         try {
             DBConnectionManagerLum.sendUpdate("INSERT INTO `MessagePairs` (`OGMessage`, `DevMessage`) VALUES (?, ?)", ogID, devID);
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             ExceptionUtils.reportException("save ID failed", e);
         }
     }

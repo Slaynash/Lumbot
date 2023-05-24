@@ -962,7 +962,7 @@ public final class MelonScanner {
 
     // Utils
     private static void reportUserModifiedML(MessageReceivedEvent event) {
-        String reportChannel = CommandManager.mlReportChannels.get(event.getChannelType() == ChannelType.PRIVATE ? "0" :event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
+        String reportChannel = CommandManager.mlReportChannels.get(event.getChannelType() == ChannelType.PRIVATE ? "0" : event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
             event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed(
