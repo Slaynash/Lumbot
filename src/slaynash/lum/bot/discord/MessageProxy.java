@@ -243,7 +243,7 @@ public class MessageProxy {
 
     private static void saveIDs(long ogID, long devID) {
         try {
-            DBConnectionManagerLum.sendUpdate("INSERT INTO `MessagePairs` (`OGMessage`, `DevMessage`) VALUES ('?', '?')", ogID, devID);
+            DBConnectionManagerLum.sendUpdate("INSERT INTO `MessagePairs` (`OGMessage`, `DevMessage`) VALUES (?, ?)", ogID, devID);
         } catch (SQLException e) {
             ExceptionUtils.reportException("save ID failed", e);
         }
