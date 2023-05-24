@@ -433,6 +433,11 @@ public final class MelonScanner {
                                 Utils.wrapMessageInEmbed("No logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
                     else if (url.length() > 1) // allows me to disable messages for edited/test games
                         context.embedBuilder.setThumbnail(url);
+
+                    if (result.getString("MLoverride") != null) {
+                        context.latestMLVersionAlpha = result.getString("MLoverride");
+                        context.latestMLVersionRelease = result.getString("MLoverride");
+                    }
                 }
                 else {
                     context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
@@ -473,7 +478,7 @@ public final class MelonScanner {
         if (context.consoleCopyPaste)
             context.reportMessage.append("*").append(Localization.get("melonscanner.reportmessage.copy", context.lang)).append("*\n");
 
-        if (context.game != null && context.mlVersion != null && !latestMLVersionAlpha.equals(latestMLVersionRelease) && context.mlVersion.equals(latestMLVersionAlpha))
+        if (context.game != null && context.mlVersion != null && !context.latestMLVersionAlpha.equals(context.latestMLVersionRelease) && context.mlVersion.equals(context.latestMLVersionAlpha))
             context.reportMessage.append("*").append(Localization.get("melonscanner.reportmessage.alpha", context.lang)).append("*\n");
 
         if (context.game != null && context.modDetails == null)
@@ -488,21 +493,21 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionAlpha) && VersionUtils.compareVersion(latestMLVersionAlpha, latestMLVersionRelease) == 1/* If Alpha is more recent */) : (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(latestMLVersionRelease)));
+        context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionAlpha) && VersionUtils.compareVersion(context.latestMLVersionAlpha, context.latestMLVersionRelease) == 1/* If Alpha is more recent */) : (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionRelease)));
         if (context.isMLOutdated || context.modifiedML) {
-            int result = VersionUtils.compareVersion(context.alpha ? latestMLVersionAlpha : latestMLVersionRelease, context.mlVersion);
+            int result = VersionUtils.compareVersion(context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease, context.mlVersion);
             System.out.println("ML Outdated, isMLOutdated:" + context.isMLOutdated + " modifiedML:" + context.modifiedML + " Result:" + result + " Installed:" + context.mlVersion);
             switch (result) {
                 case 1 -> //left more recent
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), latestMLVersionRelease), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), context.latestMLVersionRelease), false);
                 case 0 -> { //identicals
                     if (context.alpha)
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, latestMLVersionAlpha), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, context.latestMLVersionAlpha), false);
                     else
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, latestMLVersionRelease), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, context.latestMLVersionRelease), false);
                 }
                 case -1 -> //right more recent
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? latestMLVersionAlpha : latestMLVersionRelease), false);
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease), false);
                 default -> {
                 }
             }
@@ -922,7 +927,7 @@ public final class MelonScanner {
                 error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
                 context.unidentifiedErrors = true;
             }
-            if (context.mlVersion != null && VersionUtils.compareVersion(latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
+            if (context.mlVersion != null && VersionUtils.compareVersion(context.latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
                 error += Localization.get("Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder", context.lang) + "\n";
             }
             if (context.line.contains("Applied USER32.dll::SetTimer patch")) {

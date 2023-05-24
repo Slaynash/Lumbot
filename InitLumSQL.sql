@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 21, 2023 at 07:14 AM
+-- Generation Time: May 24, 2023 at 03:13 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -33,25 +33,7 @@ UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `
 END$$
 
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `GetSteamWatch` (IN `ChangeNumber` INT UNSIGNED, IN `GameID` INT UNSIGNED)  BEGIN
-	UPDATE `Config` SET `value` = ChangeNumber WHERE `Config`.`setting` = 'LastSteamChange';
 	SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = GameID;
-END$$
-
-CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `Tickets Leaderboard` ()  BEGIN
-	SELECT `UserID`,`ChannelName`,`TS`,(`Closed`-`Created`)/1000 AS 'Duration' FROM `TicketTool`
-	WHERE (`Closed`-`Created`) IS NOT NULL AND `Completed` IS NOT NULL
-	ORDER BY (`Closed`-`Created`) ASC;
-END$$
-
-CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `TicketsToClose` (IN `currentTime` BIGINT)  BEGIN
-	SELECT *
-    FROM `TicketTool`
-    WHERE ( `ChannelName` LIKE '%reset%' OR `ChannelName` LIKE '%export%' OR `ChannelName` LIKE '%wipe%' OR `ChannelName` LIKE '%deletion%' )
-    	AND `Closed` IS NULL
-        AND (
-            ( `Completed` IS NULL AND `Created` + (60 * 60 * 1000) < currentTime )
-            OR `Completed` + (15 * 60 * 1000) < currentTime
-        );
 END$$
 
 DELIMITER ;
@@ -105,6 +87,7 @@ CREATE TABLE IF NOT EXISTS `Icons` (
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `LastUsed` timestamp NULL DEFAULT NULL,
   `Counter` int NOT NULL DEFAULT '0',
+  `MLoverride` char(12) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`UnityName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
