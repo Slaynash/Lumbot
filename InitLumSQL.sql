@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 24, 2023 at 03:13 AM
+-- Generation Time: May 24, 2023 at 04:43 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -104,6 +104,18 @@ CREATE TABLE IF NOT EXISTS `Memes` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user` bigint NOT NULL,
   PRIMARY KEY (`GuildID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MessagePairs`
+--
+
+CREATE TABLE IF NOT EXISTS `MessagePairs` (
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `OGMessage` bigint UNSIGNED NOT NULL,
+  `DevMessage` bigint UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

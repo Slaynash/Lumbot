@@ -4,7 +4,6 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 
 public class PrivateMessagesHandler {
     public static final String LOG_IDENTIFIER = "PrivateMessagesHandler";
@@ -32,10 +31,4 @@ public class PrivateMessagesHandler {
         }
         // CommandManager.runAsClient(event);
     }
-
-    @SuppressWarnings("EmptyMethod")
-    public static void handle(MessageUpdateEvent ignoredEvent) {
-        //handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
-    }
-
 }

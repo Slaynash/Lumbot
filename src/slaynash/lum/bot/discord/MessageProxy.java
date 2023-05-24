@@ -1,6 +1,8 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 import net.dv8tion.jda.api.entities.Guild;
@@ -9,16 +11,20 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -64,11 +70,11 @@ public class MessageProxy {
                 guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
 
         }
-        guildchannel.sendMessage(message).queue();
+        guildchannel.sendMessage(message).queue(s -> saveIDs(event.getMessageIdLong(), s.getIdLong()));
 
         for (Attachment attachment : event.getMessage().getAttachments()) {
             try {
-                guildchannel.sendFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName())).queue();
+                guildchannel.sendFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName())).queue(s -> saveIDs(event.getMessageIdLong(), s.getIdLong()));
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed reattaching attachment", e);
@@ -76,8 +82,7 @@ public class MessageProxy {
             if (MelonScanner.isValidFileFormat(attachment, false)) {
                 MessageCreateData scan = MelonScanner.scanMessage(event, attachment);
                 if (scan != null) {
-                    event.getChannel().sendMessage(scan).queue();
-                    guildchannel.sendMessage(scan).queue();
+                    guildchannel.sendMessage(scan).queue(s1 -> event.getChannel().sendMessage(scan).queue(s2 -> saveIDs(s2.getIdLong(),s1.getIdLong())));
                 }
             }
         }
@@ -87,7 +92,8 @@ public class MessageProxy {
         if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
                 event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&
-                !event.getMessage().getContentRaw().startsWith(".")) {
+                !event.getMessage().getContentRaw().startsWith(".") &&
+                !event.getMessage().getContentRaw().startsWith("l!")) {
             String[] userID = event.getChannel().getName().split("-");
             User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
             if (user == null) {
@@ -109,27 +115,35 @@ public class MessageProxy {
                 message.reply("Lum can not use that emote as I also need to be in that emote's server.").queue();
                 return true;
             }
-            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-            messageBuilder.setContent(message.getContentRaw());
-            for (Attachment attachment : message.getAttachments()) {
-                if (attachment.getSize() > 8000000) {
-                    messageBuilder.setContent(messageBuilder.getContent().concat("\n").concat(attachment.getUrl()));
-                }
-                else {
-                    messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
-                }
-            }
-            for (StickerItem sticker : event.getMessage().getStickers()) {
-                messageBuilder.setContent(messageBuilder.getContent() + "\n" + sticker.getIconUrl());
-            }
             user.openPrivateChannel().queue(
-                    channel -> channel.sendMessage(messageBuilder.build()).queue(null,
+                    channel -> channel.sendMessage(prepareMessage(message)).queue(s -> saveIDs(s.getIdLong(), event.getMessageIdLong()),
                             e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
                     error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
 
             return true;
         }
         return false;
+    }
+
+    private static MessageCreateData prepareMessage (Message message) {
+        MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
+        messageBuilder.setContent(message.getContentRaw());
+        for (Attachment attachment : message.getAttachments()) {
+            if (attachment.getSize() > 8000000) {
+                messageBuilder.setContent(messageBuilder.getContent().concat("\n").concat(attachment.getUrl()));
+            }
+            else {
+                try {
+                    messageBuilder.addFiles(FileUpload.fromData(attachment.getProxy().download().get(), attachment.getFileName()));
+                } catch (InterruptedException | ExecutionException e) {
+                    ExceptionUtils.reportException("failed to proxy attachment", e);
+                }
+            }
+        }
+        for (StickerItem sticker : message.getStickers()) {
+            messageBuilder.setContent(messageBuilder.getContent() + "\n" + sticker.getIconUrl());
+        }
+        return messageBuilder.build();
     }
 
     public static void proxyTyping(UserTypingEvent event) {
@@ -151,7 +165,90 @@ public class MessageProxy {
                         e -> event.getChannel().asGuildMessageChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not send message to target user: " + e.getMessage(), Color.red)).queue()),
                 error -> event.getChannel().asGuildMessageChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Can not open DM with target user: " + error.getMessage(), Color.red)).queue());
         }
-
     }
+
+    public static void edits(MessageUpdateEvent event) {
+        if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+            // From Devs
+            if (event.getMessage().getContentRaw().startsWith(".")) return;
+            String[] userID = event.getChannel().getName().split("-");
+            User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+            if (user == null) {
+                event.getChannel().sendMessage("Could not find user's message").queue();
+                return;
+            }
+            try {
+                PrivateChannel pmChannel = user.openPrivateChannel().complete();
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    pmChannel.editMessageById(rs.getLong("OGMessage"), prepareMessage(event.getMessage()).getContent()).queue();
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
+        }
+        else if (event.isFromType(ChannelType.PRIVATE)){
+            User author = event.getAuthor();
+            Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
+            TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
+            if (guildchannel == null) {
+                ExceptionUtils.reportException("can't find guildchannel");
+                return;
+            }
+
+            String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
+            for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
+                message = message.concat("\n").concat(emoji.getImageUrl());
+            }
+            for (StickerItem sticker : event.getMessage().getStickers()) {
+                message = message.concat("\n").concat(sticker.getIconUrl());
+            }
+            if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+                message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+            }
+
+            try {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    guildchannel.editMessageById(rs.getLong("DevMessage"), message).queue();
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+            } catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
+        }
+    }
+
+    public static void deletes(MessageDeleteEvent event) { //TODO proxy deletion to devs
+        if (event.getGuild().getIdLong() != 633588473433030666L /* Slaynash's Workbench */ || !event.getChannel().getName().toLowerCase().startsWith("dm-"))
+            return;
+        String[] userID = event.getChannel().getName().split("-");
+        User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+        if (user == null) {
+            event.getChannel().sendMessage("Could not find user's message").queue();
+            return;
+        }
+        try {
+            PrivateChannel pmChannel = user.openPrivateChannel().complete();
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
+            while (rs.next()) {
+                pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
+            }
+            DBConnectionManagerLum.closeRequest(rs);
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("failed to remove proxy message", e);
+        }
+    }
+
+    private static void saveIDs(long ogID, long devID) {
+        try {
+            DBConnectionManagerLum.sendUpdate("INSERT INTO `MessagePairs` (`OGMessage`, `DevMessage`) VALUES ('?', '?')", ogID, devID);
+        } catch (SQLException e) {
+            ExceptionUtils.reportException("save ID failed", e);
+        }
+    }
+
+    //TODO proxy reactions
 
 }

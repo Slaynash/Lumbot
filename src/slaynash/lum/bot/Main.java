@@ -413,16 +413,15 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageUpdate(MessageUpdateEvent event) {
-        if (event.isFromType(ChannelType.PRIVATE)) {
-            PrivateMessagesHandler.handle(event);
-        }
-        else {
+        MessageProxy.edits(event);
+        if (!event.isFromType(ChannelType.PRIVATE)) {
             ServerMessagesHandler.handle(event);
         }
     }
 
     @Override
     public void onMessageDelete(@NotNull MessageDeleteEvent event) {
+        MessageProxy.deletes(event);
         ScamShield.checkDeleted(event);
     }
 
