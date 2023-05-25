@@ -190,7 +190,7 @@ public class MessageProxy {
                 return true;
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("failed to remove proxy message", e);
+                ExceptionUtils.reportException("failed to update proxy message", e);
             }
         }
         else if (event.isFromType(ChannelType.PRIVATE)) {
@@ -221,31 +221,57 @@ public class MessageProxy {
                 return true;
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("failed to remove proxy message", e);
+                ExceptionUtils.reportException("failed to update proxy message", e);
             }
         }
         return false;
     }
 
-    public static void deletes(MessageDeleteEvent event) { //TODO proxy deletion to devs
-        if (event.getGuild().getIdLong() != 633588473433030666L /* Slaynash's Workbench */ || !event.getChannel().getName().toLowerCase().startsWith("dm-"))
-            return;
-        String[] userID = event.getChannel().getName().split("-");
-        User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
-        if (user == null) {
-            event.getChannel().sendMessage("Could not find user's message").queue();
-            return;
-        }
-        try {
-            PrivateChannel pmChannel = user.openPrivateChannel().complete();
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
-            while (rs.next()) {
-                pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
+    public static void deletes(MessageDeleteEvent event) {
+        if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+            // From Devs
+            String[] userID = event.getChannel().getName().split("-");
+            User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+            if (user == null) {
+                event.getChannel().sendMessage("Could not find user's message").queue();
+                return;
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            try {
+                PrivateChannel pmChannel = user.openPrivateChannel().complete();
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
         }
-        catch (SQLException e) {
-            ExceptionUtils.reportException("failed to remove proxy message", e);
+        else if (event.isFromType(ChannelType.PRIVATE)) {
+            User author = event.getChannel().asPrivateChannel().getUser();
+            Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
+            TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
+            if (guildchannel == null) {
+                return;
+            }
+
+            try {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    guildchannel.retrieveMessageById(rs.getLong("DevMessage")).queue(message -> {
+                        String mesString = "Deleted\n".concat(message.getContentRaw());
+                        if (mesString.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+                            mesString = mesString.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+                        }
+                        message.editMessage(mesString).queue();
+                    });
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
         }
     }
 
@@ -287,7 +313,7 @@ public class MessageProxy {
                 return true;
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("failed to remove proxy message", e);
+                ExceptionUtils.reportException("failed to react to proxy message", e);
             }
         }
         else if (event.isFromType(ChannelType.PRIVATE)) {
@@ -316,7 +342,7 @@ public class MessageProxy {
                 return true;
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("failed to remove proxy message", e);
+                ExceptionUtils.reportException("failed to react to proxy message", e);
             }
         }
         return false;
