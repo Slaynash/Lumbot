@@ -430,6 +430,7 @@ public class Main extends ListenerAdapter {
         if (event.getUser().getIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
             return;
 
+        if (MessageProxy.reactions(event)) return;
         Memes.memeReaction(event);
 
         // System.out.println("[" + event.getGuild().getName() + "] [#" + event.getChannel().getName() + "] " + event.getUser().getName() + " reacted with " + event.getReactionEmote().getName() + (event.getReactionEmote().isEmote() ? "isEmote id:" + event.getReactionEmote().getId() : "") + (EmojiUtils.containsEmoji(event.getReactionEmote().getName()) ? " is Emoji" : ""));

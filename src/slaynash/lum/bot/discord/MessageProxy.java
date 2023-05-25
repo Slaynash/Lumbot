@@ -14,11 +14,13 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
@@ -196,7 +198,6 @@ public class MessageProxy {
             Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
             TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
             if (guildchannel == null) {
-                ExceptionUtils.reportException("can't find guildchannel");
                 return true;
             }
 
@@ -257,6 +258,68 @@ public class MessageProxy {
         }
     }
 
-    //TODO proxy reactions
+    public static boolean reactions(MessageReactionAddEvent event) {
+        Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
+        if (event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ && event.getChannel().getName().toLowerCase().startsWith("dm-")) {
+            // From Devs
+            String[] userID = event.getChannel().getName().split("-");
+            User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+            if (user == null) {
+                event.getChannel().sendMessage("Could not find user").queue();
+                return true;
+            }
+            try {
+                PrivateChannel pmChannel = user.openPrivateChannel().complete();
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    if (event.getEmoji().getType() == Emoji.Type.CUSTOM) {
+                        RichCustomEmoji richemote = (RichCustomEmoji) event.getEmoji().asCustom();
+                        if (mainGuild.getSelfMember().canInteract(richemote))
+                            pmChannel.addReactionById(rs.getLong("OGMessage"), richemote).queue();
+                        else
+                            event.getChannel().sendMessage("Unable to react with that emote").queue();
+                    }
+                    else {
+                        pmChannel.addReactionById(rs.getLong("OGMessage"), event.getEmoji().asUnicode()).queue();
+                    }
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+                return true;
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
+        }
+        else if (event.isFromType(ChannelType.PRIVATE)) {
+            User author = event.getUser();
+            TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
+            if (guildchannel == null) {
+                return true;
+            }
+
+            try {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
+                while (rs.next()) {
+                    if (event.getEmoji().getType() == Emoji.Type.CUSTOM) {
+                        RichCustomEmoji richemote = (RichCustomEmoji) event.getEmoji().asCustom();
+                        if (mainGuild.getSelfMember().canInteract(richemote))
+                            guildchannel.addReactionById(rs.getLong("DevMessage"), richemote).queue();
+                        else {
+                            guildchannel.retrieveMessageById(rs.getLong("DevMessage")).queue(message -> message.reply(richemote.getImageUrl()).queue());
+                        }
+                    }
+                    else {
+                        guildchannel.addReactionById(rs.getLong("DevMessage"), event.getEmoji().asUnicode()).queue();
+                    }
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+                return true;
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("failed to remove proxy message", e);
+            }
+        }
+        return false;
+    }
 
 }
