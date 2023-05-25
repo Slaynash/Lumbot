@@ -172,6 +172,7 @@ public class MessageProxy {
     }
 
     public static boolean edits(MessageUpdateEvent event) {
+        if (event.getAuthor().isBot()) return false;
         if (event.isFromType(ChannelType.PRIVATE)) {
             User author = event.getAuthor();
             Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
