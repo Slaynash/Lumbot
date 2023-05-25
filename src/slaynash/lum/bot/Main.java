@@ -463,6 +463,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReactionRemove(@NotNull MessageReactionRemoveEvent event) {
+        if (MessageProxy.reactions(event)) return;
         for (ReactionListener rl : CommandManager.reactionListeners) {
             if (event.getMessageId().equals(rl.messageId()) && (event.getEmoji().getType() == Emoji.Type.CUSTOM ? event.getEmoji().asCustom().getId().equals(rl.emoteId()) : event.getEmoji().asUnicode().getAsReactionCode().equals(rl.emoteId()))) {
                 Role role = event.getGuild().getRoleById(rl.roleId());
