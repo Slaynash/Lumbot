@@ -24,7 +24,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -275,10 +274,6 @@ public class ServerMessagesHandler {
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred processing message:", e);
         }
-    }
-
-    public static void handle(MessageUpdateEvent event) {
-        handle(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
     }
 
     public static void handle(MessageReceivedEvent event) {

@@ -414,7 +414,7 @@ public class Main extends ListenerAdapter {
     @Override
     public void onMessageUpdate(MessageUpdateEvent event) {
         if (!MessageProxy.edits(event) && !event.isFromType(ChannelType.PRIVATE)) {
-            ServerMessagesHandler.handle(event);
+            ScamShield.checkForFishing(event);
         }
     }
 

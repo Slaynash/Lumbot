@@ -38,6 +38,7 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -203,6 +204,10 @@ public class ScamShield {
         boolean massPing = event.getMessage().getMentions().getUsers().size() > 3; //kick mass ping selfbots
 
         return new ScamResults(suspiciousValue, ssFoundTerms, massPing);
+    }
+
+    public static boolean checkForFishing(MessageUpdateEvent event) {
+        return checkForFishing(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
     }
 
     public static boolean checkForFishing(MessageReceivedEvent event) {
