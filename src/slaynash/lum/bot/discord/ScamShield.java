@@ -76,8 +76,6 @@ public class ScamShield {
             put("booster", 1);
             put("download", 1);
             put("100%", 1);
-            put("bro", 1);
-            put("broken", -1); //temporary solution until I can think of a better way, issue is that all spaces are removed
             put("joinnow", 1);
             put("family-world", 3);
             put("13+boysonly!!", 3);
@@ -233,7 +231,7 @@ public class ScamShield {
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue < 3 && suspiciousResults.calulatedValue > 0)
             suspiciousResults.calulatedValue--;
-        if (suspiciousResults.calulatedValue >= 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
+        else if (suspiciousResults.calulatedValue >= 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
@@ -247,7 +245,7 @@ public class ScamShield {
             handleMassPings(event, suspiciousResults);
             return true;
         }
-        else if (suspiciousResults.totalSuspicionCount > 5) {
+        else if (suspiciousResults.totalSuspicionCount > 6) {
             System.out.println("suspiciousResults.sameauthormessages.size: " + suspiciousResults.sameauthormessages.size());
             handleCrossBan(event, suspiciousResults);
             return true;
