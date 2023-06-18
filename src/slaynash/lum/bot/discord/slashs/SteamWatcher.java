@@ -27,7 +27,8 @@ public class SteamWatcher extends Slash {
             .addOption(OptionType.STRING, "public", "Enter Mention/Message for public changes", false)
             .addOption(OptionType.STRING, "beta", "Enter Mention/Message for public beta", false)
             .addOption(OptionType.STRING, "other", "Enter Mention/Message for non-public changes", false)
-            .setDefaultPermissions(DefaultMemberPermissions.DISABLED);
+            .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+            .setGuildOnly(true);
     }
 
     @Override

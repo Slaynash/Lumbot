@@ -51,7 +51,8 @@ public class Replies extends Slash {
             )
             .addSubcommands(new SubcommandData("delete", "Remove a reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to delete existing Reply", true))
-            .setDefaultPermissions(DefaultMemberPermissions.DISABLED);
+            .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
+            .setGuildOnly(true);
     }
 
     @Override

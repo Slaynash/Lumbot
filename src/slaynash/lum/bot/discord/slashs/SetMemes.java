@@ -17,7 +17,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SetMemes extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return Commands.slash("meme", "Auto moderate a meme channel - Admins only").addOption(OptionType.CHANNEL, "report", "Optional Channel for message logs", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED);
+        return Commands.slash("meme", "Auto moderate a meme channel - Admins only").addOption(OptionType.CHANNEL, "report", "Optional Channel for message logs", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED).setGuildOnly(true);
     }
 
     @Override
