@@ -81,8 +81,6 @@ public final class MelonScanner {
 
             String lang = "en";
 
-            if (messageReceivedEvent.getAuthor().retrieveProfile().complete().)
-
             if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
                 lang = "fr";
             else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
