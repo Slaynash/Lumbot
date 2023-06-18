@@ -84,6 +84,7 @@
 
         "melonscanner.partiallog.fieldname": "Partial Log:",
         "melonscanner.partiallog.field": "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game.",
+        "melonscanner.partiallogBTD.field": "- MelonLoader either crashed or paused by the console being clicked on.\nPlease look at these [troubleshooting steps](https://hemisemidemipresent.github.io/btd6-modding-tutorial/#:~:text=the%20game%20crashes%20while%20loading%20mods) for more help.",
         "melonscanner.pirate.fieldname": "Pirated Game:",
         "melonscanner.pirate.field": "Please purchase the game if you would like assistance."
     },

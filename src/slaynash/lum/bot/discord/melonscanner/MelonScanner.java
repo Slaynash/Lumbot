@@ -81,6 +81,8 @@ public final class MelonScanner {
 
             String lang = "en";
 
+            if (messageReceivedEvent.getAuthor().retrieveProfile().complete().)
+
             if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("french"))
                 lang = "fr";
             else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
@@ -949,7 +951,10 @@ public final class MelonScanner {
                 context.embedColor = Color.RED;
             }
             else if (context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingModsPlugins) && context.errors.size() == 0) {
-                context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
+                if ("BloonsTD6".equals(context.game))
+                    context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallogBTD.field", context.lang), false);
+                else
+                    context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
                 context.embedColor = Color.ORANGE;
             }
             else
