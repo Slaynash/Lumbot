@@ -30,6 +30,10 @@ public class SetScreeningRoleHandlerCommand extends Command {
                 paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: Role not found", Color.RED)).queue();
                 return;
             }
+            if (!role.getGuild().getSelfMember().canInteract(role)) {
+                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum does not have permissions to give out this role", Color.RED)).queue();
+                return;
+            }
 
             CommandManager.autoScreeningRoles.put(paramMessageReceivedEvent.getGuild().getIdLong(), role.getIdLong());
             CommandManager.saveScreenings();
