@@ -175,4 +175,25 @@ public class Utils {
 
         return containedUrls;
     }
+
+    public void checkIconURL(String iconURL, String unityName) {
+        if (iconURL == null) {
+            System.out.println("Icon URL is null");
+            return;
+        }
+        new Thread(() -> {
+            try {
+                HttpURLConnection huc = (HttpURLConnection) new URL(iconURL).openConnection();
+                huc.setRequestMethod("HEAD");
+                int responseCode = huc.getResponseCode();
+                if (responseCode / 100 == 4) { //4xx
+                    JDAManager.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
+                                Utils.wrapMessageInEmbed("logo for " + unityName + " has " + responseCode + "\n" + iconURL, Color.decode("6696969"))).queue();
+                }
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("checkIconURL Failed", e);
+            }
+        }).start();
+    }
 }

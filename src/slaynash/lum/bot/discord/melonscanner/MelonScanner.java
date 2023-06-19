@@ -431,8 +431,10 @@ public final class MelonScanner {
                     if (url == null)
                         context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
                                 Utils.wrapMessageInEmbed("No logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
-                    else if (url.length() > 1) // allows me to disable messages for edited/test games
+                    else if (url.length() > 1) { // allows me to disable messages for edited/test games
                         context.embedBuilder.setThumbnail(url);
+                        new Utils().checkIconURL(url, unityName);
+                    }
 
                     if (result.getString("MLoverride") != null) {
                         context.latestMLVersionAlpha = result.getString("MLoverride");
