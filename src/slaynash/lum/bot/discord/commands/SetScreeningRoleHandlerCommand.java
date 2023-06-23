@@ -31,7 +31,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
                 return;
             }
             if (!role.getGuild().getSelfMember().canInteract(role)) {
-                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum does not have permissions to give out this role", Color.RED)).queue();
+                paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum does not have permissions to give out this role or Lum's role is too low", Color.RED)).queue();
                 return;
             }
 

@@ -27,6 +27,9 @@ public class Reminders extends TimerTask {
                 if (user == null) {
                     user = JDAManager.getJDA().retrieveUserById(userID).complete();
                 }
+                if (message == null) {
+                    message = user.getAsMention();
+                }
                 if (serverID == 0) {
                     user.openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(embedBuilder.build()).queue());
                 }
