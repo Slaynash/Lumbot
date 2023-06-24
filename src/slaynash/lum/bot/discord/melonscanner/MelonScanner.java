@@ -940,7 +940,15 @@ public final class MelonScanner {
             }
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
-
+            }
+            if ("BloonsTD6".equals(context.game)) {
+                int found = 0;
+                for (String mods : context.loadedMods.keySet()) {
+                    if (mods.toLowerCase().contains("crosspathing")) found++;
+                }
+                if (found > 1) {
+                    error += Localization.get("You can not have multiple Crosspathing mods installed at the same time", context.lang) + "\n";
+                }
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
