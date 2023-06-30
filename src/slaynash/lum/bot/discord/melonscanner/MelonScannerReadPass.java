@@ -140,8 +140,12 @@ public final class MelonScannerReadPass {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
         }
-        else if (line.matches(".*\\\\boneworks.v\\d.*")) {
+        else if (line.matches(".*\\\\boneworks\\.v\\d.*")) {
             System.out.println("Pirated BW detected");
+            context.pirate = true;
+        }
+        else if (line.matches(".*\\\\bonelab\\.v\\d.*")) {
+            System.out.println("Pirated BL detected");
             context.pirate = true;
         }
     }

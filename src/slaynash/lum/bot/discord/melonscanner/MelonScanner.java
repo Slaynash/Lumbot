@@ -395,6 +395,11 @@ public final class MelonScanner {
                 context.pirate = true;
             }
         }
+        else if (context.game.equalsIgnoreCase("BONELAB")) {
+            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\bonelab") && !context.gamePath.toLowerCase().contains("software\\stress-level-zero-inc-bonelab")) {
+                context.pirate = true;
+            }
+        }
         else if (context.game.equalsIgnoreCase("TheLongDark")) {
             if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) >= 0 && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
                 context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
