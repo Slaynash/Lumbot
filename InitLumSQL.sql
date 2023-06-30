@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 24, 2023 at 04:43 AM
+-- Generation Time: Jun 26, 2023 at 07:09 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -28,7 +28,7 @@ DELIMITER $$
 -- Procedures
 --
 CREATE DEFINER=`cmnClientLogger`@`%` PROCEDURE `FetchIcon` (IN `name` CHAR(128))  BEGIN
-SELECT IconURL,PirateURL FROM Icons WHERE `UnityName` = name;
+SELECT * FROM Icons WHERE `UnityName` = name;
 UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = name;
 END$$
 
@@ -103,7 +103,8 @@ CREATE TABLE IF NOT EXISTS `Memes` (
   `ReportChannel` bigint DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user` bigint NOT NULL,
-  PRIMARY KEY (`GuildID`)
+  `ID` int NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -113,9 +114,11 @@ CREATE TABLE IF NOT EXISTS `Memes` (
 --
 
 CREATE TABLE IF NOT EXISTS `MessagePairs` (
+  `ID` int NOT NULL AUTO_INCREMENT,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `OGMessage` bigint UNSIGNED NOT NULL,
-  `DevMessage` bigint UNSIGNED NOT NULL
+  `DevMessage` bigint UNSIGNED NOT NULL,
+  PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
