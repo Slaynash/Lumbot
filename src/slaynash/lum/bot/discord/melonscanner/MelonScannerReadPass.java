@@ -52,10 +52,6 @@ public final class MelonScannerReadPass {
                 if (compromisedMLCheck(context))
                     return true;
 
-                if ((context.preListingModsPlugins || context.listingModsPlugins) && !context.pre3)
-                    if (processML03ModListing(context))
-                        continue;
-
                 if (missingDependenciesCheck(context))
                     continue;
 
@@ -68,6 +64,10 @@ public final class MelonScannerReadPass {
 
                 if (context.readingIncompatibility)
                     if (processIncompatibilityListing(context))
+                        continue;
+
+                if ((context.preListingModsPlugins || context.listingModsPlugins) && !context.pre3)
+                    if (processML03ModListing(context))
                         continue;
 
                 if (
@@ -158,19 +158,49 @@ public final class MelonScannerReadPass {
         else if (context.preListingModsPlugins && line.matches("\\[[\\d.:]+] -{30,}")) {
             return true;
         }
+        else if (line.matches("\\[[\\d.:]+] \\[.*")) {
+            return false; //some mod is printing in the middle of the mod listing
+        }
         else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
             if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
                 System.out.println("editedLog");
                 context.editedLog = true;
             }
-            else { // Skipping separator
-                return true;
+            return true;
+        }
+        else if (line.contains("Failed to load Melon '")) {
+            if (line.contains("Melon is a Plugin")) {
+                String pluginname = line.split("'")[1];
+                if (!context.misplacedPlugins.contains(pluginname))
+                    context.misplacedPlugins.add(pluginname);
+            }
+            else if (line.contains("Melon is a Mod")) {
+                String modname = line.split("'")[1];
+                if (!context.misplacedMods.contains(modname))
+                    context.misplacedMods.add(modname);
             }
             return true;
         }
         else if (line.matches("\\[[\\d.:]+] Melon Assembly loaded: .*")) {
             context.preListingModsPlugins = false;
             context.listingModsPlugins = true;
+
+            String assembly = null;
+            String hash = null;
+
+            Matcher assemblyRegex = Pattern.compile("([^\\\\]*)'$").matcher(context.line);
+            if (assemblyRegex.matches()) {
+                assembly = assemblyRegex.group(1);
+            }
+            Matcher hashRegex = Pattern.compile(".*Hash: '(.*)'").matcher(context.nextLine);
+            if (hashRegex.matches()) {
+                hash = hashRegex.group(1);
+            }
+
+            if (assembly != null && hash != null) {
+                context.modAssemblies.add(new LogsModDetails(hash, assembly));
+            }
+
             context.linesToSkip++;
             return true;
         }
@@ -220,10 +250,16 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? SHA256 Hash: [a-zA-Z\\d]+")) {
+        else if (line.matches("\\[[\\d.:]+] SHA256 Hash: [a-zA-Z\\d]+")) {
             String[] split = line.split(" ");
             if (split.length < 4) return true;
             context.tmpModHash = split[3];
+            return true;
+        }
+        else if (line.matches("\\[[\\d.:]+] Assembly: .*\\.dll")) {
+            String[] split = line.split(" ");
+            if (split.length < 3) return true;
+            context.tmpModAssembly = split[2];
             return true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? -{30,}")) {
@@ -235,12 +271,12 @@ public final class MelonScannerReadPass {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
 
+            context.modAssemblies.stream().filter(m -> m.assembly.equalsIgnoreCase(context.tmpModAssembly)).findFirst().ifPresent(m -> context.tmpModHash = m.hash);
+
             if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)) { //ignore BCP, it is part of ModThatIsNotMod
                 if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
                     context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
                 context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
-                //if (tmpModAuthor != null)
-                //    modAuthors.put(tmpModName.trim(), tmpModAuthor.trim());
             }
 
             if (context.listingPlugins) {
@@ -260,6 +296,7 @@ public final class MelonScannerReadPass {
             context.tmpModVersion = null;
             context.tmpModAuthor = null;
             context.tmpModHash = null;
+            context.tmpModAssembly = null;
 
             if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0 && --context.remainingModCount == 0) {
                 context.preListingModsPlugins = false;

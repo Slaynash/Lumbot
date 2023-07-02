@@ -68,12 +68,14 @@ public class MelonScanContext {
     public String tmpModVersion;
     public String tmpModAuthor;
     public String tmpModHash;
+    public String tmpModAssembly;
 
     // Mod listing - final
     public boolean noPlugins = false;
     public boolean noMods = false;
     public Map<String, LogsModDetails> loadedMods = new HashMap<>();
     public List<MelonDuplicateMod> duplicatedMods = new ArrayList<>();
+    public List<LogsModDetails> modAssemblies = new ArrayList<>();
 
     // Missing dependencies - temp
     public String currentMissingDependenciesMods = ""; //isn't used
@@ -111,10 +113,6 @@ public class MelonScanContext {
     public final List<String> hasPendingMods = new ArrayList<>();
     public final List<String> badMods = new ArrayList<>();
     public final List<String> badPlugins = new ArrayList<>();
-    /*
-    public List<String> universalMods = new ArrayList<>();
-    public Map<String, String> modAuthors = new HashMap<>();
-    */
 
     public EmbedBuilder embedBuilder;
     public StringBuilder reportMessage;
