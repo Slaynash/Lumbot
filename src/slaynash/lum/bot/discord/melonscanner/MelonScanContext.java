@@ -75,7 +75,7 @@ public class MelonScanContext {
     public boolean noMods = false;
     public Map<String, LogsModDetails> loadedMods = new HashMap<>();
     public List<MelonDuplicateMod> duplicatedMods = new ArrayList<>();
-    public List<LogsModDetails> modAssemblies = new ArrayList<>();
+    public final List<LogsModDetails> modAssemblies = new ArrayList<>();
 
     // Missing dependencies - temp
     public String currentMissingDependenciesMods = ""; //isn't used

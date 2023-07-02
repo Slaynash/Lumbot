@@ -91,7 +91,7 @@ public class MessageProxy {
         }
     }
 
-    public static boolean fromDev(MessageReceivedEvent event) throws InterruptedException, ExecutionException {
+    public static boolean fromDev(MessageReceivedEvent event) {
         if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong() &&
                 event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&

@@ -161,8 +161,8 @@ public class MelonScannerApisManager {
 
                             if (api.maxPagination > 0)
                                 constructedURI = api.endpoint
-                                    .replace("{count}", "" + api.maxPagination)
-                                    .replace("{offset}", "" + pagingOffset);
+                                    .replace("{count}", String.valueOf(api.maxPagination))
+                                    .replace("{offset}", String.valueOf(pagingOffset));
 
                             builder.uri(URI.create(constructedURI));
 

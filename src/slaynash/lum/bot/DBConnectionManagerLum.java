@@ -68,7 +68,6 @@ public final class DBConnectionManagerLum {
                 ps.setNull(i + 1, Types.VARCHAR);
             else if (args[i].getClass() == String.class)
                 ps.setString(i + 1, new String(args[i].toString().getBytes(), StandardCharsets.UTF_8));
-                // ps.setString(i + 1, (String) args[i]);
             else if (args[i].getClass() == Integer.class)
                 ps.setInt(i + 1, (int) args[i]);
             else if (args[i].getClass() == Boolean.class)

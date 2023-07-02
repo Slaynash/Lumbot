@@ -161,7 +161,7 @@ public class Steam {
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 Integer gameID = changeDataPair.getKey();
                 List<SteamChannel> channels = new ArrayList<>();
-                System.out.println("" + gameID + ": " + changeDataPair.getValue().getId());
+                System.out.println(gameID + ": " + changeDataPair.getValue().getId());
                 try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
                     writer.write(String.valueOf(previousChangeNumber));
                 }
