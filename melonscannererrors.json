@@ -290,7 +290,11 @@
         },
         {
             "regex": ".*(?<error>Please Make Sure Mod DLL Name Is .*)",
-            "error": "error"
+            "error": "Mod name is incorrect"
+        },
+        {
+            "regex": "WARNING!! Your game version seems too old to this MOD!",
+            "error": "Your game version seems too old to a mod"
         }
     ],
     "gameSpecificErrors": {
