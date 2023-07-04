@@ -21,10 +21,6 @@ public final class MelonScannerReadPass {
     private static final int omitLineCount = 1200;
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
-        if (context.attachment.getSize() > 15000000) {
-            Utils.replyEmbed("Log size is too large. Not reading anything over 15MB", null, context.messageReceivedEvent);
-            return false;
-        }
         try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.getProxy().download().get()))) {
             context.bufferedReader = br;
             context.nextLine = "";
@@ -33,6 +29,11 @@ public final class MelonScannerReadPass {
                 context.readLine = br.readLine();
                 if (context.readLine != null && context.readLine.isBlank())
                     continue;
+
+                if (++context.lineCount > 50000) {
+                    context.embedBuilder.addField("Log too long", "Some parts of the log was not scanned.", false);
+                    return true;
+                }
 
                 context.secondlastLine = context.lastLine;
                 context.lastLine = context.line;
