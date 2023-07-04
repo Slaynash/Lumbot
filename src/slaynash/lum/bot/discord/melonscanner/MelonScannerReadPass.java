@@ -407,7 +407,7 @@ public final class MelonScannerReadPass {
             context.currentMissingDependenciesMods = split[1];
             return true;
         }
-        else if (line.matches("(?i)\\[[\\d.:]+] \\[Warning] Some mods are missing dependencies, which you may have to install\\.")) {
+        else if (line.matches("(?i)\\[[\\d.:]+]( \\[Warning]|) Some (mods|Melons) are missing dependencies, which you may have to install\\.")) {
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
             context.linesToSkip += 2;
