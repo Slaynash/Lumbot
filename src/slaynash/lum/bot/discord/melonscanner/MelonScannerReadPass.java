@@ -30,7 +30,7 @@ public final class MelonScannerReadPass {
                 if (context.readLine != null && context.readLine.isBlank())
                     continue;
 
-                if (++context.lineCount > 50000) {
+                if (++context.lineCount > 20000) {
                     context.embedBuilder.addField("Log too long", "Some parts of the log was not scanned.", false);
                     return true;
                 }

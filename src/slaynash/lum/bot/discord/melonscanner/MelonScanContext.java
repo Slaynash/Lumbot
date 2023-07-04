@@ -115,8 +115,8 @@ public class MelonScanContext {
     public final List<String> badMods = new ArrayList<>();
     public final List<String> badPlugins = new ArrayList<>();
 
-    public EmbedBuilder embedBuilder;
-    public StringBuilder reportMessage;
+    public EmbedBuilder embedBuilder = new EmbedBuilder();
+    public StringBuilder reportMessage = new StringBuilder();
     public Color embedColor = Color.BLUE;
 
     public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent, String lang) {
