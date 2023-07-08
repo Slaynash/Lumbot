@@ -413,6 +413,7 @@ public final class MelonScannerReadPass {
             context.linesToSkip += 2;
             // If these are optional dependencies, mark them as optional using the MelonOptionalDependencies attribute.
             // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader. TODO This will break Lum when ML does it
+            return true;
         }
         else {
             System.out.println("Done listing missing dependencies on line: " + line);
