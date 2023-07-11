@@ -372,6 +372,7 @@ public final class MelonScanner {
     }
 
     private static void checkForPirate(MelonScanContext context) {
+        if ("android".equalsIgnoreCase(context.osType)) return;
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             context.editedLog = true; //trigger the `dont edit the log` message
             context.pirate = true;
