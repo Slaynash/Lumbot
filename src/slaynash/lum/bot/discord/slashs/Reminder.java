@@ -113,6 +113,10 @@ public class Reminder extends Slash {
 
         // Create the reminder
         long timestamp = System.currentTimeMillis() + ((long) minutes * 60 * 1000) + ((long) hours * 60 * 60 * 1000) + ((long) days * 24 * 60 * 60 * 1000);
+        if (timestamp / 1000 > Integer.MAX_VALUE) {
+            event.replyEmbeds(Utils.wrapMessageInEmbed("Reminder too far in the future! [Can't be past 2023](https://en.wikipedia.org/wiki/Year_2038_problem)", Color.RED)).queue();
+            return;
+        }
         java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(timestamp);
         try {
             DBConnectionManagerLum.sendUpdate("INSERT INTO Reminders (UserID, ServerID, ChannelID, Message, TSend, Color) VALUES (?, ?, ?, ?, ?, ?)", userid, guildid, channelid, message, sqlTimestamp, color.getRGB());

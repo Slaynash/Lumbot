@@ -74,8 +74,12 @@ public final class DBConnectionManagerLum {
                 ps.setBoolean(i + 1, (boolean) args[i]);
             else if (args[i].getClass() == Long.class)
                 ps.setLong(i + 1, (long) args[i]);
-            else if (args[i].getClass() == Timestamp.class)
-                ps.setTimestamp(i + 1, (Timestamp) args[i]);
+            else if (args[i].getClass() == Timestamp.class) {
+                Timestamp ts = (Timestamp) args[i];
+                if (ts.getTime() / 1000 > Integer.MAX_VALUE)
+                    throw new IllegalArgumentException("Timestamp too big to be stored in an int " + ts.getTime() / 1000 + " > " + Integer.MAX_VALUE);
+                ps.setTimestamp(i + 1, ts);
+            }
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
         return ps;
