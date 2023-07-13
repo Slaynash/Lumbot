@@ -39,6 +39,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
@@ -158,16 +159,17 @@ public class Steam {
 
             previousChangeNumber = callback.getCurrentChangeNumber();
 
+            try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
+                writer.write(String.valueOf(previousChangeNumber));
+            }
+            catch (IOException e) {
+                ExceptionUtils.reportException("Failed to save previousSteamChange", e);
+            }
+
             for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
                 Integer gameID = changeDataPair.getKey();
                 List<SteamChannel> channels = new ArrayList<>();
                 System.out.println(gameID + ": " + changeDataPair.getValue().getId());
-                try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/previousSteamChange.txt"))) {
-                    writer.write(String.valueOf(previousChangeNumber));
-                }
-                catch (IOException e) {
-                    ExceptionUtils.reportException("Failed to save previousSteamChange", e);
-                }
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
                     while (rs.next()) {
@@ -228,19 +230,25 @@ public class Steam {
 
 
                 if (gameDetail == null) { //for startup and first time added
+                    System.out.println("First time added " + app.getKey() + " " + app.getValue().getChangeNumber());
                     gameDetail = new SteamAppDetails(app.getValue().getKeyValues());
                     setGameDetails(app.getKey(), gameDetail);
                     return;
                 }
 
-                if (channels.size() == 0)
+                if (channels.size() == 0) {
+                    System.out.println("No channels for " + app.getKey());
                     return;
+                }
 
                 if (!JDAManager.isEventsEnabled())
                     return;
 
                 SteamAppDetails newAppDetails = new SteamAppDetails(app.getValue().getKeyValues());
                 SteamAppDetails appChanges = SteamAppDetails.compare(gameDetail, newAppDetails);
+
+                if (appChanges == null)
+                    System.out.println("No changes for " + app.getKey());
 
                 if (appChanges != null && appChanges.depots != null && appChanges.depots.branches != null) {
 
@@ -323,7 +331,7 @@ public class Steam {
                         mb.setContent("");
                     }
                 }
-                if (gameDetail != null && newAppDetails != null && gameDetail.common != null && newAppDetails.common != null) {
+                if (gameDetail.common != null && newAppDetails.common != null) {
 
                     SteamAppDetailsCommon oldCommon = gameDetail.common;
                     SteamAppDetailsCommon newCommon = newAppDetails.common;
@@ -347,8 +355,7 @@ public class Steam {
                         }
                     }
                 }
-                if (newAppDetails != null)
-                    setGameDetails(app.getKey(), newAppDetails);
+                setGameDetails(app.getKey(), newAppDetails);
             }
         });
     }
@@ -369,7 +376,7 @@ public class Steam {
             }
             return true;
         }
-        TextChannel channel = guild.getTextChannelById(sc.channelId());
+        GuildChannel channel = guild.getGuildChannelById(sc.channelId());
         if (channel == null) {
             System.out.println("Steam can not find Channel " + sc.channelId() + " from guild " + sc.guildID());
             try {
@@ -484,6 +491,8 @@ public class Steam {
             if (rs.next()) {
                 appDetails = new Gson().fromJson(rs.getString("Depot"), SteamAppDetails.class);
             }
+            else
+                System.out.println("SteamApp not found for " + gameID);
             DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
