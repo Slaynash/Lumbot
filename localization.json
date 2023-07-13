@@ -35,6 +35,10 @@
         "melonscanner.corruptedmods.more": "- and %s more...",
         "melonscanner.corruptedmods.warning": "These mods failed to match API hash, they either failed to download properly or became corrupted. Please redownload these mods and try again.",
 
+        "melonscanner.modFileName.fieldname": "Renamed Mods:",
+        "melonscanner.modFileName.more": "- and %s more...",
+        "melonscanner.modFileName.warning": "These mods have been renamed, being renamed has been known to cause issues and we recommend removing the appendage. Please remove the ` (#)` from the mod.",
+
         "melonscanner.missingmods.fieldname": "Missing Dependencies:",
         "melonscanner.missingmods.more": "- and %s more...",
 

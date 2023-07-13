@@ -11,6 +11,7 @@ import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class Reminders extends TimerTask {
+    @SuppressWarnings("StatementWithEmptyBody")
     public void run() {
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Reminders` WHERE `TSend` < CURRENT_TIMESTAMP");

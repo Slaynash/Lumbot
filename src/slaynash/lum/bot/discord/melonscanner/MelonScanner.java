@@ -135,7 +135,8 @@ public final class MelonScanner {
                 issueFound |= duplicatedModsCheck(context);
                 issueFound |= missingModsCheck(context);
                 issueFound |= incompatibleModsCheck(context);
-                //issueFound |= corruptedModsCheck(context); // Disabled for now
+                issueFound |= corruptedModsCheck(context);
+                issueFound |= modFileNameCheck(context);
                 issueFound |= brokenModsCheck(context);
                 issueFound |= retiredModsCheck(context);
                 issueFound |= oldModsCheck(context);
@@ -619,6 +620,22 @@ public final class MelonScanner {
 
             context.embedBuilder.addField(Localization.get("melonscanner.corruptedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean modFileNameCheck(MelonScanContext context) {
+        List<LogsModDetails> modAssemblies = new ArrayList<>(context.loadedMods.values().stream().filter(logsModDetails -> logsModDetails.assembly.matches("[\\w+-.]+\\s\\(\\d*\\)\\.dll")).toList());
+        if (modAssemblies.size() > 0) {
+            StringBuilder error = new StringBuilder(Localization.get("melonscanner.modFileName.warning", context.lang) + "\n");
+            for (int i = 0; i < modAssemblies.size() && i < (modAssemblies.size() == 11 ? 11 : 10); ++i)
+                error.append("- ").append(CrossServerUtils.sanitizeInputString(modAssemblies.get(i).name)).append(" `").append(CrossServerUtils.sanitizeInputString(modAssemblies.get(i).assembly)).append("`\n");
+            if (modAssemblies.size() > 11)
+                error.append(Localization.getFormat("melonscanner.modFileName.more", context.lang, modAssemblies.size() - 10));
+
+            context.embedBuilder.addField(Localization.get("melonscanner.modFileName.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
+            context.embedColor = Color.ORANGE;
             return true;
         }
         return false;
