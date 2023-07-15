@@ -38,8 +38,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
@@ -193,7 +192,7 @@ public class Steam {
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
                         if (guild == null)
                             continue;
-                        TextChannel channel = guild.getTextChannelById(sc.channelId());
+                        MessageChannel channel = (MessageChannel) guild.getGuildChannelById(sc.channelId());
                         if (channel == null)
                             continue;
                         if (channel.canTalk())
@@ -315,9 +314,9 @@ public class Steam {
                             mb.setContent(sc.otherMessage());
                         }
 
-                        TextChannel channel;
+                        MessageChannel channel;
                         try {
-                            channel = JDAManager.getJDA().getGuildById(sc.guildID()).getTextChannelById(sc.channelId());
+                            channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("Failed to initialize all steam depos", e);
@@ -344,7 +343,7 @@ public class Steam {
                         mb.setEmbeds(eb.build());
 
                         for (SteamChannel sc : channels) {
-                            TextChannel channel = JDAManager.getJDA().getGuildById(sc.guildID()).getTextChannelById(sc.channelId());
+                            MessageChannel channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
                             if (channel == null) continue;
                             if (channel.canTalk())
                                 channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
@@ -376,7 +375,7 @@ public class Steam {
             }
             return true;
         }
-        GuildChannel channel = guild.getGuildChannelById(sc.channelId());
+        MessageChannel channel = (MessageChannel) guild.getGuildChannelById(sc.channelId());
         if (channel == null) {
             System.out.println("Steam can not find Channel " + sc.channelId() + " from guild " + sc.guildID());
             try {
