@@ -29,7 +29,7 @@ public class ABCpolice {
         Message previousAuthorMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         char currentLetter = convertChar(message);
         char previousLetter = history.size() > 0 ? convertChar(history.get(0).getContentStripped()) : 0;
-        boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(30));
+        boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(30));  // if the previous message was sent less than 30 hours ago
 
         if (brokenChain || previousLetter == 0 || previousLetter == 'z')
             previousLetter = 'a' - 1;
@@ -52,7 +52,7 @@ public class ABCpolice {
             event.getChannel().sendMessage("Hey that is cheating <:Neko_pout:865328471102324778> Time to start back to `A`").queue();
             return true;
         }
-        else if (!brokenChain && timing && history.size() > 1 && (history.get(0).getAuthor().equals(event.getAuthor()) || history.get(1).getAuthor().equals(event.getAuthor()))) {
+        else if (!brokenChain && timing && currentLetter != 'a' && history.size() > 1 && (history.get(0).getAuthor().equals(event.getAuthor()) || history.get(1).getAuthor().equals(event.getAuthor()))) {
             System.out.println("abc spacing not meet");
             event.getChannel().sendMessage("User spacing rule was not met <:Neko_sad:865328470652485633> Someone else, start back to `A`").queue();
             return true;
