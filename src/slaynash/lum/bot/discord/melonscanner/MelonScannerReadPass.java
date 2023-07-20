@@ -189,10 +189,8 @@ public final class MelonScannerReadPass {
             String assembly = null;
             String hash = null;
 
-            Matcher assemblyRegex = Pattern.compile("([^\\\\]*)'$").matcher(context.line);
-            if (assemblyRegex.matches()) {
-                assembly = assemblyRegex.group(1);
-            }
+            String[] temp = context.line.substring(0, context.line.length() - 1).split("\\\\");
+            assembly = temp[temp.length - 1];
             Matcher hashRegex = Pattern.compile(".*Hash: '(.*)'").matcher(context.nextLine);
             if (hashRegex.matches()) {
                 hash = hashRegex.group(1);
