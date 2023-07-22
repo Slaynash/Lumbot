@@ -1,11 +1,24 @@
 package slaynash.lum.bot.steam;
 
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.sql.ResultSet;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import in.dragonbra.javasteam.types.KeyValue;
+import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
+import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class SteamAppDetails {
 
@@ -47,14 +60,80 @@ public class SteamAppDetails {
         public final String name;
         public final String type;
         public final String releasestate;
+        public final String review_score;
         public final String review_percentage;
+        public final String review_score_bombs;
+        public final String review_percentage_bombs;
+        public final List<String> store_tags;
 
         public SteamAppDetailsCommon(KeyValue keyValues) {
             name = keyValues.get("name").asString();
             type = keyValues.get("type").asString();
             releasestate = keyValues.get("releasestate").asString();
+            review_score = keyValues.get("review_score").asString();
             review_percentage = keyValues.get("review_percentage").asString();
+            review_score_bombs = keyValues.get("review_score_bombs").asString();
+            review_percentage_bombs = keyValues.get("review_percentage_bombs").asString();
+            keyValues.get("store_tags").getChildren();
+            store_tags = getTags(keyValues.get("store_tags").getChildren());
         }
+    }
+
+    private record SteamTag(String tagID, String tagName) {
+        @Override
+        public String toString() {
+            return String.format("(%s,'%s')", tagID, tagName.replace("'", "''"));
+        }
+    };
+    private static final HttpRequest SteamTagsRequest = HttpRequest.newBuilder()
+        .GET()
+        .uri(URI.create("https://api.steampowered.com/IStoreService/GetTagList/v1/?language=english"))
+        .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
+        .setHeader("Accept", "text/json") //may not be needed
+        .timeout(Duration.ofSeconds(20))
+        .build();
+    private static List<String> getTags(List<KeyValue> keyValues) {
+        if (keyValues == null || keyValues.isEmpty())
+            return null;
+
+        List<String> tags = keyValues.stream().map(KeyValue::asString).collect(Collectors.toList());
+        if (tags.isEmpty())
+            return null;
+        List<SteamTag> savedTags = new ArrayList<>();
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamTags` where tagid in (?)", String.join(",", tags));
+            while (rs.next()) {  // fetch relevant tags from DB
+                savedTags.add(new SteamTag(rs.getString("tagid"), rs.getString("name")));
+            }
+            if (savedTags.size() != tags.size()) {
+                // fetch new tags from steam in English only (for now)
+                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(SteamTagsRequest, "SteamTags");
+                JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
+                savedTags.clear();
+                parsed.getAsJsonObject("response").getAsJsonArray("tags").forEach(tag -> {
+                    savedTags.add(new SteamTag(tag.getAsJsonObject().get("tagid").getAsString(), tag.getAsJsonObject().get("name").getAsString()));
+                });
+                DBConnectionManagerLum.sendUpdate("TRUNCATE TABLE `SteamTags`");
+                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamTags` (`tagid`, `name`) VALUES " + savedTags.stream().map(SteamTag::toString).collect(Collectors.joining(",")));
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("An error has occurred while while getting Steam Tags:", e);
+        }
+        List<String> finalTags = new ArrayList<>();
+        for (String tag : tags) {
+            boolean found = false;
+            for (SteamTag savedTag : savedTags) {
+                if (savedTag.tagID.equals(tag)) {
+                    finalTags.add(savedTag.tagName);
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                finalTags.add(tag);
+        }
+        return finalTags;
     }
 
     public static class SteamAppDepots {

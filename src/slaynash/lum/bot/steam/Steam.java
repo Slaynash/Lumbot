@@ -177,7 +177,7 @@ public class Steam {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                    ExceptionUtils.reportException("Failed to fetch SteamWatch in Changes", e);
                     continue;
                 }
                 if (!JDAManager.isEventsEnabled())
@@ -190,10 +190,10 @@ public class Steam {
                         if (testChannel(sc))
                             continue;
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
-                        if (guild == null)
+                        if (guild == null) // kinda useless since we already tested it in testChannel but whatever
                             continue;
                         MessageChannel channel = (MessageChannel) guild.getGuildChannelById(sc.channelId());
-                        if (channel == null)
+                        if (channel == null) // kinda useless but whatever
                             continue;
                         if (channel.canTalk())
                             channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
@@ -220,7 +220,7 @@ public class Steam {
                     DBConnectionManagerLum.closeRequest(rs);
                 }
                 catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                    ExceptionUtils.reportException("Failed to fetch SteamWatch in Info", e);
                     continue;
                 }
 
@@ -319,7 +319,7 @@ public class Steam {
                             channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
                         }
                         catch (Exception e) {
-                            ExceptionUtils.reportException("Failed to initialize all steam depos", e);
+                            ExceptionUtils.reportException("Failed to get guild for Info", e);
                             continue;
                         }
                         if (channel.canTalk())
@@ -334,16 +334,43 @@ public class Steam {
 
                     SteamAppDetailsCommon oldCommon = gameDetail.common;
                     SteamAppDetailsCommon newCommon = newAppDetails.common;
-
+                    EmbedBuilder eb = new EmbedBuilder();
                     if (oldCommon.review_percentage != null && newCommon.review_percentage != null && !oldCommon.review_percentage.equals(newCommon.review_percentage)) {
-                        EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle(gameDetail.common.name + " Review Percentage " + (Integer.parseInt(oldCommon.review_percentage) > Integer.parseInt(newCommon.review_percentage) ? "decreased" : "increased"));
                         eb.setDescription(oldCommon.review_percentage + " -> " + newCommon.review_percentage);
+                    }
+                    if (oldCommon.store_tags != null && newCommon.store_tags != null && !oldCommon.store_tags.equals(newCommon.store_tags)) {
+                        if (oldCommon.store_tags.containsAll(newCommon.store_tags) && newCommon.store_tags.containsAll(oldCommon.store_tags)) {
+                            eb.setTitle(gameDetail.common.name + " Store Tags updated");
+                            eb.setDescription("tags only switched places");
+                        }
+                        else if (oldCommon.store_tags.size() > newCommon.store_tags.size()) {
+                            eb.setTitle(gameDetail.common.name + " Store Tags removed");
+                            oldCommon.store_tags.removeAll(newCommon.store_tags);
+                            eb.setDescription(String.join("\n", oldCommon.store_tags));
+                        }
+                        else if (oldCommon.store_tags.size() < newCommon.store_tags.size()) {
+                            eb.setTitle(gameDetail.common.name + " Store Tags added");
+                            newCommon.store_tags.removeAll(oldCommon.store_tags);
+                            eb.setDescription(String.join("\n", newCommon.store_tags));
+                        }
+                        else {
+                            ExceptionUtils.reportException("");
+                        }
+                    }
+                    if (!eb.isEmpty()) {
                         MessageCreateBuilder mb = new MessageCreateBuilder();
                         mb.setEmbeds(eb.build());
 
                         for (SteamChannel sc : channels) {
-                            MessageChannel channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
+                            MessageChannel channel;
+                            try {
+                                channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
+                            }
+                            catch (Exception e) {
+                                ExceptionUtils.reportException("Failed to get guild for reviews", e);
+                                continue;
+                            }
                             if (channel == null) continue;
                             if (channel.canTalk())
                                 channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
@@ -359,6 +386,9 @@ public class Steam {
         });
     }
 
+    // *
+    // * @param sc
+    // * @return true if channel is invalid
     private static boolean testChannel(SteamChannel sc) {
         if (JDAManager.getJDA() == null)
             return true;
@@ -367,23 +397,23 @@ public class Steam {
         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
         if (guild == null) {
             System.out.println("Steam can not find Guild " + sc.guildID());
-            try {
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = ?", sc.guildID());
-            }
-            catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to remove missing Guild: " + sc.guildID());
-            }
+            // try {
+            //     DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ServerID` = ?", sc.guildID());
+            // }
+            // catch (SQLException e) {
+            //     ExceptionUtils.reportException("Failed to remove missing Guild: " + sc.guildID());
+            // }
             return true;
         }
         MessageChannel channel = (MessageChannel) guild.getGuildChannelById(sc.channelId());
         if (channel == null) {
             System.out.println("Steam can not find Channel " + sc.channelId() + " from guild " + sc.guildID());
-            try {
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", sc.channelId());
-            }
-            catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to remove missing Channel: " + sc.channelId());
-            }
+            // try {
+            //     DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", sc.channelId());
+            // }
+            // catch (SQLException e) {
+            //     ExceptionUtils.reportException("Failed to remove missing Channel: " + sc.channelId());
+            // }
             return true;
         }
         return false;
