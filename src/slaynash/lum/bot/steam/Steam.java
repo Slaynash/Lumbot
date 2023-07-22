@@ -304,6 +304,7 @@ public class Steam {
                         eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
                     MessageCreateBuilder mb = new MessageCreateBuilder();
                     mb.setEmbeds(eb.build());
+                    mb.setContent("");
 
                     for (SteamChannel sc : channels) {
                         if (isPublicBranchUpdate && sc.publicMessage() != null)
@@ -327,7 +328,6 @@ public class Steam {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
-                        mb.setContent("");
                     }
                 }
                 if (gameDetail.common != null && newAppDetails.common != null) {
