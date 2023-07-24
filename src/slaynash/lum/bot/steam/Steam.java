@@ -304,9 +304,9 @@ public class Steam {
                         eb.setDescription(new String(description.toString().getBytes(), StandardCharsets.UTF_8));
                     MessageCreateBuilder mb = new MessageCreateBuilder();
                     mb.setEmbeds(eb.build());
-                    mb.setContent("");
 
                     for (SteamChannel sc : channels) {
+                        mb.setContent("");
                         if (isPublicBranchUpdate && sc.publicMessage() != null)
                             mb.setContent(sc.publicMessage());
                         if (isBetaBranchUpdate && sc.betaMessage() != null)
