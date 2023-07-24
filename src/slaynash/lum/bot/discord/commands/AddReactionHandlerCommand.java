@@ -75,6 +75,13 @@ public class AddReactionHandlerCommand extends Command {
                     return;
                 }
 
+                //check if self has MESSAGE_ADD_REACTION permission in text channel
+                if (!paramMessageReceivedEvent.getGuild().getSelfMember().hasPermission(paramMessageReceivedEvent.getGuildChannel(), Permission.MESSAGE_ADD_REACTION)) {
+                    System.out.println("I need the Add Reaction permission in this channel");
+                    paramMessageReceivedEvent.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Error: I need the Add Reaction permission in this channel", Color.RED)).queue();
+                    return;
+                }
+
                 Role role = paramMessageReceivedEvent.getGuild().getRoleById(params[3]);
                 if (role == null) {
                     Utils.sendEmbed("Error: Role not found", Color.RED, paramMessageReceivedEvent);
