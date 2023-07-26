@@ -14,11 +14,10 @@ public class LogsModDetails {
         this.assembly = assembly;
     }
 
-    public LogsModDetails(String name, String version, String author, String hash) {
+    public LogsModDetails(String name, String version, String author) {
         this.name = name;
         this.version = version;
         this.author = author;
-        this.hash = hash;
     }
 
     public LogsModDetails(String name, String version, String author, String hash, String assembly) {

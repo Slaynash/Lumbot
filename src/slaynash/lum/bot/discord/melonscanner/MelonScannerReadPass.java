@@ -231,6 +231,9 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (context.listingModsPlugins && context.tmpModName == null && !line.matches("\\[[\\d.:]+] -{30,}")) {
+            if (line.toLowerCase().contains("failed to load") || line.toLowerCase().contains("exception"))
+                return false;
+
             String[] split = line.split(" ", 2);
             if (split.length < 2) return true;
             split = split[1].split(" v", 2);
@@ -256,9 +259,8 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.matches("\\[[\\d.:]+] Assembly: .*\\.dll")) {
-            String[] split = line.split(" ");
-            if (split.length < 3) return true;
-            context.tmpModAssembly = split[2];
+            String[] split = line.split("Assembly: ");
+            context.tmpModAssembly = split[1];
             return true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? -{30,}")) {
@@ -268,14 +270,14 @@ public final class MelonScannerReadPass {
                 return true;
             }
 
-            System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash);
-
             context.modAssemblies.stream().filter(m -> m.assembly.equalsIgnoreCase(context.tmpModAssembly)).findFirst().ifPresent(m -> context.tmpModHash = m.hash);
+
+            System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash + ", author is " + context.tmpModAuthor + ", assembly is " + context.tmpModAssembly);
 
             if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)) { //ignore BCP, it is part of ModThatIsNotMod
                 if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
                     context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
-                context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash));
+                context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash, context.tmpModAssembly));
             }
 
             if (context.listingPlugins) {
@@ -550,7 +552,7 @@ public final class MelonScannerReadPass {
             name = String.join("", name.split(".*[a-zA-Z\\d]\\.[a-zA-Z]{2,4}"));
             String version = split3.length > 1 ? split3[1] : null;
 
-            context.loadedMods.put(name, new LogsModDetails(name, version, author, null));
+            context.loadedMods.put(name, new LogsModDetails(name, version, author));
 
             split = context.line.split("\\[[\\d.:]+]( \\[MelonLoader])? Game Compatibility: ", 2);
             if (split.length < 2) return true;
