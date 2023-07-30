@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class MelonScanContext {
     public String latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
     public String latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
+    public String overrideMLVersion = null;
 
     public final Attachment attachment;
     public final MessageReceivedEvent messageReceivedEvent;

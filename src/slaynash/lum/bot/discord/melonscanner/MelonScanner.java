@@ -40,8 +40,8 @@ import slaynash.lum.bot.utils.Utils;
 public final class MelonScanner {
     public static final String LOG_IDENTIFIER = "MelonScanner";
 
-    public static String latestMLVersionRelease = "0.4.1";
-    public static String latestMLVersionAlpha = "0.3.0";
+    public static String latestMLVersionRelease = "";
+    public static String latestMLVersionAlpha = "";
 
     private static final Color melonPink = new Color(255, 59, 106);
 
@@ -442,8 +442,9 @@ public final class MelonScanner {
                     }
 
                     if (result.getString("MLoverride") != null) {
-                        context.latestMLVersionAlpha = result.getString("MLoverride");
-                        context.latestMLVersionRelease = result.getString("MLoverride");
+                        String override = result.getString("MLoverride");
+                        System.out.println("ML override for " + context.game + ": " + override);
+                        context.overrideMLVersion = override;
                     }
                 }
                 else {
@@ -500,6 +501,11 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
+        if (context.overrideMLVersion != null && context.mlVersion != null && !context.overrideMLVersion.equals(context.mlVersion)) {
+            context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion), false);
+            return true;
+        }
+
         context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionAlpha) && VersionUtils.compareVersion(context.latestMLVersionAlpha, context.latestMLVersionRelease) == 1/* If Alpha is more recent */) : (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionRelease)));
         if (context.isMLOutdated || context.modifiedML) {
             int result = VersionUtils.compareVersion(context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease, context.mlVersion);

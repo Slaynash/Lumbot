@@ -162,6 +162,9 @@ public final class MelonScannerReadPass {
         else if (line.matches("\\[[\\d.:]+] \\[.*")) {
             return false; //some mod is printing in the middle of the mod listing
         }
+        else if (!line.matches("\\[[\\d.:]+].*")) {
+            return false; //Not a mod listing line
+        }
         else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
             if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
                 System.out.println("editedLog");
@@ -231,7 +234,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (context.listingModsPlugins && context.tmpModName == null && !line.matches("\\[[\\d.:]+] -{30,}")) {
-            if (line.toLowerCase().contains("failed to load") || line.toLowerCase().contains("exception"))
+            if (line.toLowerCase().contains("failed to ") || line.toLowerCase().contains("exception"))
                 return false;
 
             String[] split = line.split(" ", 2);
@@ -311,6 +314,10 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean missingDependenciesCheck(MelonScanContext context) {
+        if (context.line.toLowerCase().contains("some melons are missing dependencies")) {
+            context.linesToSkip += 2;
+            return true;
+        }
         if (context.line.matches("- '.*' is missing the following dependencies:")) {
             String[] split = context.line.split("'", 3);
             if (split.length < 2) return true;
@@ -463,7 +470,7 @@ public final class MelonScannerReadPass {
             if (split.length < 2) return true;
             context.mlVersion = split[1].split(" ")[0].trim();
             context.alpha = line.toLowerCase().contains("alpha");
-            System.out.println("ML " + context.mlVersion + " (>= 0.3.0). Alpha: " + context.alpha);
+            System.out.println("ML " + context.mlVersion + " Alpha: " + context.alpha);
             return true;
         }
         return false;

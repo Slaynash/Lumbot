@@ -24,6 +24,8 @@
         "melonscanner.mloutdated.reinstall": "Please reinstall MelonLoader %1$s using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.upbeta": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "Please downgrade MelonLoader to %1$s. We can not guarantee that prerelease versions will work reliably. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
+        "melonscanner.mloutdated.override": "The modding comunity for this game is using MelonLoader %1$s. Please reinstall MelonLoader with that version. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
+
 
         "melonscanner.knownerrors.fieldname": "Known Errors:",
 

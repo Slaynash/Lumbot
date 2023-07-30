@@ -265,9 +265,9 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
                             description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
                             if (branchDetails.description != null && !branchDetails.description.isBlank())
-                                description.append(" - Description: ").append(branchDetails.description).append("\n");
+                                description.append("- Description: ").append(branchDetails.description).append("\n");
                             if (branchDetails.pwdrequired == null || !branchDetails.pwdrequired) {
-                                description.append(" - This is a public branch").append("\n");
+                                description.append("- This is a public branch").append("\n");
                                 isBetaBranchUpdate = true;
                             }
                             if (changedBranch.getKey().equals("public")) {
@@ -278,7 +278,7 @@ public class Steam {
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
                             description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
                             if (changedBranch.getValue().pwdrequired == null || !changedBranch.getValue().pwdrequired)
-                                description.append(" - This was a public branch").append("\n");
+                                description.append("- This was a public branch").append("\n");
                         }
                         else {
                             SteamAppDetails.SteamAppBranch oldBranchDetails = oldBranches.get(changedBranch.getKey());
