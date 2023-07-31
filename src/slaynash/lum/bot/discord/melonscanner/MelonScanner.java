@@ -501,9 +501,13 @@ public final class MelonScanner {
     }
 
     private static boolean mlOutdatedCheck(MelonScanContext context) {
-        if (context.overrideMLVersion != null && context.mlVersion != null && !context.overrideMLVersion.equals(context.mlVersion)) {
-            context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion), false);
-            return true;
+        if (context.overrideMLVersion != null) {
+            if (context.mlVersion != null && !context.overrideMLVersion.equals(context.mlVersion)) {
+                context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion), false);
+                context.isMLOutdated = true;
+                return true;
+            }
+            return false;
         }
 
         context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionAlpha) && VersionUtils.compareVersion(context.latestMLVersionAlpha, context.latestMLVersionRelease) == 1/* If Alpha is more recent */) : (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionRelease)));
