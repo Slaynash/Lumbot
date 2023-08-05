@@ -569,7 +569,9 @@ public final class MelonScanner {
     }
 
     private static boolean missingModsCheck(MelonScanContext context) {
-        if (context.missingMods.size() > 0) {  // TODO don't show if MelonLoader needs a downgrade
+        if (context.overrideMLVersion != null || context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha)))
+            return false;
+        if (context.missingMods.size() > 0) {
             context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.missingMods.size() && i < (context.missingMods.size() == 11 ? 11 : 10); ++i) {
