@@ -14,6 +14,8 @@ public final class UrlShortener {
             return null;
         if (baseUrl.contains("discord.com") || baseUrl.contains("discord.gg"))
             return baseUrl;
+        if (baseUrl.length() < 69)
+            return baseUrl;
         String result;
 
         // Check if already exists
