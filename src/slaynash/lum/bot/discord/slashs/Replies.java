@@ -144,7 +144,7 @@ public class Replies extends Slash {
                         sb.append("\tEquals: ").append(rs.getString("equals").replace("\n", "\n\t\t")).append("\n");
                     }
                     if (rs.getString("user") != null) {
-                        sb.append("\tUser: ").append(event.getJDA().getUserById(rs.getString("user")).getAsTag()).append("\n");
+                        sb.append("\tUser: ").append(event.getJDA().getUserById(rs.getString("user")).getEffectiveName()).append("\n");
                     }
                     if (rs.getString("channel") != null) {
                         sb.append("\tChannel: ").append(event.getJDA().getTextChannelById(rs.getString("channel")).getName()).append("\n");

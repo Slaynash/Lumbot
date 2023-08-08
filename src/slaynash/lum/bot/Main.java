@@ -427,7 +427,7 @@ public class Main extends ListenerAdapter {
     @Override
     public void onMessageReactionAdd(@NotNull MessageReactionAddEvent event) {
         // Don't react to self roles
-        if (event.getUser().getIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
+        if (event.getMessageAuthorIdLong() == JDAManager.getJDA().getSelfUser().getIdLong())
             return;
 
         if (MessageProxy.reactions(event)) return;
@@ -575,11 +575,11 @@ public class Main extends ListenerAdapter {
         }
 
         if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getEffectiveName() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
             event.getMember().kick().reason("Lum: Scammer joined").queue();
         }
         else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getUser().getAsTag() + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(event.getUser().getEffectiveName() + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
         }
     }
 
@@ -640,7 +640,7 @@ public class Main extends ListenerAdapter {
             if (reportchannel == null) return;
 
             if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getAsTag() + " (" + event.getUser().getId() + ")\nNow kicking!").setAllowedMentions(Collections.emptyList()).queue();
+                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getEffectiveName() + " (" + event.getUser().getId() + ")\nNow kicking!").setAllowedMentions(Collections.emptyList()).queue();
                 guild.kick(event.getUser()).reason("Lum: Scammer started scamming").queue();
                 return;
             }

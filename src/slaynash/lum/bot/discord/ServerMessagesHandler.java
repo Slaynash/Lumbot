@@ -72,7 +72,7 @@ public class ServerMessagesHandler {
             System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
                     event.getChannel().getName(),
-                    event.getAuthor().getAsTag(),
+                    event.getAuthor().getEffectiveName(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
@@ -451,7 +451,7 @@ public class ServerMessagesHandler {
                             else {
                                 EmbedBuilder eb = new EmbedBuilder();
                                 eb.setTitle("Reply Report");
-                                eb.addField("User", event.getAuthor().getAsTag() + " (" + event.getAuthor().getId() + ")", false);
+                                eb.addField("User", event.getAuthor().getEffectiveName() + " (" + event.getAuthor().getId() + ")", false);
                                 eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
                                 eb.addField("Message", event.getMessage().getContentRaw(), false);
                                 eb.addField("Reply", message, false);

@@ -2,7 +2,7 @@
     "unhollowerErrors": [
         {
             "regex": ".*\\\\Phasmophobia.*",
-            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, and version.dll."
+            "error": "We do not support the use of MelonLoader on Phasmophobia,\n nor does Phasmophobia support MelonLoader.\nPlease remove MelonLoader, Mods, Plugins, UserData, NOTICE.txt, version.dll, and dobby.dll."
         },
         {
             "regex": ".*System\\.IO\\.FileNotFoundException: .* ['|\"]System\\.IO\\.Compression.*",
@@ -46,7 +46,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] Il2CppDumper.exe does not exist!",
-            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder and `version.dll` file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
+            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder, `version.dll`, and dobby.dll file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Execute Assembly Generator!",
@@ -86,7 +86,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] MelonLoader.dll Does Not Exist!",
-            "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it or whitelist it in your virus scanner."
+            "error": "Missing MelonLoader/MelonLoader.dll. Please do not move it and whitelist it in your virus scanner."
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Open Preload Assembly!",
@@ -169,7 +169,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[WARNING] .*IL Compile Error \\(unknown location\\).*",
-            "error": "Something is broken in MelonLoader. Try reinstalling MelonLoader. If that doesn't work, try cleaning your game install. For VRChat, remove everything that you don't see in the image below.$cleanunity$"
+            "error": "Something is broken in MelonLoader. Try reinstalling MelonLoader. If that doesn't work, try cleaning your game install by removing everything that you don't see in the image below.$cleanunity$"
         },
         {
             "previousLineRegex": "\\[[\\d.:]+] Executing Cpp2IL...",
@@ -196,15 +196,15 @@
         },
         {
             "regex": ".*il2cpp_init detour failed: One of the dependent libraries is missing.",
-            "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.12-windows-x64-installer)."
+            "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
         },
         {
             "regex": ".*Please make sure you have installed the .NET 6.0 runtime.",
-            "error": "Please make sure you have installed the [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.12-windows-x64-installer)."
+            "error": "Please make sure you have installed the [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
         },
         {
             "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
-            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.12)."
+            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
         }
     ],
     "knownErrors": [

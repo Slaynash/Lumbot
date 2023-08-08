@@ -70,7 +70,7 @@ public class UnivUCBLLIFExoGenerator extends Slash {
             String exo = event.getOptions().get(0).getAsString();
             String ticket = event.getOptions().size() > 1 ? event.getOptions().get(1).getAsString() : null;
             String subcommandname = event.getSubcommandName();
-            System.out.println(event.getUser().getAsTag() + "exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
+            System.out.println(event.getUser().getEffectiveName() + "exo: " + exo + " subcommandname: " + subcommandname + " ticket: " + ticket);
             Pattern p = Pattern.compile("([^\\w\\-!.~'\\(\\)*])");
             Matcher m = p.matcher(exo);
             if (m.find()) {

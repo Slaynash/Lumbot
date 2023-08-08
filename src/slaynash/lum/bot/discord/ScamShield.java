@@ -263,7 +263,7 @@ public class ScamShield {
         ScamResults suspiciousResults = ssValue(event);
         suspiciousResults.totalSuspicionCount = suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.suspiciousValue > 0)
-            event.getJDA().getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getAsTag() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
+            event.getJDA().getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getEffectiveName() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
                 + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
         if (suspiciousResults.suspiciousValue < 3)
             return false;
@@ -320,7 +320,7 @@ public class ScamShield {
             assert guild != null;
             Member member = guild.getMember(event.getAuthor());
             if (member == null) {
-                System.out.println(event.getAuthor().getAsTag() + " is no longer in " + guild.getName());
+                System.out.println(event.getAuthor().getEffectiveName() + " is no longer in " + guild.getName());
                 return false;
             }
             String sourceName;
@@ -335,7 +335,7 @@ public class ScamShield {
                 sourceName = event.getGuild().getName();
                 cross = !sourceName.equals(guild.getName());
             }
-            String usernameWithTag = event.getAuthor().getAsTag();
+            String usernameWithTag = event.getAuthor().getEffectiveName();
             String userId = event.getAuthor().getId();
             TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
             boolean ssBan;

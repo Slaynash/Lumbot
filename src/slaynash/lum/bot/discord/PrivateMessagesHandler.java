@@ -12,7 +12,7 @@ public class PrivateMessagesHandler {
 
         if (event.getAuthor().getIdLong() != JDAManager.getJDA().getSelfUser().getIdLong()) {
             System.out.println(String.format("[DM] %s%s%s: %s",
-                    event.getAuthor().getAsTag(),
+                    event.getAuthor().getEffectiveName(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t")));

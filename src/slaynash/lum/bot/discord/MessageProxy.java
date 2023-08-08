@@ -38,11 +38,11 @@ public class MessageProxy {
         Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
 
         User author = event.getAuthor();
-        String channelName = Junidecode.unidecode("dm-" + author.getName() + "-" + author.getDiscriminator() + "-" + author.getId()).toLowerCase()
+        String channelName = Junidecode.unidecode("dm-" + author.getEffectiveName() + "-" + author.getId()).toLowerCase()
                 .replaceAll("[^a-z\\d\\-_]", "").replace(" ", "-").replace("--", "-");
         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
-        String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
+        String message = author.getEffectiveName() + ":\n" + event.getMessage().getContentRaw();
 
         for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
             message = message.concat("\n").concat(emoji.getImageUrl());
@@ -59,7 +59,7 @@ public class MessageProxy {
             StringBuilder sb = new StringBuilder();
             event.getChannel().getHistoryBefore(event.getMessage(), 100).complete().getRetrievedHistory()
                     .forEach(m -> {
-                        sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getAsTag()).append(": ")
+                        sb.append(m.getTimeCreated()).append(" ").append(m.getAuthor().getEffectiveName()).append(": ")
                                 .append(m.getContentRaw()).append(" ");
                         m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
                         m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
@@ -181,7 +181,7 @@ public class MessageProxy {
                 return true;
             }
 
-            String message = author.getAsTag() + ":\n" + event.getMessage().getContentRaw();
+            String message = author.getEffectiveName() + ":\n" + event.getMessage().getContentRaw();
             for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
                 message = message.concat("\n").concat(emoji.getImageUrl());
             }
@@ -289,8 +289,7 @@ public class MessageProxy {
     public static boolean reactions(MessageReactionAddEvent event) {
         Guild mainGuild = event.getJDA().getGuildById(JDAManager.mainGuildID);
         if (event.isFromType(ChannelType.PRIVATE)) {
-            User author = event.getUser();
-            TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
+            TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(event.getMessageAuthorId())).findFirst().orElse(null);
             if (guildchannel == null) {
                 return true;
             }
