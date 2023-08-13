@@ -965,6 +965,9 @@ public final class MelonScanner {
             if (context.mlVersion != null && VersionUtils.compareVersion(context.latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
                 error += Localization.get("Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder", context.lang) + "\n";
             }
+            if (context.corePath != null && context.corePath.toLowerCase().contains("r2modman")) {
+                error += Localization.get("MelonLoader loaded from r2modman. If you had any issues, please try to run MelonLoader without r2modman.", context.lang) + "\n";
+            }
             if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
                 error += Localization.get("MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.", context.lang) + "\n";
             }
