@@ -113,6 +113,10 @@
             "error": "CPP2IL needs to be updated. Please update MelonLoader to latest [nightly release](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development)."
         },
         {
+            "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] \\[ERROR] Unhandled Exception: .*System.OverflowException: Arithmetic operation resulted in an overflow.",
+            "error": "Something in Windows is fucked. Could maybe be caused by changing Window's language. IDK solution but someone fixed by reinstalling Windows."
+        },
+        {
             "regex": "  at System.Net.AutoWebProxyScriptEngine.*",
             "error": "AutoWebProxyScriptEngine Error. Please open Window's \"Change Proxy Settings\" setting and disable all three toggles. Type `!proxy` if you need more help."
         },
