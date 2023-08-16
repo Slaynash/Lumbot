@@ -221,7 +221,8 @@ public final class MelonScanner {
         if (strict && fileName.startsWith("message")) return true;
         return fileName.startsWith("latest") ||
             fileName.startsWith("melonloader") ||
-            fileName.startsWith("mlinstall");
+            fileName.startsWith("mlinstall") ||
+            fileName.matches("[a-zA-Z]{7}");
     }
 
     private static void postReadApiPass(MelonScanContext context) {
