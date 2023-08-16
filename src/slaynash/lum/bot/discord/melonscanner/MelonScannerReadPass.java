@@ -165,7 +165,7 @@ public final class MelonScannerReadPass {
         else if (!line.matches("\\[[\\d.:]+].*")) {
             return false; //Not a mod listing line
         }
-        else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.nextLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
+        else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.lastLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
             if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
                 System.out.println("editedLog");
                 context.editedLog = true;
@@ -185,7 +185,7 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+] Melon Assembly loaded: .*")) {
+        else if (line.matches(".*Melon Assembly loaded: .*")) {
             context.preListingModsPlugins = false;
             context.listingModsPlugins = true;
 
@@ -280,7 +280,8 @@ public final class MelonScannerReadPass {
             if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)) { //ignore BCP, it is part of ModThatIsNotMod
                 if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
                     context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
-                context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash, context.tmpModAssembly));
+                else
+                    context.loadedMods.put(context.tmpModName.trim(), new LogsModDetails(context.tmpModName, context.tmpModVersion, context.tmpModAuthor, context.tmpModHash, context.tmpModAssembly));
             }
 
             if (context.listingPlugins) {
@@ -591,7 +592,10 @@ public final class MelonScannerReadPass {
 
     public static boolean modPreListingCheck(MelonScanContext context) {
         if (!context.pre3 && (context.line.matches("\\[[\\d.:]+] Loading.*(Mod|Plugin)s...") || context.line.matches("\\[[\\d.:]+] Loading.*(Mod|Plugin)s from .*"))) {
-            context.preListingModsPlugins = true;
+            if (context.loadedMods.containsKey("BTD6 Epic Games Mod Compat"))
+                context.listingModsPlugins = true;  // BTD6 Epic Games Mod Compat moves Assembly loaded section to the plugins section
+            else
+                context.preListingModsPlugins = true;
             System.out.println("Starting to pre-list " + (context.line.contains("Plugins") ? "plugins" : "mods"));
             return true;
         }
