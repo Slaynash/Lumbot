@@ -128,7 +128,7 @@
             "regex": ".*SocketException \\(0x8.*"
         },
         {
-            "regex": ".*Exception initializing LibCpp2IL.*",
+            "regex": ".*Exception initializing LibCpp2IL(.(?!magic number))*",
             "error": "<@102450956045668352> There has been an issue while running Cpp2IL. Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
         {

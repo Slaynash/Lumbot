@@ -404,6 +404,9 @@ public final class MelonScannerReadPass {
             if (!context.missingMods.contains(missingModName)) {
                 if ("NKHook6".contains(missingModName) && !context.errors.contains(MelonLoaderError.nkh6))
                     context.errors.add(MelonLoaderError.nkh6);
+                else if ("UnhollowerBaseLib".contains(missingModName)) {
+                    context.oldMods.add(context.currentMissingDependenciesMods);
+                }
                 else
                     context.missingMods.add(missingModName);
             }

@@ -693,42 +693,17 @@ public final class MelonScanner {
         if (context.oldMods.size() > 0 && !context.isMLOutdated || context.modifiedML || reinstallML) {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
-            boolean added = false;
             for (int i = 0; i < context.oldMods.size() && i < (context.oldMods.size() == 21 ? 21 : 20); ++i) {
-                boolean found = false;
                 String modName = context.oldMods.get(i);
                 if (context.modDetails != null) { //null check for games without an API
-                    for (MelonApiMod modDetail : context.modDetails) {
-                        if (modDetail.name.equals(modName)) { //I not sure if all all APIs contain the recent name in aliases like for TLD so I just do a check
-                            if (modDetail.modtype != null && modDetail.modtype.equalsIgnoreCase("plugin"))
-                                context.outdatedPlugins.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                            else
-                                context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                            found = true;
-                            break;
-                        }
-                        if (modDetail.aliases != null) { //null check for mods without an aliases
-                            for (String alias : modDetail.aliases) {
-                                if (alias.equals(modName)) {
-                                    if (modDetail.modtype != null && modDetail.modtype.equalsIgnoreCase("plugin"))
-                                        context.outdatedPlugins.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                                    else
-                                        context.outdatedMods.add(new MelonOutdatedMod(modDetail.name, modName, "?", modDetail.versions[0].version.getRaw(), modDetail.downloadLink));
-                                    found = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    if (context.outdatedMods.stream().anyMatch(m -> m.name.equals(modName)))
+                        continue;
                 }
-                if (!found) {
-                    error.append("- ").append(CrossServerUtils.sanitizeInputString(context.oldMods.get(i) + "\n"));
-                    added = true;
-                }
+                error.append("- ").append(CrossServerUtils.sanitizeInputString(context.oldMods.get(i) + "\n"));
             }
             if (context.oldMods.size() > 21)
                 error.append(Localization.getFormat("melonscanner.oldmods.more", context.lang, context.oldMods.size() - 20));
-            if (added) {
+            if (!error.isEmpty()) {
                 context.embedBuilder.addField(Localization.get("melonscanner.oldmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
                 context.embedColor = Color.RED;
             }
