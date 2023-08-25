@@ -376,8 +376,12 @@ public final class MelonScanner {
     private static void checkForPirate(MelonScanContext context) {
         if ("android".equalsIgnoreCase(context.osType)) return;
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
-            context.editedLog = true; //trigger the `dont edit the log` message
-            context.pirate = true;
+            if (context.lineCount > 15) {
+                context.editedLog = true; //trigger the `dont edit the log` message
+                context.pirate = true;
+            }
+            else
+                context.mlCrashed = true;
         }
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             context.pirate = false;
@@ -961,7 +965,7 @@ public final class MelonScanner {
                 context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
                 context.embedColor = Color.RED;
             }
-            else if (context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingModsPlugins) && context.errors.size() == 0) {
+            else if (context.mlCrashed || context.mlVersion != null && (context.loadedMods.size() == 0 || context.preListingModsPlugins) && context.errors.size() == 0) {
                 if ("BloonsTD6".equals(context.game))
                     context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallogBTD.field", context.lang), false);
                 else
