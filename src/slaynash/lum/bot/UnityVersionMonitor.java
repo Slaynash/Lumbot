@@ -207,7 +207,7 @@ public class UnityVersionMonitor {
 
                     System.out.println("unity3d.com returned " + newVersions.size() + " new versions");
 
-                    if (newVersions.size() > 0) {
+                    if (!newVersions.isEmpty()) {
                         if (newVersions.size() < 10) {
                             initialisingUnityVersions = false;
                             StringBuilder message = new StringBuilder("New Unity version published:");
@@ -273,7 +273,7 @@ public class UnityVersionMonitor {
 
                     // MonoStruct init check
                     boolean originalInitialisingUnityVersions = initialisingUnityVersions;
-                    if (monoStructs.size() > 0 && monoStructs.get(0).rows.size() == 0)
+                    if (!monoStructs.isEmpty() && monoStructs.get(0).rows.isEmpty())
                         initialisingUnityVersions = true;
 
                     if (initialisingUnityVersions) {
@@ -642,7 +642,7 @@ public class UnityVersionMonitor {
             }
         }
 
-        if (reports.length() > 0) {
+        if (!reports.isEmpty()) {
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Failed to validate all hashes for Unity " + unityVersion + ":\n\n" + reports, Color.red)
             ).queue();
@@ -771,7 +771,7 @@ public class UnityVersionMonitor {
 
         if (!initialisingUnityVersions) {
             boolean hasError = false;
-            if (reportNoValidVersion.length() > 0) {
+            if (!reportNoValidVersion.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icalls have no definition for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
@@ -780,7 +780,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
-            if (reportNoType.length() > 0) {
+            if (!reportNoType.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed types for Unity ").append(unityVersion).append(":**").append(reportNoType);
@@ -789,7 +789,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
                     ).queue();
             }
-            if (reportNoMethod.length() > 0) {
+            if (!reportNoMethod.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed methods for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
@@ -798,7 +798,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
-            if (reportMismatchingParams.length() > 0) {
+            if (!reportMismatchingParams.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icall methods mismatch for Unity ").append(unityVersion).append(":**").append(reportMismatchingParams);

@@ -189,7 +189,7 @@ public final class MelonScannerReadPass {
             context.preListingModsPlugins = false;
             context.listingModsPlugins = true;
 
-            String assembly = null;
+            String assembly;
             String hash = null;
 
             String[] temp = context.line.substring(0, context.line.length() - 1).split("\\\\");
@@ -651,7 +651,7 @@ public final class MelonScannerReadPass {
         if (!context.preListingModsPlugins && !context.listingModsPlugins)
             return false;
         if (context.line.contains("System.IO.FileNotFoundException: Could not load file or assembly") && !context.line.contains("IPA/Loader")) {
-            if (context.missingMods.size() == 0 && !context.readingMissingDependencies && !context.pre3)
+            if (context.missingMods.isEmpty() && !context.readingMissingDependencies && !context.pre3)
                 if (!context.errors.contains(MelonLoaderError.mlMissing))
                     context.errors.add(MelonLoaderError.mlMissing); //Mod missing ML files
             return true;
@@ -684,7 +684,7 @@ public final class MelonScannerReadPass {
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.matches()) {
-                if (m.namedGroups().size() > 0) {
+                if (!m.namedGroups().isEmpty()) {
                     for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
                         errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                 }
@@ -712,7 +712,7 @@ public final class MelonScannerReadPass {
             String errorMess = knownError.error;
             Matcher m = Pattern.compile(knownError.regex).matcher(context.line);
             if (m.matches()) {
-                if (m.namedGroups().size() > 0) {
+                if (!m.namedGroups().isEmpty()) {
                     for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
                         errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                 }
@@ -737,7 +737,7 @@ public final class MelonScannerReadPass {
                 String errorMess = knownGameError.error;
                 Matcher m = Pattern.compile(knownGameError.regex).matcher(context.line);
                 if (m.matches()) {
-                    if (m.namedGroups().size() > 0) {
+                    if (!m.namedGroups().isEmpty()) {
                         for (Entry<String, String> entry : m.namedGroups().get(0).entrySet())
                             errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                     }

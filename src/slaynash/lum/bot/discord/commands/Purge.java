@@ -75,7 +75,7 @@ public class Purge extends Command {
                 messageList.removeAll(oldMessages);
 
                 // removing the messages
-                if (messageList.size() > 0) {
+                if (!messageList.isEmpty()) {
                     if (messageList.size() == 1) {
                         messageList.get(0).delete().queue();
                     }

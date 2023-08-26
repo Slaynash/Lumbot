@@ -175,7 +175,7 @@ public class Replies extends Slash {
             }
         }
         else if (event.getSubcommandName().equals("add")) {
-            if (event.getOption("ukey") == null && event.getOptions().size() == 0 || event.getOption("ukey") != null && event.getOptions().size() == 1) {
+            if (event.getOption("ukey") == null && event.getOptions().isEmpty() || event.getOption("ukey") != null && event.getOptions().size() == 1) {
                 event.reply("Please set at least one option").queue();
                 return;
             }

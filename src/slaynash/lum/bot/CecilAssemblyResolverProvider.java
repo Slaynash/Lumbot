@@ -29,7 +29,7 @@ public class CecilAssemblyResolverProvider implements IAssemblyResolverProvider 
         private final List<File> directories = new ArrayList<>();
 
         @Override
-        public Iterator<AssemblyDefinition> iterator() {
+        public @NotNull Iterator<AssemblyDefinition> iterator() {
             return assemblydefs.iterator();
         }
 

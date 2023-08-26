@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.utils.FileUpload;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.gcardone.junidecode.Junidecode;
+import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -42,17 +43,7 @@ public class MessageProxy {
                 .replaceAll("[^a-z\\d\\-_]", "").replace(" ", "-").replace("--", "-");
         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(author.getId())).findFirst().orElse(null);
 
-        String message = author.getEffectiveName() + ":\n" + event.getMessage().getContentRaw();
-
-        for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
-            message = message.concat("\n").concat(emoji.getImageUrl());
-        }
-        for (StickerItem sticker : event.getMessage().getStickers()) {
-            message = message.concat("\n").concat(sticker.getIconUrl());
-        }
-        if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
-            message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
-        }
+        String message = getMessage(author, event.getMessage());
         if (guildchannel == null) {
             System.out.println("Creating DM Channel " + channelName);
             System.out.println("Number of Channels: " + mainGuild.getTextChannels().size());
@@ -89,6 +80,22 @@ public class MessageProxy {
                 }
             }
         }
+    }
+
+    @NotNull
+    private static String getMessage(User author, Message event) {
+        String message = author.getEffectiveName() + ":\n" + event.getContentRaw();
+
+        for (CustomEmoji emoji : event.getMentions().getCustomEmojis()) {
+            message = message.concat("\n").concat(emoji.getImageUrl());
+        }
+        for (StickerItem sticker : event.getStickers()) {
+            message = message.concat("\n").concat(sticker.getIconUrl());
+        }
+        if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+            message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+        }
+        return message;
     }
 
     public static boolean fromDev(MessageReceivedEvent event) {
@@ -181,16 +188,7 @@ public class MessageProxy {
                 return true;
             }
 
-            String message = author.getEffectiveName() + ":\n" + event.getMessage().getContentRaw();
-            for (CustomEmoji emoji : event.getMessage().getMentions().getCustomEmojis()) {
-                message = message.concat("\n").concat(emoji.getImageUrl());
-            }
-            for (StickerItem sticker : event.getMessage().getStickers()) {
-                message = message.concat("\n").concat(sticker.getIconUrl());
-            }
-            if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
-                message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
-            }
+            String message = getMessage(author, event.getMessage());
 
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());

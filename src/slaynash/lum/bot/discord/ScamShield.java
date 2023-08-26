@@ -151,12 +151,12 @@ public class ScamShield {
                 .filter(m -> m.getAuthor().getIdLong() == event.getAuthor().getIdLong())
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .filter(m ->
-                        m.getMessage().getAttachments().size() == 0
+                        m.getMessage().getAttachments().isEmpty()
                         && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
                         && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "").contains(s)) //needs to match a term, prevents triggering on ticket closing command
                     ||
-                        event.getMessage().getAttachments().size() > 0
-                        && m.getMessage().getAttachments().size() > 0
+                        !event.getMessage().getAttachments().isEmpty()
+                        && !m.getMessage().getAttachments().isEmpty()
                         && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())) //count crossposted files
                 .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
@@ -172,7 +172,7 @@ public class ScamShield {
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             ssFoundTerms.putAll(ssTermsPlus.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
         }
-        if (event.getMessage().getInvites().size() > 0) {
+        if (!event.getMessage().getInvites().isEmpty()) {
             ssFoundTerms.put("Invite", 1);
             for (String invcode : event.getMessage().getInvites()) {
                 try {

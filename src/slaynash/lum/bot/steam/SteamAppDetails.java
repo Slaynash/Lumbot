@@ -84,7 +84,8 @@ public class SteamAppDetails {
         public String toString() {
             return String.format("(%s,'%s')", tagID, tagName.replace("'", "''"));
         }
-    };
+    }
+
     private static final HttpRequest SteamTagsRequest = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create("https://api.steampowered.com/IStoreService/GetTagList/v1/?language=english"))
@@ -110,9 +111,7 @@ public class SteamAppDetails {
                 HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(SteamTagsRequest, "SteamTags");
                 JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                 savedTags.clear();
-                parsed.getAsJsonObject("response").getAsJsonArray("tags").forEach(tag -> {
-                    savedTags.add(new SteamTag(tag.getAsJsonObject().get("tagid").getAsString(), tag.getAsJsonObject().get("name").getAsString()));
-                });
+                parsed.getAsJsonObject("response").getAsJsonArray("tags").forEach(tag -> savedTags.add(new SteamTag(tag.getAsJsonObject().get("tagid").getAsString(), tag.getAsJsonObject().get("name").getAsString())));
                 DBConnectionManagerLum.sendUpdate("TRUNCATE TABLE `SteamTags`");
                 DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamTags` (`tagid`, `name`) VALUES " + savedTags.stream().map(SteamTag::toString).collect(Collectors.joining(",")));
             }
@@ -181,7 +180,7 @@ public class SteamAppDetails {
                 if (!newDepots.branches.containsKey(oldBranch.getKey()))
                     changeBranches.put(oldBranch.getKey(), oldBranch.getValue());
             }
-            changed = (ret.branches = changeBranches.size() > 0 ? changeBranches : null) != null;
+            changed = (ret.branches = !changeBranches.isEmpty() ? changeBranches : null) != null;
 
             Map<Integer, SteamAppDepot> changeElements = new HashMap<>();
             for (Entry<Integer, SteamAppDepot> newElementEntries : newDepots.elements.entrySet()) {
@@ -201,7 +200,7 @@ public class SteamAppDetails {
                 if (!newDepots.elements.containsKey(oldElements.getKey()))
                     changeElements.put(oldElements.getKey(), oldElements.getValue());
             }
-            changed |= (ret.elements = changeElements.size() > 0 ? changeElements : null) != null;
+            changed |= (ret.elements = !changeElements.isEmpty() ? changeElements : null) != null;
 
             return changed ? ret : null;
         }
@@ -252,7 +251,7 @@ public class SteamAppDetails {
                 if (newManifest == null)
                     changeManifests.put(manifestKey, oldManifest);
             }
-            changed |= (ret.manifests = changeManifests.size() > 0 ? changeManifests : null) != null;
+            changed |= (ret.manifests = !changeManifests.isEmpty() ? changeManifests : null) != null;
 
             return changed ? ret : null;
         }

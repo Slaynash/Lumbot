@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MelonScanContext {
-    public String latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
-    public String latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
+    public final String latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
+    public final String latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
     public String overrideMLVersion = null;
 
     public final Attachment attachment;
@@ -117,8 +117,8 @@ public class MelonScanContext {
     public final List<String> badMods = new ArrayList<>();
     public final List<String> badPlugins = new ArrayList<>();
 
-    public EmbedBuilder embedBuilder = new EmbedBuilder();
-    public StringBuilder reportMessage = new StringBuilder();
+    public final EmbedBuilder embedBuilder = new EmbedBuilder();
+    public final StringBuilder reportMessage = new StringBuilder();
     public Color embedColor = Color.BLUE;
 
     public MelonScanContext(Attachment attachment, MessageReceivedEvent messageReceivedEvent, String lang) {

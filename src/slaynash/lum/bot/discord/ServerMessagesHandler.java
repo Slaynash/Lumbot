@@ -82,7 +82,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildconfig.MLGeneralRemover() && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && attachments.size() > 0 && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
+                if (guildconfig.MLGeneralRemover() && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && !attachments.isEmpty() && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = switch (guildIDstr) {
                         case "600298024425619456" -> //emmVRC
                                 memberMention + " Please reupload this log to <#600661924010786816> instead.";

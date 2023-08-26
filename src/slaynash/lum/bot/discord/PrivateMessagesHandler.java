@@ -17,7 +17,7 @@ public class PrivateMessagesHandler {
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t")));
             List<Attachment> attachments = event.getMessage().getAttachments();
-            if (attachments.size() > 0) {
+            if (!attachments.isEmpty()) {
                 System.out.println(attachments.size() + " Files");
                 for (Attachment a : attachments)
                     System.out.println(" - " + a.getUrl());

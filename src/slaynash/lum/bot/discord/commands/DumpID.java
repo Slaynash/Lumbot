@@ -40,7 +40,7 @@ public class DumpID extends Command {
             if (Junidecode.unidecode(m.getUser().getName()).toLowerCase().matches(regex))
                 members.add(m);
         });
-        if (members.size() == 0) {
+        if (members.isEmpty()) {
             event.getMessage().reply("No users found.").queue();
             return;
         }

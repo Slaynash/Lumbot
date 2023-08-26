@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -182,7 +183,7 @@ public class Steam {
                 }
                 if (!JDAManager.isEventsEnabled())
                     continue;
-                if (channels.size() != 0) {
+                if (!channels.isEmpty()) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + getGameName(gameID) + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
 
@@ -235,7 +236,7 @@ public class Steam {
                     return;
                 }
 
-                if (channels.size() == 0) {
+                if (channels.isEmpty()) {
                     System.out.println("No channels for " + app.getKey());
                     return;
                 }
@@ -340,7 +341,7 @@ public class Steam {
                         eb.setDescription(oldCommon.review_percentage + " -> " + newCommon.review_percentage);
                     }
                     if (oldCommon.store_tags != null && newCommon.store_tags != null && !oldCommon.store_tags.equals(newCommon.store_tags)) {
-                        if (oldCommon.store_tags.containsAll(newCommon.store_tags) && newCommon.store_tags.containsAll(oldCommon.store_tags)) {
+                        if (new HashSet<>(oldCommon.store_tags).containsAll(newCommon.store_tags) && new HashSet<>(newCommon.store_tags).containsAll(oldCommon.store_tags)) {
                             eb.setTitle(gameDetail.common.name + " Store Tags updated");
                             eb.setDescription("tags only switched places");
                         }
@@ -420,7 +421,7 @@ public class Steam {
     }
 
     private static void printKeyValue(KeyValue keyvalue, int depth) {
-        if (keyvalue.getChildren().size() == 0)
+        if (keyvalue.getChildren().isEmpty())
             System.out.println("[PICSProductInfoCallback] " + " ".repeat(depth * 4) + " " + keyvalue.getName() + ": " + keyvalue.getValue());
         else {
             System.out.println("[PICSProductInfoCallback] " + " ".repeat(depth * 4) + " " + keyvalue.getName() + ":");

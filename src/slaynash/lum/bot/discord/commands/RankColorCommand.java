@@ -38,9 +38,9 @@ public class RankColorCommand extends Command {
                         event.getGuild().removeRoleFromMember(event.getMember(), r).queue();
                     }
                 }
-                if (event.getGuild().getRolesByName(arg, true).size() == 0) {
+                if (event.getGuild().getRolesByName(arg, true).isEmpty()) {
                     List<Role> cr = event.getGuild().getRolesByName("_COLOR_DEFAULT_", true);
-                    if (cr.size() == 0) {
+                    if (cr.isEmpty()) {
                         event.getChannel().sendMessage("Please add a default role named `_COLOR_DEFAULT_` to enable color roles").queue();
                     }
                     else {
@@ -85,7 +85,7 @@ public class RankColorCommand extends Command {
 
     @Override
     public boolean includeInHelp(MessageReceivedEvent event) {
-        return event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES) && (event.getGuild().getRolesByName("_COLOR_DEFAULT_", true).size() != 0 || event.getMember().hasPermission(Permission.MANAGE_ROLES));
+        return event.getGuild().getSelfMember().hasPermission(Permission.MANAGE_ROLES) && (!event.getGuild().getRolesByName("_COLOR_DEFAULT_", true).isEmpty() || event.getMember().hasPermission(Permission.MANAGE_ROLES));
     }
 
     @Override

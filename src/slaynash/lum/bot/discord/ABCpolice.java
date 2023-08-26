@@ -20,22 +20,22 @@ public class ABCpolice {
         String message = event.getMessage().getContentStripped().trim();
         System.out.println(event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getChannel().asGuildMessageChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
-        boolean brokenChain = history.size() > 0 && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
+        boolean brokenChain = !history.isEmpty() && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
         find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());
         history.removeIf(m -> m.getAuthor().isBot());
-        if (history.size() == 0 && !brokenChain) //new channel or wipe or bot spam
+        if (history.isEmpty() && !brokenChain) //new channel or wipe or bot spam
             return true;
         Message previousAuthorMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         char currentLetter = convertChar(message);
-        char previousLetter = history.size() > 0 ? convertChar(history.get(0).getContentStripped()) : 0;
+        char previousLetter = !history.isEmpty() ? convertChar(history.get(0).getContentStripped()) : 0;
         boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(30));  // if the previous message was sent less than 30 hours ago
 
         if (brokenChain || previousLetter == 0 || previousLetter == 'z')
             previousLetter = 'a' - 1;
         System.out.println("abc previousLetter:" + previousLetter + " currentLetter:" + currentLetter + " brokenChain:" + brokenChain);
 
-        if (message.length() == 0) {
+        if (message.isEmpty()) {
             System.out.println("abc empty message");
             event.getChannel().sendMessage(event.getMember().getEffectiveName() + " sent an empty message, Stickers are not allowed. Start back to `A`").queue();
             return true;
@@ -68,7 +68,7 @@ public class ABCpolice {
     }
 
     private static char convertChar(String letter) {
-        if (letter.length() == 0)
+        if (letter.isEmpty())
             return '\0';
         letter = Junidecode.unidecode(letter.toLowerCase());
         if (letter.charAt(0) == 55356) { //Unicode indicator or something like that

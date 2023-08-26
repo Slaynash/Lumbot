@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jun 26, 2023 at 07:09 PM
+-- Generation Time: Aug 26, 2023 at 07:19 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -177,6 +177,18 @@ CREATE TABLE IF NOT EXISTS `SteamApp` (
   `Depot` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `GameID` (`GameID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `SteamTags`
+--
+
+CREATE TABLE IF NOT EXISTS `SteamTags` (
+  `tagid` int UNSIGNED NOT NULL,
+  `name` char(40) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`tagid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

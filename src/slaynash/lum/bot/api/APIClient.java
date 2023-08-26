@@ -117,7 +117,7 @@ public class APIClient {
                             request.content = content;
                             //System.out.println(new String(content, StandardCharsets.UTF_8));
                         }
-                        if (requestUrl[0].length() > 0) {
+                        if (!requestUrl[0].isEmpty()) {
                             for (Entry<String, Endpoint> entry : API.endpoints.entrySet()) {
                                 if (requestUrl[0].matches(entry.getKey())) {
                                     if (entry.getKey().contains("internal") && !request.clientIpAddress.equals("127.0.0.1")) {

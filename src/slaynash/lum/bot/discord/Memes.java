@@ -75,7 +75,7 @@ public class Memes {
                 StringBuilder sb = new StringBuilder();
                 sb.append(message.getAuthor().getName()).append(" ").append(message.getAuthor().getId()).append("\n");
                 sb.append(message.getContentRaw()).append("\n");
-                if (upReactions.size() > 0)
+                if (!upReactions.isEmpty())
                     sb.append("\nup voted:\n").append(upReactions).append("\n");
                 sb.append("\ndown voted:\n").append(downReactions).append("\n");
                 MessageCreateAction ma = message.getGuild().getTextChannelById(memeReportChannelID).sendMessage(sb.toString());

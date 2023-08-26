@@ -274,7 +274,7 @@ public class Main extends ListenerAdapter {
             String line;
             while ((line = reader.readLine()) != null) {
                 line = line.trim();
-                if (!line.equals("")) {
+                if (!line.isEmpty()) {
                     String[] parts = line.split(" ", 3);
                     if (parts[0].equals("r"))
                         CommandManager.melonLoaderHashes.add(new MLHashPair(parts[1], parts[2]));

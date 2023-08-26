@@ -58,7 +58,7 @@ public class Blacklist extends Command {
                             m.kick().reason("Lum: Remove existing Scammers").queue();
                         }
                     });
-                    if (members.size() > 0) {
+                    if (!members.isEmpty()) {
                         event.getMessage().reply("Kicked " + members.size() + " members with username " + username).queue();
                         String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
                         if (report == null) return;
