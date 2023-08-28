@@ -310,6 +310,10 @@
             {
                 "regex": ".*is already injected. Don't inject the same type twice, or use a different namespace",
                 "error": "2 mods are conflicting with each other because they use the same namespace. (this is a common problem with datjanedoe's old mods)."
+            },
+            {
+                "regex": ".*\\[BloonsTD6_Mod_Helper] Failed to register (?<component>.*)",
+                "error": "Failed to register component. Try removing it."
             }
         ],
         "BONEWORKS": [

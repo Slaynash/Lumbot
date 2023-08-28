@@ -779,6 +779,12 @@ public final class MelonScannerReadPass {
             context.hasErrors = true;
             context.hasNonModErrors = true;
         }
+        else if (line.toLowerCase().contains("] system.typeloadexception: could not load type")) {
+            String mod = line.split("] [")[1].split("]")[0];
+            if (!context.modsThrowingErrors.contains(mod))
+                context.modsThrowingErrors.add(mod);
+            context.hasErrors = true;
+        }
         else if (line.startsWith("  at ")) {
             String[] modt = line.substring(5).split("\\.");
             if (modt.length == 0 || context.game == null)
