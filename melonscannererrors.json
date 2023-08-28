@@ -209,6 +209,14 @@
         {
             "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
             "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
+        },
+        {
+            "regex": ".*Failed to initialize MelonLoader: Failed to load library!",
+            "error": "Failed to load library. Please make sure that path is free of special characters and `'`. Also make sure that a virus scanner is not removing files."
+        },
+        {
+            "regex": ".*Failed to initialize MelonLoader: Failed to get function pointer: (?<thepointer>.*)",
+            "error": "Failed to get function pointer thepointer. It is likely the game devs removed it to prevent modding."
         }
     ],
     "knownErrors": [
