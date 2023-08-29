@@ -574,7 +574,7 @@ public final class MelonScanner {
     }
 
     private static boolean missingModsCheck(MelonScanContext context) {
-        if (context.overrideMLVersion != null || context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha)))
+        if (context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha) || context.mlVersion.equals(context.overrideMLVersion)))
             return false;
         if (!context.missingMods.isEmpty()) {
             context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);

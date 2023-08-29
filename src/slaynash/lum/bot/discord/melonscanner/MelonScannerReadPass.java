@@ -53,12 +53,8 @@ public final class MelonScannerReadPass {
                 if (compromisedMLCheck(context))
                     return true;
 
-                if (missingDependenciesCheck(context))
+                if (processMissingDependenciesListing(context))
                     continue;
-
-                if (context.readingMissingDependencies)
-                    if (processMissingDependenciesListing(context))
-                        continue;
 
                 if (incompatibilityCheck(context))
                     continue;
@@ -314,21 +310,6 @@ public final class MelonScannerReadPass {
         return false;
     }
 
-    private static boolean missingDependenciesCheck(MelonScanContext context) {
-        if (context.line.toLowerCase().contains("some melons are missing dependencies")) {
-            context.linesToSkip += 2;
-            return true;
-        }
-        if (context.line.matches("- '.*' is missing the following dependencies:")) {
-            String[] split = context.line.split("'", 3);
-            if (split.length < 2) return true;
-            context.currentMissingDependenciesMods = split[1];
-            context.readingMissingDependencies = true;
-            return true;
-        }
-        return false;
-    }
-
     private static boolean incompatibilityCheck(MelonScanContext context) {
         if (context.line.matches("- '.*' is incompatible with the following Melons:")) {
             String[] split = context.line.split("'", 3);
@@ -397,28 +378,7 @@ public final class MelonScannerReadPass {
 
     private static boolean processMissingDependenciesListing(MelonScanContext context) {
         String line = context.line;
-        if (line.matches(" {4}- '.*'.*")) {
-            String[] split = line.split("'", 3);
-            if (split.length < 2) return true;
-            String missingModName = split[1];
-            if (!context.missingMods.contains(missingModName)) {
-                if ("NKHook6".contains(missingModName) && !context.errors.contains(MelonLoaderError.nkh6))
-                    context.errors.add(MelonLoaderError.nkh6);
-                else if ("UnhollowerBaseLib".contains(missingModName)) {
-                    context.oldMods.add(context.currentMissingDependenciesMods);
-                }
-                else
-                    context.missingMods.add(missingModName);
-            }
-            return true;
-        }
-        else if (line.matches("- '.*' is missing the following dependencies:")) {
-            String[] split = line.split("'", 3);
-            if (split.length < 2) return true;
-            context.currentMissingDependenciesMods = split[1];
-            return true;
-        }
-        else if (line.matches("(?i)\\[[\\d.:]+]( \\[Warning]|) Some (mods|Melons) are missing dependencies, which you may have to install\\.")) {
+        if (line.matches("(?i)\\[[\\d.:]+]( \\[Warning]|) Some (mods|Melons) are missing dependencies, which you may have to install\\.")) {
             System.out.println("Starting to list missing dependencies");
             context.readingMissingDependencies = true;
             context.linesToSkip += 2;
@@ -426,8 +386,35 @@ public final class MelonScannerReadPass {
             // This warning will turn into an error and mods with missing dependencies will not be loaded in the next version of MelonLoader. TODO This will break Lum when ML does it
             return true;
         }
-        else {
-            System.out.println("Done listing missing dependencies on line: " + line);
+        else if (line.matches("- '.*' is missing the following dependencies:")) {
+            String[] split = line.split("'", 3);
+            if (split.length < 2) return true;
+            context.currentMissingDependenciesMods = split[1];
+            System.out.println("Starting to list missing dependencies for " + context.currentMissingDependenciesMods);
+            return true;
+        }
+        else if (line.matches(" {4}- '.*'.*")) {
+            String[] split = line.split("'", 3);
+            if (split.length < 2) return true;
+            String missingModName = split[1];
+            System.out.println("Missing dependency " + missingModName);
+            if (!context.missingMods.contains(missingModName)) {
+                if ("NKHook6".contains(missingModName) && !context.errors.contains(MelonLoaderError.nkh6))
+                    context.errors.add(MelonLoaderError.nkh6);
+                else if ("UnhollowerBaseLib".contains(missingModName)) {
+                    if (!context.oldMods.contains(context.currentMissingDependenciesMods))
+                        context.oldMods.add(context.currentMissingDependenciesMods);
+                }
+                else if (missingModName.contains("UnityEngine")) {
+                    //Ignore for now
+                }
+                else
+                    context.missingMods.add(missingModName);
+            }
+            return true;
+        }
+        else if (context.readingMissingDependencies) {
+            System.out.println("Done listing missing dependencies on line: " + context.lineCount);
             context.readingMissingDependencies = false;
         }
 

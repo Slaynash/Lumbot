@@ -239,7 +239,7 @@ public class MelonScannerApisManager {
                                         continue;
                                     }
 
-                                    String name = mod.get("name").checkjstring();
+                                    String name = sanitizeName(mod.get("name").checkjstring());
                                     // System.out.println("Processing mod " + name);
                                     String approvalStatus = "0";
                                     if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
@@ -341,7 +341,7 @@ public class MelonScannerApisManager {
                         if (doneFirstInit)
                             Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
                         else
-                            Thread.sleep(1000);
+                            Thread.sleep(100);
                     }
                     catch (HttpTimeoutException exception) {
                         ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + api.name + ", " + constructedURI);
@@ -358,39 +358,8 @@ public class MelonScannerApisManager {
                     }
 
                 }
-
-                // fetch Blacklist from API and parse it
-                /*
-                try {
-                    HttpRequest.Builder blbuilder = HttpRequest.newBuilder()
-                        .GET()
-                        .uri(URI.create(ConfigManager.cvrmgBlacklist))
-                        .setHeader("User-Agent", "LUM Bot")
-                        .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-                        .setHeader("Pragma", "no-cache")
-                        .setHeader("Expires", "-1")
-                        .timeout(Duration.ofSeconds(45));
-
-                    JsonObject parsed = JsonParser.parseString(new String(downloadRequest(blbuilder.build(), "blacklist").body())).getAsJsonObject();
-
-                    List<String> tempbadMod = new ArrayList<>();
-                    List<String> tempbadAuthor = new ArrayList<>();
-                    List<String> tempbadPlugin = new ArrayList<>();
-
-                    parsed.get("ModName").getAsJsonArray().forEach(o -> tempbadMod.add(o.getAsString()));
-                    parsed.get("PluginName").getAsJsonArray().forEach(o -> tempbadPlugin.add(o.getAsString()));
-                    parsed.get("Author").getAsJsonArray().forEach(o -> tempbadAuthor.add(o.getAsString()));
-
-                    badMod = tempbadMod;
-                    badAuthor = tempbadAuthor;
-                    badPlugin = tempbadPlugin;
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                */
                 doneFirstInit = true;
-
+                System.out.println("Done inital fetching");
             }
         }, "MelonScannerApisManagerThread");
         fetchThread.setDaemon(true);
@@ -399,6 +368,16 @@ public class MelonScannerApisManager {
 
 
     // Additional classes
+
+    private static String sanitizeName(String name) {
+        if (name == null)
+            return null;
+
+        //              API name        |   Log name
+        if (name.equals("JeviLibBL")) name = "JeviLib";
+        if (name.equals("Fusion")) name = "LabFusion";
+        return name;
+    }
 
     private static class Base64toLowerHexString extends OneArgFunction {
         @Override
