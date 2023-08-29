@@ -375,6 +375,7 @@ public final class MelonScanner {
 
     private static void checkForPirate(MelonScanContext context) {
         if ("android".equalsIgnoreCase(context.osType)) return;
+        String gamePath = context.gamePath == null ? "" : context.gamePath.toLowerCase().replace(".", "");
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             if (context.lineCount > 15) {
                 context.editedLog = true; //trigger the `dont edit the log` message
@@ -386,11 +387,11 @@ public final class MelonScanner {
         else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
             context.pirate = false;
         }
-        else if (context.gamePath.toLowerCase().contains("steamrip") || context.gamePath.toLowerCase().contains("repack") || context.gamePath.toLowerCase().contains("fitgirl")) {
+        else if (gamePath.contains("steamrip") || gamePath.contains("repack") || gamePath.contains("fitgirl") || gamePath.contains("inclalldlc")) {
             context.pirate = true;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\bloonstd6") && !context.gamePath.toLowerCase().contains("steamapps\\common\\bloons td 6") && !context.gamePath.toLowerCase().contains("program files\\windowsapps") && !context.epic) {
+            if (!gamePath.contains("steamapps\\common\\bloonstd6") && !gamePath.contains("steamapps\\common\\bloons td 6") && !gamePath.contains("program files\\windowsapps") && !context.epic) {
                 context.pirate = true;
             }
             else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
@@ -398,12 +399,12 @@ public final class MelonScanner {
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
-            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\boneworks\\boneworks") && !context.gamePath.toLowerCase().contains("software\\stress-level-zero-inc-boneworks")) {
+            if (!gamePath.contains("steamapps\\common\\boneworks\\boneworks") && !gamePath.contains("software\\stress-level-zero-inc-boneworks")) {
                 context.pirate = true;
             }
         }
         else if (context.game.equalsIgnoreCase("BONELAB")) {
-            if (!context.gamePath.toLowerCase().contains("steamapps\\common\\bonelab") && !context.gamePath.toLowerCase().contains("software\\stress-level-zero-inc-bonelab")) {
+            if (!gamePath.contains("steamapps\\common\\bonelab") && !gamePath.contains("software\\stress-level-zero-inc-bonelab")) {
                 context.pirate = true;
             }
         }
