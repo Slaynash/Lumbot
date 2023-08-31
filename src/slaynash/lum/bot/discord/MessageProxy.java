@@ -87,13 +87,15 @@ public class MessageProxy {
         String message = author.getEffectiveName() + ":\n" + event.getContentRaw();
 
         for (CustomEmoji emoji : event.getMentions().getCustomEmojis()) {
-            message = message.concat("\n").concat(emoji.getImageUrl());
+            if (event.getJDA().getEmojiById(emoji.getIdLong()) == null)
+                message = message.concat("\n").concat(emoji.getImageUrl());
         }
         for (StickerItem sticker : event.getStickers()) {
-            message = message.concat("\n").concat(sticker.getIconUrl());
+            if (event.getJDA().getGuilds().stream().noneMatch(g -> g.getStickerById(sticker.getIdLong()) != null))
+                message = message.concat("\n").concat(sticker.getIconUrl());
         }
-        if (message.length() > MessageEmbed.TEXT_MAX_LENGTH) {
-            message = message.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+        if (message.length() > Message.MAX_CONTENT_LENGTH) {
+            message = message.substring(0, Message.MAX_CONTENT_LENGTH);
         }
         return message;
     }
