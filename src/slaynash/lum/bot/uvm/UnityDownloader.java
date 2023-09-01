@@ -76,7 +76,7 @@ public class UnityDownloader {
 
 
 
-    public static List<UnityVersion> fetchUnityVersions() {
+    public static List<UnityVersion> fetchUnityVersions() throws InterruptedException {
 
         String pagedata;
 
@@ -84,7 +84,7 @@ public class UnityDownloader {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             pagedata = response.body();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to fetch Unity versions", e);
             return null;
         }
@@ -190,7 +190,7 @@ public class UnityDownloader {
         }
     }
     
-    public static void downloadUnity(UnityVersion uv) {
+    public static void downloadUnity(UnityVersion uv) throws InterruptedException {
         File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version);
         File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version + "_tmp");
         if (targetFile.exists()) {
@@ -199,7 +199,7 @@ public class UnityDownloader {
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (Exception e) {
+            catch (IOException e) {
                 ExceptionUtils.reportException("Failed to delete unity folder " + uv.version, e);
                 return;
             }
@@ -211,7 +211,7 @@ public class UnityDownloader {
                     .map(Path::toFile)
                     .forEach(File::delete);
             }
-            catch (Exception e) {
+            catch (IOException e) {
                 ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
                 return;
             }
@@ -229,7 +229,7 @@ public class UnityDownloader {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
-            catch (Exception e) {
+            catch (IOException e) {
                 ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (mono)", e);
                 return;
             }
@@ -250,7 +250,7 @@ public class UnityDownloader {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrlIl2CppWin).openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
-            catch (Exception e) {
+            catch (IOException e) {
                 ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (il2cpp)", e);
                 return;
             }
@@ -266,7 +266,7 @@ public class UnityDownloader {
                 .map(Path::toFile)
                 .forEach(File::delete);
         }
-        catch (Exception e) {
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
             return;
         }
@@ -275,7 +275,7 @@ public class UnityDownloader {
         new File("unityversionsmonitor/Payload~").delete();
     }
 
-    public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) {
+    public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) throws InterruptedException {
         String internalPath = "Variations";
         String monoManagedSubpath = UnityUtils.getMonoManagedSubpath(version.version);
 
@@ -321,7 +321,7 @@ public class UnityDownloader {
                 return;
             }
         }
-        catch (Exception e) {
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")", e);
             return;
         }

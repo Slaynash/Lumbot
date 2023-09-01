@@ -74,12 +74,17 @@ public class UnityVersionMonitor {
                     try {
                         Thread.sleep(60 * 60 * 1000);
                     }
-                    catch (Exception e) {
-                        e.printStackTrace();
+                    catch (InterruptedException e) {
+                        ExceptionUtils.reportException("UnityVersionMonitor was interrupted", e);
+                        return;
                     }
 
                 try {
                     runOnce();
+                }
+                catch (InterruptedException e) {
+                    ExceptionUtils.reportException("UnityVersionMonitor was interrupted", e);
+                    return;
                 }
                 catch (Exception e) {
                     ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
@@ -94,7 +99,7 @@ public class UnityVersionMonitor {
         thread.start();
     }
 
-    private static void runOnce() {
+    private static void runOnce() throws InterruptedException {
 
         List<UnityVersion> remoteVersions = UnityDownloader.fetchUnityVersions();
         if (remoteVersions == null)
@@ -107,7 +112,13 @@ public class UnityVersionMonitor {
 
         if (isRunningCheck) {
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
-            waitForEndOfRunningCheck();
+            try {
+                waitForEndOfRunningCheck();
+            }
+            catch (InterruptedException e) {
+                e.printStackTrace();
+                return;
+            }
         }
         
         isRunningCheck = true;
@@ -121,6 +132,9 @@ public class UnityVersionMonitor {
 
             try {
                 runHashChecker(newVersion.version);
+            }
+            catch (InterruptedException e) {
+                ExceptionUtils.reportException("HashChecker run was aborted before start " + newVersion.version, e);
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to run HashChecker for Unity " + newVersion.version, e);
@@ -188,14 +202,9 @@ public class UnityVersionMonitor {
         isRunningCheck = false;
     }
 
-    private static void waitForEndOfRunningCheck() {
+    private static void waitForEndOfRunningCheck() throws InterruptedException {
         while (isRunningCheck) {
-            try {
-                Thread.sleep(100);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            Thread.sleep(100);
         }
     }
 
@@ -683,6 +692,7 @@ public class UnityVersionMonitor {
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
+                    return;
                 }
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
         }
@@ -811,6 +821,7 @@ public class UnityVersionMonitor {
                 }
                 catch (InterruptedException e) {
                     e.printStackTrace();
+                    return;
                 }
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
         }
