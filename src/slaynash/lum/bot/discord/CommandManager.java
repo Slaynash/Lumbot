@@ -33,7 +33,7 @@ import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.Unban;
-import slaynash.lum.bot.discord.commands.UnityCheckCommand;
+import slaynash.lum.bot.discord.commands.UVMCommand;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
@@ -128,7 +128,7 @@ public class CommandManager {
         CommandManager.registerCommand(new Kick());
         CommandManager.registerCommand(new AutoPublish());
 
-        CommandManager.registerCommand(new UnityCheckCommand());
+        CommandManager.registerCommand(new UVMCommand());
         CommandManager.registerCommand(new AddMissingRoles());
         CommandManager.registerCommand(new Blacklist());
 

@@ -1,4 +1,4 @@
-package slaynash.lum.bot;
+package slaynash.lum.bot.uvm;
 
 import java.io.File;
 import java.nio.file.Path;

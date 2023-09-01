@@ -31,6 +31,7 @@ import mono.cecil.TypeDefinition;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.uvm.CecilAssemblyResolverProvider;
 
 public class VRChatVersionComparer {
     public static final String LOG_IDENTIFIER = "VRChatVersionComparer";
