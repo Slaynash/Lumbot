@@ -175,7 +175,7 @@ public class UnityDownloader {
     public static void filterNewVersionsAndLog(List<UnityVersion> versions)
     {
         for (int i = versions.size() - 1; i >= 0; i--) {
-            if (!installedVersions.containsKey(versions.get(i).version))
+            if (installedVersions.containsKey(versions.get(i).version))
                 versions.remove(i);
         }
 
