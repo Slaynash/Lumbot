@@ -16,7 +16,7 @@ public class UVMCommand extends Command {
         // put("fulldownload", (args) -> { UnityVersionMonitor.runFullDownloadCheck(); return true; });
         put("checkintegrity", (args) -> { UnityVersionMonitor.runFullIntegrityCheck(); return true; });
         put("kill", (args) -> { UnityVersionMonitor.killThreads(); return true; });
-        put("restart", (args) -> { UnityVersionMonitor.restartMainThread(); return true; });
+        put("restart", (args) -> { UnityVersionMonitor.startMainThread(); return true; });
         put("setenabled", (args) -> {
             if (args.length != 1) return false;
             try {
