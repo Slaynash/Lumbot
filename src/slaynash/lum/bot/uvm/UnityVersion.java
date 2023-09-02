@@ -15,9 +15,9 @@ public class UnityVersion {
 
     public static boolean isValid(String version) {
         // ([3-5]\.\d)
-        // (20(1[7-9]|2\d))\.[1-4])
-        // => (([3-5]\.\d)|(20(1[7-9]|2\d))\.[1-4]))\.\d+
-        return version.matches("(([3-5]\\.\\d)|(20(1[7-9]|2\\d))\\.[1-4]))\\.\\d+");
+        // ((20(1[7-9]|2\d))\.[1-4])
+        // => ^(([3-5]\.\d)|((20(1[7-9]|2\d))\.[1-4]))\.\d+$
+        return version.matches("^(([3-5]\\.\\d)|((20(1[7-9]|2\\d))\\.[1-4]))\\.\\d+$");
     }
 
     public static int compare(String left, String right) {
