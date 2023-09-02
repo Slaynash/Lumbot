@@ -711,9 +711,10 @@ public class UnityVersionMonitor {
                 runICallChecker(version, sb);
             }
 
-            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed("Icall checks results:", Color.gray)
-            ).addFiles(FileUpload.fromData(sb.toString().getBytes(), "icall_init_report.txt")).queue();
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */)
+                .sendMessage("Icall checks results:")
+                .addFiles(FileUpload.fromData(sb.toString().getBytes(), "icall_init_report.txt"))
+                .queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
@@ -796,12 +797,12 @@ public class UnityVersionMonitor {
 
         new HashCheckerArch("il2cpp x86 nondev", new HashCheckerArch.Path[] {
             new HashCheckerArch.Path(new String[] { "2021.2.0", "2022.1.0" }, "win32_player_nondevelopment_il2cpp/UnityPlayer.dll"),
-            new HashCheckerArch.Path(new String[] { "2017.2.0", "2018.1.0" }, "win32_nondevelopment_il2cpp/UnityPlayer.dll"),
+            new HashCheckerArch.Path(new String[] { "2018.1.0" }, "win32_nondevelopment_il2cpp/UnityPlayer.dll"),
             // new HashCheckerArch.Path(new String[0], "win32_nondevelopment_il2cpp/player_win.exe")
         }),
         new HashCheckerArch("il2cpp x64 nondev", new HashCheckerArch.Path[] {
             new HashCheckerArch.Path(new String[] { "2021.2.0", "2022.1.0" }, "win64_player_nondevelopment_il2cpp/UnityPlayer.dll"),
-            new HashCheckerArch.Path(new String[] { "2017.2.0", "2018.1.0" }, "win64_nondevelopment_il2cpp/UnityPlayer.dll"),
+            new HashCheckerArch.Path(new String[] { "2018.1.0" }, "win64_nondevelopment_il2cpp/UnityPlayer.dll"),
             // new HashCheckerArch.Path(new String[0], "win64_nondevelopment_il2cpp/player_win.exe")
         }),
 
@@ -862,9 +863,10 @@ public class UnityVersionMonitor {
                 }
             }
 
-            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed("Integrity result:", Color.gray)
-            ).addFiles(FileUpload.fromData(reportBuilder.toString().getBytes(), "integrity_report.txt")).queue();
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */)
+                .sendMessage("Integrity result:")
+                .addFiles(FileUpload.fromData(reportBuilder.toString().getBytes(), "integrity_report.txt"))
+                .queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
