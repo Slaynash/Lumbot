@@ -44,7 +44,7 @@ public class UVMCommand extends Command {
         String subcommandName;
         Function<String[], String> subcommandRunnable;
 
-        if (parts.length != 2 || (subcommandRunnable = subcommands.get((subcommandName = parts[1]))) == null) {
+        if (parts.length < 2 || (subcommandRunnable = subcommands.get((subcommandName = parts[1]))) == null) {
             event.getMessage().reply("Usage: " + getName() + " <subcommand>\nsubcommands: " + String.join(", ", subcommands.keySet())).queue();
             return;
         }
