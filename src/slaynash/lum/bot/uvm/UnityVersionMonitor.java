@@ -797,12 +797,12 @@ public class UnityVersionMonitor {
         new HashCheckerArch("il2cpp x86 nondev", new HashCheckerArch.Path[] {
             new HashCheckerArch.Path(new String[] { "2021.2.0", "2022.1.0" }, "win32_player_nondevelopment_il2cpp/UnityPlayer.dll"),
             new HashCheckerArch.Path(new String[] { "2017.2.0", "2018.1.0" }, "win32_nondevelopment_il2cpp/UnityPlayer.dll"),
-            new HashCheckerArch.Path(new String[0], "win32_nondevelopment_il2cpp/player_win.exe")
+            // new HashCheckerArch.Path(new String[0], "win32_nondevelopment_il2cpp/player_win.exe")
         }),
         new HashCheckerArch("il2cpp x64 nondev", new HashCheckerArch.Path[] {
             new HashCheckerArch.Path(new String[] { "2021.2.0", "2022.1.0" }, "win64_player_nondevelopment_il2cpp/UnityPlayer.dll"),
             new HashCheckerArch.Path(new String[] { "2017.2.0", "2018.1.0" }, "win64_nondevelopment_il2cpp/UnityPlayer.dll"),
-            new HashCheckerArch.Path(new String[0], "win64_nondevelopment_il2cpp/player_win.exe")
+            // new HashCheckerArch.Path(new String[0], "win64_nondevelopment_il2cpp/player_win.exe")
         }),
 
         //("il2cpp x64 dev", "win64_development_il2cpp/UnityPlayer.dll"),
@@ -850,8 +850,8 @@ public class UnityVersionMonitor {
                         }
                     }
 
-                    if (path == null) {
-                        reportBuilder.append(version + ": No path for arch " + arch.name + "\n");
+                    if (path == null) { // Unsupported, likely il2cpp <2018
+                        // reportBuilder.append(version + ": No path for arch " + arch.name + "\n");
                         continue;
                     }
 

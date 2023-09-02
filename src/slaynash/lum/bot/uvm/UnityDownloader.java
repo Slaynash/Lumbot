@@ -54,6 +54,7 @@ public class UnityDownloader {
     public static void loadInstalledVersionCache() {
         try {
             System.out.println("Loading versions cache");
+            installedVersions.clear();
             installedVersions.putAll(UnityUtils.gson.fromJson(Files.readString(Paths.get("unityversionsmonitor/unityInstallCache.json")), new TypeToken<HashMap<String, ArrayList<String>>>(){}.getType()));
             System.out.println("Done loading versions cache");
         }
