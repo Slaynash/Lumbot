@@ -66,6 +66,10 @@ public class UnityDownloader {
         List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<>());
         installedArchitectures.add(architecture);
 
+        saveInstalledVersionCache();
+    }
+
+    public static void saveInstalledVersionCache() {
         try {
             Files.write(Paths.get("unityversionsmonitor/unityInstallCache.json"), UnityUtils.gson.toJson(installedVersions).getBytes());
         }
@@ -198,6 +202,9 @@ public class UnityDownloader {
                 filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
+
+                installedVersions.remove(uv.version);
+                saveInstalledVersionCache();
             }
             catch (IOException e) {
                 ExceptionUtils.reportException("Failed to delete unity folder " + uv.version, e);
@@ -329,6 +336,7 @@ public class UnityDownloader {
         if (isil2cpp)
             tomoveFolder = new File(tomoveFolder).listFiles(File::isDirectory)[0].getPath();
         tomoveFolder += "/" + internalPath;
+        System.out.println("Moving " + tomoveFolder + " to " + UnityUtils.downloadPath + "/" + version.version);
         moveDirectory(new File(tomoveFolder), new File(UnityUtils.downloadPath + "/" + version.version));
     }
 

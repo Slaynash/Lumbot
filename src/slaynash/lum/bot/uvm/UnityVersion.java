@@ -1,7 +1,5 @@
 package slaynash.lum.bot.uvm;
 
-import java.util.Comparator;
-
 public class UnityVersion {
     public String version;
     public String fullVersion;
@@ -13,6 +11,13 @@ public class UnityVersion {
         this.fullVersion = fullVersion;
         this.downloadUrl = downloadUrl;
         this.downloadUrlIl2CppWin = downloadUrlIl2CppWin;
+    }
+
+    public static boolean isValid(String version) {
+        // ([3-5]\.\d)
+        // (20(1[7-9]|2\d))\.[1-4])
+        // => (([3-5]\.\d)|(20(1[7-9]|2\d))\.[1-4]))\.\d+
+        return version.matches("(([3-5]\\.\\d)|(20(1[7-9]|2\\d))\\.[1-4]))\\.\\d+");
     }
 
     public static int compare(String left, String right) {

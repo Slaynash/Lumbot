@@ -7,11 +7,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -833,12 +831,13 @@ public class UnityVersionMonitor {
 
             List<String> versions = UnityDownloader.fetchUnityVersions().stream()
                 .map(uv -> uv.version)
+                .distinct()
                 .sorted(new UnityVersion.Comparator())
                 .toList();
 
             for (String version : versions) {
                 if (!new File(UnityUtils.downloadPath + "/" + version).exists()) {
-                    reportBuilder.append(version + ": Missing files");
+                    reportBuilder.append(version + ": Missing files" + "\n");
                     continue;
                 }
 
@@ -852,12 +851,12 @@ public class UnityVersionMonitor {
                     }
 
                     if (path == null) {
-                        reportBuilder.append(version + ": No path for arch " + arch.name);
+                        reportBuilder.append(version + ": No path for arch " + arch.name + "\n");
                         continue;
                     }
 
                     if (!new File(UnityUtils.downloadPath + "/" + version + "/" + path).exists()) {
-                        reportBuilder.append(version + ": Missing file " + path);
+                        reportBuilder.append(version + ": Missing file " + path + "\n");
                         continue;
                     }
                 }
@@ -866,6 +865,51 @@ public class UnityVersionMonitor {
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Integrity result:", Color.gray)
             ).addFiles(FileUpload.fromData(reportBuilder.toString().getBytes(), "integrity_report.txt")).queue();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
+        }
+
+        isRunningCheck = false;
+    }
+
+    public static void redownloadVersion(String version) {
+        if (isRunningCheck) {
+            while (isRunningCheck)
+                try {
+                    Thread.sleep(100);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
+        }
+        isRunningCheck = true;
+
+        try {
+            List<UnityVersion> versions = UnityDownloader.fetchUnityVersions();
+            UnityVersion targetVersion = null;
+            for (UnityVersion uv : versions) {
+                if (uv.version.equals(version)) {
+                    targetVersion = uv;
+                    break;
+                }
+            }
+
+            if (targetVersion == null) {
+                JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("Failed to find Unity version " + version, Color.red)
+                ).queue();
+                isRunningCheck = false;
+                return;
+            }
+
+            UnityDownloader.downloadUnity(targetVersion);
+
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
+                    Utils.wrapMessageInEmbed("Done downloading unity version " + version, Color.red)
+                ).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
