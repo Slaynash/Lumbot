@@ -197,13 +197,12 @@ public class UnityDownloader {
     public static void downloadUnity(UnityVersion uv) throws InterruptedException {
         File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version);
         File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version + "_tmp");
+        installedVersions.remove(uv.version);
         if (targetFile.exists()) {
             try (Stream<Path> filesToDelete = Files.walk(targetFile.toPath())) {
                 filesToDelete.sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
-
-                installedVersions.remove(uv.version);
                 saveInstalledVersionCache();
             }
             catch (IOException e) {
