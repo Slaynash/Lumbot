@@ -309,7 +309,8 @@ public class ServerMessagesHandler {
                 }
             }
             else if (fileExt.equals("exe") || fileExt.equals("zip") || fileExt.equals("7z") || fileExt.equals("rar") ||
-                fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx")) {
+                fileExt.equals("unitypackage") || fileExt.equals("vrca") || fileExt.equals("fbx"))
+            {
                 allowed = false;
                 break;
             }

@@ -119,8 +119,8 @@ public final class MelonScannerReadPass {
             line.matches(".*NetQueue: Setting up.") ||
             line.matches("---- Minecraft Crash Report ----") ||
             line.contains("melon_slice") ||
-            line.contains("Injecting coremod")
-        ) {
+            line.contains("Injecting coremod"))
+        {
             System.out.println("Minecraft Log detected");
             if (context.messageReceivedEvent.getGuild().getIdLong() == 663449315876012052L) {
                 Utils.replyEmbed("This is not a server for Minecraft. You are in the wrong Discord server.", Color.red, context.messageReceivedEvent);
@@ -376,6 +376,7 @@ public final class MelonScannerReadPass {
         return String.join(" ", Arrays.copyOfRange(split, 0, split.length)); //replace dots with spaces;
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private static boolean processMissingDependenciesListing(MelonScanContext context) {
         String line = context.line;
         if (line.matches("(?i)\\[[\\d.:]+]( \\[Warning]|) Some (mods|Melons) are missing dependencies, which you may have to install\\.")) {

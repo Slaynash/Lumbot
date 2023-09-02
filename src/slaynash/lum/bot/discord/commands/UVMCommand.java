@@ -11,29 +11,30 @@ import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
 public class UVMCommand extends Command {
 
-    private HashMap<String, Function<String[], String>> subcommands = new HashMap<>() {{
-        put("checkicalls", (args) -> { UnityVersionMonitor.runFullICallCheck(); return null; });
-        // put("checkhashes", (args) -> { UnityVersionMonitor.runFullHashCheck(); return null; });
-        // put("fulldownload", (args) -> { UnityVersionMonitor.runFullDownloadCheck(); return null; });
-        put("checkintegrity", (args) -> { UnityVersionMonitor.runFullIntegrityCheck(); return null; });
-        put("kill", (args) -> { UnityVersionMonitor.killThreads(); return null; });
-        put("restart", (args) -> { UnityVersionMonitor.startMainThread(); return null; });
-        put("setenabled", (args) -> {
-            if (args.length != 1) return "Usage: setenabled <true/false>";
-            try {
-                UnityVersionMonitor.setEnabled(Boolean.parseBoolean(args[0]));
-            } catch (Exception e) {
-                return "Usage: setenabled <true/false>";
-            }
-            return null;
-        });
-        put("redownload", (args) -> {
-            if (args.length != 1) return "Usage: redownload <unityversion>";
-            if (!UnityVersion.isValid(args[0])) return "Invalid Unity version.\nUsage: redownload <unityversion>";
-            UnityVersionMonitor.redownloadVersion(args[0]);
-            return null;
-        });
-    }};
+    private final HashMap<String, Function<String[], String>> subcommands = new HashMap<>() {{
+            put("checkicalls", args -> { UnityVersionMonitor.runFullICallCheck(); return null; });
+            // put("checkhashes", args -> { UnityVersionMonitor.runFullHashCheck(); return null; });
+            // put("fulldownload", args -> { UnityVersionMonitor.runFullDownloadCheck(); return null; });
+            put("checkintegrity", args -> { UnityVersionMonitor.runFullIntegrityCheck(); return null; });
+            put("kill", args -> { UnityVersionMonitor.killThreads(); return null; });
+            put("restart", args -> { UnityVersionMonitor.startMainThread(); return null; });
+            put("setenabled", args -> {
+                if (args.length != 1) return "Usage: setenabled <true/false>";
+                try {
+                    UnityVersionMonitor.setEnabled(Boolean.parseBoolean(args[0]));
+                }
+                catch (Exception e) {
+                    return "Usage: setenabled <true/false>";
+                }
+                return null;
+            });
+            put("redownload", args -> {
+                if (args.length != 1) return "Usage: redownload <unityversion>";
+                if (!UnityVersion.isValid(args[0])) return "Invalid Unity version.\nUsage: redownload <unityversion>";
+                UnityVersionMonitor.redownloadVersion(args[0]);
+                return null;
+            });
+        }};
 
     @Override
     protected void onServer(String paramString, MessageReceivedEvent event) {
@@ -44,12 +45,12 @@ public class UVMCommand extends Command {
         String subcommandName;
         Function<String[], String> subcommandRunnable;
 
-        if (parts.length < 2 || (subcommandRunnable = subcommands.get((subcommandName = parts[1]))) == null) {
+        if (parts.length < 2 || (subcommandRunnable = subcommands.get(subcommandName = parts[1])) == null) {
             event.getMessage().reply("Usage: " + getName() + " <subcommand>\nsubcommands: " + String.join(", ", subcommands.keySet())).queue();
             return;
         }
 
-        String[] args = (parts.length == 3 && parts[2].length() > 0) ? parts[2].split(" ") : new String[0];
+        String[] args = (parts.length == 3 && !parts[2].isEmpty()) ? parts[2].split(" ") : new String[0];
 
         UnityVersionMonitor.startThread(() -> {
             event.getMessage().reply("Running subcommand \"" + subcommandName + "\"").queue();

@@ -32,14 +32,14 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class UnityDownloader {
 
     private static final String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
-    
+
     private static final HttpClient httpClient = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_2)
         .followRedirects(Redirect.ALWAYS)
         .connectTimeout(Duration.ofSeconds(30))
         .build();
 
-    private static HttpRequest request = HttpRequest.newBuilder()
+    private static final HttpRequest request = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create("https://unity3d.com/get-unity/download/archive"))
         .setHeader("User-Agent", "LUM Bot")
@@ -175,8 +175,7 @@ public class UnityDownloader {
         return unityVersions;
     }
 
-    public static void filterNewVersionsAndLog(List<UnityVersion> versions)
-    {
+    public static void filterNewVersionsAndLog(List<UnityVersion> versions) {
         for (int i = versions.size() - 1; i >= 0; i--) {
             if (installedVersions.containsKey(versions.get(i).version))
                 versions.remove(i);
@@ -184,7 +183,7 @@ public class UnityDownloader {
 
         System.out.println("unity3d.com returned " + versions.size() + " new versions");
 
-        if (versions.size() > 0 && versions.size() < 10) {
+        if (!versions.isEmpty() && versions.size() < 10) {
             StringBuilder message = new StringBuilder("New Unity version published:");
             for (UnityVersion newVersion : versions)
                 message.append("\n- ").append(newVersion.version);
@@ -192,7 +191,7 @@ public class UnityDownloader {
             JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
         }
     }
-    
+
     public static void downloadUnity(UnityVersion uv) throws InterruptedException {
         File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version);
         File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version + "_tmp");
@@ -229,8 +228,8 @@ public class UnityDownloader {
             System.out.println("Downloading " + uv.downloadUrl);
             try (
                 FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
-                FileChannel fileChannel = fileOutputStream.getChannel()
-            ) {
+                FileChannel fileChannel = fileOutputStream.getChannel())
+            {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
@@ -250,8 +249,8 @@ public class UnityDownloader {
             System.out.println("Downloading " + uv.downloadUrlIl2CppWin);
             try (
                 FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
-                FileChannel fileChannel = fileOutputStream.getChannel()
-            ) {
+                FileChannel fileChannel = fileOutputStream.getChannel())
+            {
                 ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrlIl2CppWin).openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
@@ -290,7 +289,8 @@ public class UnityDownloader {
         else if (version.version.startsWith("4.")) {
             if (version.version.startsWith("4.5") ||
                 version.version.startsWith("4.6") ||
-                version.version.startsWith("4.7")) {
+                version.version.startsWith("4.7"))
+            {
                 internalPath = "Data/PlaybackEngines/windowsstandalonesupport/Variations";
             }
             else {

@@ -105,7 +105,8 @@ public class MessageProxy {
                 event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&
                 !event.getMessage().getContentRaw().startsWith(".") &&
-                !event.getMessage().getContentRaw().startsWith("l!")) {
+                !event.getMessage().getContentRaw().startsWith("l!"))
+        {
             String[] userID = event.getChannel().getName().split("-");
             User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
             if (user == null) {

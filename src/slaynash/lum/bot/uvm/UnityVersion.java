@@ -1,10 +1,10 @@
 package slaynash.lum.bot.uvm;
 
 public class UnityVersion {
-    public String version;
-    public String fullVersion;
-    public String downloadUrl;
-    public String downloadUrlIl2CppWin;
+    public final String version;
+    public final String fullVersion;
+    public final String downloadUrl;
+    public final String downloadUrlIl2CppWin;
 
     public UnityVersion(String version, String fullVersion, String downloadUrl, String downloadUrlIl2CppWin) {
         this.version = version;

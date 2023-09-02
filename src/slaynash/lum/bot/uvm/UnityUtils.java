@@ -3,9 +3,8 @@ package slaynash.lum.bot.uvm;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public final class UnityUtils
-{
-    
+public final class UnityUtils {
+
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static final String downloadPath = "/mnt/hdd3t/unity_versions";
 
@@ -18,7 +17,8 @@ public final class UnityUtils
         else if (version.startsWith("4.")) {
             if (version.startsWith("4.5") ||
                 version.startsWith("4.6") ||
-                version.startsWith("4.7")) {
+                version.startsWith("4.7"))
+            {
                 monoManagedSubpath = "win64_nondevelopment/Data";
             }
             else {

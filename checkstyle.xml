@@ -54,7 +54,9 @@
             <property name="tokens"
              value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
         </module>
-        <module name="LeftCurly"/>
+        <module name="LeftCurly">
+            <property name="option" value="nlow"/>
+        </module>
         <module name="RightCurly">
             <property name="option" value="alone_or_singleline"/>
             <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, METHOD_DEF, LITERAL_TRY , LITERAL_CATCH , LITERAL_FINALLY"/>
@@ -77,7 +79,7 @@
              value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
 
-        <module name="OneStatementPerLine"/>
+        <!-- <module name="OneStatementPerLine"/> -->
         <!-- <module name="MultipleVariableDeclarations"/> -->
         <module name="ArrayTypeStyle"/>
         <module name="MissingSwitchDefault"/>

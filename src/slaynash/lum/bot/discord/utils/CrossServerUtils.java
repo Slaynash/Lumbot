@@ -55,7 +55,8 @@ public final class CrossServerUtils {
             Guild targetGuild;
             Member serverMember;
             if ((targetGuild = event.getJDA().getGuildById(whitelistedRolesServer.getKey())) != null &&
-                (serverMember = targetGuild.getMember(event.getAuthor())) != null) {
+                (serverMember = targetGuild.getMember(event.getAuthor())) != null)
+            {
                 List<Role> roles = serverMember.getRoles();
                 for (Role role : roles) {
                     long roleId = role.getIdLong();

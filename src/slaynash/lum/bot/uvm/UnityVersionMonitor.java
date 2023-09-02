@@ -104,7 +104,7 @@ public class UnityVersionMonitor {
             return;
 
         UnityDownloader.filterNewVersionsAndLog(remoteVersions);
-        if (remoteVersions.size() == 0)
+        if (remoteVersions.isEmpty())
             return;
         initialisingUnityVersions = remoteVersions.size() >= 10;
 
@@ -118,7 +118,7 @@ public class UnityVersionMonitor {
                 return;
             }
         }
-        
+
         isRunningCheck = true;
 
         loadIcalls();
@@ -173,7 +173,7 @@ public class UnityVersionMonitor {
 
         // MonoStruct init check
         boolean originalInitialisingUnityVersions = initialisingUnityVersions;
-        if (monoStructs.size() > 0 && monoStructs.get(0).rows.size() == 0)
+        if (!monoStructs.isEmpty() && monoStructs.get(0).rows.isEmpty())
             initialisingUnityVersions = true;
 
         if (initialisingUnityVersions) {
@@ -210,7 +210,7 @@ public class UnityVersionMonitor {
 
 
 
-    
+
 
     public static void loadInstalledVersionCache() {
         UnityDownloader.loadInstalledVersionCache();
@@ -257,7 +257,7 @@ public class UnityVersionMonitor {
         }
     }
 
-    
+
 
     private static void runHashChecker(String unityVersion) throws IOException, InterruptedException {
         Map<String, Map<String, Integer>> results = null;
@@ -300,7 +300,7 @@ public class UnityVersionMonitor {
             }
         }
 
-        if (reports.length() > 0) {
+        if (!reports.isEmpty()) {
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessageEmbeds(
                 Utils.wrapMessageInEmbed("Failed to validate all hashes for Unity " + unityVersion + ":\n\n" + reports, Color.red)
             ).queue();
@@ -429,7 +429,7 @@ public class UnityVersionMonitor {
 
         if (!initialisingUnityVersions) {
             boolean hasError = false;
-            if (reportNoValidVersion.length() > 0) {
+            if (!reportNoValidVersion.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icalls have no definition for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
@@ -438,7 +438,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**The following icalls have no definition for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
-            if (reportNoType.length() > 0) {
+            if (!reportNoType.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed types for Unity ").append(unityVersion).append(":**").append(reportNoType);
@@ -447,7 +447,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed types for Unity " + unityVersion + ":**" + reportNoType, Color.red)
                     ).queue();
             }
-            if (reportNoMethod.length() > 0) {
+            if (!reportNoMethod.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**Failed to find the following icall managed methods for Unity ").append(unityVersion).append(":**").append(reportNoMethod);
@@ -456,7 +456,7 @@ public class UnityVersionMonitor {
                         Utils.wrapMessageInEmbed("**Failed to find the following icall managed methods for Unity " + unityVersion + ":**" + reportNoMethod, Color.red)
                     ).queue();
             }
-            if (reportMismatchingParams.length() > 0) {
+            if (!reportMismatchingParams.isEmpty()) {
                 hasError = true;
                 if (stringBuilder != null)
                     stringBuilder.append("**The following icall methods mismatch for Unity ").append(unityVersion).append(":**").append(reportMismatchingParams);
@@ -619,7 +619,7 @@ public class UnityVersionMonitor {
         saveMonoStructCache();
     }
 
-    
+
 
     private static boolean monoStructContainsFields(MonoStructRow msi, List<String> fields) {
         if (msi.fields.size() == fields.size()) {
@@ -632,7 +632,7 @@ public class UnityVersionMonitor {
         return false;
     }
 
-    
+
 
     private static class UnityICall {
         public final String icall;
@@ -764,8 +764,8 @@ public class UnityVersionMonitor {
 
     private static class HashCheckerArch {
         private static class Path {
-            public String[] unityVersions;
-            public String path;
+            public final String[] unityVersions;
+            public final String path;
 
             public Path(String[] unityVersions, String path) {
                 this.unityVersions = unityVersions;
@@ -773,8 +773,8 @@ public class UnityVersionMonitor {
             }
         }
 
-        public String name;
-        public HashCheckerArch.Path[] paths;
+        public final String name;
+        public final HashCheckerArch.Path[] paths;
 
         private HashCheckerArch(String name, HashCheckerArch.Path[] paths) {
             this.name = name;
@@ -782,7 +782,7 @@ public class UnityVersionMonitor {
         }
     }
 
-    private static HashCheckerArch[] hashArchs = new HashCheckerArch[]
+    private static final HashCheckerArch[] hashArchs = new HashCheckerArch[]
     {
         new UnityVersionMonitor.HashCheckerArch("mono x86 nondev", new UnityVersionMonitor.HashCheckerArch.Path[] {
             new UnityVersionMonitor.HashCheckerArch.Path(new String[] { "2021.2.0", "2022.1.0" }, "win32_player_nondevelopment_mono/UnityPlayer.dll"),
@@ -838,7 +838,7 @@ public class UnityVersionMonitor {
 
             for (String version : versions) {
                 if (!new File(UnityUtils.downloadPath + "/" + version).exists()) {
-                    reportBuilder.append(version + ": Missing files" + "\n");
+                    reportBuilder.append(version).append(": Missing files").append("\n");
                     continue;
                 }
 
@@ -857,7 +857,8 @@ public class UnityVersionMonitor {
                     }
 
                     if (!new File(UnityUtils.downloadPath + "/" + version + "/" + path).exists()) {
-                        reportBuilder.append(version + ": Missing file " + path + "\n");
+                        reportBuilder.append(version).append(": Missing file ").append(path).append("\n");
+                        //noinspection UnnecessaryContinue
                         continue;
                     }
                 }

@@ -147,8 +147,8 @@ public class VRChatVersionComparer {
                 event.getChannel().sendMessage("Downloading and extracting Unity dependencies...").queue();
             try (
                 BufferedInputStream in = new BufferedInputStream(new URL("https://github.com/LavaGang/Unity-Runtime-Libraries/raw/master/" + unityVersion + ".zip").openStream());
-                FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/unitydeps.zip")
-            ) {
+                FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/unitydeps.zip"))
+            {
                 byte[] dataBuffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = in.read(dataBuffer, 0, 1024)) != -1)
@@ -192,8 +192,8 @@ public class VRChatVersionComparer {
 
         ByteArrayOutputStream mapStream = new ByteArrayOutputStream();
         try (BufferedInputStream in = new BufferedInputStream(new URL(obfMapUrl).openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/deobfmap.csv.gz")
-        ) {
+            FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/deobfmap.csv.gz"))
+        {
             int bytesRead;
             while ((bytesRead = in.read(buffer, 0, 1024)) != -1) {
                 fileOutputStream.write(buffer, 0, bytesRead);

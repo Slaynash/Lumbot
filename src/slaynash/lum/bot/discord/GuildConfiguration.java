@@ -4,7 +4,8 @@ import java.sql.Timestamp;
 
 public record GuildConfiguration(String uildID, Timestamp ts, boolean ScamShield,
                                  boolean ScamShieldBan, boolean ScamShieldCross, boolean MLLogScan, boolean MLLogReaction,
-                                 boolean MLReplies, boolean MLPartialRemover, boolean MLGeneralRemover, boolean DLLRemover, boolean LumReplies, boolean DadJokes) {
+                                 boolean MLReplies, boolean MLPartialRemover, boolean MLGeneralRemover, boolean DLLRemover, boolean LumReplies, boolean DadJokes)
+{
     public enum Setting {
         TS("ts"),
         SCAMSHIELD("ScamShield"),

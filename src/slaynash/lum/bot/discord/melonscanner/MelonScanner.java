@@ -222,7 +222,7 @@ public final class MelonScanner {
         return fileName.startsWith("latest") ||
             fileName.startsWith("melonloader") ||
             fileName.startsWith("mlinstall") ||
-            fileName.matches("[a-zA-Z]{7}");
+            fileName.matches("\\w{7}\\.(log|txt)");
     }
 
     private static void postReadApiPass(MelonScanContext context) {
@@ -302,8 +302,8 @@ public final class MelonScanner {
             for (MelonApiMod modDetail : context.modDetails) {
                 if (modDetail.id != null && modDetail.id.equals(id) ||
                     modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) ||
-                    (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName))
-                ) {
+                    (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
+                {
                     System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;
