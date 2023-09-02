@@ -52,7 +52,7 @@ public class UVMCommand extends Command {
         String[] args = (parts.length == 3 && parts[2].length() > 0) ? parts[2].split(" ") : new String[0];
 
         UnityVersionMonitor.startThread(() -> {
-            event.getMessage().reply("Starting checks \"" + subcommandName + "\"").queue();
+            event.getMessage().reply("Running subcommand \"" + subcommandName + "\"").queue();
             String ret = subcommandRunnable.apply(args);
             if (ret != null)
                 event.getMessage().reply(ret).queue();

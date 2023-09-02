@@ -160,18 +160,16 @@ public class UnityDownloader {
             else
                 break;
 
-            unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
+            boolean alreadyHasVersion = false;
+            for (UnityVersion uv : unityVersions) {
+                if (uv.version.equals(foundVersion)) {
+                    alreadyHasVersion = true;
+                    break;
+                }
+            }
 
-            // boolean alreadyHasVersion = false;
-            // for (UnityVersion uv : unityVersions) {
-            //     if (uv.version.equals(foundVersion)) {
-            //         alreadyHasVersion = true;
-            //         break;
-            //     }
-            // }
-
-            // if (!alreadyHasVersion)
-            //     unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
+            if (!alreadyHasVersion)
+                unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
         }
 
         return unityVersions;
