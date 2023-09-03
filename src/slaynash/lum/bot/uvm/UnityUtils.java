@@ -2,6 +2,7 @@ package slaynash.lum.bot.uvm;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.NotImplementedException;
 
 public final class UnityUtils {
 
@@ -39,6 +40,41 @@ public final class UnityUtils {
         }
 
         return monoManagedSubpath + "/Managed";
+    }
+
+    public static String getUnityPath(String version, boolean is64bit, boolean isIl2Cpp, boolean dev) {
+        String archName = is64bit ? "64" : "32";
+        String runtimeName = isIl2Cpp ? "il2cpp" : "mono";
+        String devName = dev ? "development" : "nondevelopment";
+
+        if (!version.startsWith("20") || version.startsWith("2017.1."))
+            throw new NotImplementedException("Function not implemented for unity versions other than 2017.2.0");
+
+        if (version.startsWith("20")) {
+            if (UnityVersion.compare(version, "2021.2.0") < 0)
+                return "win" + archName + "_" + devName + "_" + runtimeName + "/";
+        }
+
+        return "win" + archName + "_player_" + devName + "_" + runtimeName + "/";
+    }
+
+    public static String getPdbName(String version, boolean is64bit, boolean isIl2Cpp, boolean dev) {
+        String archName = is64bit ? "64" : "32";
+        String archName2 = is64bit ? "64" : "86";
+        String runtimeName = isIl2Cpp ? "il2cpp" : "mono";
+        String devName = dev ? "development_" : "";
+
+        if (!version.startsWith("20") || version.startsWith("2017.1."))
+            throw new NotImplementedException("Function not implemented for unity versions other than 2017.2.0");
+
+        if (version.startsWith("20")) {
+            if (UnityVersion.compare(version, "2021.2.0") < 0)
+                return "UnityPlayer_Win" + archName + "_" + devName + runtimeName + "_x" + archName2 + ".pdb";
+            else if (UnityVersion.compare(version, "2022.2.0") < 0)
+                return "UnityPlayer_Win" + archName + "_player_" + devName + runtimeName + "_x" + archName2 + "_s.pdb";
+        }
+
+        return "UnityPlayer_Win" + archName + "_player_" + devName + runtimeName + "_x" + archName2 + ".pdb";
     }
 
 }
