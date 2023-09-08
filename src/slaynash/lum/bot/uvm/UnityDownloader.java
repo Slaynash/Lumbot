@@ -32,6 +32,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class UnityDownloader {
 
     private static final String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
+    private static final String hrefIdentifierRN = "<a href=\"https://unity.com/releases/editor/whats-new/";
 
     private static final HttpClient httpClient = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_2)
@@ -101,6 +102,14 @@ public class UnityDownloader {
         for (String line : pageLines) {
             if (line.isEmpty() || line.contains("Samsung"))
                 continue;
+
+            int hrefIdentifierRNIndex;
+            if ((hrefIdentifierRNIndex = line.indexOf(hrefIdentifierRN)) > 0) {
+                String subline = line.substring(hrefIdentifierRNIndex + hrefIdentifierRN.length());
+                String foundVersion = subline.substring(0, subline.indexOf("#"));
+                unityVersions.stream().findFirst().filter(uv -> uv.version.equals(foundVersion)).ifPresent(uv -> uv.setReleaseNotes("https://unity.com/releases/editor/whats-new/" + foundVersion + "#release-notes"));
+                continue;
+            }
 
             int hrefIdentifierIndex;
             if ((hrefIdentifierIndex = line.indexOf(hrefIdentifier)) < 0)
@@ -185,9 +194,13 @@ public class UnityDownloader {
 
         if (!versions.isEmpty() && versions.size() < 10) {
             StringBuilder message = new StringBuilder("New Unity version published:");
-            for (UnityVersion newVersion : versions)
-                message.append("\n- ").append(newVersion.version);
-            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();
+            for (UnityVersion newVersion : versions) {
+                if (newVersion.releaseNotes != null)
+                    message.append("\n- ").append(newVersion.version).append(" [Release](<").append(newVersion.releaseNotes).append(">)");
+                else
+                    message.append("\n- ").append(newVersion.version);
+            }
+            JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();  // may want to move this over to just #unity-version-updates
             JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
         }
     }

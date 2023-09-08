@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.coder4.emoji.EmojiUtils;
+import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
@@ -340,7 +341,7 @@ public class ServerMessagesHandler {
         try {
             if (event.getChannel().getType() == ChannelType.NEWS && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asNewsChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {
                 System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getChannel().getName());
-                event.getMessage().crosspost().queue();
+                event.getMessage().crosspost().queue(null, e -> { });
             }
         }
         catch (Exception e) {
@@ -382,7 +383,7 @@ public class ServerMessagesHandler {
                         continue;
                     }
                     if (regex != null && !regex.isBlank()) {
-                        if (!content.matches("(?s)".concat(regex))) {
+                        if (!content.matches("(?s)".concat(regex))) { //TODO prevent Catastrophic backtracking
                             continue;
                         }
                     }

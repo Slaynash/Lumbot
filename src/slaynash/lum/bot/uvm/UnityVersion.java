@@ -5,6 +5,7 @@ public class UnityVersion {
     public final String fullVersion;
     public final String downloadUrl;
     public final String downloadUrlIl2CppWin;
+    public String releaseNotes = null;
 
     public UnityVersion(String version, String fullVersion, String downloadUrl, String downloadUrlIl2CppWin) {
         this.version = version;
@@ -83,6 +84,10 @@ public class UnityVersion {
         public int compare(String left, String right) {
             return UnityVersion.compare(left, right);
         }
+    }
+
+    public void setReleaseNotes(String releaseNotes) {
+        this.releaseNotes = releaseNotes;
     }
 
 }
