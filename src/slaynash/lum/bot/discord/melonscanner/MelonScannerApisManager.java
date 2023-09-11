@@ -15,17 +15,20 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import net.dv8tion.jda.api.EmbedBuilder;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LoadState;
 import org.luaj.vm2.LuaError;
@@ -42,6 +45,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class MelonScannerApisManager {
@@ -68,6 +72,8 @@ public class MelonScannerApisManager {
     private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
     private static boolean doneFirstInit = false;
+
+    private static final List<Entry<MelonScannerApi, Instant>> erroringAPIs = new ArrayList<>();
 
     static {
         MelonScannerApi api;
@@ -288,6 +294,15 @@ public class MelonScannerApisManager {
                                 }
                             }
 
+                            if (erroringAPIs.stream().anyMatch(entry -> entry.getKey() == api)) {
+                                EmbedBuilder eb = new EmbedBuilder();
+                                eb.setTitle("MelonScanner API for " + api.game + " : " + api.name + " is no longer erroring");
+                                eb.setDescription("It has been erroring for " + Duration.between(erroringAPIs.stream().filter(entry -> entry.getKey() == api).findFirst().get().getValue(), Instant.now()));
+
+                                JDAManager.getJDA().getTextChannelById("912757433913454612").sendMessageEmbeds(eb.build()).queue();
+                                erroringAPIs.removeIf(entry -> entry.getKey() == api);
+                            }
+
                             if (!doneFetching)
                                 Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
                             else if (!apiMods.isEmpty()) {
@@ -354,7 +369,10 @@ public class MelonScannerApisManager {
                             ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + api.name + ", " + constructedURI, exception.getMessage());
                     }
                     catch (Exception exception) {
-                        ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + api.name + ", " + constructedURI, exception);
+                        if (erroringAPIs.stream().noneMatch(entry -> entry.getKey() == api)) {
+                            ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + api.name + ", " + constructedURI, exception);
+                        }
+                        erroringAPIs.add(Map.entry(api, Instant.now()));
                     }
 
                 }
