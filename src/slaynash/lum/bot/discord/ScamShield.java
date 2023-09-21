@@ -291,10 +291,10 @@ public class ScamShield {
                 status = true;
         }
         if (status) {
-            if (event.getChannelType() == ChannelType.PRIVATE)
-                LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), "Private"); // add to status counter
-            else
-                LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), event.getGuild().getId()); // add to status counter
+            String id = event.getGuild().getId();
+            if (event.getChannelType() == ChannelType.PRIVATE) id = "Private";
+
+            LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), id); // add to status counter
         }
         return status;
     }
@@ -338,6 +338,7 @@ public class ScamShield {
             String usernameWithTag = event.getAuthor().getEffectiveName();
             String userId = event.getAuthor().getId();
             TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
+            System.out.println("Report channel: " + guildID + " " + CommandManager.mlReportChannels.getOrDefault(guildID, "0") + " " + reportChannel);
             boolean ssBan;
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (guildconfig != null) {

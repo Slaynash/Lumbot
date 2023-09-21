@@ -131,8 +131,7 @@ public final class MelonScannerReadPass {
     }
 
     private static void pirateCheck(MelonScanContext context) {
-        String line = context.line;
-        line = line.toLowerCase();
+        String line = context.line.toLowerCase();
         if (line.contains("bloons.td.6") || line.contains("bloons.td6") || line.matches("\\[[\\d.:]+] \\[btd6e_module_helper] v[\\d.]+")) {
             System.out.println("Pirated BTD6 detected");
             context.pirate = true;
@@ -143,6 +142,10 @@ public final class MelonScannerReadPass {
         }
         else if (line.matches(".*\\\\bonelab\\.v\\d.*")) {
             System.out.println("Pirated BL detected");
+            context.pirate = true;
+        }
+        else if (line.matches(".*melon.samboy.dev/api/.*ConnectFailure.*")) {
+            System.out.println("Pirate DNS detected");
             context.pirate = true;
         }
     }
