@@ -526,7 +526,7 @@ public class MelonScannerApisManager {
         Exception exception = null;
         for (int i = 0; i < attempts; i++) {
             try {
-                response = httpClient.send(request, HttpResponse.BodyHandlers.ofByteArray());
+                response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(6, java.util.concurrent.TimeUnit.MINUTES);
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
                     System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
