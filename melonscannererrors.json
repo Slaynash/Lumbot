@@ -334,6 +334,20 @@
                 "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
             }
         ],
+        "BONELAB": [
+            {
+                "regex": ".*No .melon files found in UserData\\\\CustomItems\\\\",
+                "error": "No Melon files found. Please add some to `UserData\\CustomItems\\`"
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[ModioModNetworker] \\[ERROR] AUTH TOKEN NOT FOUND IN auth.txt.",
+                "error": "No signed into mod.io. Please open ModioModNetworker/auth.txt for instructions on how to sign in."
+            },
+            {
+                "regex": "\\[[\\d.:]+] \\[ModioModNetworker] \\[ERROR] The AUTH TOKEN in auth.txt is invalid. AKA. It is not correct. It is probably the key.",
+                "error": "Failed to signed into mod.io. Please open ModioModNetworker/auth.txt and make sure to use the token and not the key."
+            }
+        ],
         "ChilloutVR": [
             {
                 "regex": ".*\\[CVRLogger] \\[Error].*",
