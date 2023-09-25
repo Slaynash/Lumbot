@@ -341,7 +341,7 @@
             },
             {
                 "regex": "\\[[\\d.:]+] \\[ModioModNetworker] \\[ERROR] AUTH TOKEN NOT FOUND IN auth.txt.",
-                "error": "No signed into mod.io. Please open ModioModNetworker/auth.txt for instructions on how to sign in."
+                "error": "Not signed into mod.io. Please open ModioModNetworker/auth.txt for instructions on how to sign in."
             },
             {
                 "regex": "\\[[\\d.:]+] \\[ModioModNetworker] \\[ERROR] The AUTH TOKEN in auth.txt is invalid. AKA. It is not correct. It is probably the key.",

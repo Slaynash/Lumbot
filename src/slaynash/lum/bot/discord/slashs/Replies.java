@@ -231,8 +231,8 @@ public class Replies extends Slash {
             else {
                 long ukey = event.getOption("ukey").getAsLong();
                 try {
-                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `Replies`.`ukey` FROM `Replies` WHERE `Replies`.`ukey` = ? LIMIT 1", ukey);
-                    if (!rs.next()) {
+                    ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `Replies`.`guildID` FROM `Replies` WHERE `Replies`.`ukey` = ? LIMIT 1", ukey);
+                    if (!rs.next() || rs.getLong("guildID") != guildid) {
                         event.reply("Invalid ukey or reply not found!").setEphemeral(true).queue();
                         DBConnectionManagerLum.closeRequest(rs);
                         return;
