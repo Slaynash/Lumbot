@@ -186,7 +186,7 @@ public class UnityDownloader {
         if (!versions.isEmpty() && versions.size() < 10) {
             StringBuilder message = new StringBuilder("New Unity version published:");
             for (UnityVersion newVersion : versions) {
-                message.append("\n- ").append(newVersion.version).append(" [Release](<").append(newVersion.version).append(">)");
+                message.append("\n- ").append(newVersion.version).append(" [Release Notes](<https://unity.com/releases/editor/whats-new/").append(newVersion.version).append("#release-notes>)");
             }
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();  // may want to move this over to just #unity-version-updates
             JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());

@@ -456,7 +456,8 @@ public class ScamShield {
         "telegra.ph",
         "robydrinks.be",
         "bxlblog.be",
-        "meap.gg"
+        "meap.gg",
+        "github.io"
     );
 
     private static int domainAgeCheck(String message) {
