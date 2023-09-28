@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import com.coder4.emoji.EmojiUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -395,7 +394,7 @@ public class MessageProxy {
             if (content == null || content.isBlank())
                 return;
             content = content.toLowerCase();
-            if (event.getMember().equals(event.getGuild().getSelfMember()))
+            if (event.getAuthor().equals(event.getJDA().getSelfUser()))
                 return;
             String guildID = "0";
             try {
@@ -410,9 +409,6 @@ public class MessageProxy {
                     long channel = rs.getLong("channel");
                     long ignorerole = rs.getLong("ignorerole");
                     String message = rs.getString("message");
-                    boolean delete = rs.getBoolean("bdelete");
-                    boolean kick = rs.getBoolean("bkick");
-                    boolean ban = rs.getBoolean("bban");
                     boolean edit = rs.getBoolean("bedit");
                     boolean report = rs.getBoolean("breport");
                     if (!edit && event.getMessage().isEdited()) {
@@ -453,15 +449,6 @@ public class MessageProxy {
                         continue;
                     }
 
-                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
-                        event.getMessage().delete().queue();
-                    }
-                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.KICK_MEMBERS)) {
-                        event.getMember().kick().queue();
-                    }
-                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.BAN_MEMBERS)) {
-                        event.getMember().ban(0, TimeUnit.DAYS).queue();
-                    }
                     if (EmojiUtils.isOneEmoji(message))
                         event.getMessage().addReaction(Emoji.fromUnicode(message)).queue();
                     else if (message != null && message.matches("^<a?:\\w+:\\d+>$")) {
