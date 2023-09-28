@@ -264,7 +264,7 @@ public class Steam {
                     for (Entry<String, SteamAppDetails.SteamAppBranch> changedBranch : changeBranches.entrySet()) {
                         if (!oldBranches.containsKey(changedBranch.getKey())) {
                             SteamAppDetails.SteamAppBranch branchDetails = newBranches.get(changedBranch.getKey());
-                            description.append("[").append(changedBranch.getKey()).append("] Branch created (`#").append(branchDetails.buildid).append("`)\n");
+                            description.append("[`").append(changedBranch.getKey()).append("`] Branch created (`#").append(branchDetails.buildid).append("`)\n");
                             if (branchDetails.description != null && !branchDetails.description.isBlank())
                                 description.append("- Description: ").append(branchDetails.description).append("\n");
                             if (branchDetails.pwdrequired == null || !branchDetails.pwdrequired) {
@@ -277,7 +277,7 @@ public class Steam {
                             }
                         }
                         else if (!newBranches.containsKey(changedBranch.getKey())) {
-                            description.append("[").append(changedBranch.getKey()).append("] Branch deleted\n");
+                            description.append("[`").append(changedBranch.getKey()).append("`] Branch deleted\n");
                             if (changedBranch.getValue().pwdrequired == null || !changedBranch.getValue().pwdrequired)
                                 description.append("- This was a public branch").append("\n");
                         }
@@ -286,7 +286,7 @@ public class Steam {
                             SteamAppDetails.SteamAppBranch newBranchDetails = newBranches.get(changedBranch.getKey());
                             String grade = oldBranchDetails.buildid < newBranchDetails.buildid ? "upgraded" : "downgraded";
                             if (oldBranchDetails.buildid == newBranchDetails.buildid) grade = "updated";
-                            description.append("[").append(changedBranch.getKey()).append("] Branch ").append(grade).append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
+                            description.append("[`").append(changedBranch.getKey()).append("`] Branch ").append(grade).append(" (`").append(oldBranchDetails.buildid).append("` -> `").append(newBranchDetails.buildid).append("`)\n");
                             if (newBranchDetails.description != null && !newBranchDetails.description.isBlank()) // I don't think this is ever null but nice to have
                                 description.append("- Description: ").append(newBranchDetails.description).append("\n");
                             if (newBranchDetails.pwdrequired == null || !newBranchDetails.pwdrequired) {
