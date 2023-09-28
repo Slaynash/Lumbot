@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -361,6 +362,7 @@ public class ServerMessagesHandler {
             if (event.getMember().equals(event.getGuild().getSelfMember()))
                 return true;
             String guildID = event.getGuild().getId();
+            if (event.getChannel().asTextChannel() != null && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildID = "0";
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = '" + guildID + "'");
 
@@ -442,6 +444,19 @@ public class ServerMessagesHandler {
                     }
                     else if (message != null && !message.isBlank()) {
                         event.getChannel().asGuildMessageChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
+                        if (guildID == "0") {
+                            String[] userID = event.getChannel().getName().split("-");
+                            User privuser = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+                            if (privuser == null) {
+                                Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
+                            }
+                            else {
+                                privuser.openPrivateChannel().queue(
+                                    privchannel -> privchannel.sendMessage(message).queue(s -> MessageProxy.saveIDs(s.getIdLong(), event.getMessageIdLong()),
+                                            e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
+                                    error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
+                            }
+                        }
                     }
                     if (report) {
                         TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
