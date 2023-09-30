@@ -307,6 +307,11 @@
         {
             "regex": "WARNING!! Your game version seems too old to this MOD!",
             "error": "Your game version seems too old to a mod"
+        },
+        {
+            "regex": ".*Failed to load Melon Assembly from '.*\\\\(?<modname>.*)':",
+            "nextLineRegex": ".*Assembly with same name is already loaded",
+            "error": "You have a duplicate mod installed. Please remove modname and try again."
         }
     ],
     "gameSpecificErrors": {

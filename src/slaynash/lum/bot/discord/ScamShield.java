@@ -169,13 +169,12 @@ public class ScamShield {
             ssFoundTerms.put("Crossposted", (int) crossPost);
         }
 
-        if (finalMessage.contains("](")) {
-            String cleaned = finalMessage.replaceAll("[<*`~\\|>]", "");
+        if (msg.contains("](")) {
             Pattern p = Pattern.compile("\\[(.*\\.|)(?<shown>.*\\.\\w{2,3}).*]");
-            Matcher m = p.matcher(cleaned);
+            Matcher m = p.matcher(msg);
             if (m.find()) {
-                cleaned = cleaned.replaceAll("\\[.*]", "");
-                if (!cleaned.contains(m.group("shown")))
+                msg = msg.replaceAll("\\[.*]", "");
+                if (!msg.contains(m.group("shown")))
                     ssFoundTerms.put("HiddenEmbed", 2);
             }
         }
