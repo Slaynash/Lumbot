@@ -516,11 +516,11 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.contains("Game::DataPath")) {
-            context.gamePath = split[1].trim();
+            context.gameDataPath = split[1].trim();
             return true;
         }
         else if (line.contains("Game::ApplicationPath")) {
-            context.gamePath = split[1].trim();
+            context.gameAppPath = split[1].trim();
             return true;
         }
         return false;

@@ -70,9 +70,10 @@ public class ServerMessagesHandler {
             if (message.startsWith("l!ping"))
                 message = message.substring(6).trim();
 
-            System.out.println(String.format("[%s][%s] %s%s%s: %s%s",
+            System.out.println(String.format("[%s][%s][%s] %s%s%s: %s%s",
                     event.getGuild().getName(),
                     event.getChannel().getName(),
+                    event.getChannelType(),
                     event.getAuthor().getEffectiveName(),
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",

@@ -61,9 +61,12 @@ public class ScamShield {
             put("money", 1);
             put("loot", 1);
             put("csgo", 1);
+            put("cs2", 1);
             put("trade", 1);
             put("knife", 1);
             put("offer", 1);
+            put("skingiveaway", 1);
+            put("skinsgiveaway", 1);
             put("btc", 1);
             put("bitcoin", 1);
             put("cryptomarket", 2);
@@ -164,6 +167,17 @@ public class ScamShield {
 
         if (crossPost > 0) {
             ssFoundTerms.put("Crossposted", (int) crossPost);
+        }
+
+        if (finalMessage.contains("](")) {
+            String cleaned = finalMessage.replaceAll("[<*`~\\|>]", "");
+            Pattern p = Pattern.compile("\\[(.*\\.|)(?'shown'.*\\.\\w{2,3}).*]");
+            Matcher m = p.matcher(cleaned);
+            if (m.find()) {
+                cleaned = cleaned.replaceAll("\\[.*]", "");
+                if (!cleaned.contains(m.group("shown")))
+                    ssFoundTerms.put("HiddenEmbed", 2);
+            }
         }
 
         ssFoundTerms.putAll(ssTerms.entrySet().stream().filter(f -> finalMessage.contains(f.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
