@@ -360,7 +360,7 @@ public class ServerMessagesHandler {
             if (content == null || content.isBlank())
                 return false;
             content = content.toLowerCase();
-            if (event.getMember().equals(event.getGuild().getSelfMember()))
+            if (event.getAuthor().equals(event.getJDA().getSelfUser()))
                 return true;
             String guildID = event.getGuild().getId();
             if (event.getChannelType() == ChannelType.TEXT && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildID = "0";

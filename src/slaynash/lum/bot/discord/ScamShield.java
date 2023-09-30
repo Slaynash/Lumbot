@@ -171,7 +171,7 @@ public class ScamShield {
 
         if (finalMessage.contains("](")) {
             String cleaned = finalMessage.replaceAll("[<*`~\\|>]", "");
-            Pattern p = Pattern.compile("\\[(.*\\.|)(?'shown'.*\\.\\w{2,3}).*]");
+            Pattern p = Pattern.compile("\\[(.*\\.|)(?<shown>.*\\.\\w{2,3}).*]");
             Matcher m = p.matcher(cleaned);
             if (m.find()) {
                 cleaned = cleaned.replaceAll("\\[.*]", "");
