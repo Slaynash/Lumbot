@@ -17,6 +17,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
+import com.google.code.regexp.Matcher;
+import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -178,7 +180,7 @@ public final class MelonScanner {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-                messageBuilder.setContent(messageReceivedEvent.getAuthor().getAsMention());
+                messageBuilder.setContent((messageReceivedEvent.getAuthor().getAsMention() + " " + getMentions(context.embedBuilder)).strip());
                 messageCreateData = messageBuilder.setEmbeds(context.embedBuilder.build()).build();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
@@ -1019,5 +1021,15 @@ public final class MelonScanner {
         catch (Exception e) {
             ExceptionUtils.reportException("Exception while translating log:", e, event.getChannel());
         }
+    }
+
+    private static String getMentions(EmbedBuilder embedBuilder) {
+        StringBuilder mentions = new StringBuilder();
+        Pattern p = Pattern.compile("<@!?\\d{5,}>");
+        Matcher m = p.matcher(embedBuilder.build().toData().toString());
+        while (m.find()) {
+            mentions.append(m.group()).append(" ");
+        }
+        return mentions.toString();
     }
 }

@@ -445,7 +445,7 @@ public class ServerMessagesHandler {
                     }
                     else if (message != null && !message.isBlank()) {
                         event.getChannel().asGuildMessageChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                        if (guildID == "0") {
+                        if (guildID.equals("0")) {
                             String[] userID = event.getChannel().getName().split("-");
                             User privuser = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
                             if (privuser == null) {
