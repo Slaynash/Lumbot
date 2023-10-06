@@ -29,6 +29,10 @@
             "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $MLRelease$."
         },
         {
+            "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.*",
+            "error": "Virus Scanner blocked MelonLoader. Please whitelist MelonLoader folder and try again."
+        },
+        {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
             "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
@@ -165,7 +169,7 @@
         },
         {
             "regex": ".*\\[ERROR] System.OutOfMemoryException: Out of memory",
-            "error": "Out of RAM. This is likely a DDR3 memory issue. Maybe try an older version of MelonLoader."
+            "error": "Out of RAM. Make sure that you are using the correct version of MelonLoader and that you have plenty of RAM."
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] System.Net.WebException: The remote server returned an error: \\(404\\) Not Found.",
