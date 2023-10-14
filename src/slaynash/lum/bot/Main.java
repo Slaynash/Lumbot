@@ -82,6 +82,7 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
+        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
         LogSystem.init();
 

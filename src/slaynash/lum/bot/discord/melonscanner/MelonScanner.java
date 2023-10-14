@@ -397,7 +397,7 @@ public final class MelonScanner {
                 context.pirate = true;
             }
             else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
-                context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
+                context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
@@ -412,7 +412,7 @@ public final class MelonScanner {
         }
         else if (context.game.equalsIgnoreCase("TheLongDark")) {
             if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) >= 0 && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
-                context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to Alpha MelonLoader 0.6.0, you may also need to update your mods.", false);
+                context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
     }
@@ -443,7 +443,7 @@ public final class MelonScanner {
                         url = result.getString("IconURL");
                     if (url == null)
                         context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
-                                Utils.wrapMessageInEmbed("No logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
+                                Utils.wrapMessageInEmbed("No " + (context.pirate ? "pirated " : "") + "logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
                     else if (url.length() > 1) { // allows me to disable messages for edited/test games
                         context.embedBuilder.setThumbnail(url);
                         new Utils().checkIconURL(url, unityName);

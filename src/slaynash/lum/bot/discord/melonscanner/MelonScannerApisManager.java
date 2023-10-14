@@ -539,6 +539,7 @@ public class MelonScannerApisManager {
             }
             catch (Exception e) {
                 exception = e;
+                System.out.println("Lum got " + exception.getClass().getName() + " from " + source + " and is retrying");
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;
             }
