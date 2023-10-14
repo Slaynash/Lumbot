@@ -177,7 +177,7 @@ public class MelonScannerApisManager {
 
                             HttpResponse<byte[]> response;
                             try {
-                                response = downloadRequest(request, api.game + " : " + api.name);
+                                response = downloadRequest(httpClient, request, api.game + " : " + api.name, 8);
                             }
                             catch (ConnectException e) {
                                 System.out.println("MLAPI: " + e.getMessage());
@@ -539,7 +539,7 @@ public class MelonScannerApisManager {
             }
             catch (Exception e) {
                 exception = e;
-                System.out.println("Lum got " + exception.getClass().getName() + " from " + source + " and is retrying");
+                System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
                 Thread.sleep(1000 * 30); // Sleep for half a minute
                 continue;
             }
