@@ -231,6 +231,14 @@ public final class MelonScanner {
         Consumer<MelonScanContext> postReadApiPass = MelonScannerApisManager.getPostReadPass(context.game);
         if (postReadApiPass != null)
             postReadApiPass.accept(context);
+
+        LogsModDetails blrpc;
+        if ((blrpc = context.loadedMods.get("BLRPC")) != null && "SoulWithMae".equals(blrpc.author)) {
+            System.out.println("Found BLRPC");
+            context.loadedMods.remove("BLRPC");
+            blrpc.name = "BonelabRichPresence";
+            context.loadedMods.put("BonelabRichPresence", blrpc);
+        }
     }
 
     private static boolean getModsFromApi(MelonScanContext context) {
