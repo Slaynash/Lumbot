@@ -80,8 +80,7 @@ public class Purge extends Command {
                         messageList.get(0).delete().queue();
                     }
                     else if (messageList.size() <= 100) {
-                        // event.getChannel().asGuildMessageChannel().deleteMessages(messageList).queue();
-                        for (Message message2 : messageList) message2.delete().queue(); // Discord is gay and deleteMessages isn't working for now
+                        event.getChannel().asGuildMessageChannel().deleteMessages(messageList).queue();
                     }
                     else { // greater than 100 messages
                         try {
