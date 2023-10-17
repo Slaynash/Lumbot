@@ -276,7 +276,11 @@ public final class MelonScannerReadPass {
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash + ", author is " + context.tmpModAuthor + ", assembly is " + context.tmpModAssembly);
 
-            if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)) { //ignore BCP, it is part of ModThatIsNotMod
+            if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)   //ignore BCP, it is part of ModThatIsNotMod
+                && !"BoneLibUpdater".equalsIgnoreCase(context.tmpModName)                // part of BoneLib
+                && !"LabFusion Updater".equalsIgnoreCase(context.tmpModName)             // part of BONELAB-Fusion
+                && !"Mod Io Mod Networker Updater".equalsIgnoreCase(context.tmpModName)) // part of ModioModNetworker
+            {
                 if (context.loadedMods.containsKey(context.tmpModName) && context.duplicatedMods.stream().noneMatch(d -> d.hasName(context.tmpModName)))
                     context.duplicatedMods.add(new MelonDuplicateMod(context.tmpModName.trim()));
                 else
