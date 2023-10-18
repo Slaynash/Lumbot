@@ -564,7 +564,7 @@ public class Main extends ListenerAdapter {
         if (report == null) return;
         TextChannel reportchannel = event.getGuild().getTextChannelById(report);
         if (reportchannel == null) return;
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
+        String name = Junidecode.unidecode(event.getUser().getName() + event.getUser().getGlobalName()).toLowerCase().replaceAll("[^ a-z]", "");
 
         boolean foundblacklist = false;
         try {
@@ -576,12 +576,18 @@ public class Main extends ListenerAdapter {
             ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
         }
 
+        String displayName;
+        if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
+            displayName = event.getUser().getName();
+        else
+            displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
+
         if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            reportchannel.sendMessage(event.getUser().getEffectiveName() + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(displayName + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
             event.getMember().kick().reason("Lum: Scammer joined").queue();
         }
         else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getUser().getEffectiveName() + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+            reportchannel.sendMessage(displayName + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
         }
     }
 
