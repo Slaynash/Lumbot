@@ -968,8 +968,11 @@ public final class MelonScanner {
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
             }
-            if (VersionUtils.compareVersion(context.gameBuild, "1.500") < 0 && context.loadedMods.containsKey("LabFusion")) {
+            if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("LabFusion")) {
                 error += Localization.get("LabFusion is not compatible with this version of the game. Please update to public beta.", context.lang) + "\n";
+            }
+            if (context.game.equalsIgnoreCase("BloonsTD6") && context.line.contains("Plugins loaded.") && VersionUtils.compareVersion(context.mlVersion, "0.6.2") < 0) {
+                error += Localization.get("You need to update MelonLoader to [nightly](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.x64.CI.Release.zip). Take a look at https://discord.com/channels/663449315876012052/795689414181257216/1161410464517992559 if you need instuctions", context.lang) + "\n";
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
