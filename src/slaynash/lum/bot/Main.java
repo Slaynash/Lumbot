@@ -653,7 +653,7 @@ public class Main extends ListenerAdapter {
                 return;
             }
             if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-                reportchannel.sendMessage(event.getNewName() + " just changed their name from " + event.getOldName() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+                reportchannel.sendMessage(event.getNewName() + " just changed their username from " + event.getOldName() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
             }
         }
     }

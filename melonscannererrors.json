@@ -30,7 +30,7 @@
         },
         {
             "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.*",
-            "error": "Virus Scanner blocked MelonLoader. Please whitelist MelonLoader folder and try again."
+            "error": "Virus Scanner blocked MelonLoader. Please whitelist MelonLoader folder and try again or reinstall MelonLoader."
         },
         {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
@@ -154,10 +154,6 @@
         {
             "regex": ".*System.MissingMethodException.*AssetsManager.*",
             "error": "Some foreign files are causing issues. Please remove everything that you don't see in the image below.$cleanunity$"
-        },
-        {
-            "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.",
-            "error": "Failed virus check. Please reinstall MelonLoader and do not edit any MelonLoader files."
         },
         {
             "regex": ".*System.TypeInitializationException: The type initializer for 'HarmonyLib.AccessTools' threw an exception.*",
@@ -387,6 +383,7 @@
         "Gurren Core": "Gurren Core is no longer needed and should be removed from the mods folder.",
         "NKHook6": "NKHook6 is broken and should be removed from the mods folder.",
         "GoldVillage": "GoldVillage takes a long time to load on start, it may look like your game is crashing/freezing, but you just need to wait.",
+        "TSG Village": "GoldVillage takes a long time to load on start, it may look like your game is crashing/freezing, but you just need to wait.",
 
         "Custom Items Framework": "Please replace Custom Items Framework with [ModThatIsNotMod](https://boneworks.thunderstore.io/package/gnonme/ModThatIsNotMod/).",
         "EasyMenu": "Please replace EasyMenu with [ModThatIsNotMod](https://boneworks.thunderstore.io/package/gnonme/ModThatIsNotMod/)."

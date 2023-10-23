@@ -968,6 +968,9 @@ public final class MelonScanner {
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
             }
+            if (VersionUtils.compareVersion(context.gameBuild, "1.500") < 0 && context.loadedMods.containsKey("LabFusion")) {
+                error += Localization.get("LabFusion is not compatible with this version of the game. Please update to public beta.", context.lang) + "\n";
+            }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
                 context.embedBuilder.addField(Localization.get("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", context.lang), Localization.get("Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", context.lang), false);
