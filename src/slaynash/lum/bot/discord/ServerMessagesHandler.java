@@ -362,7 +362,7 @@ public class ServerMessagesHandler {
             content = content.toLowerCase();
             if (event.getAuthor().equals(event.getJDA().getSelfUser()))
                 return true;
-            String guildID = event.getGuild().getId();
+            String guildID = event.isFromGuild() ? event.getGuild().getId() : "0";
             if (event.getChannelType() == ChannelType.TEXT && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildID = "0";
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = '" + guildID + "'");

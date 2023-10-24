@@ -65,7 +65,7 @@ public class SteamWatcher extends Slash {
             else {
                 StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game)\n");
                 for (SteamChannel sc : channels) {
-                    sb.append(event.getJDA().getTextChannelById(sc.channelId()).getName()).append(" -> ").append(new Steam().getGameName(Integer.parseInt(sc.gameID()))).append(" (").append(sc.gameID()).append(")"); //maybe look into sorting by channels
+                    sb.append(event.getJDA().getGuildChannelById(sc.channelId()).getName()).append(" -> ").append(new Steam().getGameName(Integer.parseInt(sc.gameID()))).append(" (").append(sc.gameID()).append(")"); //maybe look into sorting by channels
                     if (sc.publicMessage() != null) sb.append(" (Public: ").append(sc.publicMessage()).append(")");
                     if (sc.betaMessage() != null) sb.append(" (Beta: ").append(sc.betaMessage()).append(")");
                     if (sc.otherMessage() != null) sb.append(" (Other: ").append(sc.otherMessage()).append(")");

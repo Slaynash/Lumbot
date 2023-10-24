@@ -492,7 +492,12 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceUpdate(@NotNull GuildVoiceUpdateEvent event) {
-        Moderation.voiceEvent(event);
+        try {
+            Moderation.voiceEvent(event);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Exception while handling GuildVoiceUpdate event:", e);
+        }
     }
 
     @Override
@@ -521,12 +526,22 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        SlashManager.slashRun(event);
+        try {
+            SlashManager.slashRun(event);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Exception while handling SlashCommandInteraction event:", e);
+        }
     }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        SlashManager.buttonClicked(event);
+        try {
+            SlashManager.buttonClicked(event);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Exception while handling ButtonInteraction event:", e);
+        }
     }
 
     @Override
