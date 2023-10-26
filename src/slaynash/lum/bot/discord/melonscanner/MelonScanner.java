@@ -933,53 +933,65 @@ public final class MelonScanner {
     private static boolean minorErrorsHandling(MelonScanContext context) {
         if (context.mlHashCode != null && context.mlHashCode.equals("57545710048555350515452101521025297995653101559949575755515399509950") && (context.loadedMods.containsKey("Action Menu") || context.loadedMods.containsKey("CameraAnimation") || context.loadedMods.containsKey("FreezeFrame")))
             context.embedBuilder.addField("AM issue", "There is an issue with ML 0.5.5. Please try the latest [nightly build of ML](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip) or maybe downgrade to 0.5.4.", false);
-        if (!context.assemblyGenerationFailed && !context.isMLOutdated && context.duplicatedMods.isEmpty() && context.outdatedMods.isEmpty()) {
+        if (!context.assemblyGenerationFailed && context.duplicatedMods.isEmpty() && context.outdatedMods.isEmpty()) {
             String error = "";
             if (context.noMods && context.missingMods.isEmpty() && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
-                error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
+                error += "- " + Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
             if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
                 long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
                 if (guildID == 439093693769711616L)
-                    error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
+                    error += "- " + Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
                 else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
-                    error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
+                    error += "- " + Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
                     context.embedBuilder.setThumbnail("https://pbs.twimg.com/media/EU5rcX4WsAMcc-y?format=jpg");
                 }
                 else
-                    error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
-            }
-            if (context.hasNonModErrors && context.errors.isEmpty()) {
-                error += Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
-                context.unidentifiedErrors = true;
+                    error += "- " + Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
             }
             if (context.mlVersion != null && VersionUtils.compareVersion(context.latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
-                error += Localization.get("Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder", context.lang) + "\n";
-            }
-            if (context.corePath != null && context.corePath.toLowerCase().contains("r2modman")) {
-                error += Localization.get("MelonLoader loaded from r2modman. If you had any issues, please try to run MelonLoader without r2modman.", context.lang) + "\n";
+                error += Localization.get("- Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n", context.lang);
             }
             if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
-                error += Localization.get("MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.", context.lang) + "\n";
+                error += Localization.get("- MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.\n", context.lang);
             }
             if (context.line.contains("Downloading")) {
-                error += Localization.get("MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.", context.lang) + "\n";
+                error += Localization.get("- MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.\n", context.lang);
             }
             if (context.line.contains("Contacting RemoteAPI...")) {
-                error += Localization.get("Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.", context.lang) + "\n";
+                error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
             }
             if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("LabFusion")) {
-                error += Localization.get("LabFusion is not compatible with this version of the game. Please update to public beta.", context.lang) + "\n";
+                error += Localization.get("- LabFusion is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+            }
+            else if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") >= 0) {
+                error += Localization.get("- BoneLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+            }
+            else if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) > 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") < 0) {
+                error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+            }
+            else if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") >= 0) {
+                error += Localization.get("- JeviLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+            }
+            else if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
+                error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
             }
             if ("BloonsTD6".equalsIgnoreCase(context.game) && context.line.contains("Plugins loaded.") && VersionUtils.compareVersion(context.mlVersion, "0.6.2") < 0) {
-                error += Localization.get("You need to update MelonLoader to [nightly](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.x64.CI.Release.zip). Take a look at https://discord.com/channels/663449315876012052/795689414181257216/1161410464517992559 if you need instuctions", context.lang) + "\n";
+                error += Localization.get("- You need to update MelonLoader to [nightly](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.x64.CI.Release.zip). Take a look at https://discord.com/channels/663449315876012052/795689414181257216/1161410464517992559 if you need instuctions\n", context.lang);
+            }
+            if (context.corePath != null && context.corePath.toLowerCase().contains("r2modman")) {
+                error += Localization.get("- MelonLoader loaded from r2modman. If you had any issues, please try to run MelonLoader without r2modman.\n", context.lang);
             }
 
             if (context.osType != null && context.osType.matches("Wine.*") && (context.missingMods.contains("UnityEngine.UI") || context.missingMods.contains("Assembly-CSharp")))
                 context.embedBuilder.addField(Localization.get("We are investigating issues with melonloader on recent versions of Wine and IL2CPP games.", context.lang), Localization.get("Try and run both of these commands```protontricks --no-runtime 305620 --force vcrun2019\nprotontricks --no-runtime 305620 --force dotnet48```then select win10 and add version to overrides.", context.lang), false);
 
-            if (!error.isEmpty()) {
-                context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error, false);
+            if (context.hasNonModErrors && context.errors.isEmpty()) {
+                error += "\n" + Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
+                context.unidentifiedErrors = true;
+            }
+            if (!error.isBlank()) {
+                context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error.trim(), false);
                 context.embedColor = Color.RED;
             }
             else if (context.mlCrashed || context.mlVersion != null && (context.loadedMods.isEmpty() || context.preListingModsPlugins) && context.errors.isEmpty()) {

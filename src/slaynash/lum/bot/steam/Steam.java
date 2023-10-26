@@ -181,8 +181,10 @@ public class Steam {
                     ExceptionUtils.reportException("Failed to fetch SteamWatch in Changes", e);
                     continue;
                 }
-                if (!JDAManager.isEventsEnabled())
+                if (!JDAManager.isEventsEnabled()) {
+                    System.out.println("Steam sees Events disabled");
                     continue;
+                }
                 if (!channels.isEmpty()) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("New Steam changelist from " + getGameName(gameID) + " (#" + changeDataPair.getValue().getChangeNumber() + ")", "https://steamdb.info/app/" + gameID + "/history/?changeid=" + changeDataPair.getValue().getChangeNumber());
@@ -191,11 +193,15 @@ public class Steam {
                         if (testChannel(sc))
                             continue;
                         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
-                        if (guild == null) // kinda useless since we already tested it in testChannel but whatever
+                        if (guild == null) { // kinda useless since we already tested it in testChannel but whatever
+                            System.out.println("Steam can not find Guild " + sc.guildID());
                             continue;
+                        }
                         MessageChannel channel = (MessageChannel) guild.getGuildChannelById(sc.channelId());
-                        if (channel == null) // kinda useless but whatever
+                        if (channel == null) { // kinda useless but whatever
+                            System.out.println("Steam can not find Channel " + sc.channelId() + " from guild " + sc.guildID());
                             continue;
+                        }
                         if (channel.canTalk())
                             channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
@@ -391,10 +397,14 @@ public class Steam {
     // * @param sc
     // * @return true if channel is invalid
     private static boolean testChannel(SteamChannel sc) {
-        if (JDAManager.getJDA() == null)
+        if (JDAManager.getJDA() == null) {
+            System.out.println("Steam can not find JDA");
             return true;
-        if (!JDAManager.getJDA().getStatus().equals(JDA.Status.CONNECTED))
+        }
+        if (!JDAManager.getJDA().getStatus().equals(JDA.Status.CONNECTED)) {
+            System.out.println("Steam finds JDA is disconnected");
             return true;
+        }
         Guild guild = JDAManager.getJDA().getGuildById(sc.guildID());
         if (guild == null) {
             System.out.println("Steam can not find Guild " + sc.guildID());
