@@ -961,20 +961,23 @@ public final class MelonScanner {
             if (context.line.contains("Contacting RemoteAPI...")) {
                 error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
             }
-            if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("LabFusion")) {
-                error += Localization.get("- LabFusion is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
-            }
-            else if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") >= 0) {
-                error += Localization.get("- BoneLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
-            }
-            else if (context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) > 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") < 0) {
-                error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
-            }
-            else if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) < 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") >= 0) {
-                error += Localization.get("- JeviLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
-            }
-            else if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1)) > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
-                error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+            if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && context.gameBuild.matches("[\\d.]+")) {
+                int buildInt = Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1));
+                if (buildInt < 33000 && context.loadedMods.containsKey("LabFusion")) {
+                    error += Localization.get("- LabFusion is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+                }
+                else if (buildInt < 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") >= 0) {
+                    error += Localization.get("- BoneLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+                }
+                else if (buildInt > 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") < 0) {
+                    error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+                }
+                else if (buildInt < 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") >= 0) {
+                    error += Localization.get("- JeviLib is not compatible with this version of the game. Please update to public beta Patch3.\n", context.lang);
+                }
+                else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
+                    error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+                }
             }
             if ("BloonsTD6".equalsIgnoreCase(context.game) && context.line.contains("Plugins loaded.") && VersionUtils.compareVersion(context.mlVersion, "0.6.2") < 0) {
                 error += Localization.get("- You need to update MelonLoader to [nightly](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.x64.CI.Release.zip). Take a look at https://discord.com/channels/663449315876012052/795689414181257216/1161410464517992559 if you need instuctions\n", context.lang);
