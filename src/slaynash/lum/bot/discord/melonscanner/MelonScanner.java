@@ -936,18 +936,18 @@ public final class MelonScanner {
         if (!context.assemblyGenerationFailed && context.duplicatedMods.isEmpty() && context.outdatedMods.isEmpty()) {
             String error = "";
             if (context.noMods && context.missingMods.isEmpty() && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
-                error += "- " + Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
+                error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
             if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
                 long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
                 if (guildID == 439093693769711616L)
-                    error += "- " + Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
+                    error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
                 else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
-                    error += "- " + Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
+                    error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
                     context.embedBuilder.setThumbnail("https://pbs.twimg.com/media/EU5rcX4WsAMcc-y?format=jpg");
                 }
                 else
-                    error += "- " + Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
+                    error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
             }
             if (context.mlVersion != null && VersionUtils.compareVersion(context.latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
                 error += Localization.get("- Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n", context.lang);
