@@ -200,7 +200,7 @@ public class ChattyLum {
     }
 
     public static boolean handle(String message, MessageReceivedEvent event) {
-        //message is lowercased and unidecode
+        //message is lowercased and unidecoded
         if (
             handleThanks(message, event) ||
             handleHelp(message, event))
@@ -235,6 +235,21 @@ public class ChattyLum {
         }
         if (message.replace(" ", "").contains("ohno") && message.contains("anyway")) {
             event.getChannel().sendMessage("https://tenor.com/view/oh-no-oh-no-anyway-gif-18887547").queue();
+            return true;
+        }
+        if (message.matches(".*install vrc(|hat) sdk.*")) {
+            System.out.println("Lum VRCSDK");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/972746728136671232/How_to_install_VRC_SDK.mp4").queue();
+            return true;
+        }
+        if (message.matches(".*\\b(looking for a girl).*")) {
+            System.out.println("looking for a girl");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/975632183949688942/looking_for_a_girl.mp4").queue();
+            return true;
+        }
+        if (message.contains("hatsune")) {
+            System.out.println("hatsu miku");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/1170227546831466526/Miku.mp4").queue();
             return true;
         }
 
@@ -321,16 +336,6 @@ public class ChattyLum {
         if (message.matches(".*\\b(handcuf).*")) {
             System.out.println("Lum handcuff");
             event.getChannel().sendMessage("<:Neko_cop:865328472540971058>").queue();
-            return true;
-        }
-        if (message.matches(".*install vrc(|hat) sdk.*")) {
-            System.out.println("Lum VRCSDK");
-            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/972746728136671232/How_to_install_VRC_SDK.mp4").queue();
-            return true;
-        }
-        if (message.matches(".*\\b(looking for a girl).*")) {
-            System.out.println("looking for a girl");
-            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/975632183949688942/looking_for_a_girl.mp4").queue();
             return true;
         }
 

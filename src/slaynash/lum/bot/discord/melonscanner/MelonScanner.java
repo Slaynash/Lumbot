@@ -246,7 +246,7 @@ public final class MelonScanner {
             context.game = "BloonsTD6";
             context.epic = true;
         }
-        return (context.modDetails = MelonScannerApisManager.getMods(context.game)) != null;
+        return MelonScannerApisManager.getMods(context);
     }
 
     private static void cleanupDuplicateMods(MelonScanContext context) {
@@ -311,10 +311,10 @@ public final class MelonScanner {
             boolean latestModBroken = false;
             for (MelonApiMod modDetail : context.modDetails) {
                 if (modDetail.id != null && modDetail.id.equals(id) ||
-                    modDetail.name.replaceAll("[-_ ]", "").equals(modName.replaceAll("[-_ ]", "")) ||
+                    modDetail.name.replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
                     (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
                 {
-                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw());
+                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw() + modDetail.id != null ? " id: " + modDetail.id : "");
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
