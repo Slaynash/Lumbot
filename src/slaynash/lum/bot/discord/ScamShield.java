@@ -175,7 +175,7 @@ public class ScamShield {
             if (m.find()) {
                 msg = msg.replaceAll("\\[.*]", "");
                 if (!msg.contains(m.group("shown")))
-                    ssFoundTerms.put("HiddenEmbed", 2);
+                    ssFoundTerms.put("HiddenEmbed", 1);
             }
         }
 
@@ -226,6 +226,8 @@ public class ScamShield {
             System.out.println("Member is null, skipping SS");
             return false;
         }
+        if (event.getAuthor().isBot())
+            return false;
         if (CrossServerUtils.checkIfStaff(event))
             return false;
 

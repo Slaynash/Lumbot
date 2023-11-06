@@ -3,6 +3,7 @@ package slaynash.lum.bot;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -30,6 +31,8 @@ public final class ConfigManager {
     public static String cvrmgBlacklist;
 
     public static String curseforgeApiKey;
+
+    public static String commitHash;
 
     public static void init() {
         if (initialized)
@@ -66,6 +69,23 @@ public final class ConfigManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load config", e);
+        }
+
+        commitHash = "unknown";
+        try {
+            InputStream gitstream = Main.class.getResourceAsStream("/git.properties");
+            if (gitstream != null) {
+                java.util.Properties properties = new java.util.Properties();
+                properties.load(gitstream);
+                System.out.println("Lum hash: " + properties.getProperty("git.commit.id.abbrev"));
+                System.out.println("Lum build time: " + properties.getProperty("git.build.time"));
+                commitHash = properties.getProperty("git.commit.id.abbrev");
+            }
+            else
+                System.err.println("Failed to load git.properties");
+        }
+        catch (IOException e) {
+            ExceptionUtils.reportException("Failed to load git commit hash", e);
         }
     }
 }

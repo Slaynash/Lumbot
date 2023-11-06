@@ -415,6 +415,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageUpdate(@NotNull MessageUpdateEvent event) {
+        if (event.getAuthor().isBot()) return;
         if (!MessageProxy.edits(event) && !event.isFromType(ChannelType.PRIVATE)) {
             ScamShield.checkForFishing(event);
         }
