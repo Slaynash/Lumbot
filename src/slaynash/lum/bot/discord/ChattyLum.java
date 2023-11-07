@@ -247,7 +247,7 @@ public class ChattyLum {
             event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/975632183949688942/looking_for_a_girl.mp4").queue();
             return true;
         }
-        if (message.contains("hatsune")) {
+        if (event.getMessage().getContentRaw().replace(" ", "").toLowerCase().contains("hatsunemiku")) {
             System.out.println("hatsu miku");
             event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/1170227546831466526/Miku.mp4").queue();
             return true;

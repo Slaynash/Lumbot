@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.utils.FileUpload;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
@@ -103,7 +104,7 @@ public class UnivUCBLLIFExoGenerator extends Slash {
             HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://liris.cnrs.fr/vincent.nivoliers/suzette.php?exo=" + exo + "&query=" + subcommandname + (ticket != null ? ("&ticket=" + ticket) : "")))
-                .setHeader("User-Agent", "LUM Bot")
+                .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
                 .timeout(Duration.ofSeconds(30))
                 .build();
 

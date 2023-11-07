@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import com.google.gson.reflect.TypeToken;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -42,7 +43,7 @@ public class UnityDownloader {
     private static final HttpRequest request = HttpRequest.newBuilder()
         .GET()
         .uri(URI.create("https://unity3d.com/get-unity/download/archive"))
-        .setHeader("User-Agent", "LUM Bot")
+        .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
         .timeout(Duration.ofSeconds(30))
         .build();
 

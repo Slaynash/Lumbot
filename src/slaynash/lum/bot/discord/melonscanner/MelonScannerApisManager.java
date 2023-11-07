@@ -114,7 +114,7 @@ public class MelonScannerApisManager {
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .GET()
-                        .setHeader("User-Agent", "LUM Bot")
+                        .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
                         .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                         .setHeader("Pragma", "no-cache")
                         .setHeader("Expires", "-1")
