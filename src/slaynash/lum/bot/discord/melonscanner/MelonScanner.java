@@ -505,7 +505,7 @@ public final class MelonScanner {
         if (context.game != null && context.mlVersion != null && !context.latestMLVersionAlpha.equals(context.latestMLVersionRelease) && context.mlVersion.equals(context.latestMLVersionAlpha))
             context.reportMessage.append("*").append(Localization.get("melonscanner.reportmessage.alpha", context.lang)).append("*\n");
 
-        if (context.game != null && context.modDetails == null)
+        if (context.game != null && !context.modApiFound)
             context.reportMessage.append("*").append(Localization.getFormat("melonscanner.reportmessage.notsupported", context.lang, context.game)).append("*\n");
 
         context.embedBuilder.setDescription(context.reportMessage);

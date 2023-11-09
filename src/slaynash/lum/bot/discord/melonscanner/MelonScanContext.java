@@ -105,6 +105,7 @@ public class MelonScanContext {
 
     // Thinkering pass
     public List<MelonApiMod> modDetails;
+    public boolean modApiFound = false;
     public final List<LogsModDetails> unknownMods = new ArrayList<>();
     public final List<String> brokenMods = new ArrayList<>();
     public final List<String> retiredMods = new ArrayList<>();

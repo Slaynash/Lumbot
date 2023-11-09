@@ -481,7 +481,7 @@ public class MelonScannerApisManager {
         if (context.game == null)
             return false;
         List<MelonApiMod> list = getMods(context.game);
-        boolean result = list != null;
+        context.modApiFound = list != null;
 
         if (list == null)
             list = new ArrayList<>();
@@ -490,7 +490,7 @@ public class MelonScannerApisManager {
         list.add(new MelonApiMod(null, "UnityExplorer", "4.9.4", "https://github.com/GrahamKracker/UnityExplorer#melonloader", null));
 
         context.modDetails = list;
-        return result;
+        return context.modApiFound;
     }
 
     public static Consumer<MelonScanContext> getPostReadPass(String game) {
