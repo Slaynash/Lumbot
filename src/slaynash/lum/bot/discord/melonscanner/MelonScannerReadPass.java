@@ -53,15 +53,15 @@ public final class MelonScannerReadPass {
                 if (compromisedMLCheck(context))
                     return true;
 
-                if (processMissingDependenciesListing(context))
-                    continue;
-
-                if (incompatibilityCheck(context))
-                    continue;
-
-                if (context.readingIncompatibility)
+                if (context.readingIncompatibility) {
                     if (processIncompatibilityListing(context))
                         continue;
+                }
+                else if (incompatibilityCheck(context))
+                    continue;
+
+                if (processMissingDependenciesListing(context))
+                    continue;
 
                 if ((context.preListingModsPlugins || context.listingModsPlugins) && !context.pre3)
                     if (processML03ModListing(context))
@@ -319,6 +319,7 @@ public final class MelonScannerReadPass {
 
     private static boolean incompatibilityCheck(MelonScanContext context) {
         if (context.line.matches("- '.*' is incompatible with the following Melons:")) {
+            System.out.println("Starting to list Incompatibility");
             String[] split = context.line.split("'", 3);
             if (split.length < 2) return true;
             context.currentIncompatibleMods = split[1];
@@ -432,6 +433,7 @@ public final class MelonScannerReadPass {
     private static boolean processIncompatibilityListing(MelonScanContext context) {
         String line = context.line;
         if (line.matches(" {4}- '.*'.*")) {
+            System.out.println("Found incompatible mod " + line);
             String[] split = line.split("'", 3);
             if (split.length < 2) return true;
             String incompatibleModName = split[1];
@@ -439,6 +441,7 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.matches("- '.*' is incompatible with the following Melons:")) {
+            System.out.println("Starting to print mod Incompatibility" + line);
             String[] split = line.split("'", 3);
             if (split.length < 2) return true;
             context.currentIncompatibleMods = split[1];

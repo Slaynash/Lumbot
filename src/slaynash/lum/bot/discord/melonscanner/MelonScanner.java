@@ -314,7 +314,7 @@ public final class MelonScanner {
                     modDetail.name.replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
                     (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
                 {
-                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw() + modDetail.id != null ? " id: " + modDetail.id : "");
+                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw() + (modDetail.id != null ? " id2: " + modDetail.id : ""));
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version;
                     latestModDownloadUrl = modDetail.downloadLink;
@@ -710,7 +710,7 @@ public final class MelonScanner {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.oldMods.size() && i < (context.oldMods.size() == 21 ? 21 : 20); ++i) {
                 String modName = context.oldMods.get(i);
-                if (context.modDetails != null) { //null check for games without an API
+                if (context.modApiFound) { //null check for games without an API
                     if (context.outdatedMods.stream().anyMatch(m -> m.name.equals(modName)))
                         continue;
                 }
