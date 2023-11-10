@@ -377,6 +377,10 @@
             {
                 "regex": "\\[[\\d.:]+] \\[CraftingRevisions] \\[ERROR] System.ArgumentException: (?<blueprint>Validation of blueprint.*)",
                 "error": "blueprint"
+            },
+            {
+                "regex": "\\[[\\d.:]+] System.ArgumentException: Could not load 'GEAR_TarpSheet' referenced by 'GEAR_Tent'.",
+                "error": "Missing Dependency: [Modders' Gear Toolbox](https://tldmods.com/?q=toolbox)"
             }
         ],
         "AGameThatDoesn'tExists_НЕТ": []
