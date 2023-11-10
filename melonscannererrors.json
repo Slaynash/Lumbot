@@ -312,6 +312,10 @@
             "regex": ".*Failed to load Melon Assembly from '.*\\\\(?<modname>.*)':",
             "nextLineRegex": ".*Assembly with same name is already loaded",
             "error": "You have a duplicate mod installed. Please remove modname and try again."
+        },
+        {
+            "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] Error Generating Interop Assemblies!",
+            "error": "Uninstall MelonLoader and remove the MelonLoader folder if left behind, then re-install it."
         }
     ],
     "gameSpecificErrors": {
