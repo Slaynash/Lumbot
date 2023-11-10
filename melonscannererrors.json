@@ -314,7 +314,7 @@
             "error": "You have a duplicate mod installed. Please remove modname and try again."
         },
         {
-            "regex": "\\[Il2CppAssemblyGenerator\\] Error Generating Interop Assemblies!",
+            "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] Error Generating Interop Assemblies!",
             "error": "Uninstall MelonLoader and remove the MelonLoader folder if left behind, then re-install it."
         }
     ],
