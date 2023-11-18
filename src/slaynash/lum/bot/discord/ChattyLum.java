@@ -182,6 +182,17 @@ public class ChattyLum {
         "https://tenor.com/view/anime-what-gif-24642265"
     ));
 
+    private static final ArrayList<String> padoru = new ArrayList<>(Arrays.asList(
+        "<:Neko_padoru:865328474150797342>",
+        "https://cdn.discordapp.com/attachments/657545944136417280/920891104281374780/Gura_Padoru.mp4",
+        "https://cdn.discordapp.com/attachments/854071236363550766/1175232243367673946/padorrru.mov",
+        "https://cdn.discordapp.com/attachments/854071236363550766/1175231800763752588/padoru_padoru.mp4",
+        "https://tenor.com/view/padoru-merry-christmas-gif-12945572",
+        "https://tenor.com/view/umu-padoru-umu-intensifies-gif-15765581",
+        "https://tenor.com/view/anime-padoru-gif-13060672",
+        "https://tenor.com/view/padoru-konosuba-gif-19460573"
+    ));
+
     static { //on class load, nothing is removing these when the season is over other then a reboot
         if (LocalDate.now().getMonthValue() == 10) { //halloween
             helloLum.add("<:Neko_mummy:865328473761775627>");
@@ -210,7 +221,7 @@ public class ChattyLum {
             return false;
 
         if (message.contains("padoru")) {
-            event.getMessage().reply("https://cdn.discordapp.com/attachments/657545944136417280/920891104281374780/Gura_Padoru.mp4").queue();
+            event.getMessage().reply(padoru.get(random.nextInt(padoru.size()))).queue();
             return true;
         }
         if (message.contains("do a barrel roll")) {

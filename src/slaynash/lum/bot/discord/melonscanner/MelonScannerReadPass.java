@@ -331,16 +331,16 @@ public final class MelonScannerReadPass {
 
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
+        if (line.contains("Could not load file or assembly '")) {
+            String[] split = line.split("Could not load file or assembly '");
+            if (split.length < 2) return true;
+            String missingName = split[1].split(",")[0];
+            if (!context.missingMods.contains(missingName))
+                context.missingMods.add(missingName);
+            return true;
+        }
         if (line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {
-            if (line.contains("Could not load file or assembly '")) {
-                String[] split = line.split("Could not load file or assembly '");
-                if (split.length < 2) return true;
-                String missingName = split[1].split(",")[0];
-                if (!context.missingMods.contains(missingName))
-                    context.missingMods.add(missingName);
-                return true;
-            }
-            else if (line.toLowerCase().contains("exception") && !line.toLowerCase().contains("typeloadexception")) {
+            if (line.toLowerCase().contains("exception") && !line.toLowerCase().contains("typeloadexception")) {
                 String erroringName = splitName(line).replace("_", " ");
                 //TODO check if broken
                 if (!context.modsThrowingErrors.contains(erroringName))
