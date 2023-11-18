@@ -75,13 +75,14 @@ public class MelonScannerApisManager {
     private static boolean doneFirstInit = false;
 
     private static final List<Entry<MelonScannerApi, Instant>> erroringAPIs = new ArrayList<>();
+    private static enum CommunityUrlType { SubDomain, MainDomain };
 
     static {
         MelonScannerApi api;
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
-        apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
-        apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
+        apis.add(new ThunderstoreApi("BONELAB", "bonelab", CommunityUrlType.SubDomain));
+        apis.add(new ThunderstoreApi("BONEWORKS", "boneworks", CommunityUrlType.SubDomain));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
         apis.add(api = new CurseforgeApi("Demeo", 78135));
         api.setPostReadPass(context -> { // TODO move this to a lua script
@@ -94,8 +95,9 @@ public class MelonScannerApisManager {
                 }
             }
         });
-        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
+        apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet", CommunityUrlType.SubDomain));
         apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
+        apis.add(new ThunderstoreApi("Lethal Company", "lethal-company", CommunityUrlType.MainDomain));
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
@@ -447,13 +449,21 @@ public class MelonScannerApisManager {
     }
 
     private static class ThunderstoreApi extends MelonScannerApi {
-        public ThunderstoreApi(String game, String tsName) {
-            super(game, "thunderstore:" + tsName, "https://" + tsName + ".thunderstore.io/api/v1/package/");
+        public ThunderstoreApi(String game, String tsName, CommunityUrlType communityUrlType) {
+            super(game, "thunderstore:" + tsName, getURL(tsName, communityUrlType));
         }
 
         @Override
         public String getScriptName() {
             return "thunderstore";
+        }
+
+        private static String getURL(String tsName, CommunityUrlType communityUrlType) {
+            return switch (communityUrlType) {
+                case SubDomain -> "https://" + tsName + ".thunderstore.io/api/v1/package/";
+                case MainDomain -> "https://thunderstore.io/c/" + tsName + "/api/v1/package/";
+                default -> throw new IllegalArgumentException("Invalid CommunityUrlType: " + communityUrlType);
+            };
         }
     }
 
