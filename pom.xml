@@ -101,7 +101,7 @@
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>5.0.0-beta.17</version>
+      <version>5.0.0-beta.18</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId> <!-- Exclude DISCORD AUDIO -->
@@ -124,7 +124,7 @@
       <!-- NON-ANDROID ONLY -->
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.76</version>
+      <version>1.77</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

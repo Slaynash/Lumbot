@@ -21,11 +21,20 @@ public class JDAManager {
     public static void init(String token) throws InterruptedException {
         if (!init) init = true;
         else return;
-        jda = JDABuilder.createDefault(token)
-                .setChunkingFilter(ChunkingFilter.NONE)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
-                .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
-                .build();
+        while (true) {
+            try {
+                jda = JDABuilder.createDefault(token)
+                    .setChunkingFilter(ChunkingFilter.NONE)
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS, GatewayIntent.GUILD_MESSAGE_TYPING, GatewayIntent.DIRECT_MESSAGE_TYPING, GatewayIntent.GUILD_EMOJIS_AND_STICKERS)
+                    .build();
+                break;
+            }
+            catch (Exception e) {
+                System.out.println("Error while building JDA: " + e.getMessage());
+                Thread.sleep(30 * 1000); //Wait 30 seconds before retrying
+            }
+        }
         jda.awaitReady();
         EnumSet<Message.MentionType> deny = EnumSet.of(Message.MentionType.EVERYONE, Message.MentionType.HERE, Message.MentionType.ROLE);
         MessageRequest.setDefaultMentions(EnumSet.complementOf(deny));
