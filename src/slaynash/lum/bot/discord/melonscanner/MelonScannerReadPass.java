@@ -158,7 +158,7 @@ public final class MelonScannerReadPass {
         else if (context.preListingModsPlugins && line.matches("\\[[\\d.:]+] -{30,}")) {
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+] \\[.*")) {
+        else if (line.matches("\\[[\\d.:]+] \\[.*") && !line.matches(".*v\\d.*")) {
             return false; //some mod is printing in the middle of the mod listing
         }
         else if (!line.matches("\\[[\\d.:]+].*")) {
@@ -244,9 +244,9 @@ public final class MelonScannerReadPass {
             return true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? by .*")) {
-            String[] split = line.split(" ", 3);
-            if (split.length > 2)
-                context.tmpModAuthor = split[2];
+            String[] split = line.split(" by", 2);
+            if (split.length > 1)
+                context.tmpModAuthor = split[1].trim();
             else
                 context.tmpModAuthor = "Broken Author";
             if (context.tmpModName == null) {
