@@ -345,14 +345,13 @@ public final class MelonScannerReadPass {
                 //TODO check if broken
                 if (!context.modsThrowingErrors.contains(erroringName))
                     context.modsThrowingErrors.add(erroringName);
-                return true;
             }
             else {
                 String oldName = splitName(line);
                 if (!context.oldMods.contains(oldName))
                     context.oldMods.add(oldName);
-                return true;
             }
+            return true;
         }
 
         if ("BloonsTD6".equalsIgnoreCase(context.game) && !context.loadedMods.containsKey("BloonsTD6 Mod Helper") && line.matches(".*No Compatibility Layer Found!")) {

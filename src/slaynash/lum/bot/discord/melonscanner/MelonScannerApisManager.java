@@ -300,9 +300,11 @@ public class MelonScannerApisManager {
                                 EmbedBuilder eb = new EmbedBuilder();
                                 eb.setTitle("MelonScanner API for " + api.game + " : " + api.name + " is no longer erroring");
                                 eb.setDescription("It has been erroring for " + Duration.between(erroringAPIs.stream().filter(entry -> entry.getKey() == api).findFirst().orElseThrow().getValue(), Instant.now())
-                                        .truncatedTo(ChronoUnit.SECONDS).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 "));
+                                        .truncatedTo(ChronoUnit.SECONDS).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ")
+                                        + (ConfigManager.mainBot ? "" : "\n\nFrom backup bot"));
 
-                                JDAManager.getJDA().getTextChannelById("912757433913454612").sendMessageEmbeds(eb.build()).queue();
+                                if (JDAManager.isEventsEnabled())
+                                    JDAManager.getJDA().getTextChannelById("912757433913454612").sendMessageEmbeds(eb.build()).queue();
                                 erroringAPIs.removeIf(entry -> entry.getKey() == api);
                             }
 
