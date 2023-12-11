@@ -274,6 +274,9 @@ public final class MelonScannerReadPass {
 
             context.modAssemblies.stream().filter(m -> m.assembly.equalsIgnoreCase(context.tmpModAssembly)).findFirst().ifPresent(m -> context.tmpModHash = m.hash);
 
+            if (context.tmpModHash.equalsIgnoreCase("8576e150d7f25afd57c6fd03d7f602c22ff9c91ec8e58ce70db84aa77b8dd670"))
+                context.tmpModVersion = "1.2.1"; //Fix for BTD6EpicGamesModCompat
+
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash + ", author is " + context.tmpModAuthor + ", assembly is " + context.tmpModAssembly);
 
             if (!"Backwards Compatibility Plugin".equalsIgnoreCase(context.tmpModName)   //ignore BCP, it is part of ModThatIsNotMod

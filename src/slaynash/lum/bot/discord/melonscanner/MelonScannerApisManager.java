@@ -274,6 +274,10 @@ public class MelonScannerApisManager {
                                     if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
                                         approvalStatus = "3";
 
+                                    if (downloadLink != null && downloadLink.equalsIgnoreCase("https://github.com/GrahamKracker/BTD6EpicGamesModCompat/releases/download/1.2.1/BTD6EpicGamesModCompat.dll")) {
+                                        version = "1.2.1";
+                                    }
+
                                     if (isbroken || approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
                                         if (!brokenMods.contains(name))
                                             brokenMods.add(name);

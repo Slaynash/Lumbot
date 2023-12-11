@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -104,6 +105,7 @@ public class SlashConfig extends Slash {
             event.reply("Lum is running on Backup mode. Database is in readonly mode and can't be changed atm.").setEphemeral(true).queue();
             return;
         }
+        InteractionHook interactionhook = event.deferEdit().complete();
         try {
             String[] message = event.getMessage().getContentRaw().split(": ");
             if (message.length < 2) {
@@ -162,9 +164,8 @@ public class SlashConfig extends Slash {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSCROSS.string, !guildconfig.ScamShieldCross());
                         event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
                     }
-                    case "delete" -> event.getMessage().delete().queue();
-                    default -> {
-                    }
+                    case "delete" -> interactionhook.deleteOriginal().queue();
+                    default -> { }
                 }
             }
             else {
