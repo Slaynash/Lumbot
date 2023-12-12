@@ -274,7 +274,7 @@ public final class MelonScannerReadPass {
 
             context.modAssemblies.stream().filter(m -> m.assembly.equalsIgnoreCase(context.tmpModAssembly)).findFirst().ifPresent(m -> context.tmpModHash = m.hash);
 
-            if (context.tmpModHash.equalsIgnoreCase("8576e150d7f25afd57c6fd03d7f602c22ff9c91ec8e58ce70db84aa77b8dd670"))
+            if (context.tmpModHash != null && context.tmpModHash.equalsIgnoreCase("8576e150d7f25afd57c6fd03d7f602c22ff9c91ec8e58ce70db84aa77b8dd670"))
                 context.tmpModVersion = "1.2.1"; //Fix for BTD6EpicGamesModCompat
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash + ", author is " + context.tmpModAuthor + ", assembly is " + context.tmpModAssembly);
@@ -317,18 +317,6 @@ public final class MelonScannerReadPass {
             return true;
         }
 
-        return false;
-    }
-
-    private static boolean incompatibilityCheck(MelonScanContext context) {
-        if (context.line.matches("- '.*' is incompatible with the following Melons:")) {
-            System.out.println("Starting to list Incompatibility");
-            String[] split = context.line.split("'", 3);
-            if (split.length < 2) return true;
-            context.currentIncompatibleMods = split[1];
-            context.readingIncompatibility = true;
-            return true;
-        }
         return false;
     }
 
@@ -432,13 +420,29 @@ public final class MelonScannerReadPass {
         return false;
     }
 
+    private static boolean incompatibilityCheck(MelonScanContext context) {
+        if (context.line.contains("Some Melons are marked as incompatible with each other"))
+            return true;
+        if (context.line.contains("To avoid any errors, these Melons will not be loaded"))
+            return true;
+        if (context.line.matches("- '.*' is incompatible with the following Melons:")) {
+            System.out.println("Starting to list Incompatibility");
+            String[] split = context.line.split("'", 3);
+            if (split.length < 2) return true;
+            context.currentIncompatibleMods = split[1];
+            context.readingIncompatibility = true;
+            return true;
+        }
+        return false;
+    }
+
     private static boolean processIncompatibilityListing(MelonScanContext context) {
         String line = context.line;
         if (line.matches(" {4}- '.*'.*")) {
-            System.out.println("Found incompatible mod " + line);
             String[] split = line.split("'", 3);
             if (split.length < 2) return true;
             String incompatibleModName = split[1];
+            System.out.println("Found incompatible mod " + incompatibleModName);
             context.incompatibleMods.add(new MelonIncompatibleMod(incompatibleModName, context.currentIncompatibleMods));
             return true;
         }

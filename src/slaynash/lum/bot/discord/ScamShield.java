@@ -306,8 +306,9 @@ public class ScamShield {
                 status = true;
         }
         if (status) {
-            String id = event.getGuild().getId();
+            String id;
             if (event.getChannelType() == ChannelType.PRIVATE) id = "Private";
+            else id = event.getGuild().getId();
 
             LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), id); // add to status counter
         }

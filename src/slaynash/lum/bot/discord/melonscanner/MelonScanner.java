@@ -188,8 +188,10 @@ public final class MelonScanner {
                 boolean triggered = ServerMessagesHandler.handleReplies(messageReceivedEvent, description);
                 if (!triggered && context.game != null)
                     triggered = ServerMessagesHandler.handleReplies(messageReceivedEvent, context.game);
-                if (triggered)
+                if (triggered) {
+                    System.out.println("Triggered reply");
                     messageCreateData = null;
+                }
             }
         }
         catch (Exception exception) {
