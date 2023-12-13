@@ -486,9 +486,8 @@ public final class MelonScannerReadPass {
 
     private static boolean gameNameCheck(MelonScanContext context) {
         if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])?( Game)? Name: .*")) {
-            String[] split = context.line.split(":", 4);
-            if (split.length < 4) return true;
-            context.game = split[3].trim();
+            String[] split = context.line.split(" Name: ");
+            context.game = split[1].trim();
             System.out.println("Game: " + context.game);
             return true;
         }
@@ -497,9 +496,8 @@ public final class MelonScannerReadPass {
 
     private static boolean gameTypeCheck(MelonScanContext context) {
         if (context.line.matches("\\[[\\d.:]+] Game Type: .*")) {
-            String[] split = context.line.split(":", 4);
-            if (split.length < 4) return true;
-            String type = split[3].trim();
+            String[] split = context.line.split("Type: ");
+            String type = split[1].trim();
             if (type.equalsIgnoreCase("Il2Cpp")) {
                 context.il2Cpp = true;
                 return true;
@@ -540,15 +538,15 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean mlHashCodeCheck(MelonScanContext context) {
-        String[] split = context.line.split(":", 4);
-        if (split.length < 4) return false;
         if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Hash Code: .*")) {
-            context.mlHashCode = split[3].trim().toUpperCase();
+            String[] split = context.line.split("Code: ");
+            context.mlHashCode = split[1].trim().toUpperCase();
             System.out.println("Hash Code: " + context.mlHashCode);
             return true;
         }
         if (context.line.matches("\\[[\\d.:]+] OS: .*")) {
-            context.osType = split[3].trim();
+            String[] split = context.line.split("OS: ");
+            context.osType = split[1].trim();
             System.out.println("OS: " + context.osType);
             return true;
         }
@@ -584,13 +582,12 @@ public final class MelonScannerReadPass {
 
     private static boolean gameVersionCheck(MelonScanContext context) {
         if (context.line.matches("\\[[\\d.:]+] Game Version:.*")) {
-            String[] split = context.line.split(":");
-            if (split.length == 3) {
+            String[] split = context.line.split("Version:");
+            if (split.length == 1) {
                 context.errors.add(new MelonLoaderError("Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
                 return true;
             }
-            else if (split.length < 3) return true;
-            context.gameBuild = split[3].trim();
+            context.gameBuild = split[1].trim();
             System.out.println("Game version " + context.gameBuild);
             return true;
         }
