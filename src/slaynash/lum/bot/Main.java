@@ -204,6 +204,7 @@ public class Main extends ListenerAdapter {
         }
         System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
+            boolean mainBotOnline = true;
             //noinspection InfiniteLoopStatement
             while (true) {
                 Thread.sleep(1000 * 15);
@@ -222,13 +223,19 @@ public class Main extends ListenerAdapter {
                     System.out.println("PingChecker: Ping successful, shutting down...");
                     if (JDAManager.isEventsEnabled())
                         JDAManager.disableEvents();
-                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup is shutting down").queue();
+                    if (!mainBotOnline) {
+                        JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup is shutting down").queue();
+                        mainBotOnline = true;
+                    }
                 }
                 else {
                     System.out.println("PingChecker: Ping failed, starting backup...");
                     if (!JDAManager.isEventsEnabled())
                         JDAManager.enableEvents();
-                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
+                    if (mainBotOnline) {
+                        JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
+                        mainBotOnline = false;
+                    }
                 }
             }
         }
