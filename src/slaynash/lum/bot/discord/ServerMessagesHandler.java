@@ -133,9 +133,9 @@ public class ServerMessagesHandler {
 
             // ignore any quotes
             StringBuilder sb = new StringBuilder();
-            for (String line : message.split(System.getProperty("line.separator"))) {
+            for (String line : message.split(System.lineSeparator())) {
                 if (!line.startsWith("> "))
-                    sb.append(line).append(System.getProperty("line.separator"));
+                    sb.append(line).append(System.lineSeparator());
             }
             message = sb.toString().trim();
 

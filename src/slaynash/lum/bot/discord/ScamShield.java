@@ -170,12 +170,11 @@ public class ScamShield {
         }
 
         if (msg.contains("](")) {
-            Pattern p = Pattern.compile("\\[(.*\\.|)(?<shown>.*\\.\\w{2,3}).*]");
+            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,3}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,3}).*\\)");
             Matcher m = p.matcher(msg);
-            if (m.find()) {
-                msg = msg.replaceAll("\\[.*]", "");
-                if (!msg.contains(m.group("shown")))
-                    ssFoundTerms.put("HiddenEmbed", 1);
+            while (m.find()) {
+                if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
+                    ssFoundTerms.put("HiddenEmbed", 2);
             }
         }
 

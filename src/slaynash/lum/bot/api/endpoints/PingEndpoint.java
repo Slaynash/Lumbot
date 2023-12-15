@@ -21,7 +21,7 @@ public class PingEndpoint extends Endpoint {
         }
         else {
             r.returnCode = 503;
-            r.setData("Lum is not running");
+            r.setData("Lum is not running " + JDAManager.getJDA().getStatus());
         }
         return r;
     }
