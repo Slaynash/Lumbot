@@ -255,14 +255,6 @@ public class ServerMessagesHandler {
                     event.getChannel().sendMessage("https://help.vrchat.com/hc/en-us/articles/1500002247921-I-crashed-can-t-launch-VRChat-other-issues").queue();
                     return;
                 }
-
-                if (message.startsWith("!dmca")) {
-                    System.out.println("DMCA");
-                    event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/943737387450777640/DMCA.mp4").queue();
-                    if (event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
-                        event.getMessage().delete().queue();
-                    return;
-                }
             }
 
             if (guildconfig.DadJokes() && LumJokes.sendJoke(event)) {

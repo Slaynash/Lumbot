@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.commands.LumGoneCommand;
@@ -261,6 +263,13 @@ public class ChattyLum {
         if (event.getMessage().getContentRaw().replace(" ", "").toLowerCase().contains("hatsunemiku")) {
             System.out.println("hatsu miku");
             event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/760342261967487069/1170227546831466526/Miku.mp4").queue();
+            return true;
+        }
+        if (message.startsWith("!dmca")) {
+            System.out.println("DMCA");
+            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/943737387450777640/DMCA.mp4").queue();
+            if (event.getChannel().getType() != ChannelType.PRIVATE && event.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+                event.getMessage().delete().queue();
             return true;
         }
 

@@ -52,7 +52,6 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
             if (!JDAManager.isEventsEnabled()) return;
             if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
                 return;
-            if (!JDAManager.getJDA().getStatus().equals(Status.CONNECTED)) return;
             Date date = new Date();
             String directoryPath = workingPath + "/MLlogs/";
             File directory = new File(directoryPath);

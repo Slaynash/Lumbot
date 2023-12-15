@@ -122,14 +122,14 @@ public class Main extends ListenerAdapter {
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);
 
-        JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
-        JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         SlashManager.registerCommands();
 
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             if (ConfigManager.mainBot) {
+                JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
+                JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
                 JDAManager.enableEvents();
                 UnityVersionMonitor.start();
                 VRCApiVersionScanner.init();
@@ -222,11 +222,13 @@ public class Main extends ListenerAdapter {
                     System.out.println("PingChecker: Ping successful, shutting down...");
                     if (JDAManager.isEventsEnabled())
                         JDAManager.disableEvents();
+                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup is shutting down").queue();
                 }
                 else {
                     System.out.println("PingChecker: Ping failed, starting backup...");
                     if (!JDAManager.isEventsEnabled())
                         JDAManager.enableEvents();
+                    JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
                 }
             }
         }
