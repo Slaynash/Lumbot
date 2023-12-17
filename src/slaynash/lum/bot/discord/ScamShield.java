@@ -169,6 +169,16 @@ public class ScamShield {
             ssFoundTerms.put("Crossposted", (int) crossPost);
         }
 
+        int spamCount = (int) allMessages.stream()
+            .filter(m -> m.getAuthor().getIdLong() == event.getAuthor().getIdLong())
+            .filter(m -> m.getChannel().getIdLong() == event.getChannel().getIdLong())
+            .filter(m -> m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()))
+            .count();
+
+        if (spamCount > 0) {
+            ssFoundTerms.put("Spam", 1);
+        }
+
         if (msg.contains("](")) {
             Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,3}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,3}).*\\)");
             Matcher m = p.matcher(msg);
