@@ -38,17 +38,18 @@ public class SetMemes extends Slash {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channelID);
                 if (rs.next()) {
                     DBConnectionManagerLum.sendUpdate("DELETE FROM `Memes` WHERE MemeChannel = ?", channelID);
+                    event.reply("Meme moderation is now disabled in this channel").setEphemeral(true).queue();
                 }
                 else {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Memes` (`GuildID`, `user`, `MemeChannel`, `ReportChannel`) VALUES (?, ?, ?, ?)", guildID, event.getUser().getIdLong(), channelID, reportChannel.isEmpty() ? null : reportChannel.get(0).getAsChannel().getId());
+                    if (reportChannel.isEmpty()) {
+                        event.reply("Meme moderation is now enabled in this channel").setEphemeral(true).queue();
+                    }
+                    else {
+                        event.reply("Meme moderation is now enabled in this channel and reports will be sent to " + reportChannel.get(0).getAsChannel().getAsMention()).setEphemeral(true).queue();
+                    }
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-                if (reportChannel.isEmpty()) {
-                    event.reply("Meme moderation is now enabled in this channel").setEphemeral(true).queue();
-                }
-                else {
-                    event.reply("Meme moderation is now enabled in this channel and reports will be sent to " + reportChannel.get(0).getAsChannel().getAsMention()).setEphemeral(true).queue();
-                }
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to set meme channel", e, event.getChannel());

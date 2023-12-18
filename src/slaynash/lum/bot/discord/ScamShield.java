@@ -482,7 +482,8 @@ public class ScamShield {
         "robydrinks.be",
         "bxlblog.be",
         "meap.gg",
-        "github.io"
+        "github.io",
+        "surl.li"
     );
 
     private static int domainAgeCheck(String message) {
