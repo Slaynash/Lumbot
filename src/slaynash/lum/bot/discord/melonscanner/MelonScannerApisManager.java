@@ -329,7 +329,7 @@ public class MelonScannerApisManager {
 
                                 MelonApiMod currentMod = null;
                                 for (MelonApiMod mod : currentMods) {
-                                    if (mod.name.equalsIgnoreCase(newMod.name)) {
+                                    if (mod.name.replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name.replaceAll("[-_ ]", ""))) {
                                         currentMod = mod;
                                         break;
                                     }
