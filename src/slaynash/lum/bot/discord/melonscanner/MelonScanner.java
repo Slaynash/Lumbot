@@ -106,8 +106,6 @@ public final class MelonScanner {
             if (multipleLogsCheck(messageReceivedEvent.getMessage().getAttachments(), messageReceivedEvent, lang)) // don't let people spam logs
                 return messageCreateData;
 
-            LogCounter.addMLCounter(attachment);
-
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
 
             if ("message.txt".equals(attachment.getFileName()))

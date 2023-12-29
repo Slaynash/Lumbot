@@ -2,26 +2,31 @@ package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.Permission;
+import org.mozilla.universalchardet.ReaderFactory;
 import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
 
     private static final int omitLineCount = 1200;
 
-    public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException, ExecutionException {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(context.attachment.getProxy().download().get()))) {
+    public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException {
+        File file = LogCounter.addMLCounter(context.attachment);
+        if (file == null) {
+            Utils.replyEmbed("Failed to download the log file.", Color.red, context.messageReceivedEvent);
+            return false;
+        }
+        try (BufferedReader br = ReaderFactory.createBufferedReader(file)) {
             context.bufferedReader = br;
             context.nextLine = "";
             context.line = "";

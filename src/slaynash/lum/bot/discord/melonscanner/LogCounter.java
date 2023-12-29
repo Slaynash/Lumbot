@@ -19,11 +19,12 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
     private static int previousLogCount = 0;
     private static int previousSSCount = 0;
 
-    public static void addMLCounter(Attachment attachment) {
+    public static File addMLCounter(Attachment attachment) {
         try {
             String directoryPath = workingPath + "/MLlogs/";
-            attachment.getProxy().downloadToFile(new File(directoryPath + Instant.now().toString().replace(":", "_") + "-" + attachment.getFileName()))
-                .thenAccept(file -> System.out.println("Saved attachment to " + file.getName()));
+            File att = attachment.getProxy().downloadToFile(new File(directoryPath + Instant.now().toString().replace(":", "_") + "-" + attachment.getFileName())).get();
+            System.out.println("Downloaded attachment to " + att.getCanonicalPath());
+            return att;
         }
         catch (Exception exception) {
             ExceptionUtils.reportException(
@@ -31,6 +32,7 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
                 exception.getMessage(),
                 exception);
         }
+        return null;
     }
 
     public static void addSSCounter(String bannedUser, String message, String guildID) {
