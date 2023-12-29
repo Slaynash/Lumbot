@@ -463,7 +463,7 @@ public final class MelonScannerReadPass {
 
     private static boolean mlVersionCheck(MelonScanContext context) {
         String line = context.line;
-        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Using v0\\..*")) {
+        if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Using v\\d\\..*")) {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
@@ -472,7 +472,7 @@ public final class MelonScannerReadPass {
             System.out.println("ML " + context.mlVersion + " (< 0.3.0)");
             return true;
         }
-        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? MelonLoader v0\\..*")) {
+        else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? MelonLoader v\\d\\..*")) {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
