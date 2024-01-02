@@ -322,15 +322,18 @@ public class Steam {
                             mb.setContent(sc.otherMessage());
                         }
 
+                        if (testChannel(sc))
+                            continue;
+
                         MessageChannel channel;
                         try {
                             channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());
                         }
                         catch (Exception e) {
-                            ExceptionUtils.reportException("Failed to get guild for Info", e);
+                            ExceptionUtils.reportException("Failed to get guild " + sc.guildID()  + " for Info", e);
                             continue;
                         }
-                        if (channel.canTalk())
+                        if (channel != null && channel.canTalk())
                             channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();

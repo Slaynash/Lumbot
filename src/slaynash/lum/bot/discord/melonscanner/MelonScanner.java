@@ -805,6 +805,8 @@ public final class MelonScanner {
                 case "TheLongDark" -> {
                     if (context.misplacedPlugins.contains("AutoUpdatingPlugin"))
                         muMessage = "";
+                    else if (context.loadedMods.containsKey("AutoUpdatingPlugin"))
+                        muMessage = "";
                     else
                         muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
                 }
