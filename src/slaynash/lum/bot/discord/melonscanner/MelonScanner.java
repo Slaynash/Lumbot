@@ -151,7 +151,7 @@ public final class MelonScanner {
                 issueFound |= minorErrorsHandling(context);
 
                 if (issueFound) {
-                    if (context.isMLOutdated)
+                    if (context.isMLOutdated || context.modifiedML)
                         context.embedColor = melonPink;
 
                     if (!context.unidentifiedErrors)
@@ -980,9 +980,6 @@ public final class MelonScanner {
                 else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
                     error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
                 }
-            }
-            if ("BloonsTD6".equalsIgnoreCase(context.game) && context.line.contains("Plugins loaded.") && VersionUtils.compareVersion(context.mlVersion, "0.6.2") < 0) {
-                error += Localization.get("- You need to update MelonLoader to [nightly](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.x64.CI.Release.zip). Take a look at https://discord.com/channels/663449315876012052/795689414181257216/1161410464517992559 if you need instuctions\n", context.lang);
             }
             if (context.corePath != null && context.corePath.toLowerCase().contains("r2modman")) {
                 error += Localization.get("- MelonLoader loaded from r2modman. If you had any issues, please try to run MelonLoader without r2modman.\n", context.lang);
