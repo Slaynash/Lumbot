@@ -313,6 +313,9 @@ public class Steam {
                     mb.setEmbeds(eb.build());
 
                     for (SteamChannel sc : channels) {
+                        if (testChannel(sc))
+                            continue;
+
                         mb.setContent("");
                         if (isPublicBranchUpdate && sc.publicMessage() != null)
                             mb.setContent(sc.publicMessage());
@@ -321,9 +324,6 @@ public class Steam {
                         if (!isPublicBranchUpdate && !isBetaBranchUpdate && sc.otherMessage() != null) {
                             mb.setContent(sc.otherMessage());
                         }
-
-                        if (testChannel(sc))
-                            continue;
 
                         MessageChannel channel;
                         try {
@@ -373,6 +373,8 @@ public class Steam {
                         mb.setEmbeds(eb.build());
 
                         for (SteamChannel sc : channels) {
+                            if (testChannel(sc))
+                                continue;
                             MessageChannel channel;
                             try {
                                 channel = (MessageChannel) JDAManager.getJDA().getGuildById(sc.guildID()).getGuildChannelById(sc.channelId());

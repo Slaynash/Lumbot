@@ -95,7 +95,7 @@ public class MelonScannerApisManager {
             }
         });
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
-        apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
+        // apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
         apis.add(new ThunderstoreApi("Lethal Company", "lethal-company"));
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
