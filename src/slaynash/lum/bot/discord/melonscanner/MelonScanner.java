@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -587,6 +588,9 @@ public final class MelonScanner {
     private static boolean missingModsCheck(MelonScanContext context) {
         if (context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha) || context.mlVersion.equals(context.overrideMLVersion)))
             return false;
+        if (context.missingMods.remove("UnhollowerBaseLib") && context.mlVersion != null && VersionUtils.compareVersion("0.6.0", context.mlVersion) < 1) {
+            addToError(context, Localization.get("\n- A mod needs a version of MelonLoader before 0.6.x maybe try downgrading to 0.5.7 or updating that mod.", context.lang));
+        }
         if (!context.missingMods.isEmpty()) {
             context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
@@ -1059,5 +1063,22 @@ public final class MelonScanner {
             mentions.append(m.group()).append(" ");
         }
         return mentions.toString();
+    }
+
+    private static void addToError(MelonScanContext context, String error) {
+        int index = -1;
+        String value = "";
+        Optional<Field> optField = context.embedBuilder.getFields().stream().filter(field -> field.getName().equals(Localization.get("melonscanner.knownerrors.fieldname", context.lang))).findFirst();
+        if (optField.isPresent()) {
+            index = context.embedBuilder.getFields().lastIndexOf(optField.get());
+            value = optField.get().getValue();
+        }
+        value += error;
+        value = value.substring(0, Math.min(value.toString().length(), MessageEmbed.VALUE_MAX_LENGTH));
+        Field field = new Field(Localization.get("melonscanner.knownerrors.fieldname", context.lang), value, false);
+        if (index == -1)
+            context.embedBuilder.addField(field);
+        else
+            context.embedBuilder.getFields().set(index, field);
     }
 }
