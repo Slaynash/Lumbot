@@ -16,21 +16,23 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.11.0
+        uses: styfle/cancel-workflow-action@0.12.0
         with:
           access_token: ${{ github.token }}
       - name: Checkout
-        uses: actions/checkout@v3.2.0
+        uses: actions/checkout@v4.1.1
 
       - name: Upload to server
+        if: github.event.repository.fork == false
         run: |
           curl \
           -F 'localization=@localization.json' \
           https://${{ secrets.SSH_HOST }}/uploadlum.php?key=${{ secrets.UPLOAD_KEY }}
         shell: bash
-      
+
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
+        if: github.event.repository.fork == false
         with:
           command: |
             python3 ~/downloadLocalization.py localization.json
