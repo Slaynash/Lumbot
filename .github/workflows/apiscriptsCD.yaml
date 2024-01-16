@@ -23,6 +23,7 @@ jobs:
         uses: actions/checkout@v4.1.1
 
       - name: Upload to server
+        if: github.event.repository.fork == false
         run: |
           curl \
           -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
@@ -39,6 +40,7 @@ jobs:
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
+        if: github.event.repository.fork == false
         with:
           command: |
             python3 ~/downloadApiscripts.py \

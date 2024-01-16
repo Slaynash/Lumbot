@@ -43,6 +43,7 @@ jobs:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}
       - name: Upload to server
+        if: github.event.repository.fork == false
         run: |
           curl \
           -F 'buildfile=@target/${{ env.buildname }}' \
@@ -51,6 +52,7 @@ jobs:
 
       - name: Running remote script
         uses: garygrossgarten/github-action-ssh@release
+        if: github.event.repository.fork == false
         with:
           command: |
             python3 ~/downloadAndRestart.py ${{ env.buildname }}
