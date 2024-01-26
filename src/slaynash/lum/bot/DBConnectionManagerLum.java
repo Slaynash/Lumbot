@@ -132,7 +132,7 @@ public final class DBConnectionManagerLum {
                 scamShield = rs.getBoolean(GuildConfiguration.Setting.SCAMSHIELD.string);
                 scamShieldBan = rs.getBoolean(GuildConfiguration.Setting.SSBAN.string);
                 scamShieldCross = rs.getBoolean(GuildConfiguration.Setting.SSCROSS.string);
-                scamShieldDm = rs.getBoolean(GuildConfiguration.Setting.SSCROSS.string);
+                scamShieldDm = rs.getBoolean(GuildConfiguration.Setting.SSDM.string);
                 mLLogScan = rs.getBoolean(GuildConfiguration.Setting.LOGSCAN.string);
                 mLLogReaction = rs.getBoolean(GuildConfiguration.Setting.LOGREACTION.string);
                 mLReplies = rs.getBoolean(GuildConfiguration.Setting.MLREPLIES.string);
