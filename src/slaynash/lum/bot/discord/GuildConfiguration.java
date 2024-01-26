@@ -3,7 +3,7 @@ package slaynash.lum.bot.discord;
 import java.sql.Timestamp;
 
 public record GuildConfiguration(String uildID, Timestamp ts, boolean ScamShield,
-                                 boolean ScamShieldBan, boolean ScamShieldCross, boolean MLLogScan, boolean MLLogReaction,
+                                 boolean ScamShieldBan, boolean ScamShieldCross, boolean ScamShieldDm, boolean MLLogScan, boolean MLLogReaction,
                                  boolean MLReplies, boolean MLPartialRemover, boolean MLGeneralRemover, boolean DLLRemover, boolean LumReplies, boolean DadJokes)
 {
     public enum Setting {
@@ -18,7 +18,8 @@ public record GuildConfiguration(String uildID, Timestamp ts, boolean ScamShield
         LOGSCAN("MLLogScan"),
         MLREPLIES("MLReplies"),
         SSBAN("ScamShieldBan"),
-        SSCROSS("ScamShieldCross");
+        SSCROSS("ScamShieldCross"),
+        SSDM("ScamShieldDm");
         public final String string;
         Setting(String string) {
             this.string = string;

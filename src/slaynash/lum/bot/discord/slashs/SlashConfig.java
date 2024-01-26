@@ -51,7 +51,8 @@ public class SlashConfig extends Slash {
                     .addActionRow(// Buttons can be in a 5x5
                         guildconfig.ScamShield() ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
                         guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
-                        guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")))
+                        guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (guildconfig.ScamShieldBan() ? "Ban" : "Kick")),
+                        guildconfig.ScamShieldDm() ? Button.success("ssdm", "Scam Shield DMs") : Button.danger("ssdm", "Scam Shield DMs"))
                     .addActionRow(
                         guildconfig.DLLRemover() ? Button.success("dll", "DLL Remover") : Button.danger("dll", "DLL Remover"),
                         guildconfig.MLPartialRemover() ? Button.success("partial", "Partial Log remover") : Button.danger("partial", "Partial Log remover"),
@@ -96,7 +97,7 @@ public class SlashConfig extends Slash {
 
     @Override
     protected List<String> buttonList() {
-        return Arrays.asList("ss", "ssban", "sscross", "dll", "partial", "general", "log", "mlr", "reaction", "thanks", "dad", "delete");
+        return Arrays.asList("ss", "ssban", "sscross", "ssdm", "dll", "partial", "general", "log", "mlr", "reaction", "thanks", "dad", "delete");
     }
 
     @Override
@@ -163,6 +164,10 @@ public class SlashConfig extends Slash {
                     case "sscross" -> {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSCROSS.string, !guildconfig.ScamShieldCross());
                         event.editButton(!guildconfig.ScamShieldCross() ? Button.success("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick")) : Button.danger("sscross", "Scam Shield Cross " + (!guildconfig.ScamShieldBan() ? "Ban" : "Kick"))).queue();
+                    }
+                    case "ssdm" -> {
+                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.SSDM.string, !guildconfig.ScamShieldDm());
+                        event.editButton(!guildconfig.ScamShieldDm() ? Button.success("ssdm", "Scam Shield DMs") : Button.danger("ssdm", "Scam Shield DMs")).queue();
                     }
                     case "delete" -> interactionhook.deleteOriginal().queue();
                     default -> { }

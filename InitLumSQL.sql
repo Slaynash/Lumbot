@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 26, 2023 at 07:19 PM
+-- Generation Time: Jan 26, 2024 at 07:39 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
   `ScamShield` tinyint(1) NOT NULL DEFAULT '0',
   `ScamShieldBan` tinyint(1) NOT NULL DEFAULT '0',
   `ScamShieldCross` tinyint(1) NOT NULL DEFAULT '0',
+  `ScamShieldDm` tinyint(1) NOT NULL DEFAULT '0',
   `MLLogScan` tinyint(1) NOT NULL DEFAULT '0',
   `MLLogReaction` tinyint(1) NOT NULL DEFAULT '0',
   `MLReplies` tinyint(1) NOT NULL DEFAULT '0',

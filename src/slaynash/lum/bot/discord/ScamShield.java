@@ -301,12 +301,14 @@ public class ScamShield {
         List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
-                return false;
-            if (event.getChannelType() == ChannelType.PRIVATE)
-                return false;
+                return false;  // Do not remove current guild regardless of cross ban setting
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(g.getIdLong());
-            if (guildconfig != null)
-                return !guildconfig.ScamShieldCross();
+            if (guildconfig != null) {
+                if (event.getChannelType() == ChannelType.PRIVATE)
+                    return !guildconfig.ScamShieldDm();
+                else
+                    return !guildconfig.ScamShieldCross();
+            }
             return true;
         });
         boolean status = false;
