@@ -36,9 +36,11 @@ import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import slaynash.lum.bot.DBConnectionManagerLum;
@@ -203,7 +205,10 @@ public class Steam {
                             continue;
                         }
                         if (channel.canTalk())
-                            channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
+                            if (!guild.getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_EMBED_LINKS)) {
+                                channel.sendMessage("I need the `Embed Links` permission to send this message").queue();
+                            }
+                            else channel.sendMessageEmbeds(eb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();
                             });
@@ -333,7 +338,7 @@ public class Steam {
                             ExceptionUtils.reportException("Failed to get guild " + sc.guildID()  + " for Info", e);
                             continue;
                         }
-                        if (channel != null && channel.canTalk())
+                        if (channel != null && channel.canTalk() && JDAManager.getJDA().getGuildById(sc.guildID()).getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_EMBED_LINKS))
                             channel.sendMessage(mb.build()).setAllowedMentions(Arrays.asList(MentionType.values())).queue(s -> {
                                 if (channel.getType() == ChannelType.NEWS)
                                     s.crosspost().queue();

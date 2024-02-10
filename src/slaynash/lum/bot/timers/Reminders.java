@@ -5,7 +5,10 @@ import java.util.TimerTask;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -34,14 +37,21 @@ public class Reminders extends TimerTask {
                 if (serverID == 0) {
                     user.openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(embedBuilder.build()).queue());
                 }
-                else if (!JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).canTalk()) {
-                    // can't talk in channel, just delete the reminder. Not much I can do
-                }
-                else if (JDAManager.getJDA().getGuildById(serverID).getSelfMember().hasPermission(Permission.MESSAGE_EMBED_LINKS)) {
-                    JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).sendMessage(message).addContent(user.getAsMention()).queue();
-                }
                 else {
-                    JDAManager.getJDA().getGuildById(serverID).getTextChannelById(channelID).sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
+                    Guild guild;
+                    if ((guild = JDAManager.getJDA().getGuildById(serverID)) == null)
+                        continue;
+                    GuildChannel gchannel = guild.getGuildChannelById(channelID);
+                    MessageChannel channel = (MessageChannel) gchannel;
+                    if (!channel.canTalk()) {
+                        user.openPrivateChannel().queue(pchannel -> pchannel.sendMessageEmbeds(embedBuilder.build()).queue());
+                    }
+                    else if (guild.getSelfMember().hasPermission(gchannel, Permission.MESSAGE_EMBED_LINKS)) {
+                        channel.sendMessage(message).addContent(user.getAsMention()).queue();
+                    }
+                    else {
+                        channel.sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
+                    }
                 }
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = " + rs.getLong("ID"));
             }
