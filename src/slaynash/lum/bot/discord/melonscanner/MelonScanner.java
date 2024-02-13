@@ -420,7 +420,7 @@ public final class MelonScanner {
             }
         }
         else if (context.game.equalsIgnoreCase("TheLongDark")) {
-            if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) >= 0) {
+            if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) <= 0) {
 		if (VersionUtils.compareVersion("0.6.2", context.mlVersion) == 0) {
                     context.embedBuilder.addField("TLD ML062", "MelonLoader 0.6.2 causes issues with TheLongDark mods, Please downgrade to MelonLoader 0.6.1 using the installer by unticking \"latest\"", false);
 		}
