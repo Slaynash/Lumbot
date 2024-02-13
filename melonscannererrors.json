@@ -375,12 +375,16 @@
         ],
         "TheLongDark": [
             {
-                "regex": "\\[[\\d.:]+] \\[CraftingRevisions] \\[ERROR] System.ArgumentException: (?<blueprint>Validation of blueprint.*)",
-                "error": "blueprint"
+                "regex": "\\[[\\d.:]+] \\[ModComponent] MissingDependency: '(.*)' requires '(.*)'.*",
+                "error": "A ModComponent has one or more missing dependencies (see log for details)"
             },
-            {
-                "regex": "\\[[\\d.:]+] System.ArgumentException: Could not load 'GEAR_TarpSheet' referenced by 'GEAR_Tent'.",
-                "error": "Missing Dependency: [Modders' Gear Toolbox](https://tldmods.com/?q=toolbox)"
+			{
+                "regex": "\\[[\\d.:]+] \\[ModComponent] MissingDLC: '(.*)' requires DLC",
+                "error": "A ModComponent requires the DLC (see log for details)"
+            },
+			{
+                "regex": "\\[[\\d.:]+] \\[AutoUpdatingPlugin] Source folder detected in Mods: (.*)",
+                "error": "A Mod source code folder has been detected, please remove it and download the correct file (see log for details)"
             }
         ],
         "AGameThatDoesn'tExists_НЕТ": []
