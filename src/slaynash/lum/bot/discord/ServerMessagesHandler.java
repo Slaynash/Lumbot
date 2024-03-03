@@ -436,7 +436,6 @@ public class ServerMessagesHandler {
                         }
                     }
                     else if (message != null && !message.isBlank()) {
-                        event.getChannel().asGuildMessageChannel().sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                         if (guildID.equals("0")) {
                             String[] userID = event.getChannel().getName().split("-");
                             User privuser = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
@@ -450,6 +449,8 @@ public class ServerMessagesHandler {
                                     error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
                             }
                         }
+                        else
+                            event.getMessage().reply(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     if (report) {
                         TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
