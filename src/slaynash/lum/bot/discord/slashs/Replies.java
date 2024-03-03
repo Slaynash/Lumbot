@@ -24,7 +24,7 @@ import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-//TODO add more replacements like username, server age
+//TODO add more replacements like server age
 //TODO figure out a way to remove a option, you can't send an empty option
 
 public class Replies extends Slash {
@@ -177,7 +177,7 @@ public class Replies extends Slash {
             }
         }
         else if (event.getSubcommandName().equals("add")) {
-            if (event.getOption("ukey") == null && regex == null && contains == null && equals == null || event.getOption("ukey") != null && event.getOptions().size() == 1) {
+            if (event.getOption("ukey") == null && regex == null && contains == null && equals == null && user == null || event.getOption("ukey") != null && event.getOptions().size() == 1) {
                 event.reply("Please set at least one option").queue();
                 return;
             }
