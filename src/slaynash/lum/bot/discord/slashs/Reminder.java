@@ -45,6 +45,11 @@ public class Reminder extends Slash {
         int days = event.getOption("days") == null ? 0 : event.getOption("days").getAsInt();
         String message = event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n");
 
+        if (notWithinRange(minutes, 0, 60) || notWithinRange(hours, 0, 24) || notWithinRange(days, 0, 1826)) {
+            event.replyEmbeds(Utils.wrapMessageInEmbed("You can't set a reminder for more than 5 year, 24 hours or 60 minutes", Color.RED)).setEphemeral(true).queue();
+            return;
+        }
+
         long guildid;
         long channelid;
         if (event.getChannelType() == ChannelType.PRIVATE) {
@@ -126,5 +131,9 @@ public class Reminder extends Slash {
             event.reply("Error saving Reminder, Sent a message to devs").queue();
         }
         event.replyEmbeds(new EmbedBuilder().setColor(color).setTitle("Reminder set").setDescription(message).setTimestamp(sqlTimestamp.toInstant()).build()).queue();
+    }
+
+    private boolean notWithinRange(int i, int min, int max) {
+        return i < min || i > max;
     }
 }
