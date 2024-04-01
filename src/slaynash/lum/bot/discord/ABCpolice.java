@@ -18,7 +18,9 @@ public class ABCpolice {
         if (event.getAuthor().isBot() || event.getMessage().isEdited())
             return true;
         String message = event.getMessage().getContentStripped().trim();
-        System.out.println(event.getMember().getEffectiveName() + ": " + message);
+        if (event.getMessage().getStickers().size() > 0)
+            message = event.getMessage().getStickers().get(0).getName() +  " " + message;
+        System.out.println("abc " + event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getChannel().asGuildMessageChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
         boolean brokenChain = !history.isEmpty() && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();

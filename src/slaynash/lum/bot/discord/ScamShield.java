@@ -81,6 +81,8 @@ public class ScamShield {
             put("100%", 1);
             put("joinnow", 1);
             put("family-world", 3);
+            put("hotteen", 1);
+            put("onlyfansleak", 1);
             put("13+boysonly!!", 3);
             put("checkmybio...", 2);
             put("checkthis", 1);
