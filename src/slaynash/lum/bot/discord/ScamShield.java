@@ -65,8 +65,6 @@ public class ScamShield {
             put("trade", 1);
             put("knife", 1);
             put("offer", 1);
-            put("skingiveaway", 1);
-            put("skinsgiveaway", 1);
             put("btc", 1);
             put("bitcoin", 1);
             put("cryptomarket", 2);
@@ -83,21 +81,15 @@ public class ScamShield {
             put("family-world", 3);
             put("hotteen", 1);
             put("onlyfansleak", 1);
-            put("13+boysonly!!", 3);
             put("checkmybio...", 2);
             put("checkthis", 1);
             put("linkforyou", 1);
-            put("wronginthegame", 1);
             put("takeit)", 2);
-            put("whoisfirst?)", 2);
-            put("totisel)", 2); //тотисъeл)
             put("asubscription!", 2);
-            put("dissord", 2); //typo is from Junidecode
             put("giftied", 1); //typo is from Junidecode
             put("itisalreadyrunningout", 2);
             put("pleasetryclaimthisquickly", 2);
             put("gameicreatedtoday)", 2);
-            put("whattoaddandwhattoremove", 2);
             put("hereisthegameitselfhttp", 2);
             put("passwordtest", 2);
             put("joinhttps//discordgg/", 2);
@@ -106,30 +98,22 @@ public class ScamShield {
             put("friendhasgiftedyou", 2);
             put("standoutinyourfavoritediscord", 2);
             put("standoutinyourfavoritesdiscord", 2);
-            put("interestedonhowtoearn$", 2);
-            put("!whenyoureceiveyourprofit!", 2);
             put("ifinterestedsendmeadirectmessage", 2);
-            put("neweventbyfacepunchandtwitchhasbeenannounced", 5);
-            put("idkwhathappenedorifitsreallyyoubutitwasyournameandthesameavatar", 10);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*invest.*crypto.*", 1);
-            put(".*made.*game.*", 1);
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
-            put("http", 1);
             put("ru/", 1);
             put("bitly", 2);
             put("cuttly", 2);
-            put("meganz", 2);
             put("hour", 1);
             put("$", 1);
             put("dollar", 1);
-            put("discord", 1);
         }};
 
     // must be lowercase
@@ -186,7 +170,7 @@ public class ScamShield {
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
-                    ssFoundTerms.put("HiddenEmbed", 2);
+                    ssFoundTerms.put("HiddenEmbed", 1); // Currently has a bug where it would greedily match with another Embedlink on same line
             }
         }
 
