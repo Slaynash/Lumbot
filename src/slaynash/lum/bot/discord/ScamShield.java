@@ -376,7 +376,7 @@ public class ScamShield {
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
                 if (!dm && guild.equals(event.getGuild()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS))
                     event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-                else
+                else if (guild.getOwner() != null)
                     guild.getOwner().getUser().openPrivateChannel().flatMap(channel -> channel.sendMessageEmbeds(embedBuilder.build())).queue(null, m -> System.out.println("Failed to open dms with guild owner to send SS is higher role then Mine."));
             }
             else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
