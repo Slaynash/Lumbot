@@ -129,7 +129,7 @@ public class ScamShield {
             }
         }
         StringBuilder message = new StringBuilder(msg);
-        if (event.getRawData() != null && event.getRawData().getObject("d") != null && event.getRawData().getObject("d").getObject("poll") != null) {
+        if (event.getRawData() != null && event.getRawData().hasKey("d") && event.getRawData().getObject("d").hasKey("poll")) {
             DataObject poll = event.getRawData().getObject("d").getObject("poll");
             message.append(poll.getObject("question").getString("text"));
             poll.getArray("answers").forEach(answer -> {
