@@ -128,6 +128,13 @@ public class ServerMessagesHandler {
                 return;
             }
 
+            if (guildconfig.Polls() && event.getRawData() != null && event.getRawData().getObject("d") != null && event.getRawData().getObject("d").getObject("poll") != null) {
+                if (event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
+                    event.getMessage().delete().queue();
+                    event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a poll which is not allowed.", Color.YELLOW)).queue(s -> s.delete().queueAfter(10, TimeUnit.SECONDS));
+                }
+            }
+
             if (message.startsWith("."))
                 return;
 

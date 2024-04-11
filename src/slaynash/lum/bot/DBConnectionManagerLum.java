@@ -123,7 +123,7 @@ public final class DBConnectionManagerLum {
     public static GuildConfiguration getGuildConfig(String guildID) {
         Timestamp ts;
         boolean scamShield, scamShieldBan, scamShieldCross, scamShieldDm, mLLogScan, mLLogReaction, mLReplies,
-            mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes;
+            mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes, polls;
         ResultSet rs;
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "' LIMIT 1");
@@ -141,6 +141,7 @@ public final class DBConnectionManagerLum {
                 dLLRemover = rs.getBoolean(GuildConfiguration.Setting.DLLREMOVER.string);
                 lumReplies = rs.getBoolean(GuildConfiguration.Setting.LUMREPLIES.string);
                 dadJokes = rs.getBoolean(GuildConfiguration.Setting.DADJOKES.string);
+                polls = rs.getBoolean(GuildConfiguration.Setting.POLLS.string);
             }
             else {
                 System.out.println("No guild configuration found for guild and creating " + guildID);
@@ -155,7 +156,7 @@ public final class DBConnectionManagerLum {
             ExceptionUtils.reportException("Exception while fetching Guild Config", e);
             return null;
         }
-        return new GuildConfiguration(guildID, ts, scamShield, scamShieldBan, scamShieldCross, scamShieldDm, mLLogScan, mLLogReaction, mLReplies, mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes);
+        return new GuildConfiguration(guildID, ts, scamShield, scamShieldBan, scamShieldCross, scamShieldDm, mLLogScan, mLLogReaction, mLReplies, mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes, polls);
     }
 
     public static void setGuildSetting(Long guildID, String setting, boolean value) {

@@ -40,6 +40,7 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.api.utils.data.DataObject;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -128,6 +129,15 @@ public class ScamShield {
             }
         }
         StringBuilder message = new StringBuilder(msg);
+        if (event.getRawData() != null && event.getRawData().getObject("d") != null && event.getRawData().getObject("d").getObject("poll") != null) {
+            DataObject poll = event.getRawData().getObject("d").getObject("poll");
+            message.append(poll.getObject("question").getString("text"));
+            poll.getArray("answers").forEach(answer -> {
+                @SuppressWarnings("unchecked")
+                HashMap<String, HashMap<String, String>> answer2 = (HashMap<String, HashMap<String, String>>) answer;
+                message.append(answer2.get("poll_media").get("text"));
+            });
+        }
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
         }
