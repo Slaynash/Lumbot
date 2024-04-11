@@ -28,7 +28,7 @@ public class SlashConfig extends Slash {
     protected CommandData globalSlashData() {
         return Commands.slash("config", "send server config").addOption(OptionType.STRING, "guild", "Enter Guild ID", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED);
     }
-
+    InteractionHook interactionhook;
     public void sendReply(SlashCommandInteractionEvent event, String guildID) {
         if (!ConfigManager.mainBot) {
             event.reply("Lum is running on Backup mode. Database is in readonly mode and can't be changed atm.").setEphemeral(true).queue();
@@ -44,10 +44,14 @@ public class SlashConfig extends Slash {
                 event.reply("Guild was not found.").queue();
                 return;
             }
+            interactionhook = null;
+            event.deferReply().queue(success -> interactionhook = success);
             if (Moderation.getAdmins(guild).contains(event.getUser().getIdLong())) {
                 GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
                 System.out.println("Sent config for " + guild.getName());
-                event.reply("Server Config for " + guild.getName() + ": " + guildID)
+                //wait while interactionhook is null
+                while (interactionhook == null) Thread.sleep(10);
+                interactionhook.sendMessage("Server Config for " + guild.getName() + ": " + guildID)
                     .addActionRow(// Buttons can be in a 5x5
                         guildconfig.ScamShield() ? Button.success("ss", "Scam Shield") : Button.danger("ss", "Scam Shield"),
                         guildconfig.ScamShieldBan() ? Button.danger("ssban", "Scam Shield Ban") : Button.success("ssban", "Scam Shield Kick"),
@@ -68,7 +72,10 @@ public class SlashConfig extends Slash {
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
-            else event.reply("You do not have permissions to use this command for the guild " + guild.getName()).setEphemeral(true).queue();
+            else {
+                while (interactionhook == null) Thread.sleep(10);
+                interactionhook.sendMessage("You do not have permissions to use this command for the guild " + guild.getName()).setEphemeral(true).queue();
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("An error has occurred while sending Slash Reply:", e);

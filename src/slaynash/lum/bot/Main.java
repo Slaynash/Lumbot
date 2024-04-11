@@ -177,6 +177,7 @@ public class Main extends ListenerAdapter {
         }
         else {
             //chunk members for mutuals after loading to prevent Lum from being unresponsive
+            new AddMissingRoles().addMissing(null);
             for (Guild guild : JDAManager.getJDA().getGuilds()) {
                 if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
                     try {
@@ -187,7 +188,7 @@ public class Main extends ListenerAdapter {
                         Thread.sleep(1000);
                         // guild.loadMembers().get(); // try again
                     }
-                    Thread.sleep(690); //rate limit is 100 chuck per minute, gave a little headroom
+                    Thread.sleep(1000); //rate limit is 100 chuck per minute, gave a little headroom
                 }
             }
         }
@@ -195,7 +196,6 @@ public class Main extends ListenerAdapter {
         if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
             Moderation.voiceStartup();
             if (ConfigManager.mainBot) {
-                new AddMissingRoles().addMissing(null);
                 JDAManager.getJDA()
                         .getTextChannelById(808076226064941086L)
                         .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
