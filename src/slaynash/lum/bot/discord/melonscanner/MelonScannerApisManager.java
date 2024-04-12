@@ -96,9 +96,9 @@ public class MelonScannerApisManager {
         });
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         // apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
-        apis.add(new ThunderstoreApi("Lethal Company", "lethal-company"));
+        // apis.add(new ThunderstoreApi("Lethal Company", "lethal-company"));
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
-        apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
+        // apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tld.xpazeapps.com/api.json"));
     }
 
@@ -112,6 +112,9 @@ public class MelonScannerApisManager {
                 for (MelonScannerApi api : apis) {
 
                     System.out.println("Fetching " + api.game + " : " + api.name);
+
+                    //timestamp
+                    Instant start = Instant.now();
 
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .GET()
@@ -361,6 +364,8 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
+
+                        System.out.println("Done fetching " + api.game + " : " + api.name + " in " + Duration.between(start, Instant.now()).toMillis() + "ms");
 
                         if (doneFirstInit)
                             Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.

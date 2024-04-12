@@ -79,6 +79,7 @@ public class ScamShield {
             put("download", 1);
             put("100%", 1);
             put("joinnow", 1);
+            put("underage", 1);
             put("family-world", 3);
             put("hotteen", 1);
             put("onlyfansleak", 1);
