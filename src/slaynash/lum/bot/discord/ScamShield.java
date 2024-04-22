@@ -36,11 +36,11 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.messages.MessagePoll;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
-import net.dv8tion.jda.api.utils.data.DataObject;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -130,14 +130,10 @@ public class ScamShield {
             }
         }
         StringBuilder message = new StringBuilder(msg);
-        if (event.getRawData() != null && event.getRawData().hasKey("d") && event.getRawData().getObject("d").hasKey("poll")) {
-            DataObject poll = event.getRawData().getObject("d").getObject("poll");
-            message.append(poll.getObject("question").getString("text"));
-            poll.getArray("answers").forEach(answer -> {
-                @SuppressWarnings("unchecked")
-                HashMap<String, HashMap<String, String>> answer2 = (HashMap<String, HashMap<String, String>>) answer;
-                message.append(answer2.get("poll_media").get("text"));
-            });
+        if (event.getMessage().getPoll() != null) {
+            MessagePoll poll = event.getMessage().getPoll();
+            message.append(poll.getQuestion());
+            poll.getAnswers().forEach(answer -> message.append(answer.getText()));
         }
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             message.append(embed.getTitle()).append(embed.getDescription());
@@ -360,7 +356,7 @@ public class ScamShield {
                 cross = !sourceName.equals(guild.getName());
             }
             String usernameWithTag = event.getAuthor().getEffectiveName();
-            String userId = event.getAuthor().getId();
+            String userId = event.getAuthor().getAsMention();
             TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
             System.out.println("Report channel: " + guildID + " " + CommandManager.mlReportChannels.getOrDefault(guildID, "0") + " " + reportChannel);
             boolean ssBan;
@@ -481,7 +477,14 @@ public class ScamShield {
         "robydrinks.be",
         "bxlblog.be",
         "meap.gg",
+        "bit.ly",
         "github.io",
+        "aka.ms",
+        "com.tw",
+        "u.to",
+        "gg.gg",
+        "fairyte.ch",
+        "rb.gy",
         "surl.li"
     );
 

@@ -67,8 +67,7 @@ public class SlashConfig extends Slash {
                         guildconfig.MLLogReaction() ? Button.success("reaction", "Log Reactions") : Button.danger("reaction", "Log Reactions"))
                     .addActionRow(
                         guildconfig.LumReplies() ? Button.success("thanks", "Chatty Lum") : Button.danger("thanks", "Chatty Lum"),
-                        guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"),
-                        guildconfig.Polls() ? Button.success("poll", "Remove Polls") : Button.danger("poll", "Remove Polls"))
+                        guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes"))
                     .addActionRow(
                         Button.danger("delete", "Delete this message")).queue();
             }
@@ -105,7 +104,7 @@ public class SlashConfig extends Slash {
 
     @Override
     protected List<String> buttonList() {
-        return Arrays.asList("ss", "ssban", "sscross", "ssdm", "dll", "partial", "general", "log", "mlr", "reaction", "thanks", "dad", "poll", "delete");
+        return Arrays.asList("ss", "ssban", "sscross", "ssdm", "dll", "partial", "general", "log", "mlr", "reaction", "thanks", "dad", "delete");
     }
 
     @Override
@@ -147,10 +146,6 @@ public class SlashConfig extends Slash {
                     case "dad" -> {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.DADJOKES.string, !guildconfig.DadJokes());
                         event.editButton(!guildconfig.DadJokes() ? Button.success("dad", "Dad Jokes") : Button.danger("dad", "Dad Jokes")).queue();
-                    }
-                    case "poll" -> {
-                        DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.POLLS.string, !guildconfig.Polls());
-                        event.editButton(!guildconfig.Polls() ? Button.success("poll", "Remove Polls") : Button.danger("poll", "Remove Polls")).queue();
                     }
                     case "partial" -> {
                         DBConnectionManagerLum.setGuildSetting(guildID, GuildConfiguration.Setting.PARTIALLOGREMOVER.string, !guildconfig.MLPartialRemover());
