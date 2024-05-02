@@ -402,7 +402,7 @@ public final class MelonScanner {
             context.pirate = true;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
-            if (!gamePath.contains("steamapps\\common\\bloonstd6") && !gamePath.contains("steamapps\\common\\bloons td 6") && !gamePath.contains("program files\\windowsapps") && !context.epic) {
+            if (!gamePath.contains("steamapps\\common") && !gamePath.contains("program files\\windowsapps") && !context.epic) {
                 context.pirate = true;
             }
             else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
@@ -410,12 +410,12 @@ public final class MelonScanner {
             }
         }
         else if (context.game.equalsIgnoreCase("BONEWORKS")) {
-            if (!gamePath.contains("steamapps\\common\\boneworks\\boneworks") && !gamePath.contains("software\\stress-level-zero-inc-boneworks")) {
+            if (!gamePath.contains("steamapps\\common") && !gamePath.contains("software\\stress-level-zero-inc-boneworks")) {
                 context.pirate = true;
             }
         }
         else if (context.game.equalsIgnoreCase("BONELAB")) {
-            if (!gamePath.contains("steamapps\\common\\bonelab") && !gamePath.contains("software\\stress-level-zero-inc-bonelab")) {
+            if (!gamePath.contains("steamapps\\common") && !gamePath.contains("software\\stress-level-zero-inc-bonelab")) {
                 context.pirate = true;
             }
         }
