@@ -3,7 +3,9 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -117,6 +119,49 @@ public class ScamShield {
             put("$", 1);
             put("dollar", 1);
         }};
+    private static final List<String> grabifylist = List.of(
+            "bmwforum.co", // pulled from https://gist.github.com/M-rcus/9af3207273bf5d30b28c2e3892f1a412
+            "catsnthing.com",
+            "catsnthings.fun",
+            "crabrave.pw",
+            "curiouscat.club",
+            "datasig.io",
+            "datauth.io",
+            "dateing.club",
+            "discörd.com",
+            "disçordapp.com",
+            "fortnight.space",
+            "fortnitechat.site",
+            "freegiftcards.co",
+            "gaming-at-my.best",
+            "gamingfun.me",
+            "grabify.link",
+            "headshot.monster",
+            "imageshare.best",
+            "joinmy.site",
+            "leancoding.co",
+            "locations.quest",
+            "lovebird.guru",
+            "minecräft.com",
+            "mypic.icu",
+            "otherhalf.life",
+            "partpicker.shop",
+            "progaming.monster",
+            "quickmessage.us",
+            "screenshare.host",
+            "screenshot.best",
+            "shrekis.life",
+            "sportshub.bar",
+            "spottyfly.com",
+            "stopify.co",
+            "särahah.eu",
+            "särahah.pl",
+            "trulove.guru",
+            "xda-developers.us",
+            "yourmy.monster",
+            "youshouldclick.us",
+            "yoütu.be"
+        );
 
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
@@ -177,7 +222,7 @@ public class ScamShield {
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
-                    ssFoundTerms.put("HiddenEmbed", 1); // Currently has a bug where it would greedily match with another Embedlink on same line
+                    ssFoundTerms.put("HiddenEmbed", 2); // Currently has a bug where it would greedily match with another Embedlink on same line
             }
         }
 
@@ -206,6 +251,15 @@ public class ScamShield {
             final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
             if (domainAge > 0)
                 ssFoundTerms.put("domainAge", domainAge * 3);
+        }
+
+        for (String url : Utils.extractUrls(message.toString())) {
+            do {
+                url = getRedirect(url);
+            } while (url != null && !url.equals("GrabifyLink"));
+            if (url != null && url.equals("GrabifyLink")) {
+                ssFoundTerms.put("GrabifyLink", instaKick + 1);
+            }
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
@@ -571,5 +625,20 @@ public class ScamShield {
         public final Map<String, Integer> ssFoundTerms;
         public final boolean massPing;
         public List<HandledServerMessageContext> sameauthormessages;
+    }
+
+    private static String getRedirect(String url) {
+        try {
+            if (grabifylist.stream().anyMatch(url.toLowerCase()::contains)) {
+                return "GrabifyLink";
+            }
+            HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
+            con.setInstanceFollowRedirects(false);
+            con.connect();
+            return con.getHeaderField("Location"); // null if no redirect
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 }
