@@ -490,7 +490,13 @@ public class UnityVersionMonitor {
 
             // 1. Fetch struct
 
-            AssemblyDefinition ad = AssemblyDefinition.readAssembly(UnityUtils.downloadPath + "/" + unityVersion + "/" + UnityUtils.getMonoManagedSubpath(unityVersion) + "/" + msi.assembly + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+            File assemblyFile = new File(UnityUtils.downloadPath + "/" + unityVersion + "/" + UnityUtils.getMonoManagedSubpath(unityVersion) + "/" + msi.assembly + ".dll");
+            if (!assemblyFile.exists()) {
+                System.out.println("[" + unityVersion + "] Assembly not found: " + msi.assembly);
+                ExceptionUtils.reportException("Assembly not found: " + unityVersion);
+                return;
+            }
+            AssemblyDefinition ad = AssemblyDefinition.readAssembly(assemblyFile.getAbsolutePath(), new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
             ModuleDefinition mainModule = ad.getMainModule();
 
             TypeDefinition typeDefinition = mainModule.getType(msi.name);
