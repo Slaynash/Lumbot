@@ -349,7 +349,13 @@ public class UnityVersionMonitor {
 
         for (Entry<String, List<UnityICall>> assemblyEntry : assemblies.entrySet()) {
             String assemblyName = assemblyEntry.getKey();
-            AssemblyDefinition ad = AssemblyDefinition.readAssembly(UnityUtils.downloadPath + "/" + unityVersion + "/" + UnityUtils.getMonoManagedSubpath(unityVersion) + "/" + assemblyName + ".dll", new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
+            File assemblyFile = new File(UnityUtils.downloadPath + "/" + unityVersion + "/" + UnityUtils.getMonoManagedSubpath(unityVersion) + "/" + assemblyName + ".dll");
+            if (!assemblyFile.exists()) {
+                System.out.println("[" + unityVersion + "] Assembly not found: " + assemblyName);
+                ExceptionUtils.reportException("Assembly not found: " + unityVersion);
+                return;
+            }
+            AssemblyDefinition ad = AssemblyDefinition.readAssembly(assemblyFile.getAbsolutePath(), new ReaderParameters(ReadingMode.Deferred, new CecilAssemblyResolverProvider.AssemblyResolver()));
             ModuleDefinition mainModule = ad.getMainModule();
 
             for (UnityICall icall : assemblyEntry.getValue()) {

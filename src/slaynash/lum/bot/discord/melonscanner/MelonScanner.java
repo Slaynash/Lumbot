@@ -1079,7 +1079,7 @@ public final class MelonScanner {
             value = optField.get().getValue();
         }
         value += error;
-        value = value.substring(0, Math.min(value.toString().length(), MessageEmbed.VALUE_MAX_LENGTH));
+        value = value.substring(0, Math.min(value.length(), MessageEmbed.VALUE_MAX_LENGTH));
         Field field = new Field(Localization.get("melonscanner.knownerrors.fieldname", context.lang), value, false);
         if (index == -1)
             context.embedBuilder.addField(field);

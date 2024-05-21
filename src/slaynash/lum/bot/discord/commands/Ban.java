@@ -58,10 +58,7 @@ public class Ban extends Command {
                     reason = parts[3];
                 }
                 else { //l!ban ID reason
-                    if (parts.length == 3)
-                        reason = parts[2];
-                    else
-                        reason = parts[2] + " " + parts[3];
+                    reason = parts[2] + " " + parts[3];
                 }
             }
             try {

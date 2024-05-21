@@ -376,6 +376,8 @@ public class UnityDownloader {
             dest.mkdirs();
         String targetDirPath = dest.getAbsolutePath();
         File[] files = src.listFiles();
+        if (files == null)
+            return;
         for (File file : files)
             file.renameTo(new File(targetDirPath + File.separator + file.getName()));
     }

@@ -18,7 +18,7 @@ public class ABCpolice {
         if (event.getAuthor().isBot() || event.getMessage().isEdited())
             return true;
         String message = event.getMessage().getContentStripped().trim();
-        if (event.getMessage().getStickers().size() > 0)
+        if (!event.getMessage().getStickers().isEmpty())
             message = event.getMessage().getStickers().get(0).getName() +  " " + message;
         System.out.println("abc " + event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getChannel().asGuildMessageChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
