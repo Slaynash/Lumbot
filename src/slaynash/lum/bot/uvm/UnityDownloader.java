@@ -321,7 +321,10 @@ public class UnityDownloader {
 
         System.out.println("Extracting DLLs from Archive");
         if (!new File(UnityUtils.downloadPath).exists())
-            new File(UnityUtils.downloadPath).mkdir();
+            if (!(new File(UnityUtils.downloadPath).mkdir())) {
+                ExceptionUtils.reportException("Failed to create UVM directory");
+                return;
+            }
         try {
             if (!extractFiles(UnityUtils.downloadPath + "/" + version.version + "_tmp", "unityversionsmonitor/unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), useNSISExtractor, true)) {
                 ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")");
