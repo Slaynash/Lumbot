@@ -141,7 +141,7 @@ public class UnityDownloader {
                 break;
             */
 
-            if (foundVersion.startsWith("20")) {
+            if (foundVersion.startsWith("20") || foundVersion.startsWith("6000")) {
                 if (foundVersion.startsWith("2017.1"))
                     break;
 
