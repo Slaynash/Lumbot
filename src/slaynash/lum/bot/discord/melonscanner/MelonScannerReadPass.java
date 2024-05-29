@@ -545,12 +545,20 @@ public final class MelonScannerReadPass {
     private static boolean mlHashCodeCheck(MelonScanContext context) {
         if (context.line.matches("\\[[\\d.:]+]( \\[MelonLoader])? Hash Code: .*")) {
             String[] split = context.line.split("Code: ");
+            if (split.length == 1) {
+                context.editedLog = true;
+                return true;
+            }
             context.mlHashCode = split[1].trim().toUpperCase();
             System.out.println("Hash Code: " + context.mlHashCode);
             return true;
         }
         if (context.line.matches("\\[[\\d.:]+] OS: .*")) {
             String[] split = context.line.split("OS: ");
+            if (split.length == 1) {
+                context.editedLog = true;
+                return true;
+            }
             context.osType = split[1].trim();
             System.out.println("OS: " + context.osType);
             return true;

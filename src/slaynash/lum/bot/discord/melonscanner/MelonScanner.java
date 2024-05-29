@@ -972,19 +972,19 @@ public final class MelonScanner {
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && context.gameBuild.matches("[\\d.]+")) {
             int buildInt = Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1));
             if (buildInt < 33000 && context.loadedMods.containsKey("LabFusion")) {
-                error += Localization.get("- LabFusion is not compatible with this version of the game. Please update to public beta branch.\n", context.lang);
+                error += Localization.get("- LabFusion is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
             else if (buildInt < 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") >= 0) {
-                error += Localization.get("- BoneLib is not compatible with this version of the game. Please update to public beta branch.\n", context.lang);
+                error += Localization.get("- BoneLib is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
             else if (buildInt > 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") < 0) {
-                error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+                error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade BL to public release branch.\n", context.lang);
             }
             else if (buildInt < 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") >= 0) {
-                error += Localization.get("- JeviLib is not compatible with this version of the game. Please update to public beta branch.\n", context.lang);
+                error += Localization.get("- JeviLib is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
             else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
-                error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade to public release branch.\n", context.lang);
+                error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade BL to public release branch.\n", context.lang);
             }
         }
         if (context.corePath != null && context.corePath.toLowerCase().contains("r2modman")) {

@@ -114,7 +114,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] \\[ERROR] Unhandled Exception: System.NullReferenceException.*",
-            "error": "CPP2IL needs to be updated. Please update MelonLoader to latest [nightly release](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development)."
+            "error": "CPP2IL NRE. Please reinstall MelonLoader or update to latest [nightly release](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development)."
         },
         {
             "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] \\[ERROR] Unhandled Exception: .*System.OverflowException: Arithmetic operation resulted in an overflow.",

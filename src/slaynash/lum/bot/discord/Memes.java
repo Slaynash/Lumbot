@@ -25,6 +25,12 @@ public class Memes {
 
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
+        if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI)) {
+            if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND))
+                event.getChannel().sendMessage("I need the `MESSAGE_ADD_REACTION` and `MESSAGE_EXT_EMOJI` permissions to moderate memes").queue();
+            return false;
+        }
+
         if (event.getAuthor().isBot()) return false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
