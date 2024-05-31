@@ -220,39 +220,9 @@ public class ServerMessagesHandler {
                     return;
                 }
 
-                if (message.startsWith("!vrcx")) {
-                    System.out.println("VRCX printed");
-                    event.getChannel().sendMessage("VRCX is not a mod and you can find it here: <https://github.com/pypy-vrc/VRCX#how-to-install-vrcx>").queue();
-                    return;
-                }
-
                 if (message.startsWith("!proxy")) {
                     System.out.println("Proxy printed");
                     event.getChannel().sendMessage("In Windows, click the Start menu and type in \"Proxy\" and click the result \"Change Proxy\". Disable all 3 toggles in the image below:").addFiles(FileUpload.fromData(new File("images/proxy.png"), "proxy.png")).queue();
-                    return;
-                }
-
-                if (message.startsWith("!vrcticket")) {
-                    System.out.println("VRChat Ticket printed");
-                    event.getChannel().sendMessage("Please open a new VRChat ticket as there is not much we can do about that <https://help.vrchat.com/hc/requests/new>").queue();
-                    return;
-                }
-
-                if (message.startsWith("!vrcanny")) {
-                    System.out.println("VRChat Canny printed");
-                    event.getChannel().sendMessage("Please make your voice heard over at VRChat's Canny <https://vrchat.canny.io/feature-requests>").queue();
-                    return;
-                }
-
-                if (message.startsWith("!tags")) {
-                    System.out.println("VRChat Tags printed");
-                    event.getChannel().sendMessage("https://i.imgur.com/dBoxDVG.png\nhttps://vrchatapi.github.io/tutorials/tags/").queue();
-                    return;
-                }
-
-                if (message.startsWith("!vrccrash")) {
-                    System.out.println("VRChat Crash");
-                    event.getChannel().sendMessage("https://help.vrchat.com/hc/en-us/articles/1500002247921-I-crashed-can-t-launch-VRChat-other-issues").queue();
                     return;
                 }
             }

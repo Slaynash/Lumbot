@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -25,16 +26,15 @@ public class Memes {
 
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
-        if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI)) {
-            if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND))
-                event.getChannel().sendMessage("I need the `MESSAGE_ADD_REACTION` and `MESSAGE_EXT_EMOJI` permissions to moderate memes").queue();
-            return false;
-        }
-
         if (event.getAuthor().isBot()) return false;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
             if (rs.next()) {
+                if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI)) {
+                    if (channel.getType() == ChannelType.GUILD_PUBLIC_THREAD || channel.getType() == ChannelType.GUILD_PRIVATE_THREAD ? event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND_IN_THREADS) : event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND))
+                        channel.sendMessage("I need the `MESSAGE_ADD_REACTION` and `MESSAGE_EXT_EMOJI` permissions to moderate memes").queue();
+                    return false;
+                }
                 event.getMessage().addReaction(upArrow).queue(c -> event.getMessage().addReaction(downArrow).queue());
                 DBConnectionManagerLum.closeRequest(rs);
                 return true;
