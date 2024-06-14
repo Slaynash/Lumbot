@@ -119,7 +119,7 @@
       <!-- for JavaSteam -->
       <groupId>in.dragonbra</groupId>
       <artifactId>javasteam</artifactId>
-      <version>1.4.0</version>
+      <version>1.3.0</version>
     </dependency>
     <dependency>
       <!-- NON-ANDROID ONLY -->
