@@ -92,7 +92,7 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10.1</version>
+      <version>2.11.0</version>
     </dependency>
     <dependency>
       <groupId>org.luaj</groupId>
@@ -100,9 +100,9 @@
       <version>3.0.1</version>
     </dependency>
     <dependency>
-      <groupId>io.github.discord-jda</groupId>
+      <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>6f7189f91a</version>
+      <version>5.0.0-beta.24</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId> <!-- Exclude DISCORD AUDIO -->
@@ -113,19 +113,19 @@
     <dependency>
       <groupId>com.mysql</groupId>
       <artifactId>mysql-connector-j</artifactId>
-      <version>8.3.0</version>
+      <version>8.4.0</version>
     </dependency>
     <dependency>
       <!-- for JavaSteam -->
       <groupId>in.dragonbra</groupId>
       <artifactId>javasteam</artifactId>
-      <version>1.3.0</version>
+      <version>1.4.0</version>
     </dependency>
     <dependency>
       <!-- NON-ANDROID ONLY -->
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.77</version>
+      <version>1.78.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -137,15 +137,15 @@
       <artifactId>mono.cecil</artifactId>
       <version>0.10.0.0</version>
     </dependency>
-    <dependency>
+    <dependency> <!-- used for named regex groups -->
       <groupId>com.github.tony19</groupId>
       <artifactId>named-regexp</artifactId>
-      <version>0.2.8</version>
+      <version>1.0.0</version>
     </dependency>
-    <dependency>
+    <dependency> <!-- used to read unicode ML logs -->
     	<groupId>com.github.albfernandez</groupId>
     	<artifactId>juniversalchardet</artifactId>
-    	<version>2.4.0</version>
+    	<version>2.5.0</version>
     </dependency>
   </dependencies>
 
