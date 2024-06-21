@@ -433,8 +433,7 @@ public class ScamShield {
             else
                 embedBuilder.setAuthor(ssBan ? "Ban" : "Kick" + " Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-            if (!dm && guild.getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
-                suspiciousResults.sameauthormessages.forEach(m -> m.messageReceivedEvent.getMessage().delete().reason("Lum's Scam Shield").queue());
+            suspiciousResults.sameauthormessages.stream().filter(m -> m.messageReceivedEvent.getGuild().getSelfMember().hasPermission(m.messageReceivedEvent.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)).forEach(m -> m.messageReceivedEvent.getMessage().delete().reason("Lum's Scam Shield").queue());
 
             if (!guild.getSelfMember().canInteract(member)) {
                 embedBuilder.setDescription("Unable to " + (ssBan ? "Ban" : "Kick") + " user **" + usernameWithTag + "** (*" + userId + "*) because they are a higher role than my role");
