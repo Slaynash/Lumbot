@@ -219,7 +219,8 @@ public final class MelonScanner {
 
     public static boolean isValidFileFormat(Attachment attachment, boolean strict) {
         if (attachment.getFileExtension() == null) return false;
-        if (!attachment.getFileExtension().equalsIgnoreCase("log") && !attachment.getFileExtension().equalsIgnoreCase("txt")) return false;
+        if (attachment.getFileExtension().equalsIgnoreCase("log")) return true;
+        if (!attachment.getFileExtension().equalsIgnoreCase("txt")) return false;
         String fileName = attachment.getFileName().toLowerCase();
         if (strict && fileName.startsWith("message")) return true;
         return fileName.startsWith("latest") ||
