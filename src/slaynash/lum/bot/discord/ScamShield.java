@@ -218,7 +218,7 @@ public class ScamShield {
         }
 
         if (msg.contains("](")) {
-            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,3}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,3}).*\\)");
+            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,5}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,5}).*\\)");
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
@@ -290,6 +290,7 @@ public class ScamShield {
         long guildID = event.getGuild().getIdLong();
         ScamResults suspiciousResults = ssValue(event);
 
+        allMessages.add(event);
         if (suspiciousResults.suspiciousValue == 0)
             return false;
 
@@ -297,7 +298,6 @@ public class ScamShield {
         allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
-        allMessages.add(event);
 
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue < 3 && suspiciousResults.calulatedValue > 0)
