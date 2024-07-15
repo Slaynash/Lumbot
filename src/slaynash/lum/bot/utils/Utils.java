@@ -182,6 +182,8 @@ public class Utils {
             System.out.println("Icon URL is null");
             return;
         }
+        if (iconURL.contains("discordapp"))  //TODO: check Discord media for 404
+            return;
         new Thread(() -> {
             try {
                 HttpURLConnection huc = (HttpURLConnection) new URL(iconURL).openConnection();

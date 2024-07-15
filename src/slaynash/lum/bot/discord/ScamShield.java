@@ -88,6 +88,7 @@ public class ScamShield {
             put("checkmybio...", 2);
             put("checkthis", 1);
             put("linkforyou", 1);
+            put("joinmyserver", 1);
             put("takeit)", 2);
             put("asubscription!", 2);
             put("giftied", 1); //typo is from Junidecode
@@ -260,6 +261,10 @@ public class ScamShield {
             if (url != null && url.equals("GrabifyLink")) {
                 ssFoundTerms.put("GrabifyLink", instaKick + 1);
             }
+        }
+        if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
+            if (event.getMessage().getInvites().size() > 1)
+                ssFoundTerms.put("Discord Invite", 1);
         }
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
