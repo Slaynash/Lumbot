@@ -149,7 +149,7 @@ public class Replies extends Slash {
                         sb.append("\tUser: ").append(event.getJDA().getUserById(rs.getString("user")).getEffectiveName()).append("\n");
                     }
                     if (rs.getString("channel") != null) {
-                        sb.append("\tChannel: ").append(event.getJDA().getTextChannelById(rs.getString("channel")).getName()).append("\n");
+                        sb.append("\tChannel: ").append(event.getJDA().getGuildChannelById(rs.getString("channel")).getName()).append("\n");
                     }
                     if (rs.getString("ignorerole") != null) {
                         sb.append("\tIgnored Role: ").append(event.getJDA().getRoleById(rs.getString("ignorerole")).getName()).append("\n");
