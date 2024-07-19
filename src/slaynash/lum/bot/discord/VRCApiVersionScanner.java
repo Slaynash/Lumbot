@@ -77,14 +77,14 @@ public class VRCApiVersionScanner {
 
                         List<ServerChannel> channels = new ArrayList<>();
                         try {
-                            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = 438100");
+                            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE VRCAPI IS NOT NULL");
                             while (rs.next()) {
-                                channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                                channels.add(new ServerChannel(rs.getString("GuildID"), rs.getString("VRCAPI")));
                             }
                             DBConnectionManagerLum.closeRequest(rs);
                         }
                         catch (SQLException e) {
-                            ExceptionUtils.reportException("Failed to fetch SteamWatch in Info", e);
+                            ExceptionUtils.reportException("Failed to fetch VRCAPI channels", e);
                             continue;
                         }
 

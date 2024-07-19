@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 26, 2024 at 07:39 PM
+-- Generation Time: Jul 20, 2024 at 12:58 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -59,10 +59,10 @@ CREATE TABLE IF NOT EXISTS `blacklistusername` (
 CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
   `GuildID` bigint NOT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ScamShield` tinyint(1) NOT NULL DEFAULT '0',
+  `ScamShield` tinyint(1) NOT NULL DEFAULT '1',
   `ScamShieldBan` tinyint(1) NOT NULL DEFAULT '0',
-  `ScamShieldCross` tinyint(1) NOT NULL DEFAULT '0',
-  `ScamShieldDm` tinyint(1) NOT NULL DEFAULT '0',
+  `ScamShieldCross` tinyint(1) NOT NULL DEFAULT '1',
+  `ScamShieldDm` tinyint(1) NOT NULL DEFAULT '1',
   `MLLogScan` tinyint(1) NOT NULL DEFAULT '0',
   `MLLogReaction` tinyint(1) NOT NULL DEFAULT '0',
   `MLReplies` tinyint(1) NOT NULL DEFAULT '0',
@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS `GuildConfigurations` (
   `DLLRemover` tinyint(1) NOT NULL DEFAULT '0',
   `LumReplies` tinyint(1) NOT NULL DEFAULT '0',
   `DadJokes` tinyint(1) NOT NULL DEFAULT '0',
+  `VRCAPI` bigint DEFAULT NULL,
   `Created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY `GuildID` (`GuildID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

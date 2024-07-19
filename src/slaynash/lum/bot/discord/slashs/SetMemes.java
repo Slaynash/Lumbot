@@ -32,13 +32,13 @@ public class SetMemes extends Slash {
         else if (!reportChannel.isEmpty() && reportChannel.get(0).getAsLong() == event.getChannel().getIdLong()) {
             event.reply("You can't set the report channel to the same channel as the meme channel").setEphemeral(true).queue();
         }
-        else if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_MANAGE)) {
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_MANAGE)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_MANAGE.getName() + " permission").setEphemeral(true).queue();
         }
-        else if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_EXT_EMOJI)) {
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_EXT_EMOJI)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_EXT_EMOJI.getName() + " permission").setEphemeral(true).queue();
         }
-        else if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION)) {
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_ADD_REACTION.getName() + " permission").setEphemeral(true).queue();
         }
         else try {
