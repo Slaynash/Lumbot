@@ -5,16 +5,20 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.google.gson.Gson;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -38,11 +42,6 @@ public class VRCApiVersionScanner {
                 .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
                 .timeout(Duration.ofSeconds(30))
                 .build();
-
-            List<TextChannel> apiGuilds = new ArrayList<>(Arrays.asList(
-                JDAManager.getJDA().getGuildById(673663870136746046L /* Modders & Chill */).getTextChannelById(829441182508515348L /* #bot-update-spam */),
-                JDAManager.getJDA().getGuildById(876431015478951936L /* The Private Server Project */).getTextChannelById(995348312230203535L /* #official-api-updates */)
-            ));
 
             while (true) {
                 try {
@@ -76,15 +75,34 @@ public class VRCApiVersionScanner {
                         if (!JDAManager.isEventsEnabled())
                             continue;
 
-                        for (TextChannel tc : apiGuilds) {
+                        List<ServerChannel> channels = new ArrayList<>();
+                        try {
+                            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = 438100");
+                            while (rs.next()) {
+                                channels.add(new ServerChannel(rs.getString("ServerID"), rs.getString("ChannelID")));
+                            }
+                            DBConnectionManagerLum.closeRequest(rs);
+                        }
+                        catch (SQLException e) {
+                            ExceptionUtils.reportException("Failed to fetch SteamWatch in Info", e);
+                            continue;
+                        }
+
+                        for (ServerChannel channel : channels) {
+                            Guild guild = JDAManager.getJDA().getGuildById(channel.serverID());
+                            if (guild == null)
+                                continue;
+                            MessageChannel tc = (MessageChannel) JDAManager.getJDA().getGuildChannelById(channel.channelId());
+                            if (tc == null)
+                                continue;
                             if (tc.canTalk()) {
-                                if (tc.getGuild().getSelfMember().hasPermission(tc, Permission.MESSAGE_EMBED_LINKS))
+                                if (guild.getSelfMember().hasPermission((GuildChannel) tc, Permission.MESSAGE_EMBED_LINKS))
                                     tc.sendMessageEmbeds(embed).queue();
                                 else
                                     tc.sendMessage("Gibme embed perms").queue();
                             }
                             else
-                                ExceptionUtils.reportException("Can not post VRCAPI in " + tc.getGuild().getName());
+                                ExceptionUtils.reportException("Can not post VRCAPI in " + guild.getName());
                         }
                     }
                 }
@@ -96,7 +114,7 @@ public class VRCApiVersionScanner {
                 }
 
                 try {
-                    Thread.sleep(45 * 1000);  // maybe 45 seconds is better?
+                    Thread.sleep(45 * 1000);
                 }
                 catch (Exception ignored) { }
             }
