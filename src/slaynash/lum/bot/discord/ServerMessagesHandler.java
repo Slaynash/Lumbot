@@ -137,7 +137,7 @@ public class ServerMessagesHandler {
                 if (!line.startsWith("> "))
                     sb.append(line).append(System.lineSeparator());
             }
-            message = sb.toString().trim();
+            message = sb.toString().trim().toLowerCase();
 
             if (guildconfig.LumReplies()) {
                 if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
