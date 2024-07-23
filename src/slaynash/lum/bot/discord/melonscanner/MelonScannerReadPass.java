@@ -500,8 +500,12 @@ public final class MelonScannerReadPass {
     }
 
     private static boolean gameTypeCheck(MelonScanContext context) {
-        if (context.line.matches("\\[[\\d.:]+] Game Type: .*")) {
+        if (context.line.matches("\\[[\\d.:]+] Game Type:.*")) {
             String[] split = context.line.split("Type: ");
+            if (split.length == 1) {
+                context.editedLog = true;
+                return true;
+            }
             String type = split[1].trim();
             if (type.equalsIgnoreCase("Il2Cpp")) {
                 context.il2Cpp = true;
@@ -511,6 +515,15 @@ public final class MelonScannerReadPass {
                 context.mono = true;
                 return true;
             }
+        }
+        if (context.line.matches("\\[[\\d.:]+] Game Arch:.*")) {
+            String[] split = context.line.split("Arch: ");
+            if (split.length == 1) {
+                context.editedLog = true;
+                return true;
+            }
+            context.arch = split[1].trim();
+            return true;
         }
         return false;
     }

@@ -44,6 +44,7 @@ public class MelonScanContext {
     public String mlVersion;
     public String osType;
     public String mlHashCode;
+    public String arch;
     public boolean pre3 = false;
     public boolean alpha = false;
     public boolean mono = false;

@@ -557,6 +557,7 @@ public final class MelonScanner {
     }
 
     private static boolean knownErrorsCheck(MelonScanContext context) {
+        System.out.println("Errors: " + context.errors.size());
         context.errors.removeIf(e -> e == null || e.error == null || e.error.isBlank());
         if (!context.errors.isEmpty()) {
             StringBuilder error = new StringBuilder();
@@ -570,6 +571,16 @@ public final class MelonScanner {
             }
             context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
+
+            List<Field> fields = new ArrayList<Field>(context.embedBuilder.getFields());  //getFields is by reference so make new list
+            context.embedBuilder.clearFields();
+            for (Field field : fields) {
+                //if null then set to x64
+                String arch = context.arch == null ? "x64" : context.arch;
+                String value = field.getValue().replace("%arch%", arch);
+                context.embedBuilder.addField(new Field(field.getName(), value, field.isInline()));
+            }
+
             return true;
         }
         return false;

@@ -200,15 +200,15 @@
         },
         {
             "regex": ".*il2cpp_init detour failed: One of the dependent libraries is missing.",
-            "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
+            "error": "Missing .NET 6.0. Please install [.NET Runtime 6.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=6.0.0&arch=%arch%&rid=win10-%arch%&gui=true)."
         },
         {
             "regex": ".*Please make sure you have installed the .NET 6.0 runtime.",
-            "error": "Please make sure you have installed the [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
+            "error": "Please make sure you have installed the [.NET Runtime 6.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=6.0.0&arch=%arch%&rid=win10-%arch%&gui=true)."
         },
         {
             "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
-            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0#runtime-6.0.20)."
+            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=6.0.0&arch=%arch%&rid=win10-%arch%&gui=true)."
         },
         {
             "regex": ".*Failed to initialize MelonLoader: Failed to load library!",
@@ -217,6 +217,18 @@
         {
             "regex": ".*Failed to initialize MelonLoader: Failed to get function pointer: (?<thepointer>.*)",
             "error": "Failed to get function pointer thepointer. It is likely the game devs removed it to prevent modding."
+        },
+        {
+            "regex": "\\[[\\d.:]+] \\[MelonStartScreen] Failed to find the signature.*",
+            "error": "Failed to start MelonStartScreen.\nPlease add the launch option\n`--melonloader.disablestartscreen` to the game's launch options\nor edit `UserData/MelonStartScreen/Config.cfg` to `Enabled = false` to disable."
+        },
+        {
+            "regex": "\\[[\\d.:]+] \\[MelonStartScreen] Exception while rendering.*",
+            "error": "Failed to start MelonStartScreen.\nPlease add the launch option\n`--melonloader.disablestartscreen` to the game's launch options\nor edit `UserData/MelonStartScreen/Config.cfg` to `Enabled = false` to disable."
+        },
+        {
+            "regex": "\\[[\\d.:]+] \\[MelonStartScreen] System.InvalidOperationException: Unable to get process modules.*",
+            "error": "Failed to start MelonStartScreen.\nPlease add the launch option\n`--melonloader.disablestartscreen` to the game's launch options\nor edit `UserData/MelonStartScreen/Config.cfg` to `Enabled = false` to disable."
         }
     ],
     "knownErrors": [
