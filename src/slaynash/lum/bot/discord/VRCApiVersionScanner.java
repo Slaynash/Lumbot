@@ -58,6 +58,7 @@ public class VRCApiVersionScanner {
 
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle("VRCAPI Updated");
+                        eb.setUrl("https://api.vrchat.cloud/api/1/config");
                         eb.addField("Old Build Version Tag", "[" + lastDG + "] " + lastBVT, false);
                         eb.addField("New Build Version Tag", "[" + config.deploymentGroup + "] " + config.buildVersionTag, false);
                         if (lastDG.equals(config.deploymentGroup))

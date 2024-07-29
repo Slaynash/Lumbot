@@ -208,7 +208,7 @@
         },
         {
             "regex": ".*il2cpp_init detour failed: It was not possible to find a compatible framework version.",
-            "error": "Wrong version of .NET is installed. Make sure to use x64 version for x64 games and x86 for x86 games. Please install [.NET Runtime 6.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=6.0.0&arch=%arch%&rid=win10-%arch%&gui=true)."
+            "error": "Wrong version of .NET is installed. Please install [.NET Runtime 6.0](https://aka.ms/dotnet-core-applaunch?framework=Microsoft.WindowsDesktop.App&framework_version=6.0.0&arch=%arch%&rid=win10-%arch%&gui=true)."
         },
         {
             "regex": ".*Failed to initialize MelonLoader: Failed to load library!",

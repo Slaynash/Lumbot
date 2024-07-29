@@ -80,6 +80,7 @@ public class ScamShield {
             put("booster", 1);
             put("download", 1);
             put("100%", 1);
+            put("yobro", 1);
             put("joinnow", 1);
             put("underage", 1);
             put("family-world", 3);
@@ -92,6 +93,7 @@ public class ScamShield {
             put("takeit)", 2);
             put("asubscription!", 2);
             put("giftied", 1); //typo is from Junidecode
+            put("seeifitsthesameforyou", 1);
             put("itisalreadyrunningout", 2);
             put("pleasetryclaimthisquickly", 2);
             put("gameicreatedtoday)", 2);
@@ -254,14 +256,14 @@ public class ScamShield {
                 ssFoundTerms.put("domainAge", domainAge * 3);
         }
 
-        for (String url : Utils.extractUrls(message.toString())) {
-            do {
-                url = getRedirect(url);
-            } while (url != null && !url.equals("GrabifyLink"));
-            if (url != null && url.equals("GrabifyLink")) {
-                ssFoundTerms.put("GrabifyLink", instaKick + 1);
-            }
-        }
+        // for (String url : Utils.extractUrls(message.toString())) {
+        //     do {
+        //         url = getRedirect(url);
+        //     } while (url != null && !url.equals("GrabifyLink"));
+        //     if (url != null && url.equals("GrabifyLink")) {
+        //         ssFoundTerms.put("GrabifyLink", instaKick + 1);
+        //     }
+        // }
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             if (event.getMessage().getInvites().size() > 1)
                 ssFoundTerms.put("Discord Invite", 1);
