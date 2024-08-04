@@ -84,20 +84,14 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildconfig.MLGeneralRemover() && (event.getChannel().getName().toLowerCase().contains("general") || event.getMessage().getCategory() != null && event.getMessage().getCategory().getIdLong() == 705284406561996811L/*emm high-tech*/) && !attachments.isEmpty() && MelonScanner.isValidFileFormat(attachments.get(0), false) && !CrossServerUtils.checkIfStaff(event)) {
+                if (guildconfig.MLGeneralRemover() && event.getChannel().getName().toLowerCase().contains("general") && event.getChannelType() == ChannelType.TEXT && !CrossServerUtils.checkIfStaff(event)) {
                     String mess = switch (guildIDstr) {
-                        case "600298024425619456" -> //emmVRC
-                                memberMention + " Please reupload this log to <#600661924010786816> instead.";
-                        case "439093693769711616" -> //VRCMG
-                                memberMention + " Please reupload this log to <#801792974542471168> instead.";
                         case "663449315876012052" -> //MelonLoader
                                 memberMention + " Please reupload this log to <#733305093264375849> instead.";
                         case "563139253542846474" -> //BoneLab
                                 memberMention + " Please create a thread in <#1019659373695475802> and reupload this log to there instead.";
                         case "322211727192358914" -> //TLDModding
                                 memberMention + " Please reupload this log to <#827601339672035408> instead.";
-                        case "758553724226109480" -> //1330 Studios
-                                memberMention + " Please reupload this log to <#832441046750330920> instead.";
                         default -> memberMention + " Please reupload this log to help and support or log scanning channel instead.";
                     };
                     event.getChannel().sendMessage(mess).queue();
