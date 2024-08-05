@@ -15,6 +15,7 @@ while apiData:hasNext() do
         name = entry:getKey(),
         version = entry:getValue():get("Version"):getAsString(),
         downloadLink = entry:getValue():get("Download"):get("browser_download_url"):getAsString(),
+        isbroken = not entry:getValue():get("Error"):getAsBoolean(),
         aliases = aliases;
     })
 end
