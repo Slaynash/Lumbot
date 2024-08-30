@@ -18,7 +18,7 @@
         "melonscanner.readerror.fieldname": "Log Format:",
         "melonscanner.readerror.field": "Log file may be corrupted. Please do not edit the log and reupload the original log.",
 
-        "melonscanner.mloutdated.fieldname": "Warning:",
+        "melonscanner.mloutdated.fieldname": "MelonLoader Version:",
         "melonscanner.mloutdated.uptoalpha": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`",
         "melonscanner.mloutdated.upalpha": "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.reinstall": "Please reinstall MelonLoader %1$s using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
@@ -47,7 +47,7 @@
         "melonscanner.incompatibleMods.fieldname": "Incompatible Mods:",
         "melonscanner.incompatibleMods.more": "- and %s more...",
 
-        "melonscanner.brokenmods.fieldname": "Currently Broken Mods:",
+        "melonscanner.brokenmods.fieldname": "Currently Broken Mods, Please remove:",
         "melonscanner.brokenmods.more": "- and %s more...",
 
         "melonscanner.modretired.fieldname": "Currently Retired Mods:",
