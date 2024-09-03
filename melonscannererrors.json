@@ -94,7 +94,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Open Preload Assembly!",
-            "error": "Missing or currupt `MelonLoader\\Dependencies\\SupportModules\\Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
+            "error": "Missing or corrupt `MelonLoader\\Dependencies\\SupportModules\\Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T]\\(Int64.*",
@@ -183,7 +183,7 @@
         },
         {
             "regex": " {4}- 'Il2Cppmscorlib' v0\\.0\\.0\\.0",
-            "error": "Failed to find some dependancies. If using Proton, please downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
+            "error": "Failed to find some dependencies. If using Proton, please downgrade to proton 5, re-setup the `version` library in protontricks, run the game once, then switch back to default proton. Alternatively, you can try to change the launch commands in steam to `PROTON_NO_ESYNC=1 %command%`, though this isn't tested."
         },
         {
             "previousLineRegex": "\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System.NullReferenceException: Object reference not set to an instance of an object.",
@@ -195,7 +195,7 @@
             "error": "Failed to Initialize Assets Manager. If you are using Turkish as your main Windows language, That could be the problem. It is fixed in the next release of MelonLoader so feel free to use the [nightly build](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.x64.CI.Release.zip)."
         },
         {
-            "regex": ".*ExecutionEngineException: String conversion error: Illegal byte sequence encounted in the input.",
+            "regex": ".*ExecutionEngineException: String conversion error: Illegal byte sequence encountered in the input.",
             "error": "Illegal char in path. Please remove any double byte characters from the path like Japanese or ü."
         },
         {
