@@ -207,6 +207,10 @@ public class MelonScannerApisManager {
                                 ExceptionUtils.reportException("Received HTML for " + api.name);
                                 break;
                             }
+                            else if (responseString.length() <= 4) {
+                                ExceptionUtils.reportException("Received empty JSON for " + api.name);
+                                break;
+                            }
                             JsonElement data = gson.fromJson(responseString, JsonElement.class);
 
                             // Script pass

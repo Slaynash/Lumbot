@@ -75,13 +75,19 @@ public class UnivUCBLLIFExoGenerator extends Slash {
             Pattern p = Pattern.compile("([^\\w\\-!.~'\\(\\)*])");
             Matcher m = p.matcher(exo);
             if (m.find()) {
-                event.reply("Invalid character in exo: " + m.group(0)).setEphemeral(true).queue();
+                if (interactionhook != null)
+                    interactionhook.sendMessage("Invalid character in exo: " + m.group(0)).setEphemeral(true).queue();
+                else
+                    event.reply("Invalid character in exo: " + m.group(0)).setEphemeral(true).queue();
                 return;
             }
             if (ticket != null) {
                 Matcher m2 = p.matcher(ticket);
                 if (m2.find()) {
-                    event.reply("Invalid character in ticket: " + m2.group(0)).setEphemeral(true).queue();
+                    if (interactionhook != null)
+                        interactionhook.sendMessage("Invalid character in ticket: " + m2.group(0)).setEphemeral(true).queue();
+                    else
+                        event.reply("Invalid character in ticket: " + m2.group(0)).setEphemeral(true).queue();
                     return;
                 }
             }
