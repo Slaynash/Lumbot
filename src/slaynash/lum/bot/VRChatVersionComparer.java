@@ -59,7 +59,7 @@ public class VRChatVersionComparer {
             if (event != null)
                 event.getChannel().sendMessage("Downloading VRChat from Steam...").queue();
             try {
-                Process p = Runtime.getRuntime().exec("dotnet vrcdecomp/depotdownloader/DepotDownloader.dll -app 438100 -depot 438101 -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat");
+                Process p = Runtime.getRuntime().exec("vrcdecomp/depotdownloader/DepotDownloader -app 438100 -depot 438101 -branch " + branch + " -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat");
                 logAppOutput(p, "DepotDownloader");
                 int returncode = p.waitFor();
                 if (returncode != 0) {
@@ -76,7 +76,7 @@ public class VRChatVersionComparer {
             if (event != null)
                 event.getChannel().sendMessage("Running Cpp2IL...").queue();
             try {
-                ProcessBuilder pb = new ProcessBuilder("sh", "-c", "./Cpp2IL-2021.1.2-Linux --game-path VRChat --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
+                ProcessBuilder pb = new ProcessBuilder("sh", "-c", "./Cpp2IL-2022.0.7-Linux --game-path VRChat --exe-name VRChat --skip-analysis --skip-metadata-txts --disable-registration-prompts");
                 pb.directory(new File("vrcdecomp"));
                 Process p = pb.start();
                 try (BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
@@ -220,19 +220,29 @@ public class VRChatVersionComparer {
 
         byte[] mapData = decompressedStream.toByteArray();
 
+        // Required because of a bug in Unhollower/Cecil
+        System.out.println("Moving UnityEngine.CoreModule.dll");
+        try
+        {
+            Files.move(new File("vrcdecomp/unitydeps_" + unityVersion + "/UnityEngine.CoreModule.dll").toPath(), new File("vrcdecomp/UnityEngine.CoreModule.dll").toPath(), StandardCopyOption.REPLACE_EXISTING);
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to move UnityEngine.CoreModule.dll", e);
+            return;
+        }
 
         System.out.println("Running Unhollower");
         if (event != null)
             event.getChannel().sendMessage("Running Il2CppAssemblyUnhollower...").queue();
         try {
-            Process p = Runtime.getRuntime().exec("mono vrcdecomp/unhollower/AssemblyUnhollower.exe " +
-                "--input=vrcdecomp/versions/" + branch + "_" + manifestId + "/cpp2il_out " +
-                "--output=vrcdecomp/versions/" + branch + "_" + manifestId + "/unhollower_out " +
-                "--mscorlib=vrcdecomp/mscorlib.dll " +
-                "--unity=vrcdecomp/unitydeps_" + unityVersion + " " +
-                "--gameassembly=vrcdecomp/versions/" + branch + "_" + manifestId + "/GameAssembly.dll " +
-                "--rename-map=vrcdecomp/deobfmap.csv.gz " +
-                "--blacklist-assembly=Mono.Security --blacklist-assembly=Newtonsoft.Json --blacklist-assembly=Valve.Newtonsoft.Json");
+            Process p = Runtime.getRuntime().exec("mono unhollower/AssemblyUnhollower.exe " +
+                "--input=versions/" + branch + "_" + manifestId + "/cpp2il_out " +
+                "--output=versions/" + branch + "_" + manifestId + "/unhollower_out " +
+                "--mscorlib=mscorlib.dll " +
+                "--unity=unitydeps_" + unityVersion + " " +
+                "--gameassembly=versions/" + branch + "_" + manifestId + "/GameAssembly.dll " +
+                "--rename-map=deobfmap.csv.gz " +
+                "--add-prefix-to=ICSharpCode --add-prefix-to=Newtonsoft --add-prefix-to=TinyJson --add-prefix-to=Valve.Newtonsoft", null, new File("vrcdecomp"));
             logAppOutput(p, "Il2CppAssemblyUnhollower");
             int returncode = p.waitFor();
             if (returncode != 0) {
