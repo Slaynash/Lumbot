@@ -32,6 +32,7 @@ import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
 import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
+import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.UVMCommand;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
@@ -134,6 +135,7 @@ public class CommandManager {
         CommandManager.registerCommand(new Blacklist());
 
         CommandManager.registerCommand(new LumGoneCommand());
+        CommandManager.registerCommand(new TestVRCObfmap());
     }
 
 
