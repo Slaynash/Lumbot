@@ -115,8 +115,7 @@ public class Main extends ListenerAdapter {
         loadReplies();
         CrossServerUtils.loadGuildCount();
 
-        if (JDAManager.isMainBot())
-            API.start();
+        API.start();
 
         MelonScanner.init();
 
