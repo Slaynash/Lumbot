@@ -82,6 +82,8 @@ public class ScamShield {
             put("100%", 1);
             put("yobro", 1);
             put("joinnow", 1);
+            put("invite", 1);
+            put("betatest", 2);
             put("underage", 1);
             put("family-world", 3);
             put("hotteen", 1);
