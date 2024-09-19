@@ -77,7 +77,7 @@ public final class ExceptionUtils {
 
     private static void reportDiscord(String title, String comment, Throwable exception, MessageChannelUnion channel) {
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() != 275759980752273418L || !JDAManager.isEventsEnabled())
+        if (!JDAManager.isProductionBot() || !JDAManager.isEventsEnabled())
             return;
 
         if (!ConfigManager.mainBot)

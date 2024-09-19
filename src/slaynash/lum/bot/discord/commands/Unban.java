@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild.Ban;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
@@ -18,7 +19,7 @@ public class Unban extends Command {
         User unbanUser;
         String[] parts = paramString.split(" ", 2);
         if (parts.length < 2) {
-            event.getMessage().reply("Usage: " + getName() + " <UserID>").queue();
+            event.getMessage().reply("Usage: " + ConfigManager.discordPrefix + getName() + " <UserID>").queue();
             return;
         }
         try {
@@ -49,7 +50,7 @@ public class Unban extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -64,6 +65,6 @@ public class Unban extends Command {
 
     @Override
     public String getName() {
-        return "l!unban";
+        return "unban";
     }
 }

@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
@@ -18,7 +19,7 @@ public class MLHashRegisterCommand extends Command {
             return;
 
         String[] split = paramString.split(" ");
-        String usage = "Usage: " + getName() + " <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
+        String usage = "Usage: " + ConfigManager.discordPrefix + getName() + " <release|alpha> <ml version> <ml hash x86> <ml hash x64>";
         if (split.length != 5) {
             paramMessageReceivedEvent.getChannel().sendMessage(usage).queue();
             return;
@@ -62,7 +63,7 @@ public class MLHashRegisterCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -80,7 +81,7 @@ public class MLHashRegisterCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!registermlhash";
+        return "registermlhash";
     }
 
 }

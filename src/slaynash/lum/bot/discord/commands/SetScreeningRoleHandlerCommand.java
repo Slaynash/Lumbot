@@ -5,6 +5,7 @@ import java.awt.Color;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -20,7 +21,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
         }
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().split(" ");
         if (params.length > 2 || params.length == 2 && !params[1].matches("^\\d+$")) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + ConfigManager.discordPrefix + getName() + " [roleid]").queue();
             return;
         }
 
@@ -49,7 +50,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals(getName());
+        return pattern.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -59,7 +60,7 @@ public class SetScreeningRoleHandlerCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!setscreeningrole";
+        return "setscreeningrole";
     }
 
     @Override

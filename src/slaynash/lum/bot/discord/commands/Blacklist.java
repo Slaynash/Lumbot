@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
@@ -78,7 +79,7 @@ public class Blacklist extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -93,7 +94,7 @@ public class Blacklist extends Command {
 
     @Override
     public String getName() {
-        return "l!blacklist";
+        return "blacklist";
     }
 
 }

@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.messages.MessageRequest;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.Main;
 
 public class JDAManager {
@@ -53,6 +54,7 @@ public class JDAManager {
         System.out.println("Enabling events");
         jda.getEventManager().register(mainEvents);
     }
+
     public static void disableEvents() {
         if (jda == null) {
             return;
@@ -60,10 +62,32 @@ public class JDAManager {
         System.out.println("Disabling events");
         jda.getEventManager().unregister(mainEvents);
     }
+
     public static boolean isEventsEnabled() {
         if (jda == null) {
             return false;
         }
         return jda.getEventManager().getRegisteredListeners().contains(mainEvents);
+    }
+
+    public static boolean isProductionBot() {
+        if (jda == null)
+            return false;
+        return jda.getSelfUser().getIdLong() == 275759980752273418L;
+    }
+
+    public static boolean isDevBot() {
+        if (jda == null)
+            return false;
+        return jda.getSelfUser().getIdLong() == 773707709064151051L;
+    }
+
+    public static boolean isMainBot() {
+        return isProductionBot() && ConfigManager.mainBot;
+    }
+
+    public static boolean isBackupBot() {
+        // Note: The dev bot is always assumed to be non-backup
+        return isProductionBot() && !ConfigManager.mainBot;
     }
 }

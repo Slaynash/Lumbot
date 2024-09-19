@@ -34,6 +34,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import net.gcardone.junidecode.Junidecode;
 import org.jetbrains.annotations.NotNull;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -112,7 +113,7 @@ public class MessageProxy {
                 event.getGuild().getIdLong() == 633588473433030666L /* Slaynash's Workbench */ &&
                 event.getChannel().getName().toLowerCase().startsWith("dm-") &&
                 !event.getMessage().getContentRaw().startsWith(".") &&
-                !event.getMessage().getContentRaw().startsWith("l!"))
+                !event.getMessage().getContentRaw().startsWith(ConfigManager.discordPrefix))
         {
             String[] userID = event.getChannel().getName().split("-");
             User user = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();

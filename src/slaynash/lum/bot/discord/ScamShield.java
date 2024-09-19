@@ -44,6 +44,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -521,7 +522,7 @@ public class ScamShield {
                     ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queueAfter(4, TimeUnit.SECONDS));
             }
             else if (!dm && event.getGuild() == guild) {
-                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `l!setmlreportchannel` to set the report channel.");
+                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `" + ConfigManager.discordPrefix + "setmlreportchannel` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS))
                     event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))

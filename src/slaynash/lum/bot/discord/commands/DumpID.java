@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 
 public class DumpID extends Command {
@@ -20,7 +21,7 @@ public class DumpID extends Command {
             return;
         String[] parts = paramString.split(" ", 2);
         if (parts.length < 2) {
-            event.getMessage().reply("Usage: " + getName() + " <Regex>").queue();
+            event.getMessage().reply("Usage: " + ConfigManager.discordPrefix + getName() + " <Regex>").queue();
             return;
         }
         String regex = Junidecode.unidecode(parts[1]).toLowerCase();
@@ -54,7 +55,7 @@ public class DumpID extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -69,6 +70,6 @@ public class DumpID extends Command {
 
     @Override
     public String getName() {
-        return "l!dumpid";
+        return "dumpid";
     }
 }

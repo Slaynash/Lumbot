@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord.commands;
 import java.awt.Color;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.Utils;
@@ -11,7 +12,7 @@ public class HelpCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals(getName());
+        return pattern.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -42,7 +43,7 @@ public class HelpCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!help";
+        return "help";
     }
 
     @Override

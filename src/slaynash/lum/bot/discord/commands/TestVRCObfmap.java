@@ -1,6 +1,7 @@
 package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.VRChatVersionComparer;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -15,7 +16,7 @@ public class TestVRCObfmap extends Command {
         String[] parts = paramString.split(" ");
 
         if (parts.length != 4) {
-            event.getMessage().reply("usage: " + getName() + " <manifestid> <branch> <map url>").queue();
+            event.getMessage().reply("usage: " + ConfigManager.discordPrefix + getName() + " <manifestid> <branch> <map url>").queue();
             return;
         }
 
@@ -29,7 +30,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -44,7 +45,7 @@ public class TestVRCObfmap extends Command {
 
     @Override
     public String getName() {
-        return "l!testvrcobfmap";
+        return "testvrcobfmap";
     }
 
 }

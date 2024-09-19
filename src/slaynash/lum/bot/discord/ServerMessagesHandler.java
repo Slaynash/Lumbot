@@ -27,6 +27,7 @@ import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
@@ -67,7 +68,7 @@ public class ServerMessagesHandler {
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
-            if (message.startsWith("l!ping"))
+            if (message.startsWith("ping"))
                 message = message.substring(6).trim();
 
             System.out.println(String.format("[%s][%s][%s] %s%s%s: %s%s",
@@ -238,7 +239,7 @@ public class ServerMessagesHandler {
         long inputTime = System.nanoTime();
         mainHandle(event);
 
-        if (event.getMessage().getContentStripped().toLowerCase().startsWith("l!ping")) {
+        if (event.getMessage().getContentStripped().toLowerCase().startsWith("ping")) {
             double processing = (System.nanoTime() - inputTime) / 1000000f;
             long gatewayPing = event.getJDA().getGatewayPing();
             event.getChannel().sendMessage("Pong: Ping from Discord " + gatewayPing + " millisecond" + (gatewayPing > 1 ? "s" : "") + ".\nIt took " + java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(processing) + " millisecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();
@@ -293,7 +294,7 @@ public class ServerMessagesHandler {
     }
 
     private static void handleAP(MessageReceivedEvent event) {
-        if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong() || event.getMessage().getContentRaw().startsWith("l!"))
+        if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong() || event.getMessage().getContentRaw().startsWith(ConfigManager.discordPrefix))
             return;
         try {
             if (event.getChannel().getType() == ChannelType.NEWS && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asNewsChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {

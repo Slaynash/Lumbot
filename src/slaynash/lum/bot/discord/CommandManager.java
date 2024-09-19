@@ -85,7 +85,7 @@ public class CommandManager {
         if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND)) //every command sends a message so lets require send message perms
             return;
         String command = event.getMessage().getContentRaw();
-        if (command.startsWith("l!ping")) command = command.substring(6).trim();
+        if (command.startsWith("ping")) command = command.substring(6).trim();
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command.toLowerCase())) continue;

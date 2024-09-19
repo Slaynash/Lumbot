@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
@@ -20,7 +21,7 @@ public class SetLogChannelHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -30,7 +31,7 @@ public class SetLogChannelHandlerCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!setlogchannel";
+        return "setlogchannel";
     }
 
     @Override

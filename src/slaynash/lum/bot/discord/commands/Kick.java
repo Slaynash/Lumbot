@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
@@ -27,7 +28,7 @@ public class Kick extends Command {
         else {
             String[] parts = paramString.split(" ", 3); //l!kick UserID reason
             if (parts.length < 2) {
-                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (reason)").queue();
+                event.getMessage().reply("Usage: reply to user or " + ConfigManager.discordPrefix + getName() + " <UserID> (reason)").queue();
                 return;
             }
             if (parts.length > 2) {
@@ -75,7 +76,7 @@ public class Kick extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -90,6 +91,6 @@ public class Kick extends Command {
 
     @Override
     public String getName() {
-        return "l!kick";
+        return "kick";
     }
 }

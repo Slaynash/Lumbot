@@ -90,7 +90,7 @@ public class Main extends ListenerAdapter {
             isShuttingDown = true;
 
             JDA jda = JDAManager.getJDA();
-            if (jda != null && jda.getSelfUser().getIdLong() == 275759980752273418L && ConfigManager.mainBot) // Lum (blue)
+            if (jda != null && JDAManager.isMainBot()) // Lum (blue)
                 jda.getTextChannelById(808076226064941086L)
                     .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                     .complete();
@@ -115,7 +115,8 @@ public class Main extends ListenerAdapter {
         loadReplies();
         CrossServerUtils.loadGuildCount();
 
-        API.start();
+        if (JDAManager.isMainBot())
+            API.start();
 
         MelonScanner.init();
 
@@ -126,7 +127,7 @@ public class Main extends ListenerAdapter {
 
         SlashManager.registerCommands();
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+        if (JDAManager.isProductionBot()) { // Lum (blue)
             if (ConfigManager.mainBot) {
                 JDAManager.getJDA().getPresence().setStatus(OnlineStatus.ONLINE);
                 JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
@@ -193,7 +194,7 @@ public class Main extends ListenerAdapter {
             }
         }
 
-        if (JDAManager.getJDA().getSelfUser().getIdLong() == 275759980752273418L) { // Lum (blue)
+        if (JDAManager.isProductionBot()) { // Lum (blue)
             Moderation.voiceStartup();
             if (ConfigManager.mainBot) {
                 JDAManager.getJDA()
@@ -515,7 +516,7 @@ public class Main extends ListenerAdapter {
         event.getGuild().loadMembers();
         CrossServerUtils.checkGuildCount(event);
         try {
-            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>\nUse the command `l!help` to see the list of commands.";
+            String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>\nUse the command `" + ConfigManager.discordPrefix + "help` to see the list of commands.";
             if (event.getGuild().getSystemChannel() != null && event.getGuild().getSystemChannel().canTalk()) {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }

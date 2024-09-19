@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -25,7 +26,7 @@ public class AddMissingRoles extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -40,7 +41,7 @@ public class AddMissingRoles extends Command {
 
     @Override
     public String getName() {
-        return "l!addmissing";
+        return "addmissing";
     }
 
     public void addMissing(MessageReceivedEvent event) {

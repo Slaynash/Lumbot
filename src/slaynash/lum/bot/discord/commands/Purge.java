@@ -9,6 +9,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -40,7 +41,7 @@ public class Purge extends Command {
                     messageList = event.getChannel().asGuildMessageChannel().getIterableHistory().takeUntilAsync(r -> r.equals(replied)).get();
                     messageList.add(replied); //add replied message to be removed
 
-                    if (message.getContentRaw().startsWith(getName() + "u")) {
+                    if (message.getContentRaw().startsWith(ConfigManager.discordPrefix + getName() + "u")) {
                         messageList.removeIf(m -> !m.getAuthor().equals(replied.getAuthor()));
                         if (!message.getAuthor().equals(replied.getAuthor()))
                             messageList.add(message); // add message back to be removed
@@ -56,7 +57,7 @@ public class Purge extends Command {
                     System.out.println("Mass purging " + messageList.size() + " messages");
                 }
                 else
-                    message.reply("Command is `" + getName() + " #` or reply to the top message.\n" + getName() + "u will only remove messages from the user replied to").queue();
+                    message.reply("Command is `" + ConfigManager.discordPrefix + getName() + " #` or reply to the top message.\n" + ConfigManager.discordPrefix + getName() + "u will only remove messages from the user replied to").queue();
 
                 //remove if unknown message ie message already removed
                 messageList.removeIf(m -> m.getType() == MessageType.UNKNOWN);
@@ -108,7 +109,7 @@ public class Purge extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -118,11 +119,11 @@ public class Purge extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Purge messages `" + getName() + " #` or reply to the top message - Moderators Only\n\t**" + getName() + "u:** will only remove messages from the user replied to";
+        return "Purge messages `" + ConfigManager.discordPrefix + getName() + " #` or reply to the top message - Moderators Only\n\t**" + ConfigManager.discordPrefix + getName() + "u:** will only remove messages from the user replied to";
     }
 
     @Override
     public String getName() {
-        return "l!purge";
+        return "purge";
     }
 }

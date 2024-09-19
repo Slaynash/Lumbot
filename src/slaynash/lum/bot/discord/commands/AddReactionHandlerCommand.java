@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.ReactionListener;
@@ -26,16 +27,16 @@ public class AddReactionHandlerCommand extends Command {
         String[] params = paramMessageReceivedEvent.getMessage().getContentRaw().replace("  ", " ").split(" ");
         if (params.length != 3 && params.length != 4) {
             System.out.println("Bad usage");
-            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + ConfigManager.discordPrefix + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
         else if (!params[1].matches("^\\d+$")) {
             System.out.println("Bad MessageID permas");
-            paramMessageReceivedEvent.getChannel().sendMessage("messageID invalid Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("messageID invalid Usage: " + ConfigManager.discordPrefix + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
         if (!params[2].matches("^<a?:\\w+:\\d+>$") && !EmojiUtils.containsEmoji(params[2])) {
-            paramMessageReceivedEvent.getChannel().sendMessage("Bad emoji Usage: " + getName() + " <messageid> <reaction> [roleid]").queue();
+            paramMessageReceivedEvent.getChannel().sendMessage("Bad emoji Usage: " + ConfigManager.discordPrefix + getName() + " <messageid> <reaction> [roleid]").queue();
             return;
         }
 
@@ -71,7 +72,7 @@ public class AddReactionHandlerCommand extends Command {
             }
             else {
                 if (params.length != 4 || !params[3].matches("^\\d+$")) {
-                    paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + getName() + " <messageid> <reaction> <roleid>").queue();
+                    paramMessageReceivedEvent.getChannel().sendMessage("RoleID Error Usage: " + ConfigManager.discordPrefix + getName() + " <messageid> <reaction> <roleid>").queue();
                     return;
                 }
 
@@ -114,7 +115,7 @@ public class AddReactionHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals(getName());
+        return pattern.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -124,7 +125,7 @@ public class AddReactionHandlerCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!reaction";
+        return "reaction";
     }
 
     @Override

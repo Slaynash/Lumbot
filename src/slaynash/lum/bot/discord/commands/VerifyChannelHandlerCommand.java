@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord.commands;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.VerifyPair;
@@ -22,13 +23,13 @@ public class VerifyChannelHandlerCommand extends Command {
         else {
             String[] parts = paramString.split(" ", 3);
             if (parts.length != 2) {
-                paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + getName() + " `roleid`").queue();
+                paramMessageReceivedEvent.getChannel().sendMessage("Usage: " + ConfigManager.discordPrefix + getName() + " `roleid`").queue();
             }
             try {
                 Long.parseLong(parts[1]);
             }
             catch (Exception e) {
-                paramMessageReceivedEvent.getChannel().sendMessage("Error: Invalid role id. usage: " + getName() + " `roleid`").queue();
+                paramMessageReceivedEvent.getChannel().sendMessage("Error: Invalid role id. usage: " + ConfigManager.discordPrefix + getName() + " `roleid`").queue();
                 return;
             }
 
@@ -40,7 +41,7 @@ public class VerifyChannelHandlerCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -50,7 +51,7 @@ public class VerifyChannelHandlerCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!setverifychannel";
+        return "setverifychannel";
     }
 
     @Override

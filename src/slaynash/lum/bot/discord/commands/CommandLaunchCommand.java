@@ -6,6 +6,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaError;
 import org.luaj.vm2.LuaValue;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.LuaPackages;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -27,7 +28,7 @@ public class CommandLaunchCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.startsWith("l!") && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z\\d.-]", "_") + ".lua").exists() && !pattern.substring(2).split(" ")[0].isBlank();
+        return pattern.startsWith(ConfigManager.discordPrefix) && new File("commands/" + pattern.substring(2).split(" ")[0].replaceAll("\n", "").replaceAll("[^a-zA-Z\\d.-]", "_") + ".lua").exists() && !pattern.substring(2).split(" ")[0].isBlank();
     }
 
     @Override

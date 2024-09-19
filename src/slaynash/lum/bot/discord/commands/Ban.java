@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 
@@ -41,7 +42,7 @@ public class Ban extends Command {
         else {
             String[] parts = paramString.split(" ", 4);
             if (parts.length < 2) {
-                event.getMessage().reply("Usage: reply to user or " + getName() + " <UserID> (purge days) (reason)").queue();
+                event.getMessage().reply("Usage: reply to user or " + ConfigManager.discordPrefix + getName() + " <UserID> (purge days) (reason)").queue();
                 return;
             }
             if (parts.length == 3) {
@@ -103,7 +104,7 @@ public class Ban extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.startsWith(getName());
+        return paramString.startsWith(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -118,6 +119,6 @@ public class Ban extends Command {
 
     @Override
     public String getName() {
-        return "l!ban";
+        return "ban";
     }
 }

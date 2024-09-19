@@ -6,6 +6,7 @@ import java.util.function.Function;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.uvm.UnityVersion;
 import slaynash.lum.bot.uvm.UnityVersionMonitor;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 
@@ -46,7 +47,7 @@ public class UVMCommand extends Command {
         Function<String[], String> subcommandRunnable;
 
         if (parts.length < 2 || (subcommandRunnable = subcommands.get(subcommandName = parts[1])) == null) {
-            event.getMessage().reply("Usage: " + getName() + " <subcommand>\nsubcommands: " + String.join(", ", subcommands.keySet())).queue();
+            event.getMessage().reply("Usage: " + ConfigManager.discordPrefix + getName() + " <subcommand>\nsubcommands: " + String.join(", ", subcommands.keySet())).queue();
             return;
         }
 
@@ -62,7 +63,7 @@ public class UVMCommand extends Command {
 
     @Override
     protected boolean matchPattern(String paramString) {
-        return paramString.split(" ", 2)[0].equals(getName());
+        return paramString.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -77,6 +78,6 @@ public class UVMCommand extends Command {
 
     @Override
     public String getName() {
-        return "l!uvm";
+        return "uvm";
     }
 }

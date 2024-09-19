@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.restaction.RoleAction;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.utils.Utils;
@@ -20,15 +21,15 @@ public class RankColorCommand extends Command {
     protected void onServer(String command, MessageReceivedEvent event) {
         try {
             if (command.split(" ").length == 1 || (arg = command.split(" ", 2)[1]).equals("help") || !arg.startsWith("#")) {
-                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.BLUE)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.BLUE)).queue();
             }
             else if (arg.length() != 7) {
-                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
             }
             else {
                 for (char c:arg.substring(1).toCharArray()) {
                     if (!('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F')) {
-                        event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + getName() + " <hexcolor>\nExemple (pure green): " + getName() + " #00ff00", Color.RED)).queue();
+                        event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
                         return;
                     }
                 }
@@ -80,7 +81,7 @@ public class RankColorCommand extends Command {
 
     @Override
     protected boolean matchPattern(String pattern) {
-        return pattern.split(" ", 2)[0].equals(getName());
+        return pattern.split(" ", 2)[0].equals(ConfigManager.discordPrefix + getName());
     }
 
     @Override
@@ -90,11 +91,11 @@ public class RankColorCommand extends Command {
 
     @Override
     public String getHelpDescription() {
-        return "Set rank color. Example (pure green): " + this.getName() + " #00ff00";
+        return "Set rank color. Example (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00";
     }
 
     @Override
     public String getName() {
-        return "l!rankcolor";
+        return "rankcolor";
     }
 }
