@@ -68,7 +68,7 @@ public class ServerMessagesHandler {
             String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
             Message replied = event.getMessage().getReferencedMessage();
             List<Attachment> attachments = event.getMessage().getAttachments();
-            if (message.startsWith("ping"))
+            if (message.startsWith(ConfigManager.discordPrefix + "ping"))
                 message = message.substring(6).trim();
 
             System.out.println(String.format("[%s][%s][%s] %s%s%s: %s%s",
@@ -239,7 +239,7 @@ public class ServerMessagesHandler {
         long inputTime = System.nanoTime();
         mainHandle(event);
 
-        if (event.getMessage().getContentStripped().toLowerCase().startsWith("ping")) {
+        if (event.getMessage().getContentStripped().toLowerCase().startsWith(ConfigManager.discordPrefix + "ping")) {
             double processing = (System.nanoTime() - inputTime) / 1000000f;
             long gatewayPing = event.getJDA().getGatewayPing();
             event.getChannel().sendMessage("Pong: Ping from Discord " + gatewayPing + " millisecond" + (gatewayPing > 1 ? "s" : "") + ".\nIt took " + java.text.NumberFormat.getNumberInstance(java.util.Locale.US).format(processing) + " millisecond" + (processing > 1 ? "s" : "") + " to parse the command.").queue();

@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.AutoPublish;
@@ -85,7 +86,7 @@ public class CommandManager {
         if (event.getChannelType().equals(ChannelType.TEXT) && !event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND)) //every command sends a message so lets require send message perms
             return;
         String command = event.getMessage().getContentRaw();
-        if (command.startsWith("ping")) command = command.substring(6).trim();
+        if (command.startsWith(ConfigManager.discordPrefix + "ping")) command = command.substring((ConfigManager.discordPrefix + "ping").length()).trim();
         synchronized (commands) {
             for (Command rcmd : commands) {
                 if (!rcmd.matchPattern(command.toLowerCase())) continue;
