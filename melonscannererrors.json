@@ -229,6 +229,10 @@
         {
             "regex": "\\[[\\d.:]+] \\[MelonStartScreen] System.InvalidOperationException: Unable to get process modules.*",
             "error": "Failed to start MelonStartScreen.\nPlease add the launch option\n`--melonloader.disablestartscreen` to the game's launch options\nor edit `UserData/MelonStartScreen/Config.cfg` to `Enabled = false` to disable."
+        },
+        {
+            "regex": ".*Using actual IL2CPP Metadata version 29[,.]2",
+            "error": "Metadata 29.2 issue. Please use MelonLoader 0.6.5 (nightly) or above."
         }
     ],
     "knownErrors": [
