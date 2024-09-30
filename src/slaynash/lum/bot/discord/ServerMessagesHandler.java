@@ -199,6 +199,10 @@ public class ServerMessagesHandler {
                             temp = "into <#801792974542471168>";
                         else if (guildID == 663449315876012052L /*MelonLoader*/)
                             temp = "into <#733305093264375849>";
+                        else if (guildID == 322211727192358914L /*TLDModding*/)
+                            temp = "into <#468386891507695628>";
+                        else if (guildID == 563139253542846474L /*BoneLab*/)
+                            temp = "into <#1019659373695475802>";
                         else
                             temp = "into help-and-support";
                     }
