@@ -222,8 +222,7 @@ public class VRChatVersionComparer {
 
         // Required because of a bug in Unhollower/Cecil
         System.out.println("Moving UnityEngine.CoreModule.dll");
-        try
-        {
+        try {
             Files.move(new File("vrcdecomp/unitydeps_" + unityVersion + "/UnityEngine.CoreModule.dll").toPath(), new File("vrcdecomp/UnityEngine.CoreModule.dll").toPath(), StandardCopyOption.REPLACE_EXISTING);
         }
         catch (Exception e) {

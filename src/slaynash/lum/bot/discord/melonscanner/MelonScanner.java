@@ -386,7 +386,7 @@ public final class MelonScanner {
     }
 
     private static void checkForPirate(MelonScanContext context) {
-        if ("android".equalsIgnoreCase(context.osType)) return;
+        if (context.android) return;
         String gamePath = context.gamePath == null ? "" : context.gamePath.toLowerCase().replace(".", "");
         if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
             if (context.lineCount > 15) {
@@ -572,7 +572,7 @@ public final class MelonScanner {
             context.embedBuilder.addField(Localization.get("melonscanner.knownerrors.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.RED;
 
-            List<Field> fields = new ArrayList<Field>(context.embedBuilder.getFields());  //getFields is by reference so make new list
+            List<Field> fields = new ArrayList<>(context.embedBuilder.getFields());  //getFields is by reference so make new list
             context.embedBuilder.clearFields();
             for (Field field : fields) {
                 //if null then set to x64
@@ -1010,6 +1010,9 @@ public final class MelonScanner {
         if (context.hasNonModErrors && context.errors.isEmpty() && context.mlVersion != null) {
             error += "\n" + Localization.get("melonscanner.othererrors.unidentifiederrors", context.lang) + "\n";
             context.unidentifiedErrors = true;
+        }
+        if (context.android) {
+            error += "\n" + Localization.get("Lum is not made to scan Android logs, there may be issues with the results", context.lang) + "\n";
         }
         if (!error.isBlank()) {
             context.embedBuilder.addField(Localization.get("melonscanner.othererrors.fieldname", context.lang), error.trim(), false);

@@ -574,6 +574,8 @@ public final class MelonScannerReadPass {
             }
             context.osType = split[1].trim();
             System.out.println("OS: " + context.osType);
+            if (context.osType.toLowerCase().startsWith("android"))
+                context.android = true;
             return true;
         }
         return false;

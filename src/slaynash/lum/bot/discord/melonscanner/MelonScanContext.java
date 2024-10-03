@@ -49,6 +49,7 @@ public class MelonScanContext {
     public boolean alpha = false;
     public boolean mono = false;
     public boolean il2Cpp = false;
+    public boolean android = false;
     public boolean isMLOutdated = false;
     public boolean unidentifiedErrors = false;
 

@@ -40,6 +40,10 @@ public class DumpID extends Command {
             }
             if (Junidecode.unidecode(m.getUser().getName()).toLowerCase().matches(regex))
                 members.add(m);
+            if (Junidecode.unidecode(m.getUser().getGlobalName()).toLowerCase().matches(regex))
+                members.add(m);
+            if (Junidecode.unidecode(m.getNickname()).toLowerCase().matches(regex))
+                members.add(m);
         });
         if (members.isEmpty()) {
             event.getMessage().reply("No users found.").queue();
@@ -48,7 +52,7 @@ public class DumpID extends Command {
         members.sort(Comparator.comparing(m -> m.getUser().getId()));
         StringBuilder sb = new StringBuilder();
         for (Member m : members) {
-            sb.append(m.getUser().getId()).append(" ").append(m.getUser().getName()).append(m.getNickname() != null ? " nickname: " + m.getNickname() : "").append("\n");
+            sb.append(m.getUser().getId()).append(" ").append(m.getUser().getName()).append(m.getUser().getGlobalName() != null ? " GlobalName: " + m.getUser().getGlobalName() : "").append(m.getNickname() != null ? " nickname: " + m.getNickname() : "").append("\n");
         }
         event.getMessage().replyFiles(FileUpload.fromData(sb.toString().getBytes(), event.getGuild().getName() + " " + regex + ".txt")).queue();
     }
