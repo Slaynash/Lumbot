@@ -179,7 +179,7 @@ public final class MelonScanner {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-                messageBuilder.setContent((messageReceivedEvent.getAuthor().getAsMention() + " " + getMentions(context.embedBuilder)).strip());
+                messageBuilder.setContent((messageReceivedEvent.getAuthor().getAsMention() + " " + getMentions(context)).strip());
                 messageCreateData = messageBuilder.setEmbeds(context.embedBuilder.build()).build();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);
@@ -1073,10 +1073,18 @@ public final class MelonScanner {
         }
     }
 
-    private static String getMentions(EmbedBuilder embedBuilder) {
+    private static String getMentions(MelonScanContext context) {
+        if (context.overrideMLVersion != null) {
+            if (!context.overrideMLVersion.equals(context.mlVersion)) {
+                return "";
+            }
+        }
+        else if (context.mlVersion != null && !context.mlVersion.equals(context.latestMLVersionRelease) && !context.mlVersion.equals(context.latestMLVersionAlpha)) {
+            return "";
+        }
         StringBuilder mentions = new StringBuilder();
         Pattern p = Pattern.compile("<@!?\\d{5,}>");
-        Matcher m = p.matcher(embedBuilder.build().toData().toString());
+        Matcher m = p.matcher(context.embedBuilder.build().toData().toString());
         while (m.find()) {
             mentions.append(m.group()).append(" ");
         }
