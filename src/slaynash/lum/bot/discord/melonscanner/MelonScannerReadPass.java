@@ -114,6 +114,9 @@ public final class MelonScannerReadPass {
             System.out.println("Omitted one line of length " + linelength);
             return true;
         }
+        if (context.line.contains("Normal users can ignore this warning")) {
+            return true;
+        }
         return false;
     }
 
