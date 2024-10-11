@@ -525,6 +525,14 @@ public final class MelonScannerReadPass {
             context.arch = split[1].trim();
             return true;
         }
+        if (context.line.matches("\\[[\\d.:]+] Command-Line:.*")) {
+            if (context.line.toLowerCase().contains("auth_password")) {
+                if (context.messageReceivedEvent.getGuild().getSelfMember().hasPermission(Permission.MESSAGE_MANAGE))
+                    context.messageReceivedEvent.getMessage().delete().reason("Auth Password in Log").queue();
+                context.errors.add(new MelonLoaderError("Your log contains your Auth Password. Please do not share this log with anyone."));
+            }
+            return true;
+        }
         return false;
     }
 
