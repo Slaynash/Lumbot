@@ -46,10 +46,10 @@ public class Reminders extends TimerTask {
                         user.openPrivateChannel().queue(pchannel -> pchannel.sendMessageEmbeds(embedBuilder.build()).queue());
                     }
                     else if (guild.getSelfMember().hasPermission(gchannel, Permission.MESSAGE_EMBED_LINKS)) {
-                        channel.sendMessage(message).addContent(user.getAsMention()).queue();
+                        channel.sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
                     }
                     else {
-                        channel.sendMessageEmbeds(embedBuilder.build()).addContent(user.getAsMention()).queue();
+                        channel.sendMessage(message).addContent("\n" + user.getAsMention()).queue();
                     }
                 }
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = " + rs.getLong("ID"));
