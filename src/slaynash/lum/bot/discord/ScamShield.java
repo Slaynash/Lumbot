@@ -523,7 +523,7 @@ public class ScamShield {
             }
             else if (!dm && event.getGuild() == guild) {
                 embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `").append(ConfigManager.discordPrefix).append("setmlreportchannel` to set the report channel.");
-                if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS))
+                if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_SEND))
                     event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))
                     event.getChannel().asGuildMessageChannel().sendMessage(embedBuilder.getDescriptionBuilder().toString()).queue();
