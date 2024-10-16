@@ -34,6 +34,8 @@ import in.dragonbra.javasteam.steam.steamclient.callbackmgr.CallbackManager;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
+import in.dragonbra.javasteam.util.log.LogListener;
+import in.dragonbra.javasteam.util.log.LogManager;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -65,6 +67,7 @@ public class Steam {
 
     public Steam() {
 
+        LogManager.addListener(new MyListener());
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("storage/previousSteamChange.txt"));
@@ -85,6 +88,7 @@ public class Steam {
             user.logOnAnonymous();
         });
         callbackManager.subscribe(DisconnectedCallback.class, callback -> {
+            System.out.println("Disconnected from Steam. Retrying in 5s...");
             if (Main.isShuttingDown)
                 return;
 
@@ -92,8 +96,6 @@ public class Steam {
                 isLoggedOn = false;
                 ++tickerHash;
             }
-
-            System.out.println("Disconnected from Steam. Retrying in 5s...");
 
             try {
                 Thread.sleep(5 * 1000);
@@ -452,6 +454,7 @@ public class Steam {
     }
 
     public void start() {
+        System.out.println("Starting Steam...");
         client.connect();
 
         Thread thread = new Thread(() -> {
@@ -568,6 +571,22 @@ public class Steam {
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to set Game Details", e);
             return false;
+        }
+    }
+
+    static class MyListener implements LogListener {
+
+        // this function will be called when internal steamkit components write to the debuglog
+        @Override
+        public void onLog(Class<?> clazz, String message, Throwable throwable) {
+            // for this example, we'll print the output to the console
+            System.out.println(clazz.getName() + ": " + message);
+        }
+
+        @Override
+        public void onError(Class<?> clazz, String message, Throwable throwable) {
+            // for this example, we'll print errors the output to the console
+            System.err.println(clazz.getName() + ": " + message);
         }
     }
 }
