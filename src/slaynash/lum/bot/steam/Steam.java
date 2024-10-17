@@ -580,13 +580,13 @@ public class Steam {
         @Override
         public void onLog(Class<?> clazz, String message, Throwable throwable) {
             // for this example, we'll print the output to the console
-            System.out.println(clazz.getName() + ": " + message);
+            System.out.println("[" + LOG_IDENTIFIER + "] " + clazz.getSimpleName() + ": " + message);
         }
 
         @Override
         public void onError(Class<?> clazz, String message, Throwable throwable) {
             // for this example, we'll print errors the output to the console
-            System.err.println(clazz.getName() + ": " + message);
+            System.err.println("[" + LOG_IDENTIFIER + "] " + clazz.getSimpleName() + ": " + message);
         }
     }
 }
