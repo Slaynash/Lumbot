@@ -259,14 +259,14 @@ public class ScamShield {
                 ssFoundTerms.put("domainAge", domainAge * 3);
         }
 
-        // for (String url : Utils.extractUrls(message.toString())) {
-        //     do {
-        //         url = getRedirect(url);
-        //     } while (url != null && !url.equals("GrabifyLink"));
-        //     if (url != null && url.equals("GrabifyLink")) {
-        //         ssFoundTerms.put("GrabifyLink", instaKick + 1);
-        //     }
-        // }
+        for (String url : Utils.extractUrls(message.toString())) {
+            do {
+                url = getRedirect(url);
+            } while (url != null && !url.equals("GrabifyLink"));
+            if (url != null && url.equals("GrabifyLink")) {
+                ssFoundTerms.put("GrabifyLink", instaKick + 1);
+            }
+        }
         if (ssFoundTerms.values().stream().reduce(0, Integer::sum) > 1) {
             if (event.getMessage().getInvites().size() > 1)
                 ssFoundTerms.put("Discord Invite", 1);
@@ -295,6 +295,8 @@ public class ScamShield {
         if (event.getAuthor().isBot())
             return false;
         if (CrossServerUtils.checkIfStaff(event))
+            return false;
+        if (event.getMessage().getContentRaw().length() < 2)
             return false;
 
         long guildID = event.getGuild().getIdLong();
@@ -514,7 +516,19 @@ public class ScamShield {
                 }
                 else {
                     sb = new StringBuilder(usernameWithTag + " " + userId + " was " + (ssBan ? "Banned" : "Kicked") + " from " + sourceName);
-                    suspiciousResults.sameauthormessages.forEach(a -> sb.append("\n").append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw())).append("\n\n").append(a.suspiciousResults.suspiciousValue).append(" point").append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ").append(a.messageReceivedEvent.getChannel().getName()).append(" for ").append(a.suspiciousResults.ssFoundTerms).append("\n"));
+                    suspiciousResults.sameauthormessages.forEach(a -> sb
+                        .append("\n")
+                        .append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw()))
+                        .append("\n")
+                        .append(a.messageReceivedEvent.getMessage().getAttachments().size() > 0 ? a.messageReceivedEvent.getMessage().getAttachments().get(0).getUrl() : "")
+                        .append("\n")
+                        .append(a.suspiciousResults.suspiciousValue)
+                        .append(" point")
+                        .append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ")
+                        .append(a.messageReceivedEvent.getChannel().getName())
+                        .append(" for ")
+                        .append(a.suspiciousResults.ssFoundTerms)
+                        .append("\n"));
                 }
                 if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
                     ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queueAfter(4, TimeUnit.SECONDS));
@@ -647,7 +661,8 @@ public class ScamShield {
             }
             HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
             con.setInstanceFollowRedirects(false);
-            con.connect();
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
             return con.getHeaderField("Location"); // null if no redirect
         }
         catch (Exception e) {
