@@ -132,6 +132,10 @@
             "regex": ".*SocketException \\(0x8.*"
         },
         {
+            "regex": ".*\\[Program] Execution Failed: Failed to parse command line arguments",
+            "error": "Old version of Il2CppAssemblyGenerator was used. Delete the MelonLoader folder and reinstall MelonLoader."
+        },
+        {
             "regex": ".*Exception initializing LibCpp2IL(.(?!magic number))*",
             "error": "<@102450956045668352> There has been an issue while running Cpp2IL. Please reupload this log into the [MelonLoader discord](https://discord.gg/2Wn3N2P)."
         },
