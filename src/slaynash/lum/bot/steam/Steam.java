@@ -150,6 +150,8 @@ public class Steam {
             }
 
             System.out.println("Logged off from Steam");
+            if (callback.getResult() == EResult.TryAnotherCM || callback.getResult() == EResult.ServiceUnavailable)
+                client.connect();
         });
         callbackManager.subscribe(PICSChangesCallback.class, callback -> {
             for (Integer intGameID : intGameIDs) {
