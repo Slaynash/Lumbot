@@ -84,12 +84,13 @@
         "melonscanner.othererrors.fieldname": "Other Errors:",
         "melonscanner.othererrors.partiallog": "- You have a partial log. Either MelonLoader crashed or you entered select mode in MelonLoader console and need to push any key.",
         "melonscanner.othererrors.nomods": "- You have no mods installed in your Mods folder.",
-        "melonscanner.othererrors.nomodsvrcmg": "- You have no mods installed in your Mods folder. Take a look at <#854948679915012126> for some mods to install.",
+        "melonscanner.othererrors.nomodscvrmg": "- You have no mods installed in your Mods folder. Take a look at <#1002058238545641542> for some mods to install.",
         "melonscanner.othererrors.nomodstld": "- You have no mods installed in your Mods folder. [*Only ZUUL*](https://tldmods.com/)",
         "melonscanner.othererrors.unidentifiederrors": "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.",
 
         "melonscanner.partiallog.fieldname": "Partial Log:",
         "melonscanner.partiallog.field": "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game.",
+        "melonscanner.partiallogMod.field": "- Please make sure you are on the correct MelonLoader version for your mods.",
         "melonscanner.partiallogBTD.field": "- MelonLoader either crashed or paused by the console being clicked on.\nPlease look at these [troubleshooting steps](https://hemisemidemipresent.github.io/btd6-modding-tutorial/#troubleshooting) for more help.",
         "melonscanner.pirate.fieldname": "Pirated Game:",
         "melonscanner.pirate.field": "Please purchase the game if you would like assistance."
@@ -165,7 +166,7 @@
         "melonscanner.othererrors.fieldname": "Autres Erreurs:",
         "melonscanner.othererrors.partiallog": "- Vous avez des logs partielles. Soit MelonLoader a planté, soit vous êtes entrés en mode Selection dans la console de MelonLoader et devez appuyer sur une touche.",
         "melonscanner.othererrors.nomods": "- Vous n'avez aucun mod installé dans votre dossier Mods.",
-        "melonscanner.othererrors.nomodsvrcmg": "- Vous n'avez aucun mod installé dans votre dossier Mods. Jetez un œil à <#854948679915012126> pour quelques mods à installer.",
+        "melonscanner.othererrors.nomodscvrmg": "- Vous n'avez aucun mod installé dans votre dossier Mods. Jetez un œil à <#1002058238545641542> pour quelques mods à installer.",
         "melonscanner.othererrors.nomodstld": "- Vous n'avez aucun mod installé dans votre dossier Mods. Vous pouvez télécharger des mods à partir de https://tldmods.com/",
         "melonscanner.othererrors.unidentifiederrors": "- Il y a des erreurs non-identifiées. Veuillez attendre qu'il modérateur ou helper analyse le fichier.",
 
@@ -243,7 +244,7 @@
         "melonscanner.othererrors.fieldname": "Andere Fehler:",
         "melonscanner.othererrors.partiallog": "- Die Log Datei ist unvollständig. Entweder ist MelonLoader abgestürzt oder du hast den Bearbeitungsmodus in der MelonLoader-Konsole aufgerufen und musst in der Konsole rechtsklicken.",
         "melonscanner.othererrors.nomods": "- Du hast keine Mods in deinem Mods-Ordner installiert.",
-        "melonscanner.othererrors.nomodsvrcmg": "- Du hast keine Mods in deinem Mods-Ordner installiert. Verfügbare Mods findest du in <#854948679915012126> und im [VRCMelonAssistant](https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe)",
+        "melonscanner.othererrors.nomodscvrmg": "- Du hast keine Mods in deinem Mods-Ordner installiert. Verfügbare Mods findest du in <#1002058238545641542> und im [VRCMelonAssistant](https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe)",
         "melonscanner.othererrors.nomodstld": "- Du hast keine Mods in deinem Mods-Ordner installiert. [*Nur ZUUL*](https://tldmods.com/)",
         "melonscanner.othererrors.unidentifiederrors": "- Es gibt einige nicht identifizierte Fehler. Bitte warte bis ein Moderator oder ein Helfer die Datei manuell überprüft.",
 
@@ -321,7 +322,7 @@
         "melonscanner.othererrors.fieldname": "Inne Błędy:",
         "melonscanner.othererrors.partiallog": "- Twój log nie jest w komplecie. Możliwe że MelonLoader zcrashował albo zaznaczyleś tekst w konsolce co spodowało do spauzowania procesu.",
         "melonscanner.othererrors.nomods": "- Nie zainstalowałeś jeszcze żadnych modów.",
-        "melonscanner.othererrors.nomodsvrcmg": "- Nie zainstalowałeś jeszcze żadnych modów. Sprawdź <#854948679915012126> by znaleźć jakieś mody do zainstalowania.",
+        "melonscanner.othererrors.nomodscvrmg": "- Nie zainstalowałeś jeszcze żadnych modów. Sprawdź <#1002058238545641542> by znaleźć jakieś mody do zainstalowania.",
         "melonscanner.othererrors.nomodstld": "- Nie zainstalowałeś jeszcze żadnych modów. [*Tylko ZUUL*](https://tldmods.com/)",
         "melonscanner.othererrors.unidentifiederrors": "- Znaleziono niezidentyfikowane błędy. Poczekaj aż jakiś moderator albo pomocnik manualnie sprawdzi twój plik.",
 

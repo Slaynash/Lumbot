@@ -167,7 +167,7 @@ public class ServerMessagesHandler {
                         return;
                     }
                     if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !CrossServerUtils.checkIfStaff(event)) {
-                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia support MelonLoader.\nPlease remove everything that isn't in the following image:").addFiles(FileUpload.fromData(new File("images/Phasmo_folder.png"), "Phasmo_folder.png")).queue();
+                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia devs support MelonLoader.\nPlease uninstall MelonLoader.").queue();
                         return;
                     }
                 }

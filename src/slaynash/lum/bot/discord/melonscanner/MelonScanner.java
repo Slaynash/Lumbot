@@ -606,8 +606,9 @@ public final class MelonScanner {
     }
 
     private static boolean missingModsCheck(MelonScanContext context) {
-        if (context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha) || context.mlVersion.equals(context.overrideMLVersion)))
-            return false;
+        if (context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha) || context.mlVersion.equals(context.overrideMLVersion))) {
+            context.missingMods.removeIf(mod -> MelonScannerApisManager.getDownloadLinkForMod(context.game, mod) == null);
+        }
         if (context.missingMods.remove("UnhollowerBaseLib") && context.mlVersion != null && VersionUtils.compareVersion("0.6.0", context.mlVersion) < 1) {
             addToError(context, Localization.get("\n- A mod needs a version of MelonLoader before 0.6.x maybe try downgrading to 0.5.7 or updating that mod.", context.lang));
         }
@@ -963,8 +964,8 @@ public final class MelonScanner {
 
         if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
             long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
-            if (guildID == 439093693769711616L)
-                error += Localization.get("melonscanner.othererrors.nomodsvrcmg", context.lang) + "\n";
+            if (guildID == 1001388809184870441L)
+                error += Localization.get("melonscanner.othererrors.nomodscvrmg", context.lang) + "\n";
             else if (guildID == 322211727192358914L || guildID == 835185040752246835L) {
                 error += Localization.get("melonscanner.othererrors.nomodstld", context.lang) + "\n";
                 context.embedBuilder.setThumbnail("https://pbs.twimg.com/media/EU5rcX4WsAMcc-y?format=jpg");
@@ -1023,7 +1024,9 @@ public final class MelonScanner {
             return true;
         }
         else if (context.mlCrashed || context.mlVersion != null && (context.loadedMods.isEmpty() || context.preListingModsPlugins) && context.errors.isEmpty()) {
-            if ("BloonsTD6".equals(context.game))
+            if (context.lastLine.contains("LoadMelonsFromDirectory"))
+                context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallogMod.field", context.lang), false);
+            else if ("BloonsTD6".equals(context.game))
                 context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallogBTD.field", context.lang), false);
             else
                 context.embedBuilder.addField(Localization.get("melonscanner.partiallog.fieldname", context.lang), Localization.get("melonscanner.partiallog.field", context.lang), false);
