@@ -123,6 +123,11 @@ public class UnityVersionMonitor {
 
         loadIcalls();
 
+        if (new File(UnityUtils.downloadPath).list() == null) {
+            ExceptionUtils.reportException("Unity download path is missing");
+            return;
+        }
+
         for (UnityVersion newVersion : remoteVersions) {
             UnityDownloader.downloadUnity(newVersion);
 
@@ -142,11 +147,6 @@ public class UnityVersionMonitor {
                 runMonoStructChecker(newVersion.version);
             }
             // VFTables Checker
-        }
-
-        if (new File(UnityUtils.downloadPath).list() == null) {
-            ExceptionUtils.reportException("Unity download path is missing");
-            return;
         }
 
         List<String> allUnityVersions = new ArrayList<>();

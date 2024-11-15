@@ -165,6 +165,7 @@ public class UnityDownloader {
     }
 
     public static void downloadUnity(UnityVersion uv) throws InterruptedException {
+
         File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version);
         File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version + "_tmp");
         installedVersions.remove(uv.version);
@@ -246,9 +247,10 @@ public class UnityDownloader {
             ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
             return;
         }
-
-        new File("unityversionsmonitor/unitydownload_" + uv.version + ".dat").delete();
-        new File("unityversionsmonitor/Payload~").delete();
+        finally {
+            new File("unityversionsmonitor/unitydownload_" + uv.version + ".dat").delete();
+            new File("unityversionsmonitor/Payload~").delete();
+        }
     }
 
     public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) throws InterruptedException {
