@@ -153,7 +153,7 @@ public class UnityDownloader {
 
         if (!versions.isEmpty()) {
             StringBuilder message = new StringBuilder("New Unity version published:");
-            for (UnityVersion newVersion : versions.subList(0, Math.min(30, versions.size()))) {
+            for (UnityVersion newVersion : versions.subList(0, Math.min(20, versions.size()))) {
                 String type = "whats-new/";
                 if (newVersion.fullVersion.contains("a")) type = "alpha/";
                 if (newVersion.fullVersion.contains("b")) type = "beta/";
