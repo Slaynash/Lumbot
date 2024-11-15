@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -32,22 +35,20 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class UnityDownloader {
 
-    private static final String hrefIdentifier = "<a href=\"https://download.unity3d.com/";
-
     private static final HttpClient httpClient = HttpClient.newBuilder()
         .version(HttpClient.Version.HTTP_2)
         .followRedirects(Redirect.ALWAYS)
         .connectTimeout(Duration.ofSeconds(30))
         .build();
 
+    private static final int maxVersions = 100;
     private static final HttpRequest request = HttpRequest.newBuilder()
-        .GET()
-        .uri(URI.create("https://unity3d.com/get-unity/download/archive"))
+        .uri(URI.create("https://services.unity.com/graphql"))
+        .header("Content-Type", "application/json")
+        .method("POST", HttpRequest.BodyPublishers.ofString("{\"query\":\"query GetVersions($limit:Int!,$skip:Int!){getUnityReleases(limit:$limit,skip:$skip,entitlements:[XLTS]){pageInfo{hasNextPage}edges{node{version,shortRevision,releaseDate,unityHubDeepLink,stream}}}}\",\"operationName\":\"GetVersions\",\"variables\":{\"limit\": " + maxVersions + ",\"skip\": 0}}"))
         .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
         .timeout(Duration.ofSeconds(30))
         .build();
-
-    // private static final List<UnityVersion> unityVersions = new ArrayList<>();
 
     private static final Map<String, List<String>> installedVersions = new HashMap<>();
 
@@ -83,69 +84,35 @@ public class UnityDownloader {
 
 
     public static List<UnityVersion> fetchUnityVersions() throws InterruptedException {
-
-        String pagedata;
+        JsonObject json;
 
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            pagedata = response.body();
+            json = JsonParser.parseString(new String(response.body())).getAsJsonObject();
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to fetch Unity versions", e);
             return null;
         }
 
-
         List<UnityVersion> unityVersions = new ArrayList<>();
 
-        String[] pageLines = pagedata.split("[\r\n]");
-        for (String line : pageLines) {
-            if (line.isEmpty() || line.contains("Samsung"))
-                continue;
-
-            int hrefIdentifierIndex;
-            if ((hrefIdentifierIndex = line.indexOf(hrefIdentifier)) < 0)
-                continue;
-
-            String setupIdentifier = "UnitySetup64-";
-            if (!line.contains(setupIdentifier) && !line.contains(setupIdentifier = "UnitySetup-"))
-                continue;
-
-            String subline = line.substring(hrefIdentifierIndex + hrefIdentifier.length());
+        for (JsonElement element : json.getAsJsonObject("data").getAsJsonObject("getUnityReleases").getAsJsonArray("edges")) {
+            JsonObject node = element.getAsJsonObject().get("node").getAsJsonObject();
             String foundUrl;
-            int extensionIndex;
-            if ((extensionIndex = subline.indexOf(".exe")) < 0)
-                continue;
-
-            String foundVersion = subline.substring(0, extensionIndex);
-            foundVersion = foundVersion.substring(foundVersion.lastIndexOf(setupIdentifier) + setupIdentifier.length());
+            String foundVersion = node.get("version").getAsString();
+            String versionId = node.get("shortRevision").getAsString();
+            String stream = node.get("stream").getAsString();
 
             String fullVersion = foundVersion;
             if (foundVersion.contains("f"))
                 foundVersion = foundVersion.split("f")[0];
 
             String urlIl2CppWin = null;
-            /*
-            if (foundVersion.startsWith("20")) {
-                String versionId = subline.split("/")[1];
-                if (foundVersion.startsWith("2017"))
-                    foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
-                else
-                    foundUrl = "https://download.unity3d.com/download_unity/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Mono-Support-for-Editor-" + fullVersion + ".pkg";
-
-                if (!foundVersion.startsWith("2017"))
-                    urlIl2CppWin = "https://download.unity3d.com/download_unity/" + versionId + "/TargetSupportInstaller/UnitySetup-Windows-IL2CPP-Support-for-Editor-" + fullVersion + ".exe";
-            }
-
-            if (foundVersion.startsWith("5.3")) // We don't care about versions earlier than 5.4.0
-                break;
-            */
 
             if (foundVersion.startsWith("20") || foundVersion.startsWith("6000")) {
                 if (foundVersion.startsWith("2017.1"))
-                    break;
-
-                String versionId = subline.split("/")[1];
+                    continue;
 
                 if (foundVersion.startsWith("2017.2")) {
                     foundUrl = "https://beta.unity3d.com/download/" + versionId + "/MacEditorTargetInstaller/UnitySetup-Windows-Support-for-Editor-" + fullVersion + ".pkg";
@@ -159,7 +126,7 @@ public class UnityDownloader {
                 }
             }
             else
-                break;
+                continue;
 
             boolean alreadyHasVersion = false;
             for (UnityVersion uv : unityVersions) {
@@ -170,7 +137,7 @@ public class UnityDownloader {
             }
 
             if (!alreadyHasVersion)
-                unityVersions.add(new UnityVersion(foundVersion, fullVersion, foundUrl, urlIl2CppWin));
+                unityVersions.add(new UnityVersion(stream, foundVersion, fullVersion, foundUrl, urlIl2CppWin));
         }
 
         return unityVersions;
@@ -184,10 +151,13 @@ public class UnityDownloader {
 
         System.out.println("unity3d.com returned " + versions.size() + " new versions");
 
-        if (!versions.isEmpty() && versions.size() < 10) {
+        if (!versions.isEmpty()) {
             StringBuilder message = new StringBuilder("New Unity version published:");
             for (UnityVersion newVersion : versions) {
-                message.append("\n- ").append(newVersion.version).append(" [Release Notes](<https://unity.com/releases/editor/whats-new/").append(newVersion.version).append("#release-notes>)");
+                String type = "whats-new/";
+                if (newVersion.fullVersion.contains("a")) type = "alpha/";
+                if (newVersion.fullVersion.contains("b")) type = "beta/";
+                message.append("\n- ").append(newVersion.version).append(" ").append(newVersion.stream).append(" [Release Notes](<https://unity.com/releases/editor/").append(type).append(newVersion.version).append("#notes>)");
             }
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();  // may want to move this over to just #unity-version-updates
             JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
