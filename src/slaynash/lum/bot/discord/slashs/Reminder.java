@@ -22,7 +22,7 @@ import slaynash.lum.bot.utils.Utils;
 public class Reminder extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return Commands.slash("reminder", "Set yourself a reminder")
+        return Commands.slash("reminder", "Set yourself a reminder. No options will show your current reminders")
                 .addOption(OptionType.INTEGER,  "minutes", "How many minutes?", false)
                 .addOption(OptionType.INTEGER,  "hours", "How many Hours?", false)
                 .addOption(OptionType.INTEGER,  "days", "How many Days?", false)
@@ -45,10 +45,8 @@ public class Reminder extends Slash {
         int days = event.getOption("days") == null ? 0 : event.getOption("days").getAsInt();
         String message = event.getOption("message") == null ? null : event.getOption("message").getAsString().replace("\\n", "\n");
 
-        if (notWithinRange(minutes, 0, 60) || notWithinRange(hours, 0, 24) || notWithinRange(days, 0, 1826)) {
-            event.replyEmbeds(Utils.wrapMessageInEmbed("You can't set a reminder for more than 5 year, 24 hours or 60 minutes", Color.RED)).setEphemeral(true).queue();
-            return;
-        }
+        long time = ((long) minutes * 60 * 1000) + ((long) hours * 60 * 60 * 1000) + ((long) days * 24 * 60 * 60 * 1000);
+        long timestamp = System.currentTimeMillis() + time;
 
         long guildid;
         long channelid;
@@ -61,8 +59,7 @@ public class Reminder extends Slash {
             channelid = event.getChannel().getIdLong();
         }
 
-        if (minutes == 0 && hours == 0 && days == 0) {
-
+        if (time == 0) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TSend`, CURRENT_TIMESTAMP, `Message` FROM `Reminders` WHERE `UserID` = " + userid + " AND `ServerID` = " + guildid);
                 boolean hasReminder = false;
@@ -117,9 +114,8 @@ public class Reminder extends Slash {
         }
 
         // Create the reminder
-        long timestamp = System.currentTimeMillis() + ((long) minutes * 60 * 1000) + ((long) hours * 60 * 60 * 1000) + ((long) days * 24 * 60 * 60 * 1000);
         if (timestamp / 1000 > Integer.MAX_VALUE) {
-            event.replyEmbeds(Utils.wrapMessageInEmbed("Reminder too far in the future! [Can't be past 2023](https://en.wikipedia.org/wiki/Year_2038_problem)", Color.RED)).queue();
+            event.replyEmbeds(Utils.wrapMessageInEmbed("Reminder too far in the future! [Can't be past 2038](https://en.wikipedia.org/wiki/Year_2038_problem)", Color.RED)).queue();
             return;
         }
         java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(timestamp);
@@ -131,9 +127,5 @@ public class Reminder extends Slash {
             event.reply("Error saving Reminder, Sent a message to devs").queue();
         }
         event.replyEmbeds(new EmbedBuilder().setColor(color).setTitle("Reminder set").setDescription(message).setTimestamp(sqlTimestamp.toInstant()).build()).queue();
-    }
-
-    private boolean notWithinRange(int i, int min, int max) {
-        return i < min || i > max;
     }
 }

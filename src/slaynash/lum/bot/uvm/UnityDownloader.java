@@ -88,7 +88,7 @@ public class UnityDownloader {
 
         try {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            json = JsonParser.parseString(new String(response.body())).getAsJsonObject();
+            json = JsonParser.parseString(response.body()).getAsJsonObject();
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to fetch Unity versions", e);

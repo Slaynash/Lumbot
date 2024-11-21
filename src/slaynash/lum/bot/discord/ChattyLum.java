@@ -195,7 +195,7 @@ public class ChattyLum {
         "https://tenor.com/view/padoru-konosuba-gif-19460573"
     ));
 
-    static { //on class load, nothing is removing these when the season is over other then a reboot
+    static { //on class load, nothing is removing these when the season is over other than a reboot
         if (LocalDate.now().getMonthValue() == 10) { //halloween
             helloLum.add("<:Neko_mummy:865328473761775627>");
             helloLum.add("<:Neko_pumpkin:865328473962053683>");
@@ -204,7 +204,7 @@ public class ChattyLum {
             badLum.add("<:Neko_clown:865328473732415508>");
             badLum.add("<:Neko_devil:865328473974374420>");
         }
-        else if (LocalDate.now().getMonthValue() == 12) { //christmas
+        else if (LocalDate.now().getMonthValue() == 12) { //Christmas
             helloLum.add("<:Neko_padoru:865328474150797342>");
             helloLum.add("<:Neko_snow:865328474196541440>");
             niceLum.add("<:Neko_padoru:865328474150797342>");

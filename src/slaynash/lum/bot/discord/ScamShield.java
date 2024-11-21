@@ -520,7 +520,7 @@ public class ScamShield {
                         .append("\n")
                         .append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw()))
                         .append("\n")
-                        .append(a.messageReceivedEvent.getMessage().getAttachments().size() > 0 ? a.messageReceivedEvent.getMessage().getAttachments().get(0).getUrl() : "")
+                        .append(!a.messageReceivedEvent.getMessage().getAttachments().isEmpty() ? a.messageReceivedEvent.getMessage().getAttachments().get(0).getUrl() : "")
                         .append("\n")
                         .append(a.suspiciousResults.suspiciousValue)
                         .append(" point")
