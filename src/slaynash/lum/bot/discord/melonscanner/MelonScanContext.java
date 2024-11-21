@@ -7,14 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class MelonScanContext {
-    public final String latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
-    public final String latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
-    public String overrideMLVersion = null;
+    public final Version latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
+    public final Version latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
+    public Version overrideMLVersion = null;
 
     public final Attachment attachment;
     public final MessageReceivedEvent messageReceivedEvent;
@@ -41,7 +42,7 @@ public class MelonScanContext {
 
     // MelonLoader infos
     public String mlName;
-    public String mlVersion;
+    public Version mlVersion;
     public String osType;
     public String mlHashCode;
     public String arch;
@@ -61,7 +62,7 @@ public class MelonScanContext {
 
     // Game Infos
     public String game;
-    public String gameBuild;
+    public Version gameBuild;
     public boolean epic = false;
 
     // Mod listing - temp
@@ -70,7 +71,7 @@ public class MelonScanContext {
     public boolean listingModsPlugins = false;
     public int remainingModCount;
     public String tmpModName;
-    public String tmpModVersion;
+    public Version tmpModVersion;
     public String tmpModAuthor;
     public String tmpModHash;
     public String tmpModAssembly;

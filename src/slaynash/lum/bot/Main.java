@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -359,8 +360,8 @@ public class Main extends ListenerAdapter {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("storage/melonloaderversions.txt"));
-            MelonScanner.latestMLVersionRelease = reader.readLine().trim();
-            MelonScanner.latestMLVersionAlpha = reader.readLine().trim();
+            MelonScanner.latestMLVersionRelease = Version.parse(reader.readLine().trim(), false);
+            MelonScanner.latestMLVersionAlpha = Version.parse(reader.readLine().trim(), false);
             reader.close();
         }
         catch (Exception e) {

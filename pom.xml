@@ -142,6 +142,11 @@
       <artifactId>named-regexp</artifactId>
       <version>1.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.zafarkhaja</groupId>
+      <artifactId>java-semver</artifactId>
+      <version>0.10.2</version>
+    </dependency>
     <dependency> <!-- used to read unicode ML logs -->
     	<groupId>com.github.albfernandez</groupId>
     	<artifactId>juniversalchardet</artifactId>

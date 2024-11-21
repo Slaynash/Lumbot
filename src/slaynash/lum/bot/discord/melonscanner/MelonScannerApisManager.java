@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.zip.GZIPInputStream;
 
+import com.github.zafarkhaja.semver.Version;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -77,28 +77,17 @@ public class MelonScannerApisManager {
     private static final List<Entry<MelonScannerApi, Instant>> erroringAPIs = new ArrayList<>();
 
     static {
-        MelonScannerApi api;
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
-        apis.add(api = new CurseforgeApi("Demeo", 78135));
-        api.setPostReadPass(context -> { // TODO move this to a lua script
-            for (LogsModDetails logsModDetails : context.loadedMods.values()) {
-                String version = logsModDetails.version;
-                if (version.contains(" (")) {
-                    String[] parts = version.split(" \\(");
-                    logsModDetails.id = parts[1].trim().replace(")", "");
-                    logsModDetails.version = parts[0];
-                }
-            }
-        });
+        apis.add(new CurseforgeApi("Demeo", 78135));
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         // apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
         // apis.add(new ThunderstoreApi("Lethal Company", "lethal-company"));
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
-        // apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
+        apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tldmods.com/api.json"));
     }
 
@@ -260,7 +249,7 @@ public class MelonScannerApisManager {
                                     if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
                                         approvalStatus = mod.get("approvalStatus").checkjstring();
                                     String id = mod.get("id") == LuaValue.NIL ? null : mod.get("id").checkjstring();
-                                    String version = mod.get("version").checkjstring();
+                                    Version version = Version.tryParse(mod.get("version").checkjstring(), false).orElse(null);
                                     String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
                                     String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
                                     boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
@@ -282,7 +271,7 @@ public class MelonScannerApisManager {
                                         approvalStatus = "3";
 
                                     if (downloadLink != null && downloadLink.equalsIgnoreCase("https://github.com/GrahamKracker/BTD6EpicGamesModCompat/releases/download/1.2.1/BTD6EpicGamesModCompat.dll")) {
-                                        version = "1.2.1";
+                                        version = Version.parse("1.2.1");
                                     }
 
                                     if (isbroken || approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
@@ -346,8 +335,7 @@ public class MelonScannerApisManager {
                                     currentMods.add(newMod);
                                 else {
                                     // TODO compare using aliases too
-                                    if (VersionUtils.compareVersion(newMod.versions[0].version, currentMod.versions[0].version) != 0) {
-                                        // TODO merge rather than replace
+                                    if (!currentMod.equals(newMod)) {
                                         currentMods.remove(currentMod);
                                         currentMods.add(newMod);
                                     }
@@ -436,8 +424,6 @@ public class MelonScannerApisManager {
 
         public List<MelonApiMod> cachedMods = new ArrayList<>();
 
-        public Consumer<MelonScanContext> postReadPass;
-
         public MelonScannerApi(String game, String name, String endpoint) {
             this.game = game;
             this.name = name;
@@ -451,10 +437,6 @@ public class MelonScannerApisManager {
             this.endpoint = endpoint;
             this.compareUsingHashes = compareUsingHashes;
             this.maxPagination = -1;
-        }
-
-        public void setPostReadPass(Consumer<MelonScanContext> postReadPass) {
-            this.postReadPass = postReadPass;
         }
 
         public String getScriptName() {
@@ -503,15 +485,10 @@ public class MelonScannerApisManager {
             list = new ArrayList<>();
 
         //add Universal Mods here
-        list.add(new MelonApiMod(null, "UnityExplorer", "4.9.4", "https://github.com/GrahamKracker/UnityExplorer#melonloader", null));
+        list.add(new MelonApiMod(null, "UnityExplorer", Version.parse("4.9.4"), "https://github.com/GrahamKracker/UnityExplorer#melonloader", null));
 
         context.modDetails = list;
         return context.modApiFound;
-    }
-
-    public static Consumer<MelonScanContext> getPostReadPass(String game) {
-        MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
-        return api != null ? api.postReadPass : null;
     }
 
     public static boolean compareUsingHash(String game) {

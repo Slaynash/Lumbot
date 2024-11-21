@@ -88,8 +88,8 @@ public class MelonLoaderError {
 
         try (Stream<String> lines = Files.lines(new File("melonscannererrors.json").toPath())) {
             String data = lines.collect(Collectors.joining("\n"))
-                .replace("$MLRelease$", MelonScanner.latestMLVersionRelease)
-                .replace("$MLBeta$", MelonScanner.latestMLVersionAlpha);
+                .replace("$MLRelease$", MelonScanner.latestMLVersionRelease.toString())
+                .replace("$MLBeta$", MelonScanner.latestMLVersionAlpha.toString());
 
             HashMap<String, JsonElement> filedata = gson.fromJson(data, new TypeToken<HashMap<String, JsonElement>>() {}.getType());
             synchronized (knownUnhollowerErrors) {
