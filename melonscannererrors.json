@@ -41,6 +41,10 @@
             "error": "Installer failed to download MelonLoader Hash. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
         {
+            "regex": "Failed to get SHA512 Hash from Temp File!",
+            "error": "Please update to the newest [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
+        },
+        {
             "regex": "\\[[\\d.:]+] {4}at MelonLoader\\.AssemblyGenerator\\.LocalConfig\\.Save\\(String path\\)",
             "error": "The access to a file has been denied. Please try starting the game with administrator privileges, or try restarting your computer (failed to save AssemblyGenerator/config.cfg)"
         },

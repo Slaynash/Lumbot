@@ -78,6 +78,9 @@ public class ScamShield {
             put("3month", 1);
             put("free", 1);
             put("!!!", 1);
+            put("steamgift", 1);
+            put("redeemasteam", 1);
+            put("giftactivation", 1);
             put("booster", 1);
             put("download", 1);
             put("100%", 1);
@@ -224,11 +227,11 @@ public class ScamShield {
         }
 
         if (msg.contains("](")) {
-            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,5}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,5}).*\\)");
+            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*?\\.\\w{2,5}).*?]\\((https?://|)(?<hiddenDomain>.*?\\.\\w{2,5}).*?\\)");
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
-                    ssFoundTerms.put("HiddenEmbed", 2); // Currently has a bug where it would greedily match with another Embedlink on same line
+                    ssFoundTerms.put("HiddenEmbed", 4);
             }
         }
 
