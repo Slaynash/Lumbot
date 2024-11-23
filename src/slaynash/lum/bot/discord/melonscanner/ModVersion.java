@@ -1,11 +1,6 @@
 package slaynash.lum.bot.discord.melonscanner;
 
-public class ModVersion {
-    public final VersionUtils.VersionData version;
-    public final String hash;
+import com.github.zafarkhaja.semver.Version;
 
-    public ModVersion(String version, String hash) {
-        this.version = VersionUtils.getVersion(version);
-        this.hash = hash;
-    }
+public record ModVersion(Version version, String hash) {
 }

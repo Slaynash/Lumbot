@@ -78,6 +78,9 @@ public class ScamShield {
             put("3month", 1);
             put("free", 1);
             put("!!!", 1);
+            put("steamgift", 1);
+            put("redeemasteam", 1);
+            put("giftactivation", 1);
             put("booster", 1);
             put("download", 1);
             put("100%", 1);
@@ -224,11 +227,11 @@ public class ScamShield {
         }
 
         if (msg.contains("](")) {
-            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*\\.\\w{2,5}).*]\\((https?://|)(?<hiddenDomain>.*\\.\\w{2,5}).*\\)");
+            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*?\\.\\w{2,5}).*?]\\((https?://|)(?<hiddenDomain>.*?\\.\\w{2,5}).*?\\)");
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
-                    ssFoundTerms.put("HiddenEmbed", 2); // Currently has a bug where it would greedily match with another Embedlink on same line
+                    ssFoundTerms.put("HiddenEmbed", 4);
             }
         }
 
@@ -520,7 +523,7 @@ public class ScamShield {
                         .append("\n")
                         .append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw()))
                         .append("\n")
-                        .append(a.messageReceivedEvent.getMessage().getAttachments().size() > 0 ? a.messageReceivedEvent.getMessage().getAttachments().get(0).getUrl() : "")
+                        .append(!a.messageReceivedEvent.getMessage().getAttachments().isEmpty() ? a.messageReceivedEvent.getMessage().getAttachments().get(0).getUrl() : "")
                         .append("\n")
                         .append(a.suspiciousResults.suspiciousValue)
                         .append(" point")

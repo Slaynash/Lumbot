@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import com.github.zafarkhaja.semver.Version;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.Permission;
@@ -114,10 +115,7 @@ public final class MelonScannerReadPass {
             System.out.println("Omitted one line of length " + linelength);
             return true;
         }
-        if (context.line.contains("Normal users can ignore this warning")) {
-            return true;
-        }
-        return false;
+        return context.line.contains("Normal users can ignore this warning");
     }
 
     private static boolean minecraftLogLineCheck(MelonScanContext context) {
@@ -173,10 +171,17 @@ public final class MelonScannerReadPass {
             return false; //Not a mod listing line
         }
         else if (context.nextLine != null && line.matches("\\[[\\d.:]+] -{30,}") && context.lastLine.matches("\\[[\\d.:]+] -{30,}")) { // If some idiot removes a mod but keeps the separator
-            if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0) {
+            if (context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.5"))) {
                 System.out.println("editedLog");
                 context.editedLog = true;
             }
+            return true;
+        }
+        else if (context.nextLine != null && context.nextLine.contains("is only compatible with the following Games:")) {
+            String modName = context.nextLine.split(" is only")[0].split(" - ")[1];
+            System.out.println("Found incompatible game for mod " + modName);
+            context.incompatibleMods.add(new MelonIncompatibleMod(modName, context.game));
+            context.linesToSkip += 2;
             return true;
         }
         else if (line.contains("Failed to load Melon '")) {
@@ -232,7 +237,7 @@ public final class MelonScannerReadPass {
             context.remainingModCount = Integer.parseInt(split[1]);
             context.listingPlugins = line.contains("Plugin");
             context.preListingModsPlugins = false;
-            context.listingModsPlugins = context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0;
+            context.listingModsPlugins = context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.5"));
             if (context.listingModsPlugins && context.remainingModCount <= 0) {
                 context.editedLog = true;
             }
@@ -248,7 +253,7 @@ public final class MelonScannerReadPass {
             if (split.length < 2) return true;
             split = split[1].split(" v", 2);
             context.tmpModName = ("".equals(split[0])) ? "Broken Mod" : split[0].trim();
-            context.tmpModVersion = split.length > 1 ? split[1] : null;
+            context.tmpModVersion = split.length > 1 ? Version.tryParse(split[1], false).orElse(null) : null;
             return true;
         }
         else if (line.matches("\\[[\\d.:]+]( \\[MelonLoader])? by .*")) {
@@ -283,7 +288,7 @@ public final class MelonScannerReadPass {
             context.modAssemblies.stream().filter(m -> m.assembly.equalsIgnoreCase(context.tmpModAssembly)).findFirst().ifPresent(m -> context.tmpModHash = m.hash);
 
             if (context.tmpModHash != null && context.tmpModHash.equalsIgnoreCase("8576e150d7f25afd57c6fd03d7f602c22ff9c91ec8e58ce70db84aa77b8dd670"))
-                context.tmpModVersion = "1.2.1"; //Fix for BTD6EpicGamesModCompat
+                context.tmpModVersion = Version.parse("1.2.1"); //Fix for BTD6EpicGamesModCompat
 
             System.out.println("Found mod " + context.tmpModName + ", version is " + context.tmpModVersion + ", and hash is " + context.tmpModHash + ", author is " + context.tmpModAuthor + ", assembly is " + context.tmpModAssembly);
 
@@ -317,7 +322,7 @@ public final class MelonScannerReadPass {
             context.tmpModHash = null;
             context.tmpModAssembly = null;
 
-            if (context.mlVersion != null && VersionUtils.compareVersion("0.5.5", context.mlVersion) > 0 && --context.remainingModCount == 0) {
+            if (context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.5")) && --context.remainingModCount == 0) {
                 context.preListingModsPlugins = false;
                 context.listingModsPlugins = false;
                 System.out.println("Done scanning mods");
@@ -478,7 +483,7 @@ public final class MelonScannerReadPass {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
-            context.mlVersion = split[1].split(" ")[0].trim();
+            context.mlVersion = Version.tryParse(split[1].split(" ")[0].trim(), false).orElse(null);
             context.pre3 = true;
             System.out.println("ML " + context.mlVersion + " (< 0.3.0)");
             return true;
@@ -487,7 +492,7 @@ public final class MelonScannerReadPass {
             consoleCopypasteCheck(context);
             String[] split = line.split("v");
             if (split.length < 2) return true;
-            context.mlVersion = split[1].split(" ")[0].trim();
+            context.mlVersion = Version.tryParse(split[1].split(" ")[0].trim(), false).orElse(null);
             context.alpha = line.toLowerCase().contains("alpha");
             System.out.println("ML " + context.mlVersion + " Alpha: " + context.alpha);
             return true;
@@ -605,7 +610,7 @@ public final class MelonScannerReadPass {
             String[] split3 = split2[0].split(" v", 2);
             String name = split3[0].isBlank() ? "" : split3[0].trim();
             name = String.join("", name.split(".*[a-zA-Z\\d]\\.[a-zA-Z]{2,4}"));
-            String version = split3.length > 1 ? split3[1] : null;
+            Version version = split3.length > 1 ? Version.tryParse(split3[1], false).orElse(null) : null;
 
             context.loadedMods.put(name, new LogsModDetails(name, version, author));
 
@@ -629,7 +634,7 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
                 return true;
             }
-            context.gameBuild = split[1].trim();
+            context.gameBuild = Version.tryParse(split[1].trim().replaceAll("\\.0(\\d)", ".$1"), false).orElse(null);
             System.out.println("Game version " + context.gameBuild);
             return true;
         }

@@ -1,5 +1,8 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.util.Optional;
+
+import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
@@ -26,20 +29,25 @@ public class MLHashRegisterCommand extends Command {
         }
 
         String branch = split[1].trim();
-        String version = split[2].trim();
+        Optional<Version> versionTry = Version.tryParse(split[2].trim());
         String hash86 = split[3].trim().toUpperCase();
         String hash64 = split[4].trim().toUpperCase();
-        System.out.println("branch: " + branch + ", hash: " + paramString + " for ML version " + version);
+        Version version;
 
         if (!branch.equals("alpha") && !branch.equals("release")) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid branch " + usage).queue();
             return;
         }
 
-        if (!version.matches("^\\d+\\.\\d+\\.\\d+(\\.\\d+)?$")) {
+        if (versionTry.isEmpty()) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid version " + usage).queue();
             return;
         }
+        else {
+            version = versionTry.get();
+        }
+
+        System.out.println("branch: " + branch + ", hash: " + paramString + " for ML version " + version);
 
         if (!(hash64.matches("^[0-9A-F]{5,}$") && hash86.matches("^[0-9A-F]{5,}$"))) {
             paramMessageReceivedEvent.getChannel().sendMessage("Invalid hash " + usage).queue();

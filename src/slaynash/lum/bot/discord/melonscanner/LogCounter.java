@@ -20,8 +20,15 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
     private static int previousSSCount = 0;
 
     public static File addMLCounter(Attachment attachment) {
+        if (workingPath == null) {
+            System.out.println("Working directory not found");
+            return null;
+        }
         try {
             String directoryPath = workingPath + "/MLlogs/";
+            if (!new File(directoryPath).isDirectory()) {
+                new File(directoryPath).mkdir();
+            }
             File att = attachment.getProxy().downloadToFile(new File(directoryPath + Instant.now().toString().replace(":", "_") + "-" + attachment.getFileName())).get();
             System.out.println("Downloaded attachment to " + att.getCanonicalPath());
             return att;
@@ -36,8 +43,15 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
     }
 
     public static void addSSCounter(String bannedUser, String message, String guildID) {
+        if (workingPath == null) {
+            System.out.println("Working directory not found");
+            return;
+        }
         try {
             String directoryPath = workingPath + "/SSlogs/";
+            if (!new File(directoryPath).isDirectory()) {
+                new File(directoryPath).mkdir();
+            }
 
             Files.writeString(Path.of(directoryPath, bannedUser + "-" + guildID + ".txt"), message);
         }
@@ -50,6 +64,10 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
     }
 
     public static void updateCounter() {
+        if (workingPath == null) {
+            System.out.println("Working directory not found");
+            return;
+        }
         try {
             if (!JDAManager.isEventsEnabled()) return;
             if (JDAManager.getJDA() == null || JDAManager.getJDA().getStatus() != Status.CONNECTED)
@@ -57,6 +75,9 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
             Date date = new Date();
             String directoryPath = workingPath + "/MLlogs/";
             File directory = new File(directoryPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
 
             int logCount = directory.listFiles().length;
             if (logCount > 0) {
@@ -71,6 +92,9 @@ public final class LogCounter {  //TODO: create directory if it doesn't exist
 
             directoryPath = workingPath + "/SSlogs/";
             directory = new File(directoryPath);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
             int sslogCount = directory.listFiles().length;
             if (sslogCount > 0) {
                 // remove folders that is older then 24 hours

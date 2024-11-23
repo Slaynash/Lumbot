@@ -16,8 +16,8 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
+import com.github.zafarkhaja.semver.Version;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -43,8 +43,8 @@ import slaynash.lum.bot.utils.Utils;
 public final class MelonScanner {
     public static final String LOG_IDENTIFIER = "MelonScanner";
 
-    public static String latestMLVersionRelease = "";
-    public static String latestMLVersionAlpha = "";
+    public static Version latestMLVersionRelease = null;
+    public static Version latestMLVersionAlpha = null;
 
     private static final Color melonPink = new Color(255, 59, 106);
 
@@ -114,8 +114,6 @@ public final class MelonScanner {
 
             if (!MelonScannerReadPass.doPass(context))
                 return messageCreateData;
-
-            postReadApiPass(context);
 
             if (getModsFromApi(context)) {
                 cleanupDuplicateMods(context);
@@ -229,20 +227,6 @@ public final class MelonScanner {
             fileName.matches("\\w{7}\\.(log|txt)");
     }
 
-    private static void postReadApiPass(MelonScanContext context) {
-        Consumer<MelonScanContext> postReadApiPass = MelonScannerApisManager.getPostReadPass(context.game);
-        if (postReadApiPass != null)
-            postReadApiPass.accept(context);
-
-        LogsModDetails blrpc;
-        if ((blrpc = context.loadedMods.get("BLRPC")) != null && "SoulWithMae".equals(blrpc.author)) {
-            System.out.println("Found BLRPC");
-            context.loadedMods.remove("BLRPC");
-            blrpc.name = "BonelabRichPresence";
-            context.loadedMods.put("BonelabRichPresence", blrpc);
-        }
-    }
-
     private static boolean getModsFromApi(MelonScanContext context) {
         if (context.game != null && context.game.equalsIgnoreCase("bloonstd6-epic")) {
             context.game = "BloonsTD6";
@@ -288,7 +272,7 @@ public final class MelonScanner {
         for (Entry<String, LogsModDetails> entry : context.loadedMods.entrySet()) {
             final String modName = entry.getKey();
             final LogsModDetails logsModDetails = entry.getValue();
-            final VersionUtils.VersionData modVersion = logsModDetails.version != null ? VersionUtils.getVersion(logsModDetails.version) : null;
+            final Version modVersion = logsModDetails.version;
             final String id = logsModDetails.id;
 
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
@@ -304,7 +288,7 @@ public final class MelonScanner {
             }
 
             String latestModName = null;
-            VersionUtils.VersionData latestModVersion = null;
+            Version latestModVersion = null;
             String latestModHash = null;
             String latestModType = null;
             String latestModDownloadUrl = null;
@@ -316,15 +300,15 @@ public final class MelonScanner {
                     modDetail.name.replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
                     (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
                 {
-                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0].version.getRaw() + (modDetail.id != null ? " id2: " + modDetail.id : ""));
+                    System.out.println("Mod found in API: " + modDetail.name + " version " + modDetail.versions[0] + (modDetail.id != null ? " id2: " + modDetail.id : ""));
                     latestModName = modDetail.name;
-                    latestModVersion = modDetail.versions[0].version;
+                    latestModVersion = modDetail.versions[0].version();
                     latestModDownloadUrl = modDetail.downloadLink;
                     latestModType = modDetail.modtype;
                     latestHasPending = modDetail.haspending;
-                    latestModHash = modDetail.versions[0].hash;
+                    latestModHash = modDetail.versions[0].hash();
                     latestModBroken = modDetail.isbroken;
-                    if (latestModVersion != null && latestModHash != null && latestModVersion.getRaw().equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash)) {
+                    if (latestModVersion != null && latestModHash != null && latestModVersion.equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash)) {
                         context.corruptedMods.add(modDetail);
                         System.out.println("Mod " + modDetail.name + " is corrupted, API hash: " + latestModHash + " vs. logs hash: " + logsModDetails.hash);
                     }
@@ -332,11 +316,10 @@ public final class MelonScanner {
                 }
             }
 
-            int compare = VersionUtils.compareVersion(latestModVersion, modVersion);
             if (latestModVersion == null && latestModHash == null && latestModType == null) {
                 context.unknownMods.add(logsModDetails);
             }
-            else if (latestHasPending && compare == 0) {
+            else if (latestHasPending && modVersion.isEquivalentTo(latestModVersion)) {
                 context.hasPendingMods.add(modName);
             }
             else if (MelonScannerApisManager.brokenMods.contains(modName) || latestModBroken) {
@@ -345,15 +328,15 @@ public final class MelonScanner {
             else if (MelonScannerApisManager.retiredMods.contains(modName)) {
                 context.retiredMods.add(modName);
             }
-            else if (deprecatedName || compare > 0) {
+            else if (deprecatedName || modVersion.isLowerThan(latestModVersion)) {
                 if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
-                    context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                    context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
                 else
-                    context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+                    context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
                 context.modsThrowingErrors.remove(modName);
             }
-            else if (!latestHasPending && compare < 0 && !latestModVersion.getRaw().isBlank()) {
-                context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion.getRaw(), latestModVersion.getRaw(), latestModDownloadUrl));
+            else if (!latestHasPending && latestModVersion != null && modVersion.isHigherThan(latestModVersion)) {
+                context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
             }
         }
     }
@@ -388,7 +371,7 @@ public final class MelonScanner {
     private static void checkForPirate(MelonScanContext context) {
         if (context.android) return;
         String gamePath = context.gamePath == null ? "" : context.gamePath.toLowerCase().replace(".", "");
-        if (context.gamePath == null && context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) <= 0) {
+        if (context.gamePath == null && context.mlVersion != null && context.mlVersion.isHigherThanOrEquivalentTo(Version.parse("0.5.0"))) {
             if (context.lineCount > 15) {
                 context.editedLog = true; //trigger the `dont edit the log` message
                 context.pirate = true;
@@ -396,7 +379,8 @@ public final class MelonScanner {
             else
                 context.mlCrashed = true;
         }
-        else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
+        // else if (context.game == null || context.mlVersion != null && VersionUtils.compareVersion("0.5.0", context.mlVersion) > 0) {
+        else if (context.game == null || context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.0"))) {
             context.pirate = false;
         }
         else if (gamePath.contains("steamrip") || gamePath.contains("repack") || gamePath.contains("fitgirl") || gamePath.contains("inclalldlc") || context.gamePath.split("\\.").length > 5) {
@@ -406,7 +390,7 @@ public final class MelonScanner {
             if (!gamePath.contains("steamapps\\common") && !gamePath.contains("program files\\windowsapps") && !context.epic) {
                 context.pirate = true;
             }
-            else if (context.gameBuild != null && context.gameBuild.startsWith("34") && VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
+            else if (context.gameBuild != null && context.gameBuild.toString().startsWith("34") && context.mlVersion.isLowerThan(Version.parse("0.6.0"))) {
                 context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
@@ -421,11 +405,11 @@ public final class MelonScanner {
             }
         }
         else if (context.game.equalsIgnoreCase("TheLongDark")) {
-            if (context.gameBuild != null && VersionUtils.compareVersion("2.06", context.gameBuild) <= 0) {
-                if (VersionUtils.compareVersion("0.6.2", context.mlVersion) == 0) {
+            if (context.gameBuild != null && context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.6", false))) {
+                if (context.mlVersion.isEquivalentTo(Version.parse("0.6.2"))) {
                     context.embedBuilder.addField("TLD ML062", "MelonLoader 0.6.2 causes issues with TheLongDark mods, Please downgrade to MelonLoader 0.6.1 using the installer by unticking \"latest\"", false);
                 }
-                else if (VersionUtils.compareVersion("0.6.0", context.mlVersion) > 0) {
+                else if (context.mlVersion.isLowerThan(Version.parse("0.6.0"))) {
                     context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
                 }
             }
@@ -465,7 +449,7 @@ public final class MelonScanner {
                     }
 
                     if (result.getString("MLoverride") != null) {
-                        String override = result.getString("MLoverride");
+                        Version override = Version.parse(result.getString("MLoverride"), false);
                         System.out.println("ML override for " + context.game + ": " + override);
                         context.overrideMLVersion = override;
                     }
@@ -526,7 +510,7 @@ public final class MelonScanner {
     private static boolean mlOutdatedCheck(MelonScanContext context) {
         if (context.overrideMLVersion != null && context.mlVersion != null) {
             if (!context.overrideMLVersion.equals(context.mlVersion)) {
-                if (VersionUtils.compareVersion(context.overrideMLVersion, context.mlVersion) > 0 && VersionUtils.compareVersion(context.overrideMLVersion, VersionUtils.compareVersion(context.latestMLVersionAlpha, context.latestMLVersionRelease) > 0 ? context.latestMLVersionAlpha : context.latestMLVersionRelease) > 0)
+                if (context.overrideMLVersion.isHigherThan(context.mlVersion) && context.overrideMLVersion.isHigherThan(context.latestMLVersionAlpha.isHigherThan(context.latestMLVersionRelease) ? context.latestMLVersionAlpha : context.latestMLVersionRelease))
                     context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.overridenightly", context.lang, context.arch), false);
                 else
                     context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion), false);
@@ -536,20 +520,20 @@ public final class MelonScanner {
             return false;
         }
 
-        context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionAlpha) && VersionUtils.compareVersion(context.latestMLVersionAlpha, context.latestMLVersionRelease) == 1/* If Alpha is more recent */) : (!CrossServerUtils.sanitizeInputString(context.mlVersion).equals(context.latestMLVersionRelease)));
+        context.isMLOutdated = context.mlVersion != null && (context.alpha ? (!context.mlVersion.equals(context.latestMLVersionAlpha) && context.latestMLVersionAlpha.isHigherThan(context.latestMLVersionRelease)) : (!context.mlVersion.equals(context.latestMLVersionRelease)));
         if (context.isMLOutdated || context.modifiedML) {
-            int result = VersionUtils.compareVersion(context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease, context.mlVersion);
+            int result = context.mlVersion.compareTo(context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease);
             System.out.println("ML Outdated, isMLOutdated:" + context.isMLOutdated + " modifiedML:" + context.modifiedML + " Result:" + result + " Installed:" + context.mlVersion);
             switch (result) {
-                case 1 -> //left more recent
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, CrossServerUtils.sanitizeInputString(context.mlVersion), context.latestMLVersionRelease), false);
-                case 0 -> { //identicals
+                case -1 ->
+                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upbeta", context.lang, context.mlVersion, context.latestMLVersionRelease), false);
+                case 0 -> {
                     if (context.alpha)
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.upalpha", context.lang, context.latestMLVersionAlpha), false);
                     else
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, context.latestMLVersionRelease), false);
                 }
-                case -1 -> //right more recent
+                case 1 ->
                         context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.alpha ? context.latestMLVersionAlpha : context.latestMLVersionRelease), false);
                 default -> {
                 }
@@ -609,7 +593,7 @@ public final class MelonScanner {
         if (context.mlVersion != null && !(context.mlVersion.equals(context.latestMLVersionRelease) || context.mlVersion.equals(context.latestMLVersionAlpha) || context.mlVersion.equals(context.overrideMLVersion))) {
             context.missingMods.removeIf(mod -> MelonScannerApisManager.getDownloadLinkForMod(context.game, mod) == null);
         }
-        if (context.missingMods.remove("UnhollowerBaseLib") && context.mlVersion != null && VersionUtils.compareVersion("0.6.0", context.mlVersion) < 1) {
+        if (context.missingMods.remove("UnhollowerBaseLib") && context.mlVersion != null && context.mlVersion.isLowerThanOrEquivalentTo(Version.parse("0.6.0"))) {
             addToError(context, Localization.get("\n- A mod needs a version of MelonLoader before 0.6.x maybe try downgrading to 0.5.7 or updating that mod.", context.lang));
         }
         if (!context.missingMods.isEmpty()) {
@@ -758,8 +742,8 @@ public final class MelonScanner {
             for (int i = 0; i < context.unknownMods.size() && i < (context.unknownMods.size() == 11 ? 11 : 10); ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
-                if (md.version != null && !md.version.isBlank())
-                    unknowModOut += " " + CrossServerUtils.sanitizeInputString(md.version);
+                if (md.version != null)
+                    unknowModOut += " " + md.version;
                 if (md.author != null)
                     unknowModOut = Localization.getFormat("melonscanner.unknownmods.modnamewithauthor", context.lang, unknowModOut, CrossServerUtils.sanitizeInputString(md.author));
                 error.append("- ").append(unknowModOut).append("\n");
@@ -917,7 +901,7 @@ public final class MelonScanner {
 
     private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod) {
         String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.getShortenedUrl(outdatedMod.downloadUrl) + ")");
-        String line = "- " + namePart + ": `" + CrossServerUtils.sanitizeInputString(outdatedMod.currentVersion) + "` -> `" + outdatedMod.latestVersion + "`";
+        String line = "- " + namePart + ": `" + outdatedMod.currentVersion.withoutBuildMetadata() + "` -> `" + outdatedMod.latestVersion + "`";
         if (!outdatedMod.name.equals(outdatedMod.newName))
             line += " (" + outdatedMod.newName + ")";
         line += "\n";
@@ -973,7 +957,7 @@ public final class MelonScanner {
             else
                 error += Localization.get("melonscanner.othererrors.nomods", context.lang) + "\n";
         }
-        if (context.mlVersion != null && VersionUtils.compareVersion(context.latestMLVersionRelease, context.mlVersion) == 0 && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
+        if (context.mlVersion != null && context.latestMLVersionRelease.isEquivalentTo(context.mlVersion) && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
             error += Localization.get("- Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n", context.lang);
         }
         if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
@@ -985,21 +969,21 @@ public final class MelonScanner {
         if (context.line.contains("Contacting RemoteAPI...")) {
             error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
         }
-        if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null && context.gameBuild.matches("[\\d.]+")) {
-            int buildInt = Integer.parseInt(context.gameBuild.substring(context.gameBuild.lastIndexOf(".") + 1));
+        if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
+            long buildInt = context.gameBuild.patchVersion();
             if (buildInt < 33000 && context.loadedMods.containsKey("LabFusion")) {
                 error += Localization.get("- LabFusion is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
-            else if (buildInt < 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") >= 0) {
+            else if (buildInt < 33000 && context.loadedMods.containsKey("BoneLib") && context.loadedMods.get("BoneLib").version.isHigherThanOrEquivalentTo(Version.parse("2.2.1"))) {
                 error += Localization.get("- BoneLib is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
-            else if (buildInt > 33000 && context.loadedMods.containsKey("BoneLib") && VersionUtils.compareVersion(context.loadedMods.get("BoneLib").version, "2.2.1") < 0) {
+            else if (buildInt > 33000 && context.loadedMods.containsKey("BoneLib") && context.loadedMods.get("BoneLib").version.isLowerThan(Version.parse("2.2.1"))) {
                 error += Localization.get("- BoneLib is not compatible with this version of the game. Please downgrade BL to public release branch.\n", context.lang);
             }
-            else if (buildInt < 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") >= 0) {
+            else if (buildInt < 33000 && context.loadedMods.containsKey("JeviLib") && context.loadedMods.get("JeviLib").version.isHigherThanOrEquivalentTo(Version.parse("2.2.1"))) {
                 error += Localization.get("- JeviLib is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
-            else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && VersionUtils.compareVersion(context.loadedMods.get("JeviLib").version, "2.2.1") < 0) {
+            else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && context.loadedMods.get("JeviLib").version. isLowerThan(Version.parse("2.2.1"))) {
                 error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade BL to public release branch.\n", context.lang);
             }
         }

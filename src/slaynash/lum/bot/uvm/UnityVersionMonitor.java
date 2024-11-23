@@ -774,23 +774,8 @@ public class UnityVersionMonitor {
     //     isRunningCheck = false;
     // }
 
-    private static class HashCheckerArch {
-        private static class Path {
-            public final String[] unityVersions;
-            public final String path;
-
-            public Path(String[] unityVersions, String path) {
-                this.unityVersions = unityVersions;
-                this.path = path;
-            }
-        }
-
-        public final String name;
-        public final HashCheckerArch.Path[] paths;
-
-        private HashCheckerArch(String name, HashCheckerArch.Path[] paths) {
-            this.name = name;
-            this.paths = paths;
+    private record HashCheckerArch(String name, UnityVersionMonitor.HashCheckerArch.Path[] paths) {
+        private record Path(String[] unityVersions, String path) {
         }
     }
 
