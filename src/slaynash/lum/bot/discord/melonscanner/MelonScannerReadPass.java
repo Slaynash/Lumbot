@@ -177,6 +177,13 @@ public final class MelonScannerReadPass {
             }
             return true;
         }
+        else if (context.nextLine != null && context.nextLine.contains("is only compatible with the following Games:")) {
+            String modName = context.nextLine.split(" is only")[0].split(" - ")[1];
+            System.out.println("Found incompatible game for mod " + modName);
+            context.incompatibleMods.add(new MelonIncompatibleMod(modName, context.game));
+            context.linesToSkip += 2;
+            return true;
+        }
         else if (line.contains("Failed to load Melon '")) {
             if (line.contains("Melon is a Plugin")) {
                 String pluginname = line.split("'")[1];

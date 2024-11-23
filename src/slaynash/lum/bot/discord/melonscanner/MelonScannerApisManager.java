@@ -200,6 +200,7 @@ public class MelonScannerApisManager {
                                 ExceptionUtils.reportException("Received empty JSON for " + api.name);
                                 break;
                             }
+
                             JsonElement data = gson.fromJson(responseString, JsonElement.class);
 
                             // Script pass
@@ -325,6 +326,7 @@ public class MelonScannerApisManager {
 
                                 MelonApiMod currentMod = null;
                                 for (MelonApiMod mod : currentMods) {
+                                    // TODO compare using aliases too
                                     if (mod.name.replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name.replaceAll("[-_ ]", ""))) {
                                         currentMod = mod;
                                         break;
@@ -334,8 +336,7 @@ public class MelonScannerApisManager {
                                 if (currentMod == null)
                                     currentMods.add(newMod);
                                 else {
-                                    // TODO compare using aliases too
-                                    if (!currentMod.equals(newMod)) {
+                                    if (currentMod.versions == null || newMod.versions != null && newMod.versions[0].version().isHigherThan(currentMod.versions[0].version())) {
                                         currentMods.remove(currentMod);
                                         currentMods.add(newMod);
                                     }

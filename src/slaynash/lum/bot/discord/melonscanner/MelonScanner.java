@@ -300,7 +300,7 @@ public final class MelonScanner {
                     modDetail.name.replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
                     (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
                 {
-                    System.out.println("Mod found in db: " + modDetail.name + " version " + modDetail.versions[0] + (modDetail.id != null ? " id2: " + modDetail.id : ""));
+                    System.out.println("Mod found in API: " + modDetail.name + " version " + modDetail.versions[0] + (modDetail.id != null ? " id2: " + modDetail.id : ""));
                     latestModName = modDetail.name;
                     latestModVersion = modDetail.versions[0].version();
                     latestModDownloadUrl = modDetail.downloadLink;
