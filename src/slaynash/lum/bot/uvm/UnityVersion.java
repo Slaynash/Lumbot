@@ -65,6 +65,8 @@ public class UnityVersion {
         if (validversions == null || validversions.length == 0)
             return true;
 
+        currentversion = currentversion.replaceAll("[^\\d]", ".");
+
         String[] versionparts = currentversion.split("\\.");
 
         for (String validversion : validversions) {
