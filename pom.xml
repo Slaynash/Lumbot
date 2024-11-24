@@ -102,7 +102,7 @@
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>5.1.2</version>
+      <version>5.2.1</version>
       <exclusions>
         <exclusion>
           <groupId>club.minnced</groupId> <!-- Exclude DISCORD AUDIO -->
@@ -120,12 +120,12 @@
       <!-- NON-ANDROID ONLY -->
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.78.1</version>
+      <version>1.79</version>
     </dependency>
     <dependency>
       <groupId>com.mysql</groupId>
       <artifactId>mysql-connector-j</artifactId>
-      <version>9.0.0</version>
+      <version>9.1.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>

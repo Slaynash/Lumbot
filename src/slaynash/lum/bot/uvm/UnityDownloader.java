@@ -308,6 +308,10 @@ public class UnityDownloader {
             return;
         }
         String tomoveFolder = UnityUtils.downloadPath + "/" + version.version + "_tmp";
+        if (new File(tomoveFolder).listFiles().length == 0) {
+            ExceptionUtils.reportException("Unity version " + version.version + " Extraction is empty (" + (isil2cpp ? "il2cpp" : "mono") + ")");
+            return;
+        }
         if (isil2cpp)
             tomoveFolder = new File(tomoveFolder).listFiles(File::isDirectory)[0].getPath();
         tomoveFolder += "/" + internalPath;

@@ -26,13 +26,16 @@ public class UnityVersion {
         int[] leftparts = getNumbers(left);
         int[] rightparts = getNumbers(right);
 
-        long leftsum = leftparts[0] * 10000L + leftparts[1] * 100L + leftparts[2];
-        long rightsum = rightparts[0] * 10000L + rightparts[1] * 100L + rightparts[2];
+        float leftsum = leftparts[0] * 10000L + leftparts[1] * 100L + leftparts[2] + (leftparts.length > 3 ? leftparts[3] / 100f : 0);
+        float rightsum = rightparts[0] * 10000L + rightparts[1] * 100L + rightparts[2] + (rightparts.length > 3 ? rightparts[3] / 100f : 0);
 
-        return Long.compare(leftsum, rightsum);
+        return Float.compare(leftsum, rightsum);
     }
 
     private static int[] getNumbers(String s) {
+        //replace all non digit characters with a dot
+        s = s.replaceAll("[^\\d]", ".");
+
         String[] numbersS = s.split("\\.");
         int[] numbers = new int[numbersS.length];
         for (int i = 0; i < numbersS.length; ++i)
