@@ -11,12 +11,10 @@ import java.net.http.HttpResponse;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 
 import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.JDA;
@@ -71,6 +69,7 @@ import slaynash.lum.bot.discord.slashs.SlashManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
 import slaynash.lum.bot.steam.Steam;
+import slaynash.lum.bot.timers.Anime;
 import slaynash.lum.bot.timers.ClearDMs;
 import slaynash.lum.bot.timers.Reminders;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -83,7 +82,6 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
-        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
         LogSystem.init();
 
@@ -134,22 +132,10 @@ public class Main extends ListenerAdapter {
                 JDAManager.enableEvents();
                 UnityVersionMonitor.start();
                 VRCApiVersionScanner.init();
-                Timer timer = new Timer();
-                timer.schedule(
-                    new ClearDMs(),
-                    java.util.Calendar.getInstance().getTime(),
-                    1000 * 60 * 60
-                );
+                ClearDMs.start();
                 new Steam().start();
-                Calendar time = Calendar.getInstance();
-                time.set(Calendar.MILLISECOND, 0);
-                time.set(Calendar.SECOND, 0);
-                time.set(Calendar.MINUTE, time.get(Calendar.MINUTE) + 1);
-                timer.schedule(
-                    new Reminders(),
-                    time.getTime(),
-                    1000 * 60
-                );
+                Reminders.start();
+                Anime.start();
             }
             else
                 System.out.println("Starting Lum as a backup bot, monitoring main bot...");

@@ -1,6 +1,8 @@
 package slaynash.lum.bot.timers;
 
 import java.sql.ResultSet;
+import java.util.Calendar;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -59,5 +61,18 @@ public class Reminders extends TimerTask {
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to get reminders", e);
         }
+    }
+
+    public static void start() {
+        Timer timer = new Timer();
+        Calendar time = Calendar.getInstance();
+        time.set(Calendar.MILLISECOND, 0);
+        time.set(Calendar.SECOND, 0);
+        time.set(Calendar.MINUTE, time.get(Calendar.MINUTE) + 1);
+        timer.schedule(
+            new Reminders(),
+            time.getTime(),
+            1000 * 60
+        );
     }
 }

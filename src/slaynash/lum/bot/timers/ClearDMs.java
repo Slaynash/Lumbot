@@ -2,6 +2,7 @@ package slaynash.lum.bot.timers;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Timer;
 import java.util.TimerTask;
 
 import net.dv8tion.jda.api.entities.Guild;
@@ -19,5 +20,14 @@ public class ClearDMs extends TimerTask {
                 c.delete().queue();
             }
         }, e -> System.out.println("Failed to retrieve message from channel " + c.getName())));
+    }
+
+    public static void start() {
+        Timer timer = new Timer();
+        timer.schedule(
+            new ClearDMs(),
+            java.util.Calendar.getInstance().getTime(),
+            1000 * 60 * 60
+        );
     }
 }

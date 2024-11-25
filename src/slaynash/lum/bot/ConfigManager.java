@@ -31,6 +31,7 @@ public final class ConfigManager {
     public static String cvrmgBlacklist;
 
     public static String curseforgeApiKey;
+    public static String animescheduleApiKey;
 
     public static String commitHash;
 
@@ -65,6 +66,7 @@ public final class ConfigManager {
             cvrmgBlacklist = properties.getProperty("CVRMG_BLACKLIST");
 
             curseforgeApiKey = properties.getProperty("CURSEFORGE_API_KEY");
+            animescheduleApiKey = properties.getProperty("ANIMESCHEDULE_API_KEY");
 
         }
         catch (IOException e) {
