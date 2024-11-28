@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 20, 2024 at 12:58 AM
+-- Generation Time: Nov 28, 2024 at 07:45 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -121,6 +121,26 @@ CREATE TABLE IF NOT EXISTS `MessagePairs` (
   `OGMessage` bigint UNSIGNED NOT NULL,
   `DevMessage` bigint UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Mods`
+--
+
+CREATE TABLE IF NOT EXISTS `Mods` (
+  `Game` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Name` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Version` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `DownloadLink` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Aliases` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Comma delimited',
+  `Hash` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'SHA256',
+  `Type` set('Mod','Plugin') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `HasPending` tinyint(1) NOT NULL,
+  `IsBroken` tinyint(1) NOT NULL,
+  `ID` smallint DEFAULT NULL,
+  PRIMARY KEY (`Name`(69))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

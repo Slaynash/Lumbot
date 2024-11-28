@@ -51,7 +51,7 @@ public class SteamWatcher extends Slash {
         List<SteamChannel> channels = new ArrayList<>();
         if (gameID.isEmpty()) {
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = '" + guildID + "'");
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = ?", guildID);
                 while (rs.next())
                     channels.add(new SteamChannel(rs.getString("GameID"), guildID, rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
                 DBConnectionManagerLum.closeRequest(rs);

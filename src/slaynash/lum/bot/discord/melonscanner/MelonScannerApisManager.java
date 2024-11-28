@@ -14,6 +14,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
 import java.nio.charset.StandardCharsets;
+import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -46,6 +47,7 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -357,6 +359,22 @@ public class MelonScannerApisManager {
                             }
                         }
                         */
+
+                        ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game = ?", api.game);
+                        while (rs.next()) {
+                            MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
+                            List<MelonApiMod> mods = games.get(api.game);
+                            if (mods == null)
+                                continue;
+                            if (mod.versions[0].version() == null)
+                                continue;
+                            mods.removeIf(modtmp ->
+                                modtmp.name.replaceAll("[-_ ]", "").equals(mod.name.replaceAll("[-_ ]", ""))
+                                && (modtmp.versions[0] == null || mod.versions[0].version().isHigherThan(modtmp.versions[0].version())));
+                            mods.add(mod);
+                            games.put(api.game, mods);
+                        }
+                        DBConnectionManagerLum.closeRequest(rs);
 
                         System.out.println("Done fetching " + api.game + " : " + api.name + " in " + Duration.between(start, Instant.now()).toMillis() + "ms");
 

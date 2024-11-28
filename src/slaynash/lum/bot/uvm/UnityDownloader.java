@@ -308,15 +308,16 @@ public class UnityDownloader {
             return;
         }
         String tomoveFolder = UnityUtils.downloadPath + "/" + version.version + "_tmp";
-        if (new File(tomoveFolder).listFiles().length == 0) {
+        File tomoveFolderF = new File(tomoveFolder);
+        if (tomoveFolderF == null || tomoveFolderF.listFiles().length == 0) {
             ExceptionUtils.reportException("Unity version " + version.version + " Extraction is empty (" + (isil2cpp ? "il2cpp" : "mono") + ")");
             return;
         }
         if (isil2cpp)
-            tomoveFolder = new File(tomoveFolder).listFiles(File::isDirectory)[0].getPath();
+            tomoveFolder = tomoveFolderF.listFiles(File::isDirectory)[0].getPath();
         tomoveFolder += "/" + internalPath;
         System.out.println("Moving " + tomoveFolder + " to " + UnityUtils.downloadPath + "/" + version.version);
-        moveDirectory(new File(tomoveFolder), new File(UnityUtils.downloadPath + "/" + version.version));
+        moveDirectory(tomoveFolderF, new File(UnityUtils.downloadPath + "/" + version.version));
     }
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {

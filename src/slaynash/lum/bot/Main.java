@@ -580,7 +580,7 @@ public class Main extends ListenerAdapter {
 
         boolean foundblacklist = false;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "' LIMIT 1");
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ? LIMIT 1", name);
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         }
@@ -646,7 +646,7 @@ public class Main extends ListenerAdapter {
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
         boolean foundblacklist = false;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = '" + name + "' LIMIT 1");
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ? LIMIT 1", name);
             foundblacklist = rs.next();
             DBConnectionManagerLum.closeRequest(rs);
         }

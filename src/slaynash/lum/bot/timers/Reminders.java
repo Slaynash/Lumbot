@@ -54,7 +54,7 @@ public class Reminders extends TimerTask {
                         channel.sendMessage(message).addContent("\n" + user.getAsMention()).queue();
                     }
                 }
-                DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = " + rs.getLong("ID"));
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = ?", rs.getLong("ID"));
             }
             DBConnectionManagerLum.closeRequest(rs);
         }

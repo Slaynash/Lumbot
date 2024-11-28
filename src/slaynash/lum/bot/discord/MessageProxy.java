@@ -399,7 +399,7 @@ public class MessageProxy {
                 return;
             String guildID = "0";
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = '" + guildID + "'");
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = ?", guildID);
 
                 while (rs.next()) {
                     int ukey = rs.getInt("ukey");

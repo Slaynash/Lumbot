@@ -104,9 +104,6 @@ public final class MelonScanner {
                     lang = messagePart.substring(5).toLowerCase();
             }
 
-            if (multipleLogsCheck(messageReceivedEvent.getMessage().getAttachments(), messageReceivedEvent, lang)) // don't let people spam logs
-                return messageCreateData;
-
             MelonScanContext context = new MelonScanContext(attachment, messageReceivedEvent, lang);
 
             if ("message.txt".equals(attachment.getFileName()))
@@ -199,21 +196,6 @@ public final class MelonScanner {
         return messageCreateData;
     }
 
-
-    // Message sanity check
-
-    private static boolean multipleLogsCheck(List<Attachment> attachments, MessageReceivedEvent messageReceivedEvent, String lang) {
-        boolean hasAlreadyFound = false;
-        for (Attachment attachment : attachments)
-            if (isValidFileFormat(attachment, true)) {
-                if (hasAlreadyFound) {
-                    Utils.replyEmbed(Localization.get("melonscanner.onelogatatime", lang), Color.red, messageReceivedEvent);
-                    return true;
-                }
-                hasAlreadyFound = true;
-            }
-        return false;
-    }
 
     public static boolean isValidFileFormat(Attachment attachment, boolean strict) {
         if (attachment.getFileExtension() == null) return false;

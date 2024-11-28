@@ -326,7 +326,7 @@ public class ServerMessagesHandler {
             String guildID = event.isFromGuild() ? event.getGuild().getId() : "0";
             if (event.getChannelType() == ChannelType.TEXT && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildID = "0";
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = '" + guildID + "'");
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = ?", guildID);
 
                 while (rs.next()) {
                     int ukey = rs.getInt("ukey");
