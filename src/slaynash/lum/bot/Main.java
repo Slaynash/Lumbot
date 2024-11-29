@@ -168,7 +168,7 @@ public class Main extends ListenerAdapter {
             for (Guild guild : JDAManager.getJDA().getGuilds()) {
                 if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
                     try {
-                        guild.loadMembers().get();
+                        guild.loadMembers().onError(e -> System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")"));
                     }
                     catch (Exception e) {
                         System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");

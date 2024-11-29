@@ -68,13 +68,13 @@ public class AddMissingRoles extends Command {
                         }
                         catch (Exception ignored) { }
                     }
-                }).get();
+                }).onError(e -> System.out.println("Failed to load members in " + guild.getName() + " " + k));
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("loadMembers failed during AddMissingRoles", e);
             }
             try {
-                Thread.sleep(690);
+                Thread.sleep(1000);
             }
             catch (InterruptedException e) {
                 ExceptionUtils.reportException("Was Interrupted in AddMissing", e);

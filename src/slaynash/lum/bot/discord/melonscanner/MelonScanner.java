@@ -290,7 +290,7 @@ public final class MelonScanner {
                     latestHasPending = modDetail.haspending;
                     latestModHash = modDetail.versions[0].hash();
                     latestModBroken = modDetail.isbroken;
-                    if (latestModVersion != null && latestModHash != null && latestModVersion.equals(logsModDetails.version) && !latestModHash.equals(logsModDetails.hash)) {
+                    if (latestModVersion != null && latestModHash != null && latestModVersion.equals(logsModDetails.version) && !latestModHash.equalsIgnoreCase(logsModDetails.hash)) {
                         context.corruptedMods.add(modDetail);
                         System.out.println("Mod " + modDetail.name + " is corrupted, API hash: " + latestModHash + " vs. logs hash: " + logsModDetails.hash);
                     }
