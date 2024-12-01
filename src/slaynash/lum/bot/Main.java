@@ -61,7 +61,6 @@ import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
-import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.MLHashPair;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
@@ -161,23 +160,6 @@ public class Main extends ListenerAdapter {
             }
             System.out.println("PingChecker: Ping failed, starting up backup...");
             JDAManager.enableEvents();
-        }
-        else {
-            //chunk members for mutuals after loading to prevent Lum from being unresponsive
-            new AddMissingRoles().addMissing(null);
-            for (Guild guild : JDAManager.getJDA().getGuilds()) {
-                if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
-                    try {
-                        guild.loadMembers().onError(e -> System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")"));
-                    }
-                    catch (Exception e) {
-                        System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
-                        Thread.sleep(1000);
-                        // guild.loadMembers().get(); // try again
-                    }
-                    Thread.sleep(1000); //rate limit is 100 chuck per minute, gave a little headroom
-                }
-            }
         }
 
         if (JDAManager.isProductionBot()) { // Lum (blue)

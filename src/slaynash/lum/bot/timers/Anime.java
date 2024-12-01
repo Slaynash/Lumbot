@@ -37,17 +37,23 @@ public class Anime extends TimerTask {
 
             for (JsonElement element : json) {
                 JsonObject anime = element.getAsJsonObject();
+                String episode = "Episode " + anime.get("episodeNumber").getAsString();
                 String episodeDate = anime.get("episodeDate").getAsString();
                 Instant instant = Instant.parse(episodeDate);
                 String title = anime.get("title").getAsString();
+                String url = "https://animeschedule.net/anime/" + anime.get("route").getAsString();
+                String time = " at <t:" + instant.getEpochSecond() + ":t>\n";
+                if (anime.has("delayedText"))
+                    time = " **" + anime.get("delayedText").getAsString() + "**\n";
                 if (anime.has("english"))
                     title = anime.get("english").getAsString();
+                if (anime.has("episodes") && anime.get("episodes").equals(anime.get("episodeNumber")))
+                    episode = episode + "F";
+                if (anime.get("mediaTypes").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString().equals("Movie"))
+                    episode = "Movie";
 
                 if (instant.isAfter(startOfDay) && instant.isBefore(startOfDay.plus(1, ChronoUnit.DAYS))) {
-                    if (anime.has("delayedText"))
-                        sb.append("* [" + title + "](https://animeschedule.net/anime/" + anime.get("route").getAsString() + ") Episode " + anime.get("episodeNumber").getAsString() + " **" + anime.get("delayedText").getAsString() + "**\n");
-                    else
-                        sb.append("* [" + title + "](https://animeschedule.net/anime/" + anime.get("route").getAsString() + ") Episode " + anime.get("episodeNumber").getAsString() + " at <t:" + instant.getEpochSecond() + ":t>\n");
+                    sb.append("* [").append(title).append("](").append(url).append(") ").append(episode).append(time);
                 }
             }
 
