@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Nov 28, 2024 at 07:45 PM
+-- Generation Time: Dec 03, 2024 at 03:52 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -135,10 +135,10 @@ CREATE TABLE IF NOT EXISTS `Mods` (
   `Version` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `DownloadLink` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `Aliases` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Comma delimited',
-  `Hash` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'SHA256',
-  `Type` set('Mod','Plugin') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `HasPending` tinyint(1) NOT NULL,
-  `IsBroken` tinyint(1) NOT NULL,
+  `Hash` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'SHA256',
+  `Type` set('Mod','Plugin') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Mod',
+  `HasPending` tinyint(1) NOT NULL DEFAULT '0',
+  `IsBroken` tinyint(1) NOT NULL DEFAULT '0',
   `ID` smallint DEFAULT NULL,
   PRIMARY KEY (`Name`(69))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

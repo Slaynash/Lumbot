@@ -1043,12 +1043,10 @@ public final class MelonScanner {
     }
 
     private static String getMentions(MelonScanContext context) {
-        if (context.overrideMLVersion != null) {
-            if (!context.overrideMLVersion.equals(context.mlVersion)) {
-                return "";
-            }
+        if (context.overrideMLVersion != null && !context.overrideMLVersion.isEquivalentTo(context.mlVersion)) {
+            return "";
         }
-        else if (context.mlVersion != null && !context.mlVersion.equals(context.latestMLVersionRelease) && !context.mlVersion.equals(context.latestMLVersionAlpha)) {
+        if (context.mlVersion != null && !context.mlVersion.isEquivalentTo(context.latestMLVersionRelease) && !context.mlVersion.isEquivalentTo(context.latestMLVersionAlpha)) {
             return "";
         }
         StringBuilder mentions = new StringBuilder();

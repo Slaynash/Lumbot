@@ -862,6 +862,13 @@ public final class MelonScannerReadPass {
             context.hasErrors = true;
             context.hasNonModErrors = true;
         }
+        else if (line.toLowerCase().matches("")) {
+            System.out.println("Found random exception: " + line);
+            context.hasErrors = true;
+            String mod = line.split("] \\[")[1].split("]")[0];
+            if (!context.modsThrowingErrors.contains(mod.replace("_", " ")))
+                context.modsThrowingErrors.add(mod.replace("_", " "));
+        }
     }
 
     private static void consoleCopypasteCheck(MelonScanContext context) {
