@@ -311,7 +311,8 @@ public final class MelonScanner {
                 context.retiredMods.add(modName);
             }
             else if (deprecatedName || modVersion.isLowerThan(latestModVersion)) {
-                if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
+                if (latestModHash != null && latestModHash.equalsIgnoreCase(logsModDetails.hash));
+                else if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
                     context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
                 else
                     context.outdatedMods.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
