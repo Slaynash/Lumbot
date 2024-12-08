@@ -1,5 +1,6 @@
 package slaynash.lum.bot.discord.commands;
 
+import java.time.Duration;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import net.dv8tion.jda.api.entities.Guild;
@@ -68,7 +69,7 @@ public class AddMissingRoles extends Command {
                         }
                         catch (Exception ignored) { }
                     }
-                }).onError(e -> System.out.println("Failed to load members in " + guild.getName() + " " + k));
+                }).setTimeout(Duration.ofDays(1)).onError(e -> System.out.println("Failed to load members in " + guild.getName() + " " + k));
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("loadMembers failed during AddMissingRoles", e);
