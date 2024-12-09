@@ -83,6 +83,7 @@ public class ScamShield {
             put("giftactivation", 1);
             put("booster", 1);
             put("download", 1);
+            put("/t.me/", 2);
             put("100%", 1);
             put("yobro", 1);
             put("joinnow", 1);
@@ -202,8 +203,7 @@ public class ScamShield {
                 .filter(m -> m.getChannel().getIdLong() != event.getChannel().getIdLong() /* Counts all messages in other channels  */)
                 .filter(m ->
                         m.getMessage().getAttachments().isEmpty()
-                        && m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay())
-                        && ssTerms.keySet().stream().anyMatch(s -> m.getMessage().getContentDisplay().toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "").contains(s)) //needs to match a term, prevents triggering on ticket closing command
+                        && Junidecode.unidecode(m.getMessage().getContentDisplay()).equalsIgnoreCase(Junidecode.unidecode(event.getMessage().getContentDisplay()))
                     ||
                         !event.getMessage().getAttachments().isEmpty()
                         && !m.getMessage().getAttachments().isEmpty()
@@ -213,13 +213,13 @@ public class ScamShield {
         }
 
         if (crossPost > 0) {
-            ssFoundTerms.put("Crossposted", (int) crossPost);
+            ssFoundTerms.put("Crossposted", (int) Math.round(Math.sqrt(crossPost)));
         }
 
         int spamCount = (int) allMessages.stream()
             .filter(m -> m.getAuthor().getIdLong() == event.getAuthor().getIdLong())
             .filter(m -> m.getChannel().getIdLong() == event.getChannel().getIdLong())
-            .filter(m -> m.getMessage().getContentDisplay().equalsIgnoreCase(event.getMessage().getContentDisplay()))
+            .filter(m -> Junidecode.unidecode(m.getMessage().getContentDisplay()).equalsIgnoreCase(Junidecode.unidecode(event.getMessage().getContentDisplay())))
             .count();
 
         if (spamCount > 0) {
