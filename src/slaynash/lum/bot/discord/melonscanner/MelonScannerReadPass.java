@@ -862,7 +862,7 @@ public final class MelonScannerReadPass {
             context.hasErrors = true;
             context.hasNonModErrors = true;
         }
-        else if (line.toLowerCase().matches("")) {
+        else if (line.toLowerCase().matches("\\[[\\d.:]+] \\[.*exception.*")) {
             System.out.println("Found random exception: " + line);
             context.hasErrors = true;
             String mod = line.split("] \\[")[1].split("]")[0];

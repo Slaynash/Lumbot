@@ -483,11 +483,17 @@ public final class MelonScanner {
             context.reportMessage.append("*").append(Localization.getFormat("melonscanner.reportmessage.notsupported", context.lang, context.game)).append("*\n");
 
         context.embedBuilder.setDescription(context.reportMessage);
-        if (context.mlVersion != null) context.embedBuilder.appendDescription("-# ML: " + context.mlVersion + "\n");
-        if (context.osType != null) context.embedBuilder.appendDescription("-# OS: " + context.osType + "\n");
-        if (context.game != null) context.embedBuilder.appendDescription("-# Ga: " + context.game + "\n");
-        if (context.gameBuild != null) context.embedBuilder.appendDescription("-# GV: " + context.gameBuild + "\n");
-        if (context.gamePath != null) context.embedBuilder.appendDescription("-# Pa: " + context.gamePath + "\n");
+        if (context.mlVersion != null) {
+            context.embedBuilder.appendDescription("-# ML " + context.mlVersion);
+            if (context.osType != null) context.embedBuilder.appendDescription("\t" + context.osType);
+            context.embedBuilder.appendDescription("\n");
+        }
+        if (context.game != null) {
+            context.embedBuilder.appendDescription("-# " + context.game);
+            if (context.gameBuild != null) context.embedBuilder.appendDescription("\t" + context.gameBuild);
+            context.embedBuilder.appendDescription("\n");
+        }
+        if (context.gamePath != null) context.embedBuilder.appendDescription("-# " + context.gamePath + "\n");
 
         if (context.editedLog) {
             context.embedBuilder.addField(Localization.get("melonscanner.readerror.fieldname", context.lang), Localization.get("melonscanner.readerror.field", context.lang), false);
