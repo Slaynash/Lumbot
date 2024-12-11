@@ -483,6 +483,11 @@ public final class MelonScanner {
             context.reportMessage.append("*").append(Localization.getFormat("melonscanner.reportmessage.notsupported", context.lang, context.game)).append("*\n");
 
         context.embedBuilder.setDescription(context.reportMessage);
+        if (context.mlVersion != null) context.embedBuilder.appendDescription("-# ML: " + context.mlVersion + "\n");
+        if (context.osType != null) context.embedBuilder.appendDescription("-# OS: " + context.osType + "\n");
+        if (context.game != null) context.embedBuilder.appendDescription("-# Ga: " + context.game + "\n");
+        if (context.gameBuild != null) context.embedBuilder.appendDescription("-# GV: " + context.gameBuild + "\n");
+        if (context.gamePath != null) context.embedBuilder.appendDescription("-# Pa: " + context.gamePath + "\n");
 
         if (context.editedLog) {
             context.embedBuilder.addField(Localization.get("melonscanner.readerror.fieldname", context.lang), Localization.get("melonscanner.readerror.field", context.lang), false);
@@ -721,7 +726,7 @@ public final class MelonScanner {
 
     private static boolean unknownModsCheck(MelonScanContext context) {
         if (!context.unknownMods.isEmpty()) {
-            StringBuilder error = new StringBuilder();
+            StringBuilder error = new StringBuilder("-# These mods do not appear in the API, it doesn't mean that they are bad:\n");
             for (int i = 0; i < context.unknownMods.size() && i < (context.unknownMods.size() == 11 ? 11 : 10); ++i) {
                 LogsModDetails md = context.unknownMods.get(i);
                 String unknowModOut = CrossServerUtils.sanitizeInputString(md.name);
@@ -859,7 +864,7 @@ public final class MelonScanner {
     private static boolean newerModsCheck(MelonScanContext context) {
         if (!context.newerMods.isEmpty()) {
 
-            StringBuilder error = new StringBuilder();
+            StringBuilder error = new StringBuilder("-# These mods are newer than in the API but it doesn't mean they are bad:\n");
             String nextModLine = computeOutdatedModLine(context.newerMods.get(0));
             for (int i = 0; i < context.newerMods.size() && i < 10; ++i) {
                 error.append(nextModLine);

@@ -7,7 +7,7 @@
         "melonscanner.noissue.field": "- If you had issues, please say so and wait for someone to help you",
 
         "melonscanner.onelogatatime": "Please send one log at a time.",
-        "melonscanner.logautocheckresult": "Log Autocheck Result:",
+        "melonscanner.logautocheckresult": "Log Autocheck Result",
 
         "melonscanner.reportmessage.logdayolds": "This log is %s days old",
         "melonscanner.reportmessage.logdayoldsreupload": "This log is %s days old. Reupload your log from MelonLoader/Latest.log",
@@ -103,7 +103,7 @@
         "melonscanner.noissue.field": "- Si vous aviez des problèmes, veuillez le faire savoir et attendre que quelqu'un analyse les logs",
 
         "melonscanner.onelogatatime": "Veuillez envoyer un seul fichier à la fois.",
-        "melonscanner.logautocheckresult": "Log Autocheck Result:",
+        "melonscanner.logautocheckresult": "Log Autocheck Result",
 
         "melonscanner.reportmessage.logdayolds": "ces logs datent d'il y a %s jours",
         "melonscanner.reportmessage.logdayoldsreupload": "ces logs datent d'il y a %s jours. Réuploadez votre logs depuis MelonLoader/Latest.log",
@@ -181,7 +181,7 @@
         "melonscanner.noissue.field": "- Wenn Sie Probleme hatten, melde diese bitte und warte, bis jemand die Log Datei überprüft hat",
 
         "melonscanner.onelogatatime": "Bitte senden Sie jeweils eine Log Datei.",
-        "melonscanner.logautocheckresult": "Ergebnis der automatischen Log Überprüfung:",
+        "melonscanner.logautocheckresult": "Ergebnis der automatischen Log Überprüfung",
 
         "melonscanner.reportmessage.logdayolds": "Diese Log Datei ist %s Tage alt",
         "melonscanner.reportmessage.logdayoldsreupload": "Diese Log Datei ist %s Tage alt. Lade stattdessen die Datei MelonLoader/Latest.log hoch",
@@ -259,7 +259,7 @@
         "melonscanner.noissue.field": "- Jeśli masz jakieś problemy, opowiedz o nich i poczekaj aż ktoś sprawdzi twój log",
 
         "melonscanner.onelogatatime": "Nie wysyłaj więcej logów na raz.",
-        "melonscanner.logautocheckresult": "Resultat Autocheck'a Logów:",
+        "melonscanner.logautocheckresult": "Resultat Autocheck'a Logów",
 
         "melonscanner.reportmessage.logdayolds": "Ten log ma %s dni",
         "melonscanner.reportmessage.logdayoldsreupload": "Ten log ma %s dni. Wyślij swój nowy log z MelonLoader/Latest.log",
