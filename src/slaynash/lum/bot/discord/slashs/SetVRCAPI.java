@@ -34,10 +34,10 @@ public class SetVRCAPI extends Slash {
         else try {
                 String guildID = event.getGuild().getId();
                 String channelID = event.getChannel().getId();
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE VRCAPI = ?", channelID);
-                if (rs.next()) {
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = ?", guildID);
+                if (rs.next() && channelID.equals(rs.getString("VRCAPI"))) {
                     DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = NULL WHERE GuildID = ?", guildID);
-                    event.reply("VRChat API monitor is now disabled in this channel").setEphemeral(true).queue();
+                    event.reply("VRChat API monitor is now disabled").setEphemeral(true).queue();
                 }
                 else {
                     DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = ? WHERE GuildID = ?", channelID, guildID);

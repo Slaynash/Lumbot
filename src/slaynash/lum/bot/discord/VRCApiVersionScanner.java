@@ -102,8 +102,6 @@ public class VRCApiVersionScanner {
                                 else
                                     tc.sendMessage("Gibme embed perms").queue();
                             }
-                            else
-                                ExceptionUtils.reportException("Can not post VRCAPI in " + guild.getName());
                         }
                     }
                 }
