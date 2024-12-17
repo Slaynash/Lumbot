@@ -387,16 +387,6 @@ public final class MelonScanner {
                 context.pirate = true;
             }
         }
-        else if (context.game.equalsIgnoreCase("TheLongDark")) {
-            if (context.gameBuild != null && context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.6", false))) {
-                if (context.mlVersion.isEquivalentTo(Version.parse("0.6.2"))) {
-                    context.embedBuilder.addField("TLD ML062", "MelonLoader 0.6.2 causes issues with TheLongDark mods, Please downgrade to MelonLoader 0.6.1 using the installer by unticking \"latest\"", false);
-                }
-                else if (context.mlVersion.isLowerThan(Version.parse("0.6.0"))) {
-                    context.embedBuilder.addField("TLD MLALPHA", "For TLD version 2.06+, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
-                }
-            }
-        }
     }
 
     private static void prepareEmbed(MelonScanContext context) {
@@ -962,6 +952,9 @@ public final class MelonScanner {
         }
         if (context.line.contains("Contacting RemoteAPI...")) {
             error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
+        }
+        if (context.line.contains("Deleting Il2Cppmscorlib.dll") && context.game.equalsIgnoreCase("TheLongDark")) {
+            error += Localization.get("- MelonLoader likely crashed because of AutoUpdatingPlugin. MelonLoader needs to run atleast once without it.\n", context.lang);
         }
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
             long buildInt = context.gameBuild.patchVersion();
