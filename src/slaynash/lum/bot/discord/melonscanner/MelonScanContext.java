@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord.melonscanner;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,10 +12,10 @@ import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.DBConnectionManagerLum;
 
 public class MelonScanContext {
-    public final Version latestMLVersionRelease = MelonScanner.latestMLVersionRelease;
-    public final Version latestMLVersionAlpha = MelonScanner.latestMLVersionAlpha;
+    public Version latestMLVersion = null;
     public Version overrideMLVersion = null;
 
     public final Attachment attachment;
@@ -47,7 +48,7 @@ public class MelonScanContext {
     public String mlHashCode;
     public String arch;
     public boolean pre3 = false;
-    public boolean alpha = false;
+    public boolean nightly = false;
     public boolean mono = false;
     public boolean il2Cpp = false;
     public boolean android = false;
@@ -129,6 +130,16 @@ public class MelonScanContext {
         this.attachment = attachment;
         this.messageReceivedEvent = messageReceivedEvent;
         this.lang = lang;
+
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Nightly = 0 ORDER BY `TS` DESC LIMIT 1");
+            rs.next();
+            this.latestMLVersion = Version.parse(rs.getString("Version"));
+            DBConnectionManagerLum.closeRequest(rs);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

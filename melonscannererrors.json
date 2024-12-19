@@ -18,7 +18,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] System.IO.IOException: The process cannot access the file.*",
-            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $MLRelease$."
+            "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $ML$."
         },
         {
             "regex": ".*System\\.UnauthorizedAccessException: Access to the path.*is denied\\.",
@@ -26,7 +26,7 @@
         },
         {
             "regex": ".*Access to the path .* is denied.*",
-            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $MLRelease$."
+            "error": "Access is denied. Make sure that your file permissions are set correctly. Try restarting your PC and whitelisting in your Virus scanner and reinstall MelonLoader $ML$."
         },
         {
             "regex": ".*Operation did not complete successfully because the file contains a virus or potentially unwanted software.*",
@@ -54,7 +54,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] Il2CppDumper.exe does not exist!",
-            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder, `version.dll`, and dobby.dll file from your game folder, and install MelonLoader $MLRelease$ again (failed to download Il2CppDumper)"
+            "error": "MelonLoader assembly generation failed. Please delete the `MelonLoader` folder, `version.dll`, and dobby.dll file from your game folder, and install MelonLoader $ML$ again (failed to download Il2CppDumper)"
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Execute Assembly Generator!",
@@ -66,7 +66,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[Error] Assembly Generator exited with code -2",
-            "error": "The assembly generation failed. Please update MelonLoader to $MLRelease$."
+            "error": "The assembly generation failed. Please update MelonLoader to $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System\\.IO\\.IOException: There is not enough space on the disk\\.",
@@ -78,15 +78,15 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] Unhandled Exception: System\\.Collections\\.Generic\\.KeyNotFoundException: The given key was not present in the dictionary\\.",
-            "error": "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader $MLRelease$."
+            "error": "Key Not Found. This is most likely caused by your anti-virus. Add an exception or disable it, then reinstall MelonLoader $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] ERROR: Can't use auto mode to process file, try manual mode.",
-            "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
+            "error": "Il2CppDumper generation failed. Please verify the integrity of your game or reinstall MelonLoader $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Find Mono (Directory|Library)!",
-            "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $MLRelease$."
+            "error": "Missing Mono Directory. Please verify the integrity of your game or reinstall MelonLoader $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Open Mono Assembly!",
@@ -98,11 +98,11 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Open Preload Assembly!",
-            "error": "Missing or corrupt `MelonLoader\\Dependencies\\SupportModules\\Preload.dll`. Please reinstall MelonLoader $MLRelease$ or whitelist it in your virus scanner."
+            "error": "Missing or corrupt `MelonLoader\\Dependencies\\SupportModules\\Preload.dll`. Please reinstall MelonLoader $ML$ or whitelist it in your virus scanner."
         },
         {
             "regex": ".*Il2CppDumper\\.BinaryStream\\.ReadClassArray\\[T]\\(Int64.*",
-            "error": "Ran into obfuscation issues. Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $MLRelease$."
+            "error": "Ran into obfuscation issues. Please update [MelonLoader](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) to $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] Can't download Unity Dependencies, Unstripping will NOT be done!",
@@ -114,7 +114,7 @@
         },
         {
             "regex": "  at MelonLoader.Il2CppAssemblyGenerator.RemoteAPI.ContactHosts .*",
-            "error": "Failed to contact MelonLoader API. Please make sure MelonLoader is allowed in your Firewall and that you are using MelonLoader $MLRelease$."
+            "error": "Failed to contact MelonLoader API. Please make sure MelonLoader is allowed in your Firewall and that you are using MelonLoader $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] \\[ERROR] Unhandled Exception: System.NullReferenceException.*",
@@ -149,7 +149,7 @@
         },
         {
             "regex": ".*MelonLoader\\.ModHandler.*",
-            "error": "Outdated MelonLoader. Please update MelonLoader to $MLRelease$."
+            "error": "Outdated MelonLoader. Please update MelonLoader to $ML$."
         },
         {
             "regex": "\\[[\\d.:]+] \\[ERROR] System\\.IO\\.InvalidDataException: Central Directory corrupt\\. ---> System\\.IO\\.IOException: Attempted to Seek before the beginning of the stream",
@@ -246,7 +246,7 @@
     "knownErrors": [
         {
             "regex": "\\[[\\d.:]+] \\[INTERNAL FAILURE] Failed to Read Unity Version from File Info or globalgamemanagers!",
-            "error": "MelonLoader failed to read your Unity version and game name. Please update MelonLoader to $MLRelease$ or delete UnityCrashHandler64.exe."
+            "error": "MelonLoader failed to read your Unity version and game name. Please update MelonLoader to $ML$ or delete UnityCrashHandler64.exe."
         },
         {
             "regex": ".*\\\\(?<game>\\w+)\\\\UserData\\\\.*TomlUnescapedUnicodeControlCharException.*U\\+0000.*",

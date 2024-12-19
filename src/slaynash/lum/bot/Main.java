@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.zafarkhaja.semver.Version;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
@@ -62,7 +61,7 @@ import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
-import slaynash.lum.bot.discord.melonscanner.MLHashPair;
+import slaynash.lum.bot.discord.melonscanner.FetchMelonLoaderVersions;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.slashs.SlashManager;
@@ -107,8 +106,6 @@ public class Main extends ListenerAdapter {
         loadVerifychannelList();
         loadReactionsList();
         loadScreeningRolesList();
-        loadMelonLoaderVersions();
-        loadMLHashes();
         loadMLReportChannels();
         loadAPChannels();
         loadReplies();
@@ -132,6 +129,7 @@ public class Main extends ListenerAdapter {
                 JDAManager.enableEvents();
                 UnityVersionMonitor.start();
                 VRCApiVersionScanner.init();
+                FetchMelonLoaderVersions.start();
                 ClearDMs.start();
                 new Steam().start();
                 Reminders.start();
@@ -265,29 +263,6 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    private static void loadMLHashes() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/mlhashes.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                line = line.trim();
-                if (!line.isEmpty()) {
-                    String[] parts = line.split(" ", 3);
-                    if (parts[0].equals("r"))
-                        CommandManager.melonLoaderHashes.add(new MLHashPair(parts[1], parts[2]));
-                    else
-                        CommandManager.melonLoaderAlphaHashes.add(new MLHashPair(parts[1], parts[2]));
-
-                }
-            }
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load MelonLoader Hashes", e);
-        }
-    }
-
     private static void loadMLReportChannels() {
         BufferedReader reader;
         try {
@@ -339,19 +314,6 @@ public class Main extends ListenerAdapter {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Verify Channels", e);
-        }
-    }
-
-    private static void loadMelonLoaderVersions() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/melonloaderversions.txt"));
-            MelonScanner.latestMLVersionRelease = Version.parse(reader.readLine().trim(), false);
-            MelonScanner.latestMLVersionAlpha = Version.parse(reader.readLine().trim(), false);
-            reader.close();
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to load MelonLoader Versions", e);
         }
     }
 

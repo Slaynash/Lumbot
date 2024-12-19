@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 03, 2024 at 03:52 AM
+-- Generation Time: Dec 19, 2024 at 11:39 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -121,6 +121,22 @@ CREATE TABLE IF NOT EXISTS `MessagePairs` (
   `OGMessage` bigint UNSIGNED NOT NULL,
   `DevMessage` bigint UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `MLhash`
+--
+
+CREATE TABLE IF NOT EXISTS `MLhash` (
+  `Version` char(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Hash35` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Hash6` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Nightly` tinyint(1) NOT NULL DEFAULT '0',
+  `DL` text COLLATE utf8mb4_unicode_ci,
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

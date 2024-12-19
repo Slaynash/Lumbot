@@ -51,8 +51,6 @@ public final class MelonScannerReadPass {
                 }
                 if (shouldOmitLineCheck(context))
                     continue;
-                if (context.line.isBlank())
-                    continue;
 
                 if (minecraftLogLineCheck(context))
                     return false;
@@ -493,8 +491,7 @@ public final class MelonScannerReadPass {
             String[] split = line.split("v");
             if (split.length < 2) return true;
             context.mlVersion = Version.tryParse(split[1].split(" ")[0].trim(), false).orElse(null);
-            context.alpha = line.toLowerCase().contains("alpha");
-            System.out.println("ML " + context.mlVersion + " Alpha: " + context.alpha);
+            System.out.println("ML " + context.mlVersion + " Alpha: " + line.toLowerCase().contains("alpha"));
             return true;
         }
         return false;

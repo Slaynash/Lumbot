@@ -20,9 +20,8 @@
 
         "melonscanner.mloutdated.fieldname": "MelonLoader Version:",
         "melonscanner.mloutdated.uptoalpha": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`",
-        "melonscanner.mloutdated.upalpha": "Please reinstall MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.reinstall": "Please reinstall MelonLoader %1$s using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
-        "melonscanner.mloutdated.upbeta": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
+        "melonscanner.mloutdated.update": "Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "Please downgrade MelonLoader to %1$s. We can not guarantee that prerelease versions will work reliably. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.override": "The modding community for this game is using MelonLoader %1$s. Please reinstall MelonLoader with that version. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.overridenightly": "The modding community for this game is using Nightly MelonLoader. Please reinstall MelonLoader with [this download](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.%1$s.CI.Release.zip) If using the installer, select the Manual Zip tab.",
@@ -116,9 +115,8 @@
 
         "melonscanner.mloutdated.fieldname": "Attention:",
         "melonscanner.mloutdated.uptoalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) puis cochez `Show ALPHA Pre-Releases`",
-        "melonscanner.mloutdated.upalpha": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.reinstall": "Veuillez réinstaller MelonLoader %1$s en utilisant le programme [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
-        "melonscanner.mloutdated.upbeta": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe MelonLoader installé n'est pas à jour: %1$s -> %2$s.",
+        "melonscanner.mloutdated.update": "Veuillez mettre à jour MelonLoader en utilisant [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nLe MelonLoader installé n'est pas à jour: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "Veuillez rétrograder MelonLoader à %1$s. Nous ne pouvons pas garantir que les versions préliminaires fonctionneront de manière fiable. [l'installeur officiel](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
 
         "melonscanner.knownerrors.fieldname": "Erreurs Connues:",
@@ -194,9 +192,8 @@
 
         "melonscanner.mloutdated.fieldname": "Warnung:",
         "melonscanner.mloutdated.uptoalpha": "Aktualisiere MelonLoader mit dem [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) und aktiviere dann `Show ALPHA Pre-Releases`",
-        "melonscanner.mloutdated.upalpha": "Installiere MelonLoader mit dem [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) neu.",
         "melonscanner.mloutdated.reinstall": "Bitte installieren Sie MelonLoader %1$s mit dem [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
-        "melonscanner.mloutdated.upbeta": "Aktualisiere MelonLoader mit dem [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nDie installierte MelonLoader Version ist veraltet: %1$s -> %2$s.",
+        "melonscanner.mloutdated.update": "Aktualisiere MelonLoader mit dem [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nDie installierte MelonLoader Version ist veraltet: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "Lade MelonLoader %1$s herunter. Wir können nicht garantieren, dass Vorabversionen zuverlässig funktionieren. [offiziellen Installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
 
         "melonscanner.knownerrors.fieldname": "Bekannte Fehler:",
@@ -272,9 +269,8 @@
 
         "melonscanner.mloutdated.fieldname": "Uwaga:",
         "melonscanner.mloutdated.uptoalpha": "Zaktualizuj MelonLoader'a przez [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe) then check `Show ALPHA Pre-Releases`",
-        "melonscanner.mloutdated.upalpha": "Zainstaluj MelonLoader'a ponownie przez [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.reinstall": "Zainstaluj MelonLoader'a %1$s ponownie przez [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
-        "melonscanner.mloutdated.upbeta": "Zaktualizuj MelonLoader'a przez [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
+        "melonscanner.mloutdated.update": "Zaktualizuj MelonLoader'a przez [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "Pobierz stabilniejszą wersję MelonLoader'a: %1$s. Przedpremierowe wersje mogą być nie stabilne. [oficialny instalator](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
 
         "melonscanner.knownerrors.fieldname": "Znane Błędy:",

@@ -338,7 +338,7 @@ public class MelonScannerApisManager {
                                 if (currentMod == null)
                                     currentMods.add(newMod);
                                 else {
-                                    if (currentMod.versions == null || currentMod.versions[0].version() == null || newMod.versions != null && newMod.versions[0].version().isHigherThan(currentMod.versions[0].version())) {
+                                    if (currentMod.versions == null || currentMod.versions[0].version() == null || newMod.versions != null && newMod.versions[0].version().isHigherThanOrEquivalentTo(currentMod.versions[0].version())) {
                                         currentMods.remove(currentMod);
                                         currentMods.add(newMod);
                                     }

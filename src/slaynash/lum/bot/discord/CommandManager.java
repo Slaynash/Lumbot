@@ -26,7 +26,6 @@ import slaynash.lum.bot.discord.commands.HelpCommand;
 import slaynash.lum.bot.discord.commands.Kick;
 import slaynash.lum.bot.discord.commands.LockDown;
 import slaynash.lum.bot.discord.commands.LumGoneCommand;
-import slaynash.lum.bot.discord.commands.MLHashRegisterCommand;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
@@ -34,12 +33,10 @@ import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
-import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.UVMCommand;
+import slaynash.lum.bot.discord.commands.Unban;
 import slaynash.lum.bot.discord.commands.VerifyChannelHandlerCommand;
 import slaynash.lum.bot.discord.commands.VerifyCommandCommand;
-import slaynash.lum.bot.discord.melonscanner.MLHashPair;
-import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
 public class CommandManager {
@@ -54,8 +51,6 @@ public class CommandManager {
     public static final Map<Long, VerifyPair> verifyChannels = new HashMap<>();
     public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
 
-    public static final List<MLHashPair> melonLoaderHashes = new ArrayList<>();
-    public static final List<MLHashPair> melonLoaderAlphaHashes = new ArrayList<>();
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
     public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
@@ -120,7 +115,6 @@ public class CommandManager {
 
         CommandManager.registerCommand(new RubybotOverDynobotCommand());
 
-        CommandManager.registerCommand(new MLHashRegisterCommand());
         CommandManager.registerCommand(new SetMLReportChannelCommand());
 
         CommandManager.registerCommand(new LockDown());
@@ -181,30 +175,6 @@ public class CommandManager {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
-        }
-    }
-
-    public static void saveMLHashes() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlhashes.txt"))) {
-            for (MLHashPair s : melonLoaderHashes)
-                writer.write("r " + s.x86() + " " + s.x64() + "\n");
-
-            for (MLHashPair s : melonLoaderAlphaHashes)
-                writer.write("a " + s.x86() + " " + s.x64() + "\n");
-
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
-        }
-    }
-
-    public static void saveMelonLoaderVersions() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/melonloaderversions.txt"))) {
-            writer.write(MelonScanner.latestMLVersionRelease + "\n");
-            writer.write(MelonScanner.latestMLVersionAlpha + "\n");
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save MelonLoader Hashes", e);
         }
     }
 

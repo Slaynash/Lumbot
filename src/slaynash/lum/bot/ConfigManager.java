@@ -31,6 +31,7 @@ public final class ConfigManager {
     public static String cvrmgBlacklist;
 
     public static String curseforgeApiKey;
+    public static String gitHubApiKey;
     public static String animescheduleApiKey;
 
     public static String commitHash;
@@ -63,9 +64,9 @@ public final class ConfigManager {
             dbPassword = properties.getProperty("DB_PASSWORD");
 
             discordPrefix = properties.getProperty("DISCORD_PREFIX");
-            cvrmgBlacklist = properties.getProperty("CVRMG_BLACKLIST");
 
             curseforgeApiKey = properties.getProperty("CURSEFORGE_API_KEY");
+            gitHubApiKey = properties.getProperty("GitHub_API_KEY");
             animescheduleApiKey = properties.getProperty("ANIMESCHEDULE_API_KEY");
 
         }
