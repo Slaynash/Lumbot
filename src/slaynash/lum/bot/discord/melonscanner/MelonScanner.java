@@ -328,7 +328,7 @@ public final class MelonScanner {
         if (CrossServerUtils.checkIfStaff(context.messageReceivedEvent))
             return;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Version = ?", context.mlVersion);
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Version = ?", context.mlVersion.toString());
             if (rs.next()) {
                 String hash35 = rs.getString("Hash35");
                 String hash6 = rs.getString("Hash6");
