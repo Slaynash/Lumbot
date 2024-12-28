@@ -930,6 +930,9 @@ public final class MelonScanner {
         if (context.noMods && context.missingMods.isEmpty() && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
             error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 
+        if (context.missingMods.contains("Assembly-CSharp"))
+            error += Localization.get("- Missing crucial assemblies, check for antivirus file tampering and regenerate assemblies or reinstall melonloader\n", context.lang);
+
         if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
             long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
             if (guildID == 1001388809184870441L)

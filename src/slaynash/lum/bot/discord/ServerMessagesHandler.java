@@ -259,6 +259,7 @@ public class ServerMessagesHandler {
         if (CrossServerUtils.checkIfStaff(event))
             return true;
 
+        // TODO check linked downloads
         boolean allowed = true;
         for (Attachment attachment : event.getMessage().getAttachments()) {
             fileExt = attachment.getFileExtension();

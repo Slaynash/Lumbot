@@ -83,7 +83,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
-        apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods", true));
+        apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods"));
         apis.add(new CurseforgeApi("Demeo", 78135));
         apis.add(new ThunderstoreApi("Hard Bullet", "hard-bullet"));
         // apis.add(new MelonScannerApi("Inside the Backrooms", "audica_ahriana", "https://raw.githubusercontent.com/spicebag/InsideTheBackroomsModDirectory/main/main/api/api.json"));
@@ -344,7 +344,9 @@ public class MelonScannerApisManager {
                                     }
                                 }
                             }
-                            games.put(api.game, currentMods);
+                            synchronized (games) {
+                                games.put(api.game, currentMods);
+                            }
                         }
 
                         /*
@@ -360,7 +362,7 @@ public class MelonScannerApisManager {
                         }
                         */
 
-                        ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game = ?", api.game);
+                        ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game IS NULL OR Game = ?", api.game);
                         while (rs.next()) {
                             MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
                             List<MelonApiMod> mods = games.get(api.game);
@@ -372,7 +374,9 @@ public class MelonScannerApisManager {
                                 modtmp.name.replaceAll("[-_ ]", "").equals(mod.name.replaceAll("[-_ ]", ""))
                                 && (modtmp.versions[0] == null || mod.versions[0].version().isHigherThan(modtmp.versions[0].version())));
                             mods.add(mod);
-                            games.put(api.game, mods);
+                            synchronized (games) {
+                                games.put(api.game, mods);
+                            }
                         }
                         DBConnectionManagerLum.closeRequest(rs);
 
@@ -435,7 +439,6 @@ public class MelonScannerApisManager {
         public final String game;
         public final String name;
         public final String endpoint;
-        public final boolean compareUsingHashes;
 
         public final boolean isGZip = false;
         public int maxPagination;
@@ -447,14 +450,6 @@ public class MelonScannerApisManager {
             this.game = game;
             this.name = name;
             this.endpoint = endpoint;
-            this.compareUsingHashes = false;
-            this.maxPagination = -1;
-        }
-        public MelonScannerApi(String game, String name, String endpoint, boolean compareUsingHashes) {
-            this.game = game;
-            this.name = name;
-            this.endpoint = endpoint;
-            this.compareUsingHashes = compareUsingHashes;
             this.maxPagination = -1;
         }
 
@@ -503,33 +498,27 @@ public class MelonScannerApisManager {
         if (list == null)
             list = new ArrayList<>();
 
-        //add Universal Mods here
-        list.add(new MelonApiMod(null, "UnityExplorer", Version.parse("4.9.4"), "https://github.com/GrahamKracker/UnityExplorer#melonloader", null));
-
         context.modDetails = list;
         return context.modApiFound;
-    }
-
-    public static boolean compareUsingHash(String game) {
-        MelonScannerApi api = apis.stream().filter(api_ -> api_.game.equals(game)).findFirst().orElse(null);
-        return api != null && api.compareUsingHashes;
     }
 
     public static String getDownloadLinkForMod(String game, String missingModName) {
         if (game == null)
             return null;
 
-        List<MelonApiMod> mods = games.get(game);
-        if (mods == null)
-            return null;
+        synchronized (games) {
+            List<MelonApiMod> mods = games.get(game);
+            if (mods == null)
+                return null;
 
-        MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
+            MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
 
-        if (mod == null) {
-            mod = mods.stream().filter(modtmp -> modtmp.aliases != null).filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
+            if (mod == null) {
+                mod = mods.stream().filter(modtmp -> modtmp.aliases != null).filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
+            }
+
+            return mod != null ? mod.downloadLink : null;
         }
-
-        return mod != null ? mod.downloadLink : null;
     }
 
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);

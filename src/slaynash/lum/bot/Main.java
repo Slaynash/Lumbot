@@ -12,9 +12,7 @@ import java.sql.ResultSet;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -108,7 +106,6 @@ public class Main extends ListenerAdapter {
         loadScreeningRolesList();
         loadMLReportChannels();
         loadAPChannels();
-        loadReplies();
         CrossServerUtils.loadGuildCount();
 
         API.start();
@@ -329,35 +326,6 @@ public class Main extends ListenerAdapter {
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to load Auto Publish Channels", e);
-        }
-    }
-
-    private static void loadReplies() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/replies.txt"));
-            String line;
-            String[] parts;
-            while ((line = reader.readLine()) != null) {
-                parts = line.split(",", 2);
-                if (parts[0].startsWith("regex")) {
-                    parts[0] = parts[0].substring(5);
-                    Map<String, String> tempReplies = CommandManager.guildRegexReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
-                    String[] reply = parts[1].replace("&#10;", "\n").split("&#00;", 2);
-                    tempReplies.put(reply[0], reply[1]);
-                    CommandManager.guildRegexReplies.put(Long.parseLong(parts[0]), tempReplies);
-                }
-                else {
-                    Map<String, String> tempReplies = CommandManager.guildReplies.getOrDefault(Long.parseLong(parts[0]), new HashMap<>());
-                    String[] reply = parts[1].replace("&#10;", "\n").split("&#00;", 2);
-                    tempReplies.put(reply[0], reply[1]);
-                    CommandManager.guildReplies.put(Long.parseLong(parts[0]), tempReplies);
-                }
-            }
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load Replies", e);
         }
     }
 

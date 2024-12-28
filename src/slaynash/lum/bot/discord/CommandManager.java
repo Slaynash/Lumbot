@@ -52,8 +52,6 @@ public class CommandManager {
     public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
 
     public static final Map<Long, String> mlReportChannels = new HashMap<>();
-    public static final Map<Long, Map<String, String>> guildReplies = new HashMap<>();
-    public static final Map<Long, Map<String, String>> guildRegexReplies = new HashMap<>();
 
     protected static void registerCommand(Command command) {
         synchronized (commands) {

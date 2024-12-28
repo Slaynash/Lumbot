@@ -28,7 +28,6 @@ public final class ConfigManager {
     public static String dbPassword;
 
     public static String discordPrefix;
-    public static String cvrmgBlacklist;
 
     public static String curseforgeApiKey;
     public static String gitHubApiKey;

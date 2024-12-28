@@ -71,6 +71,7 @@ public class ScamShield {
             put("offer", 1);
             put("btc", 1);
             put("bitcoin", 1);
+            put("cryptocurrency", 1);
             put("cryptomarket", 2);
             put("$40000", 1);
             put("nitro", 1);
@@ -98,11 +99,13 @@ public class ScamShield {
             put("linkforyou", 1);
             put("joinmyserver", 1);
             put("takeit)", 2);
+            put("withdrawyourwinnings", 2);
             put("asubscription!", 2);
             put("giftied", 1); //typo is from Junidecode
             put("seeifitsthesameforyou", 1);
             put("itisalreadyrunningout", 2);
             put("pleasetryclaimthisquickly", 2);
+            put("youhavebeenrandomlyselected", 2);
             put("gameicreatedtoday)", 2);
             put("hereisthegameitselfhttp", 2);
             put("passwordtest", 2);

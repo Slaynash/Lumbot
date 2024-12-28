@@ -34,6 +34,7 @@ public class Anime extends TimerTask {
             Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS);
 
             StringBuilder sb = new StringBuilder();
+            Color color = Color.GREEN;
 
             for (JsonElement element : json) {
                 JsonObject anime = element.getAsJsonObject();
@@ -57,10 +58,15 @@ public class Anime extends TimerTask {
                 }
             }
 
+            if (sb.length() == 0) {
+                sb.append("No anime today");
+                color = Color.YELLOW;
+            }
+
             EmbedBuilder embed = new EmbedBuilder();
             embed.setTitle("Anime Schedule <t:" + startOfDay.getEpochSecond() + ":D>");
             embed.setDescription(sb.toString().strip());
-            embed.setColor(Color.GREEN);
+            embed.setColor(color);
             JDAManager.getJDA().getGuildById(627168678471008269L).getTextChannelById(628799325232693248L).sendMessageEmbeds(embed.build()).queue();
         }
         catch (Exception e) {
