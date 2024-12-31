@@ -82,6 +82,7 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
+        apis.add(new ThunderstoreApi("RUMBLE", "rumble"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods"));
         apis.add(new CurseforgeApi("Demeo", 78135));
