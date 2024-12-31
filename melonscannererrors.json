@@ -339,7 +339,7 @@
         },
         {
             "regex": "\\[[\\d.:]+] \\[Il2CppAssemblyGenerator] Error Generating Interop Assemblies!",
-            "error": "Uninstall MelonLoader and remove the MelonLoader folder if left behind, then re-install it."
+            "error": "Uninstall MelonLoader and remove the MelonLoader folder if left behind, then re-install or update it."
         }
     ],
     "gameSpecificErrors": {
