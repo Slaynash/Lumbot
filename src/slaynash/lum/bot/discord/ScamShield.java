@@ -566,6 +566,7 @@ public class ScamShield {
         "meap.gg",
         "bit.ly",
         "github.io",
+        "twitch.tv",
         "aka.ms",
         "com.tw",
         "u.to",
@@ -602,6 +603,9 @@ public class ScamShield {
                     output.append(line).append("\n");
                 }
                 String whois = output.toString().replace("+0000", "Z");
+                if (whois.startsWith("No match for domain"))
+                    continue;
+                whois = whois.replaceFirst("(?m)Last update of WHOIS.*$", ""); //for no matches eg. twitch.tv
                 ArrayList<ZonedDateTime> list = new ArrayList<>();
                 Matcher matcher = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
                 while (matcher.find()) {
