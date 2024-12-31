@@ -82,7 +82,6 @@ public class MelonScannerApisManager {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
         apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
-        apis.add(new ThunderstoreApi("RUMBLE", "rumble"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods"));
         apis.add(new CurseforgeApi("Demeo", 78135));
@@ -91,6 +90,7 @@ public class MelonScannerApisManager {
         // apis.add(new ThunderstoreApi("Lethal Company", "lethal-company"));
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
+        apis.add(new ThunderstoreApi("RUMBLE", "rumble"));
         apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tldmods.com/api.json"));
     }
 
