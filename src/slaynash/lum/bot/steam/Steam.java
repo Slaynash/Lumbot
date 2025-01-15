@@ -34,6 +34,7 @@ import in.dragonbra.javasteam.steam.steamclient.callbackmgr.CallbackManager;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.ConnectedCallback;
 import in.dragonbra.javasteam.steam.steamclient.callbacks.DisconnectedCallback;
 import in.dragonbra.javasteam.types.KeyValue;
+import in.dragonbra.javasteam.util.NetHookNetworkListener;
 import in.dragonbra.javasteam.util.log.LogListener;
 import in.dragonbra.javasteam.util.log.LogManager;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -82,6 +83,7 @@ public class Steam {
         user = client.getHandler(SteamUser.class);
         apps = client.getHandler(SteamApps.class);
 
+        client.setDebugNetworkListener(new NetHookNetworkListener("SteamLogs"));
         callbackManager = new CallbackManager(client);
         callbackManager.subscribe(ConnectedCallback.class, callback -> {
             System.out.println("Connected to Steam, logging in...");

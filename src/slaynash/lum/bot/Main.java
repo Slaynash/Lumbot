@@ -138,6 +138,17 @@ public class Main extends ListenerAdapter {
         else
             JDAManager.enableEvents();
 
+        if (JDAManager.isProductionBot()) { // Lum (blue)
+            Moderation.voiceStartup();
+            if (ConfigManager.mainBot) {
+                JDAManager.getJDA()
+                        .getTextChannelById(808076226064941086L)
+                        .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
+                        .queue();
+            }
+        }
+        System.out.println("LUM Started!");
+
         HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).followRedirects(HttpClient.Redirect.ALWAYS).connectTimeout(Duration.ofSeconds(20)).build();
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
@@ -175,16 +186,6 @@ public class Main extends ListenerAdapter {
             }
         }
 
-        if (JDAManager.isProductionBot()) { // Lum (blue)
-            Moderation.voiceStartup();
-            if (ConfigManager.mainBot) {
-                JDAManager.getJDA()
-                        .getTextChannelById(808076226064941086L)
-                        .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum restarted successfully!", Color.green))
-                        .queue();
-            }
-        }
-        System.out.println("LUM Started!");
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
             boolean mainBotOnline = true;
             //noinspection InfiniteLoopStatement

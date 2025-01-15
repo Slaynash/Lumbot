@@ -8,6 +8,7 @@ import java.util.TimerTask;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
@@ -21,6 +22,7 @@ public class Reminders extends TimerTask {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Reminders` WHERE `TSend` < CURRENT_TIMESTAMP");
             while (rs.next()) {
                 String message = rs.getString("Message");
+                message = message.substring(0, Math.min(message.toString().length(), MessageEmbed.VALUE_MAX_LENGTH));
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(rs.getInt("Color"));
                 embedBuilder.setTitle("Reminder");
                 embedBuilder.setDescription(message);

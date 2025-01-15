@@ -316,7 +316,7 @@ public final class MelonScanner {
                 context.modsThrowingErrors.remove(modName);
             }
             else if (!latestHasPending && latestModVersion != null && modVersion.isHigherThan(latestModVersion)) {
-                context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
+                context.newerMods.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, null));
             }
         }
     }
@@ -885,7 +885,7 @@ public final class MelonScanner {
 
     private static String computeOutdatedModLine(MelonOutdatedMod outdatedMod) {
         String namePart = outdatedMod.downloadUrl == null ? outdatedMod.name : ("[" + outdatedMod.name + "](" + UrlShortener.getShortenedUrl(outdatedMod.downloadUrl) + ")");
-        String line = "- " + namePart + ": `" + outdatedMod.currentVersion.withoutBuildMetadata() + "` -> `" + outdatedMod.latestVersion + "`";
+        String line = "- " + namePart + ": `" + outdatedMod.currentVersion.withoutBuildMetadata() + "` vs `" + outdatedMod.latestVersion + "`";
         if (!outdatedMod.name.equals(outdatedMod.newName))
             line += " (" + outdatedMod.newName + ")";
         line += "\n";
