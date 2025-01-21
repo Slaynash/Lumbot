@@ -128,7 +128,7 @@ public class Main extends ListenerAdapter {
                 VRCApiVersionScanner.init();
                 FetchMelonLoaderVersions.start();
                 ClearDMs.start();
-                new Steam().start();
+                Steam.start();
                 Reminders.start();
                 Anime.start();
             }

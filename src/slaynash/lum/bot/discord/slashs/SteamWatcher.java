@@ -65,7 +65,7 @@ public class SteamWatcher extends Slash {
             else {
                 StringBuilder sb = new StringBuilder("Current Steam games being watched:\n(Channel Name) -> (Game)\n");
                 for (SteamChannel sc : channels) {
-                    sb.append(event.getJDA().getGuildChannelById(sc.channelId()).getName()).append(" -> ").append(new Steam().getGameName(Integer.parseInt(sc.gameID()))).append(" (").append(sc.gameID()).append(")"); //maybe look into sorting by channels
+                    sb.append(event.getJDA().getGuildChannelById(sc.channelId()).getName()).append(" -> ").append(Steam.getGameName(Integer.parseInt(sc.gameID()))).append(" (").append(sc.gameID()).append(")"); //maybe look into sorting by channels
                     if (sc.publicMessage() != null) sb.append(" (Public: ").append(sc.publicMessage()).append(")");
                     if (sc.betaMessage() != null) sb.append(" (Beta: ").append(sc.betaMessage()).append(")");
                     if (sc.otherMessage() != null) sb.append(" (Other: ").append(sc.otherMessage()).append(")");
@@ -109,15 +109,15 @@ public class SteamWatcher extends Slash {
         if (found == 0) {
             try {
                 DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamWatch` (`GameID`, `ServerID`, `ChannelID`, `publicMention`, `betaMention`, `otherMention`) VALUES (?,?,?,?,?,?)", gameIDstr, guildID, channelID, publicString, betaString, otherString);
-                interactionhook.sendMessage("Added " + new Steam().getGameName(gameIDint) + " to Steam Watch").queue();
+                interactionhook.sendMessage("Added " + Steam.getGameName(gameIDint) + " to Steam Watch").queue();
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to add steam watch", e, event.getChannel());
             }
-            new Steam().intDetails(gameIDint);
+            Steam.intDetails(gameIDint);
         }
         else {
-            interactionhook.sendMessage("Removed " + new Steam().getGameName(gameIDint) + " from Steam Watch").queue();
+            interactionhook.sendMessage("Removed " + Steam.getGameName(gameIDint) + " from Steam Watch").queue();
         }
     }
 }
