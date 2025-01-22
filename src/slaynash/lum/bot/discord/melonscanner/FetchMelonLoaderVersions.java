@@ -24,6 +24,7 @@ public class FetchMelonLoaderVersions {
             while (true) {
                 mlReleases();
                 mlNightly();
+                llReleases();
                 try {
                     Thread.sleep(15 * 60 * 1000);
                 }
@@ -52,7 +53,7 @@ public class FetchMelonLoaderVersions {
                 if (obj.get("draft").getAsBoolean()) continue;
                 String version = obj.get("tag_name").getAsString().substring(1);
                 String htmlURL = obj.get("html_url").getAsString();
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 0", version);
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 0 AND `Android` = 0", version);
                 if (rs.next()) {
                     DBConnectionManagerLum.closeRequest(rs);
                     continue;
@@ -62,7 +63,46 @@ public class FetchMelonLoaderVersions {
                     JsonObject assetObj = asset.getAsJsonObject();
                     if (assetObj.get("name").getAsString().equals("MelonLoader.x64.zip")) {
                         String downloadURL = assetObj.get("browser_download_url").getAsString();
-                        downloadAndHash(downloadURL, version, htmlURL, false);
+                        downloadAndHash(downloadURL, version, htmlURL, false, false);
+                        break;
+                    }
+                }
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void llReleases() {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.github.com/repos/LemonLoader/MelonLoader/releases"))
+                .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() >= 400) {
+                System.out.println("Failed to fetch LemonLoader versions from GH: " + response.statusCode());
+                return;
+            }
+            JsonArray json = JsonParser.parseString(response.body()).getAsJsonArray();
+            for (JsonElement element : json) {
+                JsonObject obj = element.getAsJsonObject();
+                if (obj.get("draft").getAsBoolean()) continue;
+                String version = obj.get("tag_name").getAsString();
+                String htmlURL = obj.get("html_url").getAsString();
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 0 AND `Android` = 1", version);
+                if (rs.next()) {
+                    DBConnectionManagerLum.closeRequest(rs);
+                    continue;
+                }
+                DBConnectionManagerLum.closeRequest(rs);
+                for (JsonElement asset : obj.get("assets").getAsJsonArray()) {
+                    JsonObject assetObj = asset.getAsJsonObject();
+                    if (assetObj.get("name").getAsString().equals("melon_data.zip")) {
+                        String downloadURL = assetObj.get("browser_download_url").getAsString();
+                        downloadAndHash(downloadURL, version, htmlURL, false, true);
                         break;
                     }
                 }
@@ -93,7 +133,7 @@ public class FetchMelonLoaderVersions {
                 String runID = obj.get("id").getAsString();
                 String version = obj.get("name").getAsString().split(" ")[0];
                 String htmlURL = obj.get("html_url").getAsString();
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 1", version);
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 1 AND `Android` = 0", version);
                 if (!rs.next())
                     getArtifacts(runID, version, htmlURL);
                 DBConnectionManagerLum.closeRequest(rs);
@@ -122,7 +162,7 @@ public class FetchMelonLoaderVersions {
                 JsonObject obj = element.getAsJsonObject();
                 if (obj.get("name").getAsString().equals("MelonLoader.Windows.x64.CI.Release")) {
                     String downloadURL = obj.get("archive_download_url").getAsString();
-                    downloadAndHash(downloadURL, version, htmlURL, true);
+                    downloadAndHash(downloadURL, version, htmlURL, true, false);
                     break;
                 }
             }
@@ -133,7 +173,8 @@ public class FetchMelonLoaderVersions {
     }
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
-    public static void downloadAndHash(String zipURL, String version, String htmlURL, boolean ci) throws Exception {
+    public static void downloadAndHash(String zipURL, String version, String htmlURL, boolean ci, boolean android) throws Exception {
+        System.out.println("Downloading MelonLoader version " + version + " from " + zipURL);
         HttpRequest request = HttpRequest.newBuilder()
             .uri(URI.create(zipURL))
             .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
@@ -160,11 +201,16 @@ public class FetchMelonLoaderVersions {
             if (zipFile.getEntry("MelonLoader/MelonLoader.dll") != null) {
                 net35 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/MelonLoader.dll")).readAllBytes()));
             }
-            else {
+            else if (zipFile.getEntry("MelonLoader/net35/MelonLoader.dll") != null) {
                 net35 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net35/MelonLoader.dll")).readAllBytes()));
+            }
+            if (zipFile.getEntry("MelonLoader/net6/MelonLoader.dll") != null) {
                 net6 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net6/MelonLoader.dll")).readAllBytes()));
             }
-            DBConnectionManagerLum.sendUpdate("INSERT INTO `MLhash` (`Version`, `Hash35`, `Hash6`, `Nightly`, `DL`) VALUES (?, ?, ?, ?, ?)", version, net35, net6, ci ? "1" : "0", htmlURL);
+            else if (zipFile.getEntry("MelonLoader/net8/MelonLoader.dll") != null) {
+                net6 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net8/MelonLoader.dll")).readAllBytes()));
+            }
+            DBConnectionManagerLum.sendUpdate("INSERT INTO `MLhash` (`Version`, `Hash35`, `Hash6`, `Nightly`, `Android`, `DL`) VALUES (?, ?, ?, ?, ?)", version, net35, net6, ci ? "1" : "0", android ? "1" : "0", htmlURL);
             System.out.println("Added MelonLoader version " + version + " to the database");
             zipFile.close();
         }

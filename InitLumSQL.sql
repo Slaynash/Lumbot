@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Dec 19, 2024 at 11:39 PM
+-- Generation Time: Jan 22, 2025 at 12:34 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -134,9 +134,10 @@ CREATE TABLE IF NOT EXISTS `MLhash` (
   `Hash35` char(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Hash6` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Nightly` tinyint(1) NOT NULL DEFAULT '0',
-  `DL` text COLLATE utf8mb4_unicode_ci,
+  `Android` tinyint(1) NOT NULL DEFAULT '0',
+  `DL` char(69) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Version`)
+  PRIMARY KEY (`DL`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -146,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `MLhash` (
 --
 
 CREATE TABLE IF NOT EXISTS `Mods` (
-  `Game` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Game` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci COMMENT 'Null is Universal',
   `Name` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `Version` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `DownloadLink` text COLLATE utf8mb4_unicode_ci NOT NULL,
