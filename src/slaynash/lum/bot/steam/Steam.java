@@ -500,7 +500,7 @@ public class Steam {
         Thread thread = new Thread(() -> {
             Random random = new Random();
 
-            System.out.println("PICS ticker started with test #" + currentHash);
+            System.out.println("PICS ticker started with #" + currentHash);
 
             while (currentHash == tickerHash) {
                 apps.picsGetChangesSince(previousChangeNumber, true, true);

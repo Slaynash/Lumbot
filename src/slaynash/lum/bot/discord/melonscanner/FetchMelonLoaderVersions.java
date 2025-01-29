@@ -210,7 +210,7 @@ public class FetchMelonLoaderVersions {
             else if (zipFile.getEntry("MelonLoader/net8/MelonLoader.dll") != null) {
                 net6 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net8/MelonLoader.dll")).readAllBytes()));
             }
-            DBConnectionManagerLum.sendUpdate("INSERT INTO `MLhash` (`Version`, `Hash35`, `Hash6`, `Nightly`, `Android`, `DL`) VALUES (?, ?, ?, ?, ?)", version, net35, net6, ci ? "1" : "0", android ? "1" : "0", htmlURL);
+            DBConnectionManagerLum.sendUpdate("INSERT INTO `MLhash` (`Version`, `Hash35`, `Hash6`, `Nightly`, `Android`, `DL`) VALUES (?, ?, ?, ?, ?, ?)", version, net35, net6, ci ? "1" : "0", android ? "1" : "0", htmlURL);
             System.out.println("Added MelonLoader version " + version + " to the database");
             zipFile.close();
         }
