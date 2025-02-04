@@ -113,6 +113,7 @@ public class Steam {
 
     private static void onDisconnected(DisconnectedCallback callback) {
         System.out.println("Disconnected from Steam. Retrying in 5s...");
+        ExceptionUtils.reportException("Disconnected from Steam. Retrying in 5s...");
         if (Main.isShuttingDown)
             return;
 
@@ -154,6 +155,8 @@ public class Steam {
 
         isLoggedOn = true;
         System.out.println("Logged in, current valve time is " + callback.getServerTime() + " UTC");
+        if (tickerHash > 0)
+            ExceptionUtils.reportException("Connected to Steam");
 
         try { //initialize all missing depos
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT s.`GameID` FROM `SteamWatch` s WHERE s.`GameID` NOT IN (SELECT `GameID` FROM `SteamApp`)");
@@ -175,9 +178,15 @@ public class Steam {
             ++tickerHash;
         }
 
-        System.out.println("Logged off from Steam");
-        if (callback.getResult() == EResult.TryAnotherCM || callback.getResult() == EResult.ServiceUnavailable)
-            client.connect();
+        System.out.println("Logged off from Steam Result: " + callback.getResult());
+        ExceptionUtils.reportException("Logged off from Steam, Retrying in a min...");
+        try {
+            Thread.sleep(60 * 1000);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        client.connect();
     }
 
     private static void onPicsChanges(PICSChangesCallback callback) {

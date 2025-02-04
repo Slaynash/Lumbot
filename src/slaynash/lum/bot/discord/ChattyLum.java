@@ -297,6 +297,11 @@ public class ChattyLum {
             return true;
         }
 
+        if (message.contains("not now")) {
+            event.getChannel().sendMessage("<:Neko_knife:865328473858113536>").queue();
+            return true;
+        }
+
         if (message.matches(".*\\bbye\\b.*")) {
             if (!(new LumGoneCommand().includeInHelp(event)))
                 event.getChannel().sendMessage("<:Neko_sleep:865328470425862175>").queue();
