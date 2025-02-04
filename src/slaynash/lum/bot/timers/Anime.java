@@ -50,7 +50,7 @@ public class Anime extends TimerTask {
                     title = anime.get("english").getAsString();
                 if (anime.has("episodes") && anime.get("episodes").equals(anime.get("episodeNumber")))
                     episode = episode + "F";
-                if (anime.get("mediaTypes").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString().equals("Movie"))
+                if (anime.has("mediaTypes") && anime.get("mediaTypes").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString().equals("Movie"))
                     episode = "Movie";
 
                 if (instant.isAfter(startOfDay) && instant.isBefore(startOfDay.plus(1, ChronoUnit.DAYS))) {
