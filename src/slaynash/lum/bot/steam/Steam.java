@@ -113,13 +113,13 @@ public class Steam {
 
     private static void onDisconnected(DisconnectedCallback callback) {
         System.out.println("Disconnected from Steam. Retrying in 5s...");
-        ExceptionUtils.reportException("Disconnected from Steam. Retrying in 5s...");
         if (Main.isShuttingDown)
             return;
 
         if (isLoggedOn) {
             isLoggedOn = false;
             ++tickerHash;
+            ExceptionUtils.reportException("Disconnected from Steam. Retrying in 5s...");
         }
 
         try {
@@ -135,21 +135,8 @@ public class Steam {
     private static void onLoggedOn(LoggedOnCallback callback) {
         EResult result = callback.getResult();
         if (result != EResult.OK) {
-            if (result == EResult.ServiceUnavailable || result == EResult.Timeout || result == EResult.TryAnotherCM) {
-                ExceptionUtils.reportException("Steam: " + result + " Retrying in a min...");
-                client.disconnect();
-                try {
-                    Thread.sleep(60 * 1000);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-                client.connect();
-            }
-            else {
-                ExceptionUtils.reportException("Failed to login to Steam: " + result);
-                client.disconnect();
-            }
+            ExceptionUtils.reportException("Failed to login to Steam: " + result);
+            client.disconnect();
             return;
         }
 
@@ -173,13 +160,13 @@ public class Steam {
     }
 
     private static void onLoggedOff(LoggedOffCallback callback) {
+        System.out.println("Logged off from Steam Result: " + callback.getResult());
         if (isLoggedOn) {
             isLoggedOn = false;
             ++tickerHash;
+            ExceptionUtils.reportException("Logged off from Steam, Retrying in a min...");
         }
 
-        System.out.println("Logged off from Steam Result: " + callback.getResult());
-        ExceptionUtils.reportException("Logged off from Steam, Retrying in a min...");
         try {
             Thread.sleep(60 * 1000);
         }
