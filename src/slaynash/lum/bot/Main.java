@@ -125,7 +125,6 @@ public class Main extends ListenerAdapter {
                 JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
                 JDAManager.enableEvents();
                 UnityVersionMonitor.start();
-                VRCApiVersionScanner.init();
                 FetchMelonLoaderVersions.start();
                 ClearDMs.start();
                 Steam.start();
