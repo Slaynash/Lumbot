@@ -70,7 +70,6 @@ public class SlashManager {
         registerSlash(new Replies());
         registerSlash(new Reminder());
         registerSlash(new SetMemes());
-        registerSlash(new SetVRCAPI());
         registerSlash(new UnivUCBLLIFExoGenerator());
 
         try {
