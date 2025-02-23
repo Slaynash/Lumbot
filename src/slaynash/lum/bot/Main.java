@@ -56,6 +56,7 @@ import slaynash.lum.bot.discord.PrivateMessagesHandler;
 import slaynash.lum.bot.discord.ReactionListener;
 import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
+import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.FetchMelonLoaderVersions;
@@ -124,6 +125,7 @@ public class Main extends ListenerAdapter {
                 JDAManager.getJDA().getPresence().setActivity(Activity.watching("melons getting loaded"));
                 JDAManager.enableEvents();
                 UnityVersionMonitor.start();
+                VRCApiVersionScanner.init();
                 FetchMelonLoaderVersions.start();
                 ClearDMs.start();
                 Steam.start();
