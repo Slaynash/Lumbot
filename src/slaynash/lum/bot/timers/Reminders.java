@@ -22,7 +22,8 @@ public class Reminders extends TimerTask {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Reminders` WHERE `TSend` < CURRENT_TIMESTAMP");
             while (rs.next()) {
                 String message = rs.getString("Message");
-                message = message.substring(0, Math.min(message.toString().length(), MessageEmbed.DESCRIPTION_MAX_LENGTH));
+                if (message != null)
+                    message = message.substring(0, Math.min(message.toString().length(), MessageEmbed.DESCRIPTION_MAX_LENGTH));
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(rs.getInt("Color"));
                 embedBuilder.setTitle("Reminder");
                 embedBuilder.setDescription(message);
