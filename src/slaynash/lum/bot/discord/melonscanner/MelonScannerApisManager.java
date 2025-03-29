@@ -508,7 +508,7 @@ public class MelonScannerApisManager {
             return null;
 
         synchronized (games) {
-            List<MelonApiMod> mods = games.get(game);
+            List<MelonApiMod> mods = List.copyOf(games.get(game));
             if (mods == null)
                 return null;
 

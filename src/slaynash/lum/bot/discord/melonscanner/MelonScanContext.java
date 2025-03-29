@@ -133,8 +133,12 @@ public class MelonScanContext {
 
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Nightly = 0 AND Android = 0 ORDER BY `TS` DESC LIMIT 1");
-            rs.next();
-            this.latestMLVersion = Version.parse(rs.getString("Version"));
+            if (rs.next()) {
+                this.latestMLVersion = Version.parse(rs.getString("Version"));
+            }
+            else {
+                this.latestMLVersion = Version.of(6, 9, 0);
+            }
             DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {

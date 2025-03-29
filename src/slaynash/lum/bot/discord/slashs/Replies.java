@@ -117,7 +117,7 @@ public class Replies extends Slash {
             }
         }
 
-        if (event.getChannel().asTextChannel() != null && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildid = 0;
+        if (event.getChannel().getType() == ChannelType.TEXT && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildid = 0;
 
         if (event.getSubcommandName().equals("list")) {
             int c = 0;

@@ -328,25 +328,27 @@ public final class MelonScanner {
         if (CrossServerUtils.checkIfStaff(context.messageReceivedEvent))
             return;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Version = ?", context.mlVersion.toString());
-            if (rs.next()) {
-                String hash35 = rs.getString("Hash35");
-                String hash6 = rs.getString("Hash6");
-                if (context.mlHashCode.equals(hash35) || context.mlHashCode.equals(hash6)) {
-                    System.out.println("ML hash found in DB");
-                }
-                else {
-                    System.out.println("unknown hash");
-                    context.modifiedML = true;
-                    reportUserModifiedML(context.messageReceivedEvent);
+            boolean found = false;
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT Version FROM `MLhash` WHERE Hash35 = ? OR Hash6 = ?", context.mlHashCode, context.mlHashCode);
+            while (rs.next()) {
+                String version = rs.getString("Version");
+                if (version != null && context.mlVersion != null && context.mlVersion.toString().startsWith(version)) {
+                    found = true;
+                    break;
                 }
             }
             DBConnectionManagerLum.closeRequest(rs);
+            if (found)
+                System.out.println("ML hash found in DB");
+            else {
+                System.out.println("unknown hash");
+                context.modifiedML = true;
+                reportUserModifiedML(context.messageReceivedEvent);
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to get ML hash", e);
         }
-
     }
 
     private static void badModCheck(MelonScanContext context) {

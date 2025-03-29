@@ -58,7 +58,7 @@ public class Anime extends TimerTask {
                 }
             }
 
-            if (sb.length() == 0) {
+            if (sb.isEmpty()) {
                 sb.append("No anime today");
                 color = Color.YELLOW;
             }
