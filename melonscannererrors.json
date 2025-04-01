@@ -21,6 +21,10 @@
             "error": "MelonLoader failed to open a required file. Most likely, your virus scanner is still scanning MelonLoader during execution or the user running MelonLoader does not have access. Try MelonLoader again, restarting your PC, or reinstall MelonLoader $ML$."
         },
         {
+            "regex": ".*The process cannot access the file because it is being used by another process.",
+            "error": "A ML file is being used by another program. Please make sure that your virus scanner is not currently scanning MelonLoader files and close all instances of MelonLoader that is running."
+        },
+        {
             "regex": ".*System\\.UnauthorizedAccessException: Access to the path.*is denied\\.",
             "error": "Access is denied. Make sure that your Virus scanner is not blocking or removing MelonLoader files and try reinstalling MelonLoader."
         },
