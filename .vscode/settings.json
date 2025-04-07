@@ -7,5 +7,6 @@
     ],
     "java.checkstyle.version": "10.3.1",
     "java.checkstyle.configuration": "${workspaceFolder}\\checkstyle.xml",
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "dotnet.preferCSharpExtension": true
 }

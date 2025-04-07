@@ -504,7 +504,7 @@ public class MelonScannerApisManager {
     }
 
     public static String getDownloadLinkForMod(String game, String missingModName) {
-        if (game == null)
+        if (game == null || games.get(game) == null)
             return null;
 
         synchronized (games) {

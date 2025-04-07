@@ -375,7 +375,7 @@ public final class MelonScanner {
         else if (context.game == null || context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.0"))) {
             context.pirate = false;
         }
-        else if (gamePath.contains("steamrip") || gamePath.contains("repack") || gamePath.contains("fitgirl") || gamePath.contains("inclalldlc") || context.gamePath.split("\\.").length > 5) {
+        else if (gamePath.contains("steamrip") || gamePath.contains("repack") || gamePath.contains("fitgirl") || gamePath.contains("inclalldlc") || gamePath.contains("onedrive") || context.gamePath.split("\\.").length > 5) {
             context.pirate = true;
         }
         else if (context.game.equalsIgnoreCase("BloonsTD6")) {
