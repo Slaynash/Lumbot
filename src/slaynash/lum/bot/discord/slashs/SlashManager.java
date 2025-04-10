@@ -71,6 +71,7 @@ public class SlashManager {
         registerSlash(new Reminder());
         registerSlash(new SetMemes());
         registerSlash(new SetVRCAPI());
+        registerSlash(new SetLogChannel());
         registerSlash(new UnivUCBLLIFExoGenerator());
 
         try {

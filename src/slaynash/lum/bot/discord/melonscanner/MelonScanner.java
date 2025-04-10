@@ -26,6 +26,7 @@ import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
@@ -1014,12 +1015,11 @@ public final class MelonScanner {
 
     // Utils
     private static void reportUserModifiedML(MessageReceivedEvent event) {
-        String reportChannel = CommandManager.mlReportChannels.get(event.getChannelType() == ChannelType.PRIVATE ? "0" : event.getGuild().getIdLong()); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
+        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "melon"); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
-            event.getGuild().getTextChannelById(reportChannel).sendMessageEmbeds(
-                Utils.wrapMessageInEmbed(
-                        "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
-                            Color.orange)).queue();
+            Utils.sendEmbed(Utils.wrapMessageInEmbed(
+                "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                    Color.orange), reportChannel);
         }
     }
 

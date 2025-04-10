@@ -5,10 +5,12 @@ import java.util.Collections;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class Kick extends Command {
     @Override
@@ -68,9 +70,9 @@ public class Kick extends Command {
         else
             kickMember.kick().reason(event.getAuthor().getName() + " - " + reason).queue();
 
-        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null && !reportChannel.equals(event.getChannel().asGuildMessageChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!\n" + reason).setAllowedMentions(Collections.emptyList()).queue();
+        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "kick");
+        if (reportChannel != null && !reportChannel.equals(event.getChannel()))
+            Utils.sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked by " + event.getMember().getEffectiveName() + "!\n" + reason, reportChannel);
         event.getChannel().sendMessage("User " + kickMember.getUser().getAsMention() + "(" + kickMember.getId() + ") has been kicked!\n" + reason).queue();
     }
 

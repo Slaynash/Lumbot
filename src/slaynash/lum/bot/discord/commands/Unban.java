@@ -1,14 +1,14 @@
 package slaynash.lum.bot.discord.commands;
 
-import java.util.Collections;
-
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild.Ban;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class Unban extends Command {
     @Override
@@ -41,9 +41,9 @@ public class Unban extends Command {
             }
             event.getGuild().unban(unbanUser).reason("Unbanned by " + event.getMember().getEffectiveName()).queue();
 
-            String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-            if (reportChannel != null && !reportChannel.equals(event.getChannel().asGuildMessageChannel().getId()))
-                event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!").setAllowedMentions(Collections.emptyList()).queue();
+            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "ban");
+            if (reportChannel != null && !reportChannel.equals(event.getChannel()))
+                Utils.sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned by " + event.getMember().getEffectiveName() + "!", reportChannel);
             event.getChannel().sendMessage("User " + unbanUser.getAsMention() + "(" + unbanUser.getId() + ") has been unbanned!").queue();
         }).start();
     }

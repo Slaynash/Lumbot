@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -108,11 +108,11 @@ public class Replies extends Slash {
         boolean edit = event.getOption("edit") != null && event.getOption("edit").getAsBoolean();
         boolean report = event.getOption("report") != null && event.getOption("report").getAsBoolean();
         if (report) {
-            TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(event.getGuild().getIdLong(), "0"));
+            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "reply");
             if (reportChannel == null) {
-                event.reply("I can't find the report channel. Please set it with `" + ConfigManager.discordPrefix + "setmlreportchannel` in the log channel").queue();
+                event.reply("I can't find the report channel. Please set it with `/log` in the log channel").queue();
             }
-            if (!event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+            if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
                 event.reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
             }
         }

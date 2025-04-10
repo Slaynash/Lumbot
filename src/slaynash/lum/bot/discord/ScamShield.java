@@ -36,15 +36,17 @@ import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.messages.MessagePoll;
+import net.dv8tion.jda.api.events.automod.AutoModExecutionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
+import net.dv8tion.jda.internal.entities.ReceivedMessage;
 import net.gcardone.junidecode.Junidecode;
-import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -429,8 +431,8 @@ public class ScamShield {
             }
             String usernameWithTag = event.getAuthor().getEffectiveName();
             String userId = event.getAuthor().getAsMention();
-            TextChannel reportChannel = guild.getTextChannelById(CommandManager.mlReportChannels.getOrDefault(guildID, "0"));
-            System.out.println("Report channel: " + guildID + " " + CommandManager.mlReportChannels.getOrDefault(guildID, "0") + " " + reportChannel);
+            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "scam");
+            System.out.println("Report channel: " + guildID + " " + reportChannel);
             boolean ssBan;
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
             if (guildconfig != null) {
@@ -536,13 +538,13 @@ public class ScamShield {
                         .append(a.suspiciousResults.ssFoundTerms)
                         .append("\n"));
                 }
-                if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_EMBED_LINKS))
+                if (guild.getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS))
                     ssQueuedMap.put(guildID, reportChannel.sendMessageEmbeds(embedBuilder.build()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queueAfter(4, TimeUnit.SECONDS));
-                else if (guild.getSelfMember().hasPermission(reportChannel, Permission.MESSAGE_SEND))
+                else if (guild.getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.MESSAGE_SEND))
                     ssQueuedMap.put(guildID, reportChannel.sendMessage(embedBuilder.getDescriptionBuilder().toString()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queueAfter(4, TimeUnit.SECONDS));
             }
             else if (!dm && event.getGuild() == guild) {
-                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `").append(ConfigManager.discordPrefix).append("setmlreportchannel` to set the report channel.");
+                embedBuilder.getDescriptionBuilder().append("\nTo admins: Use the command `/log` to set the report channel.");
                 if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_SEND))
                     event.getChannel().asGuildMessageChannel().sendMessageEmbeds(embedBuilder.build()).queue();
                 else if (guild.getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))

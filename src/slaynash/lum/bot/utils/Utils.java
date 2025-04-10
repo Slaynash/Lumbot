@@ -16,6 +16,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.GroupChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.NewsChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.discord.JDAManager;
 
@@ -114,6 +121,74 @@ public class Utils {
             event.getChannel().sendMessageEmbeds(embed).queue();
         else {
             event.getChannel().sendMessage(embed.getDescription()).queue();
+        }
+    }
+    public static void sendEmbed(MessageEmbed embed, MessageChannelUnion channel) {
+        if (channel == null)
+            return;
+        switch (channel.getType()) {
+            case TEXT -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+                    TextChannel textChannel = (TextChannel) channel;
+                    textChannel.sendMessageEmbeds(embed).queue();
+                }
+            }
+            case NEWS -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+                    NewsChannel newsChannel = (NewsChannel) channel;
+                    newsChannel.sendMessageEmbeds(embed).queue();
+                }
+            }
+            case GUILD_PRIVATE_THREAD, GUILD_PUBLIC_THREAD, GUILD_NEWS_THREAD -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+                    ThreadChannel threadChannel = (ThreadChannel) channel;
+                    threadChannel.sendMessageEmbeds(embed).queue();
+                }
+            }
+            case PRIVATE -> {
+                PrivateChannel privateChannel = (PrivateChannel) channel;
+                privateChannel.sendMessageEmbeds(embed).queue();
+            }
+            case GROUP -> {
+                GroupChannel groupChannel = (GroupChannel) channel;
+                groupChannel.sendMessageEmbeds(embed).queue();
+            }
+            default -> {
+            }
+        }
+    }
+    public static void sendMessage(String message, MessageChannelUnion channel) {
+        if (channel == null)
+            return;
+        switch (channel.getType()) {
+            case TEXT -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND)) {
+                    TextChannel textChannel = (TextChannel) channel;
+                    textChannel.sendMessage(message).queue();
+                }
+            }
+            case NEWS -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND)) {
+                    NewsChannel newsChannel = (NewsChannel) channel;
+                    newsChannel.sendMessage(message).queue();
+                }
+            }
+            case GUILD_PRIVATE_THREAD, GUILD_PUBLIC_THREAD, GUILD_NEWS_THREAD -> {
+                if (((GuildChannel) channel).getGuild().getSelfMember().hasPermission((GuildChannel) channel, Permission.MESSAGE_SEND)) {
+                    ThreadChannel threadChannel = (ThreadChannel) channel;
+                    threadChannel.sendMessage(message).queue();
+                }
+            }
+            case PRIVATE -> {
+                PrivateChannel privateChannel = (PrivateChannel) channel;
+                privateChannel.sendMessage(message).queue();
+            }
+            case GROUP -> {
+                GroupChannel groupChannel = (GroupChannel) channel;
+                groupChannel.sendMessage(message).queue();
+            }
+            default -> {
+            }
         }
     }
 

@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +13,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
+import net.dv8tion.jda.api.events.interaction.command.GenericCommandInteractionEvent;
+import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.commands.AddReactionHandlerCommand;
 import slaynash.lum.bot.discord.commands.AutoPublish;
 import slaynash.lum.bot.discord.commands.Ban;
-import slaynash.lum.bot.discord.commands.Blacklist;
 import slaynash.lum.bot.discord.commands.CommandLaunchCommand;
 import slaynash.lum.bot.discord.commands.DumpID;
 import slaynash.lum.bot.discord.commands.HelpCommand;
@@ -29,8 +34,6 @@ import slaynash.lum.bot.discord.commands.LumGoneCommand;
 import slaynash.lum.bot.discord.commands.Purge;
 import slaynash.lum.bot.discord.commands.RankColorCommand;
 import slaynash.lum.bot.discord.commands.RubybotOverDynobotCommand;
-import slaynash.lum.bot.discord.commands.SetLogChannelHandlerCommand;
-import slaynash.lum.bot.discord.commands.SetMLReportChannelCommand;
 import slaynash.lum.bot.discord.commands.SetScreeningRoleHandlerCommand;
 import slaynash.lum.bot.discord.commands.TestVRCObfmap;
 import slaynash.lum.bot.discord.commands.UVMCommand;
@@ -46,12 +49,9 @@ public class CommandManager {
     private static boolean init = false;
 
     public static final List<ReactionListener> reactionListeners = new ArrayList<>();
-    public static final Map<Long, String> logChannels = new HashMap<>();
     public static final List<Long> apChannels = new ArrayList<>();
     public static final Map<Long, VerifyPair> verifyChannels = new HashMap<>();
     public static final Map<Long, Long> autoScreeningRoles = new HashMap<>();
-
-    public static final Map<Long, String> mlReportChannels = new HashMap<>();
 
     protected static void registerCommand(Command command) {
         synchronized (commands) {
@@ -103,7 +103,6 @@ public class CommandManager {
         CommandManager.registerCommand(new RankColorCommand());
 
         CommandManager.registerCommand(new AddReactionHandlerCommand());
-        CommandManager.registerCommand(new SetLogChannelHandlerCommand());
         CommandManager.registerCommand(new VerifyChannelHandlerCommand());
         CommandManager.registerCommand(new SetScreeningRoleHandlerCommand());
 
@@ -112,8 +111,6 @@ public class CommandManager {
         CommandManager.registerCommand(new VerifyCommandCommand());
 
         CommandManager.registerCommand(new RubybotOverDynobotCommand());
-
-        CommandManager.registerCommand(new SetMLReportChannelCommand());
 
         CommandManager.registerCommand(new LockDown());
         CommandManager.registerCommand(new Purge());
@@ -125,7 +122,6 @@ public class CommandManager {
 
         CommandManager.registerCommand(new UVMCommand());
         CommandManager.registerCommand(new AddMissingRoles());
-        CommandManager.registerCommand(new Blacklist());
 
         CommandManager.registerCommand(new LumGoneCommand());
         CommandManager.registerCommand(new TestVRCObfmap());
@@ -154,26 +150,68 @@ public class CommandManager {
         }
     }
 
-    public static void saveLogChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/logchannels.txt"))) {
-            for (Entry<Long, String> logchannel : logChannels.entrySet()) {
-                writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+    public static MessageChannelUnion getModReportChannels(GenericMessageEvent event, String type) {
+        if (event.getChannelType() != ChannelType.PRIVATE) return event.getChannel();
+        MessageChannelUnion channel = null;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `?` FROM `LogChannel` WHERE GuildID = ?", type, event.getGuild().getIdLong());
+            if (rs.next()) {
+                channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
             }
+            rs.close();
         }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save Log Channels", e);
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to get Mod Report Channels", e);
         }
+        return channel;
+    }
+    public static MessageChannelUnion getModReportChannels(Guild guild, String type) {
+        MessageChannelUnion channel = null;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `" + type + "` FROM `LogChannel` WHERE GuildID = ?", guild.getIdLong());
+            if (rs.next()) {
+                channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
+            }
+            rs.close();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to get Mod Report Channels", e);
+        }
+        return channel;
+    }
+    public static MessageChannelUnion getModReportChannels(GenericCommandInteractionEvent event, String type) {
+        if (event.getChannelType() != ChannelType.PRIVATE) return (MessageChannelUnion) event.getChannel();
+        MessageChannelUnion channel = null;
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `?` FROM `LogChannel` WHERE GuildID = ?", type, event.getGuild().getIdLong());
+            if (rs.next()) {
+                channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
+            }
+            rs.close();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to get Mod Report Channels", e);
+        }
+        return channel;
     }
 
-    public static void saveMLReportChannels() {
-        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("storage/mlreportchannels.txt"))) {
-            for (Entry<Long, String> logchannel : mlReportChannels.entrySet()) {
-                writer.write(logchannel.getKey() + " " + logchannel.getValue() + "\n");
+    public enum SetModReportChannelsResult { insert, delete, error }
+    public static SetModReportChannelsResult setModReportChannels(Long guildId, Long channelId) {
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE Channel = ?", channelId);
+            if (rs.next()) {
+                DBConnectionManagerLum.sendUpdate("DELETE FROM `LogChannel` WHERE Channel = ?", channelId);
+                return SetModReportChannelsResult.delete;
+            }
+            else {
+                DBConnectionManagerLum.sendUpdate("INSERT INTO `LogChannel` (`GuildID`, `Channel`) VALUES (?, ?)", guildId, channelId);
+                return SetModReportChannelsResult.insert;
             }
         }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to save MelonLoader Report Channels", e);
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to save Mod Report Channels", e);
         }
+        return SetModReportChannelsResult.error;
     }
 
     public static void saveVerifyChannels() {

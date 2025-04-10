@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
@@ -12,6 +13,7 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class LockDown extends Command {
 
@@ -25,10 +27,10 @@ public class LockDown extends Command {
             return;
         }
 
-        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "users");
         Long lockDownRoleID = GuildConfigurations.lockDownRoles.get(event.getGuild().getIdLong());
         if (lockDownRoleID == null) {
-            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2#0001 to setup LockDown").setAllowedMentions(Collections.emptyList()).queue();
+            event.getChannel().sendMessage("LockDown is not setup in this server. Please DM rakosi2 to setup LockDown").setAllowedMentions(Collections.emptyList()).queue();
         }
         Role lockDownRole = event.getGuild().getRoleById(lockDownRoleID);
         if (!event.getGuild().getSelfMember().canInteract(lockDownRole)) {
@@ -42,8 +44,8 @@ public class LockDown extends Command {
         else
             lockDownRole.getManager().givePermissions(Permission.MESSAGE_SEND).complete();
 
-        if (!Objects.equals(reportChannel, event.getChannel().asGuildMessageChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + event.getAuthor().getEffectiveName() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server in " + event.getChannel().getName()).queue();
+        if (!Objects.equals(reportChannel, event.getChannel()))
+            Utils.sendMessage("User " + event.getAuthor().getEffectiveName() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server in " + event.getChannel().getName(), reportChannel);
         event.getChannel().sendMessage("User " + event.getAuthor().getEffectiveName() + " has " + (lockDownState ? "locked down" : "unlocked") + " this server.").queue();
     }
 

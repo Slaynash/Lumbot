@@ -6,10 +6,12 @@ import java.util.concurrent.TimeUnit;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
+import slaynash.lum.bot.utils.Utils;
 
 public class Ban extends Command {
     //TODO DM banned user and better perms, maybe ban via regex
@@ -96,9 +98,9 @@ public class Ban extends Command {
         else
             banMember.ban(delDays, TimeUnit.DAYS).reason(event.getAuthor().getName() + " - " + reason).queue(); //reason limit is 512 chars
 
-        String reportChannel = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
-        if (reportChannel != null && !reportChannel.equals(event.getChannel().asGuildMessageChannel().getId()))
-            event.getGuild().getTextChannelById(reportChannel).sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason).setAllowedMentions(Collections.emptyList()).queue();
+        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "ban");
+        if (reportChannel != null && !reportChannel.equals(event.getChannel()))
+            Utils.sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned by " + event.getMember().getEffectiveName() + "!\n" + reason, reportChannel);
         event.getChannel().sendMessage("User " + banMember.getUser().getAsMention() + "(" + banMember.getId() + ") has been banned!\n" + reason).queue();
     }
 

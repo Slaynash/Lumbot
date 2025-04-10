@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.PrivateChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
@@ -471,9 +472,9 @@ public class MessageProxy {
                         guildchannel.sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     if (report) {
-                        TextChannel reportChannel = event.getGuild().getTextChannelById(CommandManager.mlReportChannels.getOrDefault(JDAManager.mainGuildID, "0"));
+                        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "reply");
                         if (reportChannel != null) {
-                            if (!event.getGuild().getSelfMember().hasPermission(reportChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+                            if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
                                 event.getMessage().reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
                             }
                             else {
@@ -486,7 +487,7 @@ public class MessageProxy {
                                 eb.setFooter("Reply ID: " + ukey);
                                 eb.setColor(Color.orange);
                                 eb.setTimestamp(Instant.now());
-                                reportChannel.sendMessageEmbeds(eb.build()).queue();
+                                Utils.sendEmbed(eb.build(), reportChannel);
                             }
                         }
                     }

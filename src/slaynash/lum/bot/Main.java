@@ -8,25 +8,25 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.ResultSet;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
+import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdatePendingEvent;
 import net.dv8tion.jda.api.events.guild.update.GuildUpdateOwnerEvent;
@@ -100,11 +100,9 @@ public class Main extends ListenerAdapter {
         DBConnectionManagerLum.init();
         DBConnectionManagerShortUrls.init();
 
-        loadLogchannelList();
         loadVerifychannelList();
         loadReactionsList();
         loadScreeningRolesList();
-        loadMLReportChannels();
         loadAPChannels();
         CrossServerUtils.loadGuildCount();
 
@@ -261,42 +259,6 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    private static void loadMLReportChannels() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/mlreportchannels.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" ", 4);
-                if (parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
-                    CommandManager.mlReportChannels.put(Long.parseLong(parts[0]), parts[1]);
-                }
-            }
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load MelonLoader Report Channels", e);
-        }
-    }
-
-    private static void loadLogchannelList() {
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new FileReader("storage/logchannels.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(" ", 4);
-                if (parts.length == 2 && parts[0].matches("^\\d+$") && parts[1].matches("^\\d+$")) {
-                    CommandManager.logChannels.put(Long.parseLong(parts[0]), parts[1]);
-                }
-            }
-            reader.close();
-        }
-        catch (IOException e) {
-            ExceptionUtils.reportException("Failed to load Log Channels", e);
-        }
-    }
-
     private static void loadVerifychannelList() {
         BufferedReader reader;
         try {
@@ -346,12 +308,16 @@ public class Main extends ListenerAdapter {
         if (!MessageProxy.edits(event) && !event.isFromType(ChannelType.PRIVATE)) {
             ScamShield.checkForFishing(event);
         }
+
+        //TODO: send log message
     }
 
     @Override
     public void onMessageDelete(@NotNull MessageDeleteEvent event) {
         MessageProxy.deletes(event);
         ScamShield.checkDeleted(event);
+
+        //TODO: send log message
     }
 
     @Override
@@ -380,15 +346,7 @@ public class Main extends ListenerAdapter {
 
     private static void writeLogMessage(Guild guild, String message) {
         System.out.println("[" + guild.getName() + "] " + message);
-        String channelId;
-        if ((channelId = CommandManager.logChannels.get(guild.getIdLong())) != null) {
-            for (TextChannel c : guild.getTextChannels()) {
-                if (c.getId().equals(channelId)) {
-                    c.sendMessageEmbeds(Utils.wrapMessageInEmbed(message, Color.gray)).queue();
-                    break;
-                }
-            }
-        }
+        Utils.sendEmbed(Utils.wrapMessageInEmbed(message, Color.gray), CommandManager.getModReportChannels(guild, "role"));
     }
 
     @Override
@@ -503,21 +461,9 @@ public class Main extends ListenerAdapter {
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
         if (event.getUser().isBot())
             return;
-        String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
         if (report == null) return;
-        TextChannel reportchannel = event.getGuild().getTextChannelById(report);
-        if (reportchannel == null) return;
         String name = Junidecode.unidecode(event.getUser().getName() + event.getUser().getGlobalName()).toLowerCase().replaceAll("[^ a-z]", "");
-
-        boolean foundblacklist = false;
-        try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ? LIMIT 1", name);
-            foundblacklist = rs.next();
-            DBConnectionManagerLum.closeRequest(rs);
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
-        }
 
         String displayName;
         if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
@@ -525,46 +471,64 @@ public class Main extends ListenerAdapter {
         else
             displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
 
-        if (foundblacklist && event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-            reportchannel.sendMessage(displayName + " just joined with a known scam username\nNow kicking " + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
-            event.getMember().kick().reason("Lum: Scammer joined").queue();
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("User Join");
+        embed.setColor(Color.green);
+        embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
+        embed.addField("Account created", "<t:" + event.getUser().getTimeCreated().toEpochSecond() + ":f>", false);
+        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
+        embed.setTimestamp(Instant.now());
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
+            embed.addField("", "Sussy Username", false);
         }
-        else if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(displayName + " just joined with a sussy name\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
-        }
+        Utils.sendEmbed(embed.build(), report);
+    }
+
+    @Override
+    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
+        if (event.getUser().isBot())
+            return;
+        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
+        if (report == null) return;
+
+        String displayName;
+        if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
+            displayName = event.getUser().getName();
+        else
+            displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("User Left");
+        embed.setColor(Color.red);
+        embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
+        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
+        embed.setTimestamp(Instant.now());
+        Utils.sendEmbed(embed.build(), report);
     }
 
     @Override
     public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
         if (event.getUser().isBot())
             return;
-        String report = CommandManager.mlReportChannels.get(event.getGuild().getIdLong());
+        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "users");
         if (report == null) return;
-        TextChannel reportchannel = event.getGuild().getTextChannelById(report);
-        if (reportchannel == null) return;
         if (event.getNewNickname() == null) { //removed nickname
             return;
         }
         String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
 
-        boolean foundblacklist = false;
-        try {
-            // DBConnectionManagerLum.sendUpdate("INSERT INTO `blacklistusername` (`username`) VALUES (?)", name);
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ? LIMIT 1", name);
-            foundblacklist = rs.next();
-            DBConnectionManagerLum.closeRequest(rs);
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
-        }
-
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("User Nickname Change");
+        embed.setColor(Color.yellow);
+        embed.addField("User", event.getUser().getAsMention(), false);
+        embed.addField("Old Nickname", event.getOldNickname() == null ? "None" : event.getOldNickname(), false);
+        embed.addField("New Nickname", event.getNewNickname(), false);
+        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
+        embed.setTimestamp(Instant.now());
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            reportchannel.sendMessage(event.getNewNickname() + " just changed their nickname to a sussy name from " + event.getOldNickname() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
+            embed.addField("", "Sussy Username", false);
         }
-        if (!event.getGuild().getSelfMember().hasPermission(Permission.KICK_MEMBERS)) return;
-        if (foundblacklist) {
-            event.getMember().kick().reason("Lum: User changed nickname to known Scam").queue();
-        }
+        Utils.sendEmbed(embed.build(), report);
     }
 
     @Override
@@ -572,32 +536,25 @@ public class Main extends ListenerAdapter {
         if (event.getUser().isBot())
             return;
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
-        mutualGuilds.removeIf(g -> !CommandManager.mlReportChannels.containsKey(g.getIdLong()));
 
         String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
-        boolean foundblacklist = false;
-        try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `username` FROM `blacklistusername` WHERE `username` = ? LIMIT 1", name);
-            foundblacklist = rs.next();
-            DBConnectionManagerLum.closeRequest(rs);
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to check blacklisted username: " + name, e);
+
+        EmbedBuilder embed = new EmbedBuilder();
+        embed.setTitle("User Name Change");
+        embed.setColor(Color.yellow);
+        embed.addField("User", event.getUser().getAsMention(), false);
+        embed.addField("Before", event.getOldName(), false);
+        embed.addField("After", event.getNewName(), false);
+        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
+        embed.setTimestamp(Instant.now());
+        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
+            embed.addField("", "Sussy Username", false);
         }
 
         for (Guild guild : mutualGuilds) {
-            String report = CommandManager.mlReportChannels.get(guild.getIdLong());
-            TextChannel reportchannel = guild.getTextChannelById(report);
-            if (reportchannel == null) return;
-
-            if (foundblacklist && guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
-                reportchannel.sendMessage("Scammer started scamming " + event.getUser().getEffectiveName() + " (" + event.getUser().getId() + ")\nNow kicking!").setAllowedMentions(Collections.emptyList()).queue();
-                guild.kick(event.getUser()).reason("Lum: Scammer started scamming").queue();
-                return;
-            }
-            if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-                reportchannel.sendMessage(event.getNewName() + " just changed their username from " + event.getOldName() + "\n" + event.getUser().getId()).setAllowedMentions(Collections.emptyList()).queue();
-            }
+            MessageChannelUnion report = CommandManager.getModReportChannels(guild, "users");
+            if (report == null) return;
+            Utils.sendEmbed(embed.build(), report);
         }
     }
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 22, 2025 at 12:34 AM
+-- Generation Time: Apr 10, 2025 at 09:42 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -91,6 +91,29 @@ CREATE TABLE IF NOT EXISTS `Icons` (
   `Counter` int NOT NULL DEFAULT '0',
   `MLoverride` char(12) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`UnityName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `LogChannel`
+--
+
+CREATE TABLE IF NOT EXISTS `LogChannel` (
+  `GuildID` bigint UNSIGNED NOT NULL,
+  `melon` bigint UNSIGNED DEFAULT NULL,
+  `scam` bigint UNSIGNED DEFAULT NULL,
+  `message` bigint UNSIGNED DEFAULT NULL,
+  `kick` bigint UNSIGNED DEFAULT NULL,
+  `ban` bigint UNSIGNED DEFAULT NULL,
+  `joins` bigint UNSIGNED DEFAULT NULL,
+  `reply` bigint UNSIGNED DEFAULT NULL,
+  `role` bigint UNSIGNED DEFAULT NULL,
+  `users` bigint UNSIGNED DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user` bigint DEFAULT NULL COMMENT 'Who last used command',
+  PRIMARY KEY (`GuildID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
