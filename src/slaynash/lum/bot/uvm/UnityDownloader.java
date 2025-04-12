@@ -67,7 +67,8 @@ public class UnityDownloader {
 
     public static void saveInstalledVersionCache(String unityVersion, String architecture) {
         List<String> installedArchitectures = installedVersions.computeIfAbsent(unityVersion, k -> new ArrayList<>());
-        installedArchitectures.add(architecture);
+        if (architecture != null && !installedArchitectures.contains(architecture))
+            installedArchitectures.add(architecture);
 
         saveInstalledVersionCache();
     }

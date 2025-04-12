@@ -459,11 +459,8 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (event.getUser().isBot())
-            return;
         MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
         if (report == null) return;
-        String name = Junidecode.unidecode(event.getUser().getName() + event.getUser().getGlobalName()).toLowerCase().replaceAll("[^ a-z]", "");
 
         String displayName;
         if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
@@ -478,6 +475,7 @@ public class Main extends ListenerAdapter {
         embed.addField("Account created", "<t:" + event.getUser().getTimeCreated().toEpochSecond() + ":f>", false);
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
+        String name = Junidecode.unidecode(event.getUser().getName() + event.getUser().getGlobalName()).toLowerCase().replaceAll("[^ a-z]", "");
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             embed.addField("", "Sussy Username", false);
         }
@@ -486,8 +484,6 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-        if (event.getUser().isBot())
-            return;
         MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
         if (report == null) return;
 
@@ -501,6 +497,9 @@ public class Main extends ListenerAdapter {
         embed.setTitle("User Left");
         embed.setColor(Color.red);
         embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
+        if (event.getMember() != null) {
+            embed.addField("Stay duration", Utils.secToTime(Instant.now().toEpochMilli() - event.getMember().getTimeJoined().toEpochSecond()), false);
+        }
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
         Utils.sendEmbed(embed.build(), report);
@@ -508,23 +507,18 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-        if (event.getUser().isBot())
-            return;
         MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "users");
         if (report == null) return;
-        if (event.getNewNickname() == null) { //removed nickname
-            return;
-        }
-        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("User Nickname Change");
         embed.setColor(Color.yellow);
         embed.addField("User", event.getUser().getAsMention(), false);
         embed.addField("Old Nickname", event.getOldNickname() == null ? "None" : event.getOldNickname(), false);
-        embed.addField("New Nickname", event.getNewNickname(), false);
+        embed.addField("New Nickname", event.getNewNickname() == null ? "None" : event.getNewNickname(), false);
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
+        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             embed.addField("", "Sussy Username", false);
         }
@@ -533,11 +527,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onUserUpdateName(UserUpdateNameEvent event) {
-        if (event.getUser().isBot())
-            return;
         List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
-
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("User Name Change");
@@ -547,6 +537,7 @@ public class Main extends ListenerAdapter {
         embed.addField("After", event.getNewName(), false);
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
+        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
         if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
             embed.addField("", "Sussy Username", false);
         }

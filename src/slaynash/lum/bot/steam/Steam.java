@@ -96,12 +96,12 @@ public class Steam {
         client.setDebugNetworkListener(new NetHookNetworkListener("SteamLogs"));
 
         callbackManager = new CallbackManager(client);
-        callbackManager.subscribe(ConnectedCallback.class, callback -> onConnected(callback));
-        callbackManager.subscribe(DisconnectedCallback.class, callback -> onDisconnected(callback));
-        callbackManager.subscribe(LoggedOnCallback.class, callback -> onLoggedOn(callback));
-        callbackManager.subscribe(LoggedOffCallback.class, callback -> onLoggedOff(callback));
-        callbackManager.subscribe(PICSChangesCallback.class, callback -> onPicsChanges(callback));
-        callbackManager.subscribe(PICSProductInfoCallback.class, callback -> onPicsProduct(callback));
+        callbackManager.subscribe(ConnectedCallback.class, Steam::onConnected);
+        callbackManager.subscribe(DisconnectedCallback.class, Steam::onDisconnected);
+        callbackManager.subscribe(LoggedOnCallback.class, Steam::onLoggedOn);
+        callbackManager.subscribe(LoggedOffCallback.class, Steam::onLoggedOff);
+        callbackManager.subscribe(PICSChangesCallback.class, Steam::onPicsChanges);
+        callbackManager.subscribe(PICSProductInfoCallback.class, Steam::onPicsProduct);
 
         client.connect();
     }

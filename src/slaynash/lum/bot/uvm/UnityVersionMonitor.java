@@ -125,6 +125,8 @@ public class UnityVersionMonitor {
 
         if (new File(UnityUtils.downloadPath).list() == null) {
             ExceptionUtils.reportException("Unity download path is missing");
+            for (UnityVersion newVersion : remoteVersions)
+                UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
             return;
         }
 

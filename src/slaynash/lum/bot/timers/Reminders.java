@@ -23,7 +23,7 @@ public class Reminders extends TimerTask {
             while (rs.next()) {
                 String message = rs.getString("Message");
                 if (message != null)
-                    message = message.substring(0, Math.min(message.toString().length(), MessageEmbed.DESCRIPTION_MAX_LENGTH));
+                    message = message.substring(0, Math.min(message.length(), MessageEmbed.DESCRIPTION_MAX_LENGTH));
                 EmbedBuilder embedBuilder = new EmbedBuilder().setColor(rs.getInt("Color"));
                 embedBuilder.setTitle("Reminder");
                 embedBuilder.setDescription(message);
