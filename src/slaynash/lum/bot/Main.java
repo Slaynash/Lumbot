@@ -497,8 +497,8 @@ public class Main extends ListenerAdapter {
         embed.setTitle("User Left");
         embed.setColor(Color.red);
         embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
-        if (event.getMember() != null) {
-            embed.addField("Stay duration", Utils.secToTime(Instant.now().toEpochMilli() - event.getMember().getTimeJoined().toEpochSecond()), false);
+        if (event.getMember() != null && event.getMember().hasTimeJoined()) {
+            embed.addField("Stay duration", Utils.secToTime(Instant.now().getEpochSecond() - event.getMember().getTimeJoined().toEpochSecond()), false);
         }
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
