@@ -471,7 +471,7 @@ public class Main extends ListenerAdapter {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("User Join");
         embed.setColor(Color.green);
-        embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
+        embed.addField("User", event.getUser().getAsMention() + "\n" + displayName, false);
         embed.addField("Account created", "<t:" + event.getUser().getTimeCreated().toEpochSecond() + ":f>", false);
         embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
@@ -496,7 +496,7 @@ public class Main extends ListenerAdapter {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("User Left");
         embed.setColor(Color.red);
-        embed.addField("User", event.getUser().getAsMention() + "  |  " + displayName, false);
+        embed.addField("User", event.getUser().getAsMention() + "\n" + displayName, false);
         if (event.getMember() != null && event.getMember().hasTimeJoined()) {
             embed.addField("Stay duration", Utils.secToTime(Instant.now().getEpochSecond() - event.getMember().getTimeJoined().toEpochSecond()), false);
         }

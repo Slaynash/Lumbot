@@ -151,10 +151,10 @@ public class CommandManager {
     }
 
     public static MessageChannelUnion getModReportChannels(GenericMessageEvent event, String type) {
-        if (event.getChannelType() != ChannelType.PRIVATE) return event.getChannel();
+        if (event.getChannelType() == ChannelType.PRIVATE) return event.getChannel();
         MessageChannelUnion channel = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `?` FROM `LogChannel` WHERE GuildID = ?", type, event.getGuild().getIdLong());
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `" + type + "` FROM `LogChannel` WHERE GuildID = ?", event.getGuild().getIdLong());
             if (rs.next()) {
                 channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
             }
@@ -180,10 +180,10 @@ public class CommandManager {
         return channel;
     }
     public static MessageChannelUnion getModReportChannels(GenericCommandInteractionEvent event, String type) {
-        if (event.getChannelType() != ChannelType.PRIVATE) return (MessageChannelUnion) event.getChannel();
+        if (event.getChannelType() == ChannelType.PRIVATE) return (MessageChannelUnion) event.getChannel();
         MessageChannelUnion channel = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `?` FROM `LogChannel` WHERE GuildID = ?", type, event.getGuild().getIdLong());
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `" + type + "` FROM `LogChannel` WHERE GuildID = ?", event.getGuild().getIdLong());
             if (rs.next()) {
                 channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
             }
