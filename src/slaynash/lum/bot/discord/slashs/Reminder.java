@@ -95,21 +95,26 @@ public class Reminder extends Slash {
         }
 
         // Set color
-        Color color;
+        Color color = null;
         if (event.getOption("color") != null) {
             String colort = event.getOption("color").getAsString();
-            if (colort.startsWith("#")) {
-                colort = colort.substring(1);
+            if (colort.startsWith("#")) colort = colort.substring(1);
+            try {
+                color = (Color) Class.forName("java.awt.Color").getField(colort).get(null);
             }
-            for (char c:colort.toCharArray()) {
-                if (!('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F')) {
-                    event.replyEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nExemple (pure green): 00ff00", Color.RED)).queue();
+            catch (Exception ignored) { }
+            if (color == null) {
+                try {
+                    Long.parseLong(colort, 16);
+                    color = CommandManager.hex2Rgb(colort);
+                }
+                catch (Exception e) {
+                    event.replyEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nExample (pure green): 00ff00", Color.RED)).queue();
                     return;
                 }
             }
-            color = CommandManager.hex2Rgb(colort);
         }
-        else {
+        if (color == null) {
             color = new Color(-13223617);
         }
 

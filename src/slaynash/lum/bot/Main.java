@@ -188,7 +188,7 @@ public class Main extends ListenerAdapter {
             boolean mainBotOnline = true;
             //noinspection InfiniteLoopStatement
             while (true) {
-                Thread.sleep(1000 * 15);
+                Thread.sleep(1000 * (mainBotOnline ? 15 : 1));
                 if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED) {
                     System.out.println("Not Connected to Discord...");
                     continue;
@@ -210,13 +210,16 @@ public class Main extends ListenerAdapter {
                     }
                 }
                 else {
-                    System.out.println("PingChecker: Ping failed, starting backup...");
-                    if (!JDAManager.isEventsEnabled())
-                        JDAManager.enableEvents();
+                    //check if internet is available
+
+
                     if (mainBotOnline) {
+                        System.out.println("PingChecker: Ping failed, starting backup...");
                         JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
                         mainBotOnline = false;
                     }
+                    if (!JDAManager.isEventsEnabled())
+                        JDAManager.enableEvents();
                 }
             }
         }

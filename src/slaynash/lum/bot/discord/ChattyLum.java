@@ -238,26 +238,12 @@ public class ChattyLum {
             event.getMessage().reply("https://cdn.discordapp.com/attachments/773300021117321248/981405263208775680/awooo_56709.mp4").queue();
             return true;
         }
-        if (message.replace(" ", "").contains("welcometovrchat")) {
-            event.getMessage().reply("https://cdn.discordapp.com/attachments/757187539638550610/932623632746836018/WELCOME_TO_VRCHAT_-_TFMJonny_Bo_Burnham_Parody.mp4").queue();
-            return true;
-        }
         if (message.matches("^wah\\b.*")) {
             event.getChannel().sendMessage(wah.get(random.nextInt(wah.size()))).queue();
             return true;
         }
         if (message.replace(" ", "").contains("ohno") && message.contains("anyway")) {
             event.getChannel().sendMessage("https://tenor.com/view/oh-no-oh-no-anyway-gif-18887547").queue();
-            return true;
-        }
-        if (message.matches(".*install vrc(|hat) sdk.*")) {
-            System.out.println("Lum VRCSDK");
-            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/972746728136671232/How_to_install_VRC_SDK.mp4").queue();
-            return true;
-        }
-        if (message.matches(".*\\b(looking for a girl).*")) {
-            System.out.println("looking for a girl");
-            event.getChannel().sendMessage("https://cdn.discordapp.com/attachments/773300021117321248/975632183949688942/looking_for_a_girl.mp4").queue();
             return true;
         }
         if (event.getMessage().getContentRaw().replace(" ", "").equalsIgnoreCase("hatsunemiku")) {

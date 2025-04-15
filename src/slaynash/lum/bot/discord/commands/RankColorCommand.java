@@ -21,17 +21,18 @@ public class RankColorCommand extends Command {
     protected void onServer(String command, MessageReceivedEvent event) {
         try {
             if (command.split(" ").length == 1 || (arg = command.split(" ", 2)[1]).equals("help") || !arg.startsWith("#")) {
-                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.BLUE)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Usage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExample (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.BLUE)).queue();
             }
             else if (arg.length() != 7) {
-                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExample (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
             }
             else {
-                for (char c:arg.substring(1).toCharArray()) {
-                    if (!('0' <= c && c <= '9' || 'a' <= c && c <= 'f' || 'A' <= c && c <= 'F')) {
-                        event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExemple (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
-                        return;
-                    }
+                try {
+                    Long.parseLong(arg.substring(1), 16);
+                }
+                catch (Exception e) {
+                    event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed("Bad hex color !\nUsage: " + ConfigManager.discordPrefix + getName() + " <hexcolor>\nExample (pure green): " + ConfigManager.discordPrefix + getName() + " #00ff00", Color.RED)).queue();
+                    return;
                 }
                 for (Role r:event.getMember().getRoles()) {
                     Color color = r.getColor();

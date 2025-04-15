@@ -241,8 +241,8 @@ public class CommandManager {
     }
 
     public static Color hex2Rgb(String colorStr) {
-        if (colorStr.startsWith("#"))
-            colorStr = colorStr.substring(1);
+        if (colorStr.startsWith("#")) colorStr = colorStr.substring(1);
+        if (colorStr.length() != 6) throw new IllegalArgumentException("Invalid color length");
         return new Color(Integer.valueOf(colorStr.substring(0, 2), 16), Integer.valueOf(colorStr.substring(2, 4), 16), Integer.valueOf(colorStr.substring(4, 6), 16));
     }
 }
