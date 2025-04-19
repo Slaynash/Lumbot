@@ -431,7 +431,7 @@ public class ScamShield {
             }
             String usernameWithTag = event.getAuthor().getEffectiveName();
             String userId = event.getAuthor().getAsMention();
-            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "scam");
+            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(guild, "scam");
             System.out.println("Report channel: " + guildID + " " + reportChannel);
             boolean ssBan;
             GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
