@@ -54,12 +54,12 @@ public class SetLogChannel extends Slash {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE GuildID = ?", guildID);
                 if (rs.next()) {
                     if (event.getOptions().isEmpty()) {
-                        String logs = "Moderation logs are set in this channel for:\n";
+                        StringBuilder logs = new StringBuilder("Moderation logs are set in this channel for:\n");
                         for (Choice types : optionType.getChoices()) {
                             long channel = rs.getLong(types.getAsString());
-                            logs += "- " + types.getName() + " - " + (channel == 0 ? "Not Set" : "<#" + channel + '>') + "\n";
+                            logs.append("- ").append(types.getName()).append(" - ").append(channel == 0 ? "Not Set" : "<#" + channel + '>').append("\n");
                         }
-                        event.reply(logs).queue();
+                        event.reply(logs.toString()).queue();
                     }
                     else {
                         String type = event.getOptions().get(0).getAsString();
