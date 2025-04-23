@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.InteractionHook;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -28,7 +29,7 @@ public class SteamWatcher extends Slash {
             .addOption(OptionType.STRING, "beta", "Enter Mention/Message for public beta", false)
             .addOption(OptionType.STRING, "other", "Enter Mention/Message for non-public changes", false)
             .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-            .setGuildOnly(true);
+            .setContexts(InteractionContextType.GUILD);
     }
 
     @Override

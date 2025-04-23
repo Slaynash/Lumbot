@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
@@ -52,7 +53,7 @@ public class Replies extends Slash {
             .addSubcommands(new SubcommandData("delete", "Remove a reply")
                 .addOption(OptionType.INTEGER, "ukey", "Reply Key used to delete existing Reply", true))
             .setDefaultPermissions(DefaultMemberPermissions.DISABLED)
-            .setGuildOnly(true);
+            .setContexts(InteractionContextType.GUILD);
     }
 
     @Override

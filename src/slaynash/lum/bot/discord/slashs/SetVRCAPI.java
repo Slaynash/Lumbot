@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -14,7 +15,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SetVRCAPI extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return Commands.slash("vrcapi", "Set log channel for VRChat API changes - Admins only").setDefaultPermissions(DefaultMemberPermissions.DISABLED).setGuildOnly(true);
+        return Commands.slash("vrcapi", "Set log channel for VRChat API changes - Admins only").setDefaultPermissions(DefaultMemberPermissions.DISABLED).setContexts(InteractionContextType.GUILD);
     }
 
     @Override

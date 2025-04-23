@@ -5,15 +5,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpTimeoutException;
-import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.Instant;
@@ -50,6 +45,7 @@ import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class MelonScannerApisManager {
     public static final String LOG_IDENTIFIER = "ML:API";
@@ -61,13 +57,6 @@ public class MelonScannerApisManager {
     public static final List<String> badPlugin = new ArrayList<>();
 
     private static final List<MelonScannerApi> apis = new ArrayList<>();
-
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_2)
-            .followRedirects(Redirect.ALWAYS)
-            .cookieHandler(new CookieManager(null, CookiePolicy.ACCEPT_NONE))
-            .connectTimeout(Duration.ofSeconds(45))
-            .build();
 
     private static final Gson gson = new Gson();
     private static Globals server_globals;
@@ -111,9 +100,6 @@ public class MelonScannerApisManager {
                     HttpRequest.Builder builder = HttpRequest.newBuilder()
                         .GET()
                         .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
-                        .setHeader("Cache-Control", "no-cache, no-store, must-revalidate")
-                        .setHeader("Pragma", "no-cache")
-                        .setHeader("Expires", "-1")
                         .timeout(Duration.ofSeconds(45));
 
 
@@ -173,7 +159,7 @@ public class MelonScannerApisManager {
 
                             HttpResponse<byte[]> response;
                             try {
-                                response = downloadRequest(httpClient, request, api.game + " : " + api.name, 8);
+                                response = Utils.downloadRequest(request, api.game + " : " + api.name);
                             }
                             catch (ConnectException e) {
                                 System.out.println("MLAPI: " + e.getMessage());
@@ -431,7 +417,7 @@ public class MelonScannerApisManager {
     private static class Base64toLowerHexString extends OneArgFunction {
         @Override
         public LuaValue call(LuaValue arg) {
-            return LuaValue.valueOf(bytesToHex(Base64.getDecoder().decode(arg.checkjstring())).toLowerCase());
+            return LuaValue.valueOf(Utils.bytesToHex(Base64.getDecoder().decode(arg.checkjstring())).toLowerCase());
         }
     }
 
@@ -520,49 +506,5 @@ public class MelonScannerApisManager {
 
             return mod != null ? mod.downloadLink : null;
         }
-    }
-
-    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
-    public static String bytesToHex(byte[] bytes) {
-        byte[] hexChars = new byte[bytes.length * 2];
-        for (int j = 0; j < bytes.length; j++) {
-            int v = bytes[j] & 0xFF;
-            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-        }
-        return new String(hexChars, StandardCharsets.UTF_8);
-    }
-
-    public static HttpResponse<byte[]> downloadRequest(HttpRequest request, String source) throws Exception {
-        return downloadRequest(httpClient, request, source);
-    }
-    public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source) throws Exception {
-        return downloadRequest(httpClient, request, source, 3);
-    }
-    public static HttpResponse<byte[]> downloadRequest(HttpClient httpClient, HttpRequest request, String source, int attempts) throws Exception {
-        HttpResponse<byte[]> response;
-        Exception exception = null;
-        for (int i = 0; i < attempts; i++) {
-            try {
-                response = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(6, java.util.concurrent.TimeUnit.MINUTES);
-
-                if (response.statusCode() < 200 || response.statusCode() >= 400) {
-                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
-                    throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
-                }
-                if (response.body() == null || response.body().length == 0) {
-                    System.out.println(source + " provided empty response");
-                    throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
-                }
-            }
-            catch (Exception e) {
-                exception = e;
-                System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
-                Thread.sleep(1000 * 30); // Sleep for half a minute
-                continue;
-            }
-            return response;
-        }
-        throw new Exception(exception);
     }
 }

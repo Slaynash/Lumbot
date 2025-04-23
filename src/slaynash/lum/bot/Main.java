@@ -5,7 +5,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -61,7 +60,6 @@ import slaynash.lum.bot.discord.VerifyPair;
 import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.FetchMelonLoaderVersions;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.discord.slashs.SlashManager;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.log.LogSystem;
@@ -147,13 +145,12 @@ public class Main extends ListenerAdapter {
         }
         System.out.println("LUM Started!");
 
-        HttpClient httpClient = HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).followRedirects(HttpClient.Redirect.ALWAYS).connectTimeout(Duration.ofSeconds(20)).build();
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
         if (!ConfigManager.mainBot) {
             HttpResponse<byte[]> response = null;
             while (response == null || response.statusCode() == 200) {
                 try {
-                    response = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker", 2);
+                    response = Utils.downloadRequest(pingCheckRequest, "PingChecker");
                     System.out.println("PingChecker: " + response.statusCode());
                 }
                 catch (Exception e) {
@@ -195,7 +192,7 @@ public class Main extends ListenerAdapter {
                 }
                 int statusCode;
                 try {
-                    statusCode = MelonScannerApisManager.downloadRequest(httpClient, pingCheckRequest, "PingChecker", 2).statusCode();
+                    statusCode = Utils.downloadRequest(pingCheckRequest, "PingChecker").statusCode();
                 }
                 catch (Exception e) {
                     statusCode = 0;

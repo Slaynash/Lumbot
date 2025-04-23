@@ -11,8 +11,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class LumJokes {
     public static final String LOG_IDENTIFIER = "LumJokes";
@@ -53,7 +53,7 @@ public class LumJokes {
                 case 0 -> {
                     try {
                         site = "DADJOKE";
-                        response = MelonScannerApisManager.downloadRequest(dadJokeRequest, "DADJOKE");
+                        response = Utils.downloadRequest(dadJokeRequest, "DADJOKE");
                         joke = new String(response.body());
                     }
                     catch (Exception e) {
@@ -63,7 +63,7 @@ public class LumJokes {
                 case 1 -> {
                     try {
                         site = "JokeAPI";
-                        response = MelonScannerApisManager.downloadRequest(jokeAPIRequest, "JokeAPI");
+                        response = Utils.downloadRequest(jokeAPIRequest, "JokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
                             joke = parsed.get("joke").getAsString();
@@ -82,7 +82,7 @@ public class LumJokes {
                 case 2 -> {
                     try {
                         site = "SpookyJokeAPI";
-                        response = MelonScannerApisManager.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
+                        response = Utils.downloadRequest(spookyjokeAPIRequest, "SpookyJokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
                             joke = parsed.get("joke").getAsString();
@@ -101,7 +101,7 @@ public class LumJokes {
                 case 3 -> {
                     try {
                         site = "ChristmasJokeAPI";
-                        response = MelonScannerApisManager.downloadRequest(christmasjokeAPIRequest, "ChristmasJokeAPI");
+                        response = Utils.downloadRequest(christmasjokeAPIRequest, "ChristmasJokeAPI");
                         JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                         if ("single".equals(parsed.get("type").getAsString())) {
                             joke = parsed.get("joke").getAsString();

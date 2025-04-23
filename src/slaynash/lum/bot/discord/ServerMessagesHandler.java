@@ -288,7 +288,7 @@ public class ServerMessagesHandler {
             byte[] data = is.readAllBytes(); //Blocks so maybe limit large downloads
             is.close();
             MessageDigest digester = MessageDigest.getInstance("SHA-256");
-            String hash = MelonScannerApisManager.bytesToHex(digester.digest(data));
+            String hash = Utils.bytesToHex(digester.digest(data));
             System.out.println("Attached DLL has the hash of: " + hash);
             return MelonScannerApisManager.getMods("ChilloutVR").stream().anyMatch(m -> hash.equalsIgnoreCase(m.versions[0].hash())); //TODO loop through all Unity games with hashes
         }

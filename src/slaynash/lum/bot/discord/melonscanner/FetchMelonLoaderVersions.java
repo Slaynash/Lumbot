@@ -16,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.utils.Utils;
 
 public class FetchMelonLoaderVersions {
     public static void start() {
@@ -199,16 +200,16 @@ public class FetchMelonLoaderVersions {
             Files.write(ml, response.body());
             ZipFile zipFile = new ZipFile(ml.toString());
             if (zipFile.getEntry("MelonLoader/MelonLoader.dll") != null) {
-                net35 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/MelonLoader.dll")).readAllBytes()));
+                net35 = Utils.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/MelonLoader.dll")).readAllBytes()));
             }
             else if (zipFile.getEntry("MelonLoader/net35/MelonLoader.dll") != null) {
-                net35 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net35/MelonLoader.dll")).readAllBytes()));
+                net35 = Utils.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net35/MelonLoader.dll")).readAllBytes()));
             }
             if (zipFile.getEntry("MelonLoader/net6/MelonLoader.dll") != null) {
-                net6 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net6/MelonLoader.dll")).readAllBytes()));
+                net6 = Utils.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net6/MelonLoader.dll")).readAllBytes()));
             }
             else if (zipFile.getEntry("MelonLoader/net8/MelonLoader.dll") != null) {
-                net6 = MelonScannerApisManager.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net8/MelonLoader.dll")).readAllBytes()));
+                net6 = Utils.bytesToHex(MessageDigest.getInstance("SHA-256").digest(zipFile.getInputStream(zipFile.getEntry("MelonLoader/net8/MelonLoader.dll")).readAllBytes()));
             }
             DBConnectionManagerLum.sendUpdate("INSERT INTO `MLhash` (`Version`, `Hash35`, `Hash6`, `Nightly`, `Android`, `DL`) VALUES (?, ?, ?, ?, ?, ?)", version, net35, net6, ci ? "1" : "0", android ? "1" : "0", htmlURL);
             System.out.println("Added MelonLoader version " + version + " to the database");

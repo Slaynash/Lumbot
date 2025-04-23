@@ -6,7 +6,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpClient.Redirect;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -190,6 +195,48 @@ public class Utils {
             default -> {
             }
         }
+    }
+
+    public static HttpResponse<byte[]> downloadRequest(HttpRequest request, String source) throws Exception {
+        int attempts = 3; // Number of attempts to make
+        HttpResponse<byte[]> response;
+        Exception exception = null;
+        for (int i = 0; i < attempts; i++) {
+            HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
+                .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
+                .connectTimeout(Duration.ofSeconds(15)).build();
+            try {
+                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(6, java.util.concurrent.TimeUnit.MINUTES);
+
+                if (response.statusCode() < 200 || response.statusCode() >= 400) {
+                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
+                    throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
+                }
+                if (response.body() == null || response.body().length == 0) {
+                    System.out.println(source + " provided empty response");
+                    throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
+                }
+            }
+            catch (Exception e) {
+                exception = e;
+                System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
+                Thread.sleep(1000 * 15); // Sleep for half a minute
+                continue;
+            }
+            return response;
+        }
+        throw new Exception(exception);
+    }
+
+    private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
+    public static String bytesToHex(byte[] bytes) {
+        byte[] hexChars = new byte[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+        }
+        return new String(hexChars, StandardCharsets.UTF_8);
     }
 
     /*

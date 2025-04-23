@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.Command.Choice;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -30,7 +31,7 @@ public class SetLogChannel extends Slash {
             );
     @Override
     protected CommandData globalSlashData() {
-        return Commands.slash("log", "Set channel to place moderation logs - Admins only").setDefaultPermissions(DefaultMemberPermissions.DISABLED).setGuildOnly(true)
+        return Commands.slash("log", "Set channel to place moderation logs - Admins only").setDefaultPermissions(DefaultMemberPermissions.DISABLED).setContexts(InteractionContextType.GUILD)
             .addOptions(optionType);
     }
 

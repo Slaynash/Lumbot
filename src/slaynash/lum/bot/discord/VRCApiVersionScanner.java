@@ -2,7 +2,6 @@ package slaynash.lum.bot.discord;
 
 import java.net.ConnectException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.ResultSet;
@@ -18,15 +17,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import slaynash.lum.bot.DBConnectionManagerLum;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class VRCApiVersionScanner {
-
-    private static final HttpClient httpClient = HttpClient.newBuilder()
-            .version(HttpClient.Version.HTTP_1_1)
-            .connectTimeout(Duration.ofSeconds(30))
-            .build();
 
     private static String secondLastBVT, lastBVT, lastDG;
 
@@ -42,7 +36,7 @@ public class VRCApiVersionScanner {
 
             while (true) {
                 try {
-                    HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(httpClient, request, "VRChat API");
+                    HttpResponse<byte[]> response = Utils.downloadRequest(request, "VRChat API");
 
                     String newBVT = response.headers().firstValue("x-vrc-api-version").orElse(null);
                     String newDG  = response.headers().firstValue("x-vrc-api-group").orElse(null);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.interactions.InteractionContextType;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -17,7 +18,7 @@ import slaynash.lum.bot.utils.ExceptionUtils;
 public class SetMemes extends Slash {
     @Override
     protected CommandData globalSlashData() {
-        return Commands.slash("meme", "Auto moderate a meme channel - Admins only").addOption(OptionType.CHANNEL, "report", "Optional Channel for message logs", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED).setGuildOnly(true);
+        return Commands.slash("meme", "Auto moderate a meme channel - Admins only").addOption(OptionType.CHANNEL, "report", "Optional Channel for message logs", false).setDefaultPermissions(DefaultMemberPermissions.DISABLED).setContexts(InteractionContextType.GUILD);
     }
 
     @Override

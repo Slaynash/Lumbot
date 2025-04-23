@@ -62,6 +62,7 @@ public class Steam {
     private static int tickerHash;
 
     private static int previousChangeNumber;
+    private static EResult errorResult = EResult.OK;
 
     public static void start() {
         System.out.println("Starting Steam...");
@@ -135,12 +136,15 @@ public class Steam {
     private static void onLoggedOn(LoggedOnCallback callback) {
         EResult result = callback.getResult();
         if (result != EResult.OK) {
-            ExceptionUtils.reportException("Failed to login to Steam: " + result);
+            if (result != errorResult)
+                ExceptionUtils.reportException("Failed to login to Steam: " + result);
+            errorResult = result;
             client.disconnect();
             return;
         }
 
         isLoggedOn = true;
+        errorResult = result;
         System.out.println("Logged in, current valve time is " + callback.getServerTime() + " UTC");
         if (tickerHash > 0)
             ExceptionUtils.reportException("Connected to Steam");

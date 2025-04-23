@@ -17,8 +17,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import in.dragonbra.javasteam.types.KeyValue;
 import slaynash.lum.bot.DBConnectionManagerLum;
-import slaynash.lum.bot.discord.melonscanner.MelonScannerApisManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.Utils;
 
 public class SteamAppDetails {
 
@@ -108,7 +108,7 @@ public class SteamAppDetails {
             }
             if (savedTags.size() != tags.size()) {
                 // fetch new tags from steam in English only (for now)
-                HttpResponse<byte[]> response = MelonScannerApisManager.downloadRequest(SteamTagsRequest, "SteamTags");
+                HttpResponse<byte[]> response = Utils.downloadRequest(SteamTagsRequest, "SteamTags");
                 JsonObject parsed = JsonParser.parseString(new String(response.body())).getAsJsonObject();
                 savedTags.clear();
                 parsed.getAsJsonObject("response").getAsJsonArray("tags").forEach(tag -> savedTags.add(new SteamTag(tag.getAsJsonObject().get("tagid").getAsString(), tag.getAsJsonObject().get("name").getAsString())));
