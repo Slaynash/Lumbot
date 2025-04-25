@@ -197,15 +197,21 @@ public final class DBConnectionManagerLum {
         return r;
     }
 
-    public static void closeRequest(ResultSet resultSet) throws SQLException {
+    public static void closeRequest(ResultSet resultSet) {
+        if (resultSet == null) return;
         PreparedStatement ps;
         synchronized (requests) {
             ps = requests.remove(resultSet);
         }
-        resultSet.close();
-        if (ps != null) {
-            ps.close();
-            requestClosedCount.incrementAndGet();
+        try {
+            resultSet.close();
+            if (ps != null) {
+                ps.close();
+                requestClosedCount.incrementAndGet();
+            }
+        }
+        catch (SQLException e) {
+            ExceptionUtils.reportException("Failed to close ResultSet", e);
         }
     }
 

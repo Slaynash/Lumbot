@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -15,8 +17,10 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.GuildConfigurations;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -111,5 +115,26 @@ public final class CrossServerUtils {
             event.getJDA().getTextChannelById(876466104036393060L).sendMessage("I joined my " + guildSize + "th guild <:Neko_cat_woah:851935805874110504>").queue();
             saveGuildCount(guildSize);
         }
+    }
+    public static List<Guild> getMutualGuilds(User user) {
+        List<Guild> mutualGuilds = new java.util.ArrayList<>();
+        ResultSet rs = null;
+        try {
+            rs = DBConnectionManagerLum.sendRequest("SELECT guild_id FROM users WHERE user_id = ?", user.getId());
+            while (rs.next()) {
+                Guild guild = JDAManager.getJDA().getGuildById(rs.getString("guild_id"));
+                if (guild != null) {
+                    mutualGuilds.add(guild);
+                }
+            }
+        }
+        catch (SQLException e) {
+            ExceptionUtils.reportException("Failed to get mutual guilds", e);
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
+        }
+
+        return mutualGuilds;
     }
 }

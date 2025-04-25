@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import in.dragonbra.javasteam.types.KeyValue;
+import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -81,7 +82,7 @@ public class SteamAppDetails {
 
     private record SteamTag(String tagID, String tagName) {
         @Override
-        public String toString() {
+        public @NotNull String toString() {
             return String.format("(%s,'%s')", tagID, tagName.replace("'", "''"));
         }
     }

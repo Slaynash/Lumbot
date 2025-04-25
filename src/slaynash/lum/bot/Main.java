@@ -8,18 +8,13 @@ import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
-import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.ExceptionEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
@@ -43,11 +38,11 @@ import net.dv8tion.jda.api.events.session.SessionResumeEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.gcardone.junidecode.Junidecode;
 import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
+import slaynash.lum.bot.discord.Members;
 import slaynash.lum.bot.discord.Memes;
 import slaynash.lum.bot.discord.MessageProxy;
 import slaynash.lum.bot.discord.Moderation;
@@ -57,7 +52,6 @@ import slaynash.lum.bot.discord.ScamShield;
 import slaynash.lum.bot.discord.ServerMessagesHandler;
 import slaynash.lum.bot.discord.VRCApiVersionScanner;
 import slaynash.lum.bot.discord.VerifyPair;
-import slaynash.lum.bot.discord.commands.AddMissingRoles;
 import slaynash.lum.bot.discord.melonscanner.FetchMelonLoaderVersions;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
 import slaynash.lum.bot.discord.slashs.SlashManager;
@@ -162,23 +156,6 @@ public class Main extends ListenerAdapter {
             }
             System.out.println("PingChecker: Ping failed, starting up backup...");
             JDAManager.enableEvents();
-        }
-        else {
-            //chunk members for mutuals after loading to prevent Lum from being unresponsive
-            new AddMissingRoles().addMissing(null);
-            for (Guild guild : JDAManager.getJDA().getGuilds()) {
-                if (!CommandManager.autoScreeningRoles.containsKey(guild.getIdLong())) { // already chunked in the AddMissingRoles a few lines above
-                    try {
-                        guild.loadMembers().setTimeout(Duration.ofDays(1)).onError(e -> System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")"));
-                    }
-                    catch (Exception e) {
-                        System.out.println("Failed to chunk members for guild " + guild.getName() + " (" + guild.getId() + ")");
-                        Thread.sleep(1000);
-                        // guild.loadMembers(); // try again
-                    }
-                    Thread.sleep(1000); //rate limit is 100 chuck per minute, gave a little headroom
-                }
-            }
         }
 
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
@@ -388,7 +365,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onGuildJoin(@NotNull GuildJoinEvent event) {
-        event.getGuild().loadMembers();
+        Members.loadAllUsers(event.getGuild());
         CrossServerUtils.checkGuildCount(event);
         try {
             String thankyou = "Thank you for using Lum!\nLum has a few features that can be enabled like the Scam Shield.\nIf you would like any of these enabled, use the command `/config` or contact us in Slaynash's Workbench <https://discord.gg/akFkAG2>\nUse the command `" + ConfigManager.discordPrefix + "help` to see the list of commands.";
@@ -458,95 +435,23 @@ public class Main extends ListenerAdapter {
     }
 
     @Override
-    public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
-        if (report == null) return;
-
-        String displayName;
-        if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
-            displayName = event.getUser().getName();
-        else
-            displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
-
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("User Join");
-        embed.setColor(Color.green);
-        embed.addField("User", event.getUser().getAsMention() + "\n" + displayName, false);
-        embed.addField("Account created", "<t:" + event.getUser().getTimeCreated().toEpochSecond() + ":f>", false);
-        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
-        embed.setTimestamp(Instant.now());
-        String name = Junidecode.unidecode(event.getUser().getName() + event.getUser().getGlobalName()).toLowerCase().replaceAll("[^ a-z]", "");
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            embed.addField("", "Sussy Username", false);
-        }
-        Utils.sendEmbed(embed.build(), report);
+    public void onGuildMemberJoin(@NotNull GuildMemberJoinEvent event) {
+        Members.logMemberJoin(event);
     }
 
     @Override
-    public void onGuildMemberRemove(GuildMemberRemoveEvent event) {
-        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "joins");
-        if (report == null) return;
-
-        String displayName;
-        if (event.getUser().getGlobalName() == null || event.getUser().getName().equals(event.getUser().getGlobalName()))
-            displayName = event.getUser().getName();
-        else
-            displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
-
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("User Left");
-        embed.setColor(Color.red);
-        embed.addField("User", event.getUser().getAsMention() + "\n" + displayName, false);
-        if (event.getMember() != null && event.getMember().hasTimeJoined()) {
-            embed.addField("Stay duration", Utils.secToTime(Instant.now().getEpochSecond() - event.getMember().getTimeJoined().toEpochSecond()), false);
-        }
-        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
-        embed.setTimestamp(Instant.now());
-        Utils.sendEmbed(embed.build(), report);
+    public void onGuildMemberRemove(@NotNull GuildMemberRemoveEvent event) {
+        Members.logMemberLeave(event);
     }
 
     @Override
-    public void onGuildMemberUpdateNickname(GuildMemberUpdateNicknameEvent event) {
-        MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "users");
-        if (report == null) return;
-
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("User Nickname Change");
-        embed.setColor(Color.yellow);
-        embed.addField("User", event.getUser().getAsMention(), false);
-        embed.addField("Old Nickname", event.getOldNickname() == null ? "None" : event.getOldNickname(), false);
-        embed.addField("New Nickname", event.getNewNickname() == null ? "None" : event.getNewNickname(), false);
-        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
-        embed.setTimestamp(Instant.now());
-        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            embed.addField("", "Sussy Username", false);
-        }
-        Utils.sendEmbed(embed.build(), report);
+    public void onGuildMemberUpdateNickname(@NotNull GuildMemberUpdateNicknameEvent event) {
+        Members.logUpdateNickname(event);
     }
 
     @Override
-    public void onUserUpdateName(UserUpdateNameEvent event) {
-        List<Guild> mutualGuilds = new ArrayList<>(event.getUser().getMutualGuilds());
-
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setTitle("User Name Change");
-        embed.setColor(Color.yellow);
-        embed.addField("User", event.getUser().getAsMention(), false);
-        embed.addField("Before", event.getOldName(), false);
-        embed.addField("After", event.getNewName(), false);
-        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
-        embed.setTimestamp(Instant.now());
-        String name = Junidecode.unidecode(event.getUser().getName()).toLowerCase().replaceAll("[^ a-z]", "");
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            embed.addField("", "Sussy Username", false);
-        }
-
-        for (Guild guild : mutualGuilds) {
-            MessageChannelUnion report = CommandManager.getModReportChannels(guild, "users");
-            if (report == null) return;
-            Utils.sendEmbed(embed.build(), report);
-        }
+    public void onUserUpdateName(@NotNull UserUpdateNameEvent event) {
+        Members.logUsernameChange(event);
     }
 
     @Override

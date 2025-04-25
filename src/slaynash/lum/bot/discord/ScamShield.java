@@ -36,16 +36,13 @@ import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.messages.MessagePoll;
-import net.dv8tion.jda.api.events.automod.AutoModExecutionEvent;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
-import net.dv8tion.jda.internal.entities.ReceivedMessage;
 import net.gcardone.junidecode.Junidecode;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
@@ -360,7 +357,7 @@ public class ScamShield {
         suspiciousResults.totalSuspicionCount = suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.suspiciousValue > 0)
             event.getJDA().getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getEffectiveName() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
-                + event.getAuthor().getMutualGuilds().stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
+                + CrossServerUtils.getMutualGuilds(event.getAuthor()).stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
         if (suspiciousResults.suspiciousValue < 3)
             return false;
 
@@ -368,9 +365,9 @@ public class ScamShield {
     }
 
     private static boolean handleCrossBan(MessageReceivedEvent event, ScamResults suspiciousResults) {
-        System.out.println(event.getAuthor().getMutualGuilds().stream().map(Guild::getName).collect(Collectors.toList()));
+        System.out.println(CrossServerUtils.getMutualGuilds(event.getAuthor()).stream().map(Guild::getName).collect(Collectors.toList()));
         if (event.getAuthor().getIdLong() == 761335833307119658L) return false; //please don't cross ban my alt account, it is annoying to rejoin after every test
-        List<Guild> mutualGuilds = new ArrayList<>(event.getAuthor().getMutualGuilds());
+        List<Guild> mutualGuilds = new ArrayList<>(CrossServerUtils.getMutualGuilds(event.getAuthor()));
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
                 return false;  // Do not remove current guild regardless of cross ban setting

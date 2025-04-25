@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.MelonScanner;
+import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
@@ -67,9 +68,9 @@ public class MessageProxy {
             guildchannel = mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L)).complete();
 
             if (sb.toString().isBlank())
-                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).queue();
+                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + CrossServerUtils.getMutualGuilds(author)).queue();
             else
-                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + author.getMutualGuilds()).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
+                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + CrossServerUtils.getMutualGuilds(author)).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
 
         }
         guildchannel.sendMessage(message).queue(s -> saveIDs(event.getMessageIdLong(), s.getIdLong()));
