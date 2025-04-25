@@ -120,7 +120,7 @@ public final class CrossServerUtils {
         List<Guild> mutualGuilds = new java.util.ArrayList<>();
         ResultSet rs = null;
         try {
-            rs = DBConnectionManagerLum.sendRequest("SELECT guild_id FROM users WHERE user_id = ?", user.getId());
+            rs = DBConnectionManagerLum.sendRequest("SELECT guild_id FROM Users WHERE user_id = ?", user.getId());
             while (rs.next()) {
                 Guild guild = JDAManager.getJDA().getGuildById(rs.getString("guild_id"));
                 if (guild != null) {
