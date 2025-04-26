@@ -229,7 +229,7 @@ public class ScamShield {
         }
 
         if (msg.contains("](")) {
-            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>.*?\\.[a-zA-Z]{2,5})(|/.*?)]\\((https?://|)(?<hiddenDomain>.*?\\.\\w{2,5}).*?\\)");
+            Pattern p = Pattern.compile("\\[(https?://|)(?<shownDomain>[^]]*?\\.[a-zA-Z]{2,5})(|/.*?)]\\((https?://|)(?<hiddenDomain>.*?\\.\\w{2,5}).*?\\)");
             Matcher m = p.matcher(msg);
             while (m.find()) {
                 if (!m.group("shownDomain").equalsIgnoreCase(m.group("hiddenDomain")))
