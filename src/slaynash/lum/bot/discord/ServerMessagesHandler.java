@@ -16,6 +16,7 @@ import com.coder4.emoji.EmojiUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageType;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.Message.MentionType;
 import net.dv8tion.jda.api.entities.Message.MessageFlag;
@@ -42,6 +43,10 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
+            if (event.getChannel().getName().contains("no-chat") && event.getMessage().getType() == MessageType.THREAD_CREATED) {
+                event.getMessage().delete().queue();
+                return;
+            }
             if (MessageProxy.fromDev(event))
                 return;
             CommandManager.runAsServer(event);
