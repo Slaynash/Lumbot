@@ -98,9 +98,7 @@ public class SlashManager {
             jda.updateCommands().addCommands(globalSlashes).queue();
             for (Guild guild : jda.getGuilds()) {
                 List<CommandData> gslash = guildSlashes.get(guild.getIdLong());
-                if (gslash == null)
-                    guild.updateCommands().addCommands().queue(null, e -> { });
-                else
+                if (gslash != null)
                     guild.updateCommands().addCommands(gslash).queue(null, e -> { });
             }
         }
