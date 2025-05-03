@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
@@ -43,8 +44,13 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
-            if (event.getChannel().getName().contains("no-chat") && event.getMessage().getType() == MessageType.THREAD_CREATED) {
-                event.getMessage().delete().queue();
+            if (event.getChannel().getName().contains("no-chat")) {
+                if (event.getMessage().getType() == MessageType.THREAD_CREATED)
+                    event.getMessage().delete().queue();
+                else if (!event.getAuthor().isBot() && event.getMessage().getAttachments().isEmpty() && !event.getMessage().getContentRaw().contains("http")) {
+                    event.getMessage().reply("No chat in this channel, please upload a photo or create a thread to chat in.")
+                        .delay(Duration.ofSeconds(6)).flatMap(Message::delete).flatMap(t -> event.getMessage().delete()).queue();
+                }
                 return;
             }
             if (MessageProxy.fromDev(event))
