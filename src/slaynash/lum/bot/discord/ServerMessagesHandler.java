@@ -137,14 +137,6 @@ public class ServerMessagesHandler {
             if (message.startsWith("."))
                 return;
 
-            // ignore any quotes
-            StringBuilder sb = new StringBuilder();
-            for (String line : message.split(System.lineSeparator())) {
-                if (!line.startsWith("> "))
-                    sb.append(line).append(System.lineSeparator());
-            }
-            message = sb.toString().trim().toLowerCase();
-
             if (guildconfig.LumReplies()) {
                 if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
                     event.getMessage().addReaction(Emoji.fromCustom("baka", 828070018935685130L, false)).queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
@@ -172,16 +164,6 @@ public class ServerMessagesHandler {
             }
 
             if (guildconfig.MLReplies()) {
-                if (guildID == 663449315876012052L /* MelonLoader */) {
-                    if (message.contains("melonclient") || message.contains("melon client") || message.contains("tlauncher")) {
-                        event.getMessage().reply("This discord is about MelonLoader, a mod loader for Unity games. If you are looking for a Client, you are in the wrong Discord.").queue();
-                        return;
-                    }
-                    if (message.startsWith("!phas") || message.matches(".*\\b(phas(mo(phobia)?)?)\\b.*") && message.matches(".*\\b(start|open|work|launch|mod|play|cheat|hack|use it|crash(e)?)(s)?\\b.*") && !CrossServerUtils.checkIfStaff(event)) {
-                        event.getMessage().reply("We do not support the use of MelonLoader on Phasmophobia, nor does Phasmophobia devs support MelonLoader.\nPlease uninstall MelonLoader.").queue();
-                        return;
-                    }
-                }
 
                 if (message.startsWith("!loggif")) {
                     System.out.println("log GIF printed");
