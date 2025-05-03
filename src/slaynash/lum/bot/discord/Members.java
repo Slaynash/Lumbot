@@ -34,6 +34,7 @@ public class Members {
             // Check if the user was in guild before
             boolean isRejoining = false;
             long time_left = 0;
+            long time_joined = event.getMember().hasTimeJoined() ? event.getMember().getTimeJoined().toEpochSecond() : Instant.now().getEpochSecond();
             try {
                 String sql = "SELECT * FROM Users WHERE user_id = ? AND guild_id = ?";
                 ResultSet rs = DBConnectionManagerLum.sendRequest(sql, event.getUser().getId(), event.getGuild().getId());
@@ -63,7 +64,7 @@ public class Members {
                 embed.setTitle("User Rejoining");
                 embed.setColor(Color.decode("42069"));
                 if (time_left > 0) {
-                    embed.addField("Last seen", "<t:" + time_left + ":f>", false);
+                    embed.addField("Last seen", Utils.secToTime(time_joined - time_left) + " ago\n<t:" + time_left + ":f>", false);
                 }
                 else {
                     embed.addField("Last seen", "Unknown", false);
