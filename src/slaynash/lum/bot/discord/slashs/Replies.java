@@ -113,7 +113,7 @@ public class Replies extends Slash {
             if (reportChannel == null) {
                 event.reply("I can't find the report channel. Please set it with `/log` in the log channel").queue();
             }
-            if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+            else if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
                 event.reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
             }
         }
