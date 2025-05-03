@@ -214,6 +214,9 @@ public class ChattyLum {
 
     public static boolean handle(String message, MessageReceivedEvent event) {
         //message is lowercased and unidecoded
+        //remove emotes from message
+        message = message.replaceAll("<a?:\\w+:\\d+>", "");
+
         if (
             handleThanks(message, event) ||
             handleHelp(message, event))
