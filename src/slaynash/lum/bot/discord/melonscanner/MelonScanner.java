@@ -416,7 +416,7 @@ public final class MelonScanner {
             if (unityName.equals("unknown"))
                 return;
             try {
-                ResultSet result = DBConnectionManagerLum.sendRequest("CALL `FetchIcon`(?)", unityName);
+                ResultSet result = DBConnectionManagerLum.sendRequest("SELECT * FROM Icons WHERE `UnityName` = ?", unityName);
                 if (result.next()) {
                     String url;
                     if (context.pirate)
@@ -443,6 +443,10 @@ public final class MelonScanner {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Icons` (`UnityName`) VALUES (?)", unityName);
                 }
                 DBConnectionManagerLum.closeRequest(result);
+                try {
+                    DBConnectionManagerLum.sendUpdate("UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = ?", unityName);
+                }
+                catch (Exception ignored) { }
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failure to fetch game logo for " + context.game, e);
