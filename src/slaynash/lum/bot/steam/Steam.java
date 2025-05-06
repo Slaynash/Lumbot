@@ -594,14 +594,15 @@ public class Steam {
         // this function will be called when internal steamkit components write to the debuglog
         @Override
         public void onLog(Class<?> clazz, String message, Throwable throwable) {
-            // for this example, we'll print the output to the console
             System.out.println("[" + LOG_IDENTIFIER + "] " + clazz.getSimpleName() + ": " + message);
         }
 
         @Override
         public void onError(Class<?> clazz, String message, Throwable throwable) {
-            // for this example, we'll print errors the output to the console
             System.err.println("[" + LOG_IDENTIFIER + "] " + clazz.getSimpleName() + ": " + message);
+            if (throwable != null) {
+                throwable.printStackTrace(System.err);
+            }
         }
     }
 }
