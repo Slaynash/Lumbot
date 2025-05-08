@@ -73,6 +73,7 @@ public class ScamShield {
             put("cryptocurrency", 1);
             put("cryptomarket", 2);
             put("$40000", 1);
+            put("$100k", 1);
             put("nitro", 1);
             put("1month", 1);
             put("3month", 1);
@@ -83,6 +84,8 @@ public class ScamShield {
             put("giftactivation", 1);
             put("booster", 1);
             put("download", 1);
+            put("whatsapp", 2);
+            put("telegram", 2);
             put("/t.me/", 2);
             put("100%", 1);
             put("yobro", 1);
@@ -215,7 +218,7 @@ public class ScamShield {
         }
 
         if (crossPost > 0) {
-            ssFoundTerms.put("Crossposted", (int) Math.round(Math.sqrt(crossPost)));
+            ssFoundTerms.put("Crossposted", (int) Math.round(Math.sqrt(crossPost) * 1.4));
         }
 
         int spamCount = (int) allMessages.stream()
@@ -309,6 +312,7 @@ public class ScamShield {
         if (guildconfig != null && !guildconfig.ScamShield()) {
             return false;
         }
+        allMessages.removeIf(m -> event.getMessageIdLong() == m.getMessageIdLong()); //remove original message if edited, needs to be before ssValue
 
         ScamResults suspiciousResults = ssValue(event);
 
@@ -317,8 +321,7 @@ public class ScamShield {
             return false;
 
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
-        allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 3); //remove saved messages for crosspost checks
-        allMessages.removeIf(m -> event.getMessageIdLong() == m.getMessageIdLong()); //remove original message if edited
+        allMessages.removeIf(m -> m.getMessage().getTimeCreated().toLocalDateTime().until(now, ChronoUnit.MINUTES) > 6); //remove saved messages for crosspost checks
         handledMessages.removeIf(m -> m.creationTime.until(now, ChronoUnit.MINUTES) > 3); //remove all saved messages that is older than 3 minutes
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
 
