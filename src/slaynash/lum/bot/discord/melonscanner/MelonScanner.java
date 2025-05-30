@@ -1021,8 +1021,9 @@ public final class MelonScanner {
     private static void reportUserModifiedML(MessageReceivedEvent event) {
         MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "melon"); // https://discord.com/channels/663449315876012052/663461849102286849/801676270974795787
         if (reportChannel != null) {
+            String channelLink = event.isFromGuild() ? "<https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">" : "DM";
             Utils.sendEmbed(Utils.wrapMessageInEmbed(
-                "User " + event.getMember().getAsMention() + " is using an unofficial MelonLoader.\nMessage: <https://discord.com/channels/" + event.getGuild().getId() + "/" + event.getChannel().getId() + "/" + event.getMessageId() + ">",
+                "User " + event.getAuthor().getAsMention() + " is using an unofficial MelonLoader.\nMessage: " + channelLink,
                     Color.orange), reportChannel);
         }
     }

@@ -176,6 +176,10 @@
             "error": "No Support Module Loaded. Assembly Generation most likely failed. Please reinstall MelonLoader or whitelist MelonLoader in your virus scanner."
         },
         {
+            "regex": ".*Runtime config not found at: '(?<path>.*)'",
+            "error": "Missing Runtime config. Please verify that this file exists: `path`. If it doesn't, please reinstall MelonLoader $ML$."
+        },
+        {
             "regex": ".*\\[ERROR] System.OutOfMemoryException: Out of memory",
             "error": "Out of RAM. Make sure that you are using the correct version of MelonLoader and that you have plenty of RAM."
         },

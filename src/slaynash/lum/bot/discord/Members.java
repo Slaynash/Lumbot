@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,9 @@ public class Members {
             String sql = "UPDATE Users SET time_left = ? WHERE user_id = ? AND guild_id = ?";
             DBConnectionManagerLum.sendUpdate(sql, Instant.now().getEpochSecond(), event.getUser().getId(), event.getGuild().getId());
         }
+        catch (SQLException e) {
+            System.out.println("Failed to update user leave time Guild: " + event.getGuild().getId() + " User: " + event.getUser().getId());
+        }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to log user leave", e);
         }
@@ -183,8 +187,6 @@ public class Members {
                     ExceptionUtils.reportException("Failed to load all users", e);
                 }
             }
-        }).onError(error -> {
-            ExceptionUtils.reportException("Failed to load all users", error);
-        });
+        }).onError(error -> ExceptionUtils.reportException("Failed to load all users", error));
     }
 }
