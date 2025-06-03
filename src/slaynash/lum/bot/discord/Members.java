@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.audit.ActionType;
+import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -133,6 +135,7 @@ public class Members {
     }
 
     public static void logUpdateNickname(GuildMemberUpdateNicknameEvent event) {
+        // TODO: Old Nickname is based on cache, save it to the database
         System.out.println("User " + event.getMember().getId() + " changed nickname from " + event.getOldNickname() + " to " + event.getNewNickname());
         MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "users");
         if (report == null) return;
@@ -151,7 +154,13 @@ public class Members {
                 embed.addField("", "Sussy Username", false);
             }
         }
-        Utils.sendEmbed(embed.build(), report);
+        event.getGuild().retrieveAuditLogs().queue(auditLogs -> {
+            AuditLogEntry auditLog = auditLogs.get(0); // Get the most recent audit log entry, may not work for larger guilds
+            if (auditLog.getType().equals(ActionType.MEMBER_UPDATE) && auditLog.getTargetIdLong() == event.getMember().getIdLong() && auditLog.getUser() != event.getUser()) {
+                embed.addField("Changed by staff", auditLog.getUser().getAsMention(), false);
+            }
+            Utils.sendEmbed(embed.build(), report);
+        });
     }
 
     public static void logUsernameChange(UserUpdateNameEvent event) {
