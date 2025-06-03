@@ -5,8 +5,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.Duration;
 
 import net.dv8tion.jda.api.JDA;
