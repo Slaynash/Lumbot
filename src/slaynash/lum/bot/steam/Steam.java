@@ -400,9 +400,13 @@ public class Steam {
                         eb.setDescription(String.join("\n", newCommon.store_tags));
                     }
                     else {
-                        ExceptionUtils.reportException("Something happened with Steam Tags");
-                        System.out.println("Old Tags: " + oldCommon.store_tags);
-                        System.out.println("New Tags: " + newCommon.store_tags);
+                        // tag got replaced with another tag
+                        eb.setTitle(gameDetail.common.name + " Store Tags replaced");
+                        List<String> removedTags = new ArrayList<>(oldCommon.store_tags);
+                        removedTags.removeAll(newCommon.store_tags);
+                        List<String> addedTags = new ArrayList<>(newCommon.store_tags);
+                        addedTags.removeAll(oldCommon.store_tags);
+                        eb.setDescription("Removed: " + String.join("\n", removedTags) + "\nAdded: " + String.join("\n", addedTags));
                     }
                 }
                 if (!eb.isEmpty()) {
