@@ -133,20 +133,23 @@ public class Members {
     }
 
     public static void logUpdateNickname(GuildMemberUpdateNicknameEvent event) {
+        System.out.println("User " + event.getMember().getId() + " changed nickname from " + event.getOldNickname() + " to " + event.getNewNickname());
         MessageChannelUnion report = CommandManager.getModReportChannels(event.getGuild(), "users");
         if (report == null) return;
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("User Nickname Change");
         embed.setColor(Color.yellow);
-        embed.addField("User", event.getUser().getAsMention(), false);
+        embed.addField("User", event.getMember().getAsMention(), false);
         embed.addField("Old Nickname", event.getOldNickname() == null ? "None" : event.getOldNickname(), false);
         embed.addField("New Nickname", event.getNewNickname() == null ? "None" : event.getNewNickname(), false);
-        embed.setThumbnail(event.getUser().getEffectiveAvatarUrl());
+        embed.setThumbnail(event.getMember().getEffectiveAvatarUrl());
         embed.setTimestamp(Instant.now());
-        String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
-        if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
-            embed.addField("", "Sussy Username", false);
+        if (event.getNewNickname() != null) {
+            String name = Junidecode.unidecode(event.getNewNickname()).toLowerCase().replaceAll("[^ a-z]", "");
+            if (CrossServerUtils.testSlurs(name) || name.contains("discord") || name.contains("developer") || name.contains("hypesquad") || name.contains("academy recruitments")) {
+                embed.addField("", "Sussy Username", false);
+            }
         }
         Utils.sendEmbed(embed.build(), report);
     }

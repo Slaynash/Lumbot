@@ -400,7 +400,9 @@ public class Steam {
                         eb.setDescription(String.join("\n", newCommon.store_tags));
                     }
                     else {
-                        ExceptionUtils.reportException("");
+                        ExceptionUtils.reportException("Something happened with Steam Tags");
+                        System.out.println("Old Tags: " + oldCommon.store_tags);
+                        System.out.println("New Tags: " + newCommon.store_tags);
                     }
                 }
                 if (!eb.isEmpty()) {

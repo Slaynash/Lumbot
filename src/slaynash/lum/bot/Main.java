@@ -140,23 +140,6 @@ public class Main extends ListenerAdapter {
         System.out.println("LUM Started!");
 
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
-        if (!ConfigManager.mainBot) {
-            HttpResponse<byte[]> response = null;
-            while (response == null || response.statusCode() == 200) {
-                try {
-                    response = Utils.downloadRequest(pingCheckRequest, "PingChecker");
-                    System.out.println("PingChecker: " + response.statusCode());
-                }
-                catch (Exception e) {
-                    System.out.println("Failed to contact main bot, starting up...");
-                    break;
-                }
-
-                Thread.sleep(1000 * 15);
-            }
-            System.out.println("PingChecker: Ping failed, starting up backup...");
-            JDAManager.enableEvents();
-        }
 
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
             boolean mainBotOnline = true;
@@ -175,7 +158,7 @@ public class Main extends ListenerAdapter {
                     statusCode = 0;
                 }
                 if (statusCode == 200) {
-                    System.out.println("PingChecker: Ping successful, shutting down...");
+                    System.out.println("PingChecker: Ping successful to main bot, everything is fine");
                     if (JDAManager.isEventsEnabled())
                         JDAManager.disableEvents();
                     if (!mainBotOnline) {
@@ -185,7 +168,16 @@ public class Main extends ListenerAdapter {
                 }
                 else {
                     //check if internet is available
-
+                    try {
+                        URL url = new URL("http://www.google.com");
+                        URLConnection connection = url.openConnection();
+                        connection.connect();
+                        System.out.println("Internet is connected");
+                    }
+                    catch (Exception e) {
+                        System.out.println("Internet is not connected");
+                        continue;
+                    }
 
                     if (mainBotOnline) {
                         System.out.println("PingChecker: Ping failed, starting backup...");
