@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.Guild;
@@ -154,13 +155,15 @@ public class Members {
                 embed.addField("", "Sussy Username", false);
             }
         }
-        event.getGuild().retrieveAuditLogs().queue(auditLogs -> {
-            AuditLogEntry auditLog = auditLogs.get(0); // Get the most recent audit log entry, may not work for larger guilds
-            if (auditLog.getType().equals(ActionType.MEMBER_UPDATE) && auditLog.getTargetIdLong() == event.getMember().getIdLong() && auditLog.getUser() != event.getUser()) {
-                embed.addField("Changed by staff", auditLog.getUser().getAsMention(), false);
-            }
-            Utils.sendEmbed(embed.build(), report);
-        });
+        if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)) {
+            event.getGuild().retrieveAuditLogs().queue(auditLogs -> {
+                AuditLogEntry auditLog = auditLogs.get(0); // Get the most recent audit log entry, may not work for larger guilds
+                if (auditLog.getType().equals(ActionType.MEMBER_UPDATE) && auditLog.getTargetIdLong() == event.getMember().getIdLong() && auditLog.getUser() != event.getUser()) {
+                    embed.addField("Changed by staff", auditLog.getUser().getAsMention(), false);
+                }
+                Utils.sendEmbed(embed.build(), report);
+            });
+        }
     }
 
     public static void logUsernameChange(UserUpdateNameEvent event) {
