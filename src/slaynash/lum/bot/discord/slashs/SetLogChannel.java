@@ -21,7 +21,7 @@ public class SetLogChannel extends Slash {
             // value is the SQL column name
             new Command.Choice("MelonLogs", "melon"),
             new Command.Choice("ScamShield", "scam"),
-            // new Command.Choice("Message", "message"),
+            new Command.Choice("Message", "message"),
             new Command.Choice("Kick", "kick"),
             new Command.Choice("Ban", "ban"),
             new Command.Choice("Join/Leave", "joins"),

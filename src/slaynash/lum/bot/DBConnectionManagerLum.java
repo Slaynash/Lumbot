@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -80,6 +81,16 @@ public final class DBConnectionManagerLum {
                     throw new IllegalArgumentException("Timestamp too big to be stored in an int " + ts.getTime() / 1000 + " > " + Integer.MAX_VALUE);
                 ps.setTimestamp(i + 1, ts);
             }
+            else if (args[i].getClass() == OffsetDateTime.class)
+                ps.setTimestamp(i + 1, Timestamp.from(((OffsetDateTime) args[i]).toInstant()));
+            else if (args[i].getClass() == java.util.Date.class)
+                ps.setTimestamp(i + 1, new Timestamp(((java.util.Date) args[i]).getTime()));
+            else if (args[i].getClass() == Double.class)
+                ps.setDouble(i + 1, (double) args[i]);
+            else if (args[i].getClass() == Float.class)
+                ps.setFloat(i + 1, (float) args[i]);
+            else if (args[i].getClass() == byte[].class)
+                ps.setBytes(i + 1, (byte[]) args[i]);
             else throw new IllegalArgumentException("Trying to initialise request with unknown arg type " + args[i].getClass() + "(arg number " + i + ")");
         }
         return ps;

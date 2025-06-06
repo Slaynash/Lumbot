@@ -45,6 +45,7 @@ import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.discord.Members;
 import slaynash.lum.bot.discord.Memes;
+import slaynash.lum.bot.discord.MessageLogger;
 import slaynash.lum.bot.discord.MessageProxy;
 import slaynash.lum.bot.discord.Moderation;
 import slaynash.lum.bot.discord.PrivateMessagesHandler;
@@ -264,6 +265,7 @@ public class Main extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if (!event.getAuthor().isBot()) MessageLogger.logMessage(event);
         if (event.isFromType(ChannelType.PRIVATE)) {
             PrivateMessagesHandler.handle(event);
         }
@@ -278,8 +280,7 @@ public class Main extends ListenerAdapter {
         if (!MessageProxy.edits(event) && !event.isFromType(ChannelType.PRIVATE)) {
             ScamShield.checkForFishing(event);
         }
-
-        //TODO: send log message
+        MessageLogger.updateMessage(event);
     }
 
     @Override
@@ -287,7 +288,7 @@ public class Main extends ListenerAdapter {
         MessageProxy.deletes(event);
         ScamShield.checkDeleted(event);
 
-        //TODO: send log message
+        MessageLogger.deletedMessage(event);
     }
 
     @Override
