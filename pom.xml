@@ -114,7 +114,7 @@
       <!-- for JavaSteam -->
       <groupId>in.dragonbra</groupId>
       <artifactId>javasteam</artifactId>
-      <version>1.6.1-20250601.044615-8</version>
+      <version>1.6.1-20250606.051928-9</version>
     </dependency>
     <dependency>
       <!-- NON-ANDROID ONLY -->
