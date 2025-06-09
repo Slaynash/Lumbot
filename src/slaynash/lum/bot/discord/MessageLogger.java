@@ -12,8 +12,10 @@ import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.google.gson.Gson;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -93,7 +95,8 @@ public class MessageLogger {
                     embed.addField("Content", "Message content was not cached.", false);
                 }
                 else if (messageOldContent.equals(messageContent)) {
-                    embed.addField("Diff", "No changes detected.", false);
+                    // Likely embed updating, no need to report
+                    return;
                 }
                 else {
                     String diff = getDiff(messageOldContent, messageContent);
@@ -102,20 +105,23 @@ public class MessageLogger {
                 embed.addField("Date Posted", "<t:" + timestamp.toEpochSecond() + ":f>", false);
                 embed.addField("Message Link", String.format("https://discord.com/channels/%d/%d/%d", guild, channel, messageId), false);
                 embed.setTimestamp(Instant.now());
-                report.sendMessageEmbeds(embed.build()).queue();
+                if (event.getGuild().getSelfMember().hasPermission((GuildChannel) report, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+                    report.sendMessageEmbeds(embed.build()).queue();
+                }
             }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to check if message exists", e);
         }
-
-        // update the message log in SQL
-        try {
-            String sql = "UPDATE Messages SET content = ?, updateTS = ? WHERE message_id = ?";
-            DBConnectionManagerLum.sendUpdate(sql, messageContent, updateTS, messageId);
-        }
-        catch (Exception e) {
-            ExceptionUtils.reportException("Failed to update message", e);
+        finally {
+            // update the message log in SQL
+            try {
+                String sql = "UPDATE Messages SET content = ?, updateTS = ? WHERE message_id = ?";
+                DBConnectionManagerLum.sendUpdate(sql, messageContent, updateTS, messageId);
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed to update message", e);
+            }
         }
     }
 
