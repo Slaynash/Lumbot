@@ -1,8 +1,13 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -11,6 +16,7 @@ import java.util.List;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -20,6 +26,8 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
+import net.dv8tion.jda.api.utils.FileUpload;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -140,47 +148,67 @@ public class MessageLogger {
                         if (user == null) {
                             user = event.getJDA().retrieveUserById(rs.getString("author_id")).complete();
                         }
+                        if (user.isBot() || user.isSystem()) return; // Don't log bot or system messages
                         String channelId = rs.getString("channel_id");
                         String content = rs.getString("content");
+                        String attachments = rs.getString("attachments");
                         EmbedBuilder embed = new EmbedBuilder();
                         embed.setTitle("Message Deleted");
                         embed.setColor(Color.decode("#ff470f"));
                         embed.setAuthor(user.getEffectiveName(), null, user.getEffectiveAvatarUrl());
                         embed.addField("User", user.getAsMention() + " | " + user.getEffectiveName(), false);
-                        if (content == null || content.isEmpty()) {
+                        if (content == null) {
                             embed.addField("Content", "Message content was not cached.", false);
                         }
-                        else {
+                        else if (content.isEmpty() && (attachments == null || attachments.length() <= 2)) {
+                            embed.addField("Content", "Message content is Empty.", false);
+                        }
+                        else if (!content.isEmpty()) {
                             embed.addField("Content", content, false);
                         }
                         embed.addField("Date Posted", "<t:" + rs.getTimestamp("timestamp").toInstant().getEpochSecond() + ":f>", false);
-                        //https://discord.com/channels/410126604237406209/588350685255565344/1359072870852071564
                         embed.addField("Message Link", String.format("https://discord.com/channels/%s/%s/%s", guild, channelId, messageId), false);
                         embed.setTimestamp(Instant.now());
-                        // don't send the embed if user is bot or system
-                        if (!user.isBot() && !user.isSystem())
-                            Utils.sendEmbed(embed.build(), report);
+
+                        if (attachments != null && attachments.length() > 2) {
+                            long maxFileSize = event.getGuild().getBoostTier().getMaxFileSize();
+                            List<FileUpload> mediaFiles = new java.util.ArrayList<>();
+                            List<String> attachmentList = Arrays.asList(new Gson().fromJson(attachments, String[].class));
+                            for (String attachmentUrl : attachmentList) {
+                                FileUpload media = fetchMedia(attachmentUrl, maxFileSize);
+                                if (media != null) { // cdn is only available for a few seconds after deleted message
+                                    mediaFiles.add(media);
+                                }
+                            }
+                            // TODO: may look nicer to send the embed and files separately
+                            report.sendMessageEmbeds(embed.build()).setFiles(mediaFiles).queue();
+                        }
+                        else {
+                            report.sendMessageEmbeds(embed.build());
+                        }
                     }
                 }
                 else {
                     System.out.println("Guild ID is null for message: " + messageId);
                 }
-
-                // delete the message log in SQL
-                try {
-                    DBConnectionManagerLum.sendUpdate("DELETE FROM Messages WHERE message_id = ?", messageId);
-                }
-                catch (SQLException e) {
-                    ExceptionUtils.reportException("Failed to delete message", e);
-                }
             }
             else {
+                // TODO: Maybe send log message for unknown message deletion
                 System.out.println("Message not found in database: " + messageId);
             }
             DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to send message delete report", e);
+        }
+        finally {
+            // delete the message log in SQL
+            try {
+                DBConnectionManagerLum.sendUpdate("DELETE FROM Messages WHERE message_id = ?", messageId);
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to delete message", e);
+            }
         }
     }
 
@@ -201,5 +229,59 @@ public class MessageLogger {
         for (DiffRow row : rows) sb.append(row.getOldLine()).append("\n");
 
         return sb.toString();
+    }
+
+    private static FileUpload fetchMedia(String url, long maxSize) {
+        // TODO: Check if the URL is a currently valid Discord attachment URL
+        try {
+            // Refresh the URL to get the latest version of the attachment
+            HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"attachment_urls\":[\"" + url + "\"]}"))
+                    .uri(URI.create("https://discord.com/api/v10/attachments/refresh-urls"))
+                    .setHeader("Authorization", "Bot " + ConfigManager.discordToken)
+                    .setHeader("Content-Type", "application/json")
+                    .header("User-Agent", "LUM Bot " + ConfigManager.commitHash)
+                    .timeout(Duration.ofSeconds(30))
+                    .build();
+            HttpResponse<byte[]> response = Utils.downloadRequest(request, "MessageLogger Media Refresh");
+            String refreshedURL = JsonParser.parseString(new String(response.body()))
+                    .getAsJsonObject()
+                    .getAsJsonArray("refreshed_urls")
+                    .get(0)
+                    .getAsJsonObject()
+                    .get("refreshed")
+                    .getAsString();
+
+            // TODO: Check if the refreshed URL is a valid Discord attachment URL
+
+            //download the file from the refreshed URL
+            HttpRequest fileRequest = HttpRequest.newBuilder()
+                    .GET()
+                    .uri(URI.create(refreshedURL))
+                    .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
+                    .timeout(Duration.ofSeconds(30))
+                    .build();
+            HttpResponse<InputStream> fileResponse = Utils.downloadRequestIS(fileRequest, "MessageLogger Media Download");
+
+            byte[] bytes = fileResponse.body().readAllBytes();
+
+            if (bytes.length > maxSize) {
+                System.err.println("File size exceeds the maximum allowed size of " + maxSize + " bytes. File size: " + bytes.length + " bytes");
+                return null; // Return null if the file is too big
+            }
+
+            String fileName = refreshedURL.substring(refreshedURL.lastIndexOf('/') + 1);
+            // also remove the query parameters if they exist
+            if (fileName.contains("?")) {
+                fileName = fileName.substring(0, fileName.indexOf('?'));
+            }
+
+            return FileUpload.fromData(bytes, fileName).asSpoiler();
+        }
+        catch (Exception e) {
+            System.err.println("Failed to fetch media from URL: " + url);
+            ExceptionUtils.reportException("Failed to fetch media for Log", e);
+            return null;
+        }
     }
 }

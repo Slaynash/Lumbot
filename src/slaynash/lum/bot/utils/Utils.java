@@ -2,6 +2,7 @@ package slaynash.lum.bot.utils;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -213,6 +214,35 @@ public class Utils {
                     throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
                 }
                 if (response.body() == null || response.body().length == 0) {
+                    System.out.println(source + " provided empty response");
+                    throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
+                }
+            }
+            catch (Exception e) {
+                exception = e;
+                System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
+                Thread.sleep(1000 * 15); // Sleep for half a minute
+                continue;
+            }
+            return response;
+        }
+        throw new Exception(exception);
+    }
+    public static HttpResponse<InputStream> downloadRequestIS(HttpRequest request, String source) throws Exception {
+        int attempts = 3; // Number of attempts to make
+        HttpResponse<InputStream> response;
+        Exception exception = null;
+        for (int i = 0; i < attempts; i++) {
+            HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
+                .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
+                .connectTimeout(Duration.ofSeconds(15)).build();
+            try {
+                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).get(6, java.util.concurrent.TimeUnit.MINUTES);
+                if (response.statusCode() < 200 || response.statusCode() >= 400) {
+                    System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
+                    throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
+                }
+                if (response.body() == null) {
                     System.out.println(source + " provided empty response");
                     throw new Exception("Lum gotten an empty response: " + response.statusCode() + " from " + source);
                 }
