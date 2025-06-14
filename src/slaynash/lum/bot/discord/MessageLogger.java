@@ -184,7 +184,7 @@ public class MessageLogger {
                             report.sendMessageEmbeds(embed.build()).setFiles(mediaFiles).queue();
                         }
                         else {
-                            report.sendMessageEmbeds(embed.build());
+                            report.sendMessageEmbeds(embed.build()).queue();
                         }
                     }
                 }
