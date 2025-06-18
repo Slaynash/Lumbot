@@ -20,6 +20,7 @@ import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message.Attachment;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -108,7 +109,10 @@ public class MessageLogger {
                 }
                 else {
                     String diff = getDiff(messageOldContent, messageContent);
-                    embed.addField("Diff", diff, false);
+                    if (diff.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH) {
+                        diff = diff.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 3) + "...";
+                    }
+                    embed.setDescription(diff);
                 }
                 embed.addField("Date Posted", "<t:" + timestamp.toEpochSecond() + ":f>", false);
                 embed.addField("Message Link", String.format("https://discord.com/channels/%d/%d/%d", guild, channel, messageId), false);
@@ -164,7 +168,10 @@ public class MessageLogger {
                             embed.addField("Content", "Message content is Empty.", false);
                         }
                         else if (!content.isEmpty()) {
-                            embed.addField("Content", content, false);
+                            if (content.length() > MessageEmbed.DESCRIPTION_MAX_LENGTH) {
+                                content = content.substring(0, MessageEmbed.DESCRIPTION_MAX_LENGTH - 3) + "...";
+                            }
+                            embed.setDescription(content);
                         }
                         embed.addField("Date Posted", "<t:" + rs.getTimestamp("timestamp").toInstant().getEpochSecond() + ":f>", false);
                         embed.addField("Message Link", String.format("https://discord.com/channels/%s/%s/%s", guild, channelId, messageId), false);
