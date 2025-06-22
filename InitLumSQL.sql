@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: May 06, 2025 at 10:32 PM
+-- Generation Time: Jun 22, 2025 at 05:18 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -117,6 +117,24 @@ CREATE TABLE IF NOT EXISTS `MessagePairs` (
   `OGMessage` bigint UNSIGNED NOT NULL,
   `DevMessage` bigint UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Messages`
+--
+
+CREATE TABLE IF NOT EXISTS `Messages` (
+  `message_id` bigint UNSIGNED NOT NULL,
+  `author_id` bigint UNSIGNED NOT NULL,
+  `channel_id` bigint UNSIGNED DEFAULT NULL,
+  `guild_id` bigint UNSIGNED DEFAULT NULL,
+  `content` varchar(4096) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attachments` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `timestamp` timestamp NOT NULL,
+  `updateTS` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -255,6 +273,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
   `user_id` bigint UNSIGNED NOT NULL,
   `time_joined` int UNSIGNED NOT NULL,
   `time_left` int UNSIGNED DEFAULT NULL,
+  `rejoin_count` int UNSIGNED NOT NULL DEFAULT '0',
   `bot` tinyint(1) NOT NULL DEFAULT '0',
   UNIQUE KEY `Member` (`guild_id`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -37,6 +37,7 @@ public class Members {
 
             // Check if the user was in guild before
             boolean isRejoining = false;
+            int rejoinCount = 0;
             long time_left = 0;
             long time_joined = event.getMember().hasTimeJoined() ? event.getMember().getTimeJoined().toEpochSecond() : Instant.now().getEpochSecond();
             try {
@@ -45,6 +46,7 @@ public class Members {
                 isRejoining = rs.next();
                 if (isRejoining) {
                     time_left = rs.getLong("time_left");
+                    rejoinCount = rs.getInt("rejoin_count") + 1;
                 }
                 DBConnectionManagerLum.closeRequest(rs);
             }
@@ -73,6 +75,7 @@ public class Members {
                 else {
                     embed.addField("Last seen", "Unknown", false);
                 }
+                embed.addField("Rejoin count", String.valueOf(rejoinCount), false);
             }
 
             Utils.sendEmbed(embed.build(), report);
@@ -80,7 +83,7 @@ public class Members {
         // Update user in the database
         try {
             long time_joined = event.getMember().hasTimeJoined() ? event.getMember().getTimeJoined().toEpochSecond() : Instant.now().getEpochSecond();
-            String sql = "INSERT INTO Users (user_id, guild_id, time_joined) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `time_joined`=?;";
+            String sql = "INSERT INTO Users (user_id, guild_id, time_joined) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE `time_joined`=?, `rejoin_count`=`rejoin_count`+1;";
             DBConnectionManagerLum.sendUpdate(sql, event.getUser().getId(), event.getGuild().getId(), time_joined, time_joined);
         }
         catch (Exception e) {

@@ -126,6 +126,7 @@ public class MessageLogger {
             ExceptionUtils.reportException("Failed to check if message exists", e);
         }
         finally {
+            System.out.println("Updating message: " + messageId + " | " + messageContent);
             // update the message log in SQL
             try {
                 String sql = "UPDATE Messages SET content = ?, updateTS = ? WHERE message_id = ?";
