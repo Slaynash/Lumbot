@@ -53,6 +53,7 @@ import slaynash.lum.bot.utils.Utils;
 public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
     private static final int instaKick = 7;
+    private static final int instaKickDM = 4;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -87,6 +88,8 @@ public class ScamShield {
             put("whatsapp", 2);
             put("telegram", 2);
             put("/t.me/", 2);
+            put("askme(how)", 1);
+            put("asking(how)", 1);
             put("100%", 1);
             put("yobro", 1);
             put("joinnow", 1);
@@ -95,7 +98,7 @@ public class ScamShield {
             put("underage", 1);
             put("family-world", 3);
             put("hotteen", 1);
-            put("onlyfansleak", 1);
+            put("onlyfans", 1);
             put("checkmybio...", 2);
             put("checkthis", 1);
             put("linkforyou", 1);
@@ -104,6 +107,8 @@ public class ScamShield {
             put("withdrawyourwinnings", 2);
             put("asubscription!", 2);
             put("giftied", 1); //typo is from Junidecode
+            put("10%ofyourprofits", 2);
+            put("onlyinterestedpeople", 1);
             put("seeifitsthesameforyou", 1);
             put("itisalreadyrunningout", 2);
             put("pleasetryclaimthisquickly", 2);
@@ -362,10 +367,10 @@ public class ScamShield {
         if (suspiciousResults.suspiciousValue > 0)
             event.getJDA().getTextChannelById(896839871543525417L).sendMessage("DM from " + event.getAuthor().getEffectiveName() + " " + event.getAuthor().getId() + " gotten " + suspiciousResults.suspiciousValue + " sus points\nMutual Servers: "
                 + CrossServerUtils.getMutualGuilds(event.getAuthor()).stream().map(Guild::getName).toList() + "\n" + suspiciousResults.ssFoundTerms + "\n\n" + message).queue();
-        if (suspiciousResults.suspiciousValue < 3)
+        if (suspiciousResults.suspiciousValue >= instaKickDM)
+            return handleCrossBan(event, suspiciousResults);
+        else
             return false;
-
-        return handleCrossBan(event, suspiciousResults);
     }
 
     private static boolean handleCrossBan(MessageReceivedEvent event, ScamResults suspiciousResults) {
