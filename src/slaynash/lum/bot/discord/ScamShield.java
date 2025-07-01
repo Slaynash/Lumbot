@@ -84,6 +84,8 @@ public class ScamShield {
             put("redeemasteam", 1);
             put("giftactivation", 1);
             put("booster", 1);
+            put("3dartist", 1);
+            put("customavatars", 1);
             put("download", 1);
             put("whatsapp", 2);
             put("telegram", 2);
