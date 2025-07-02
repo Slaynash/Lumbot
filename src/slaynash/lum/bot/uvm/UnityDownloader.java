@@ -45,7 +45,7 @@ public class UnityDownloader {
     private static final HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://services.unity.com/graphql"))
         .header("Content-Type", "application/json")
-        .method("POST", HttpRequest.BodyPublishers.ofString("{\"query\":\"query GetVersions($limit:Int!,$skip:Int!){getUnityReleases(limit:$limit,skip:$skip,entitlements:[XLTS]){pageInfo{hasNextPage}edges{node{version,shortRevision,releaseDate,unityHubDeepLink,stream}}}}\",\"operationName\":\"GetVersions\",\"variables\":{\"limit\": " + maxVersions + ",\"skip\": 0}}"))
+        .method("POST", HttpRequest.BodyPublishers.ofString("{\"query\":\"query GetRelease($limit:Int!,$skip:Int!){getUnityReleases(limit:$limit,skip:$skip,entitlements:[XLTS]){pageInfo{hasNextPage}edges{node{version,shortRevision,releaseDate,unityHubDeepLink,stream}}}}\",\"operationName\":\"GetRelease\",\"variables\":{\"limit\": " + maxVersions + ",\"skip\": 0}}"))
         .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
         .timeout(Duration.ofSeconds(30))
         .build();
