@@ -130,7 +130,7 @@ public class ScamShield {
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put(".*(\\d\\.jpg.*){4}", 2); // weird MrBeast crypto scam
+            put(".*(\\djpg.*){4}", 2); // weird MrBeast crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
