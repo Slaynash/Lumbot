@@ -69,8 +69,8 @@
         "melonscanner.misplacedplugins.more": "- and %s more...",
 
         "melonscanner.outdatedmods.fieldname": "Outdated Mods, please update:",
-        "melonscanner.outdatedmods.cvrmuwarning": "- Consider getting [CVRModUpdater](https://s.slaynash.fr/CVRMULatest) and move it to the **Plugins** folder",
-        "melonscanner.outdatedmods.tldmuwarning": "- Consider getting [AutoUpdatingPlugin](https://github.com/dommrogers/AutoUpdatingPlugin/releases/latest/download/AutoUpdatingPlugin.dll) and move it to the **Plugins** folder",
+        "melonscanner.outdatedmods.cvrmuwarning": "- Consider getting [CVRModUpdater](https://s.slaynash.fr/CVRMULatest) and put it in the **Plugins** folder",
+        "melonscanner.outdatedmods.tldmuwarning": "- Consider getting [AutoUpdatingPlugin](https://github.com/dommrogers/AutoUpdatingPlugin/releases/latest/download/AutoUpdatingPlugin.dll) and put it in the **Plugins** folder",
         "melonscanner.outdatedmods.more": "- and %s more...",
 
         "melonscanner.outdatedplugins.fieldname": "Outdated Plugins, please update:",

@@ -36,15 +36,13 @@ public class Members {
                 displayName = event.getUser().getName() + " (" + event.getUser().getGlobalName() + ")";
 
             // Check if the user was in guild before
-            boolean isRejoining = false;
             int rejoinCount = 0;
             long time_left = 0;
             long time_joined = event.getMember().hasTimeJoined() ? event.getMember().getTimeJoined().toEpochSecond() : Instant.now().getEpochSecond();
             try {
                 String sql = "SELECT * FROM Users WHERE user_id = ? AND guild_id = ?";
                 ResultSet rs = DBConnectionManagerLum.sendRequest(sql, event.getUser().getId(), event.getGuild().getId());
-                isRejoining = rs.next();
-                if (isRejoining) {
+                if (rs.next()) {
                     time_left = rs.getLong("time_left");
                     rejoinCount = rs.getInt("rejoin_count") + 1;
                 }
@@ -66,7 +64,7 @@ public class Members {
                 embed.addField("", "Sussy Username", false);
             }
 
-            if (isRejoining) {
+            if (rejoinCount > 1) {
                 embed.setTitle("User Rejoining");
                 embed.setColor(Color.decode("42069"));
                 if (time_left > 0) {

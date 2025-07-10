@@ -203,7 +203,10 @@ public class ScamShield {
             poll.getAnswers().forEach(answer -> message.append(answer.getText()));
         }
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
-            message.append(embed.getTitle()).append(embed.getDescription());
+            if (embed.getTitle() != null)
+                message.append(embed.getTitle());
+            if (embed.getUrl() != null)
+                message.append(embed.getUrl());
         }
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
@@ -294,6 +297,9 @@ public class ScamShield {
             System.out.println("Final message: " + finalMessage);
         }
         boolean massPing = event.getMessage().getMentions().getUsers().size() > 3; //kick mass ping selfbots
+        if (!event.getMessage().getMentions().mentionsEveryone() && (event.getMessage().getContentRaw().contains("@everyone") || event.getMessage().getContentRaw().contains("@here"))) {
+            massPing = true;
+        }
 
         return new ScamResults(suspiciousValue, ssFoundTerms, massPing);
     }
@@ -416,7 +422,6 @@ public class ScamShield {
         }
         else if (suspiciousResults.massPing) {
             handleBan(event, event.getGuild().getIdLong(), suspiciousResults);
-            event.getChannel().asGuildMessageChannel().sendMessage("Sorry all for the ghost ping! The user causing it has been removed from this server.").queue();
         }
     }
 
