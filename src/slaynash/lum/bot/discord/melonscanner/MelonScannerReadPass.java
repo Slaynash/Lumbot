@@ -418,9 +418,6 @@ public final class MelonScannerReadPass {
                 else if (missingModName.contains("UnityEngine")) {
                     //Ignore for now
                 }
-                else if (missingModName.contains("Il2Cppmscorlib")) {
-                    //Likely plugin ran before Il2Cpp
-                }
                 else
                     context.missingMods.add(missingModName);
             }

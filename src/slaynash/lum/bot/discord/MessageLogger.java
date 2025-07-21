@@ -62,8 +62,8 @@ public class MessageLogger {
     public static void updateMessage(MessageUpdateEvent event) {
         String messageContent = event.getMessage().getContentRaw();
         String messageOldContent = null;
-        Long messageId = event.getMessage().getIdLong();
-        Long author = event.getAuthor().getIdLong();
+        long messageId = event.getMessage().getIdLong();
+        long author = event.getAuthor().getIdLong();
         Long channel = null;
         Long guild = null;
         OffsetDateTime timestamp = event.getMessage().getTimeCreated();
@@ -181,7 +181,7 @@ public class MessageLogger {
                         if (attachments != null && attachments.length() > 2) {
                             long maxFileSize = event.getGuild().getBoostTier().getMaxFileSize();
                             List<FileUpload> mediaFiles = new java.util.ArrayList<>();
-                            List<String> attachmentList = Arrays.asList(new Gson().fromJson(attachments, String[].class));
+                            String[] attachmentList = new Gson().fromJson(attachments, String[].class);
                             for (String attachmentUrl : attachmentList) {
                                 FileUpload media = fetchMedia(attachmentUrl, maxFileSize);
                                 if (media != null) { // cdn is only available for a few seconds after deleted message

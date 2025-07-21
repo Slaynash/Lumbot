@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -417,8 +418,8 @@ public class ScamShield {
             .filter(e -> e.suspiciousResults.massPing)
             .filter(e -> e.messageReceivedEvent.getGuild().getIdLong() == event.getGuild().getIdLong())
             .filter(e -> e.messageReceivedEvent.getAuthor().getIdLong() == event.getAuthor().getIdLong()).count();
-        if (massPingCount <= 1 && suspiciousResults.massPing) {
-            event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server!").queue();
+        if (massPingCount <= 1 && suspiciousResults.massPing) { // maybe TODO: send log to Admins
+            event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server!").delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
         else if (suspiciousResults.massPing) {
             handleBan(event, event.getGuild().getIdLong(), suspiciousResults);

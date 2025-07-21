@@ -121,29 +121,29 @@ public final class MelonScanner {
             fillEmbedDescription(context);
             badModCheck(context);
 
-            boolean issueFound;
             if  (!context.pirate) {
-                issueFound  = mlOutdatedCheck(context);
-                issueFound |= missingEpicCompat(context);
-                issueFound |= knownErrorsCheck(context);
-                issueFound |= duplicatedModsCheck(context);
-                issueFound |= missingModsCheck(context);
-                issueFound |= incompatibleModsCheck(context);
-                issueFound |= corruptedModsCheck(context);
-                issueFound |= modFileNameCheck(context);
-                issueFound |= brokenModsCheck(context);
-                issueFound |= retiredModsCheck(context);
-                issueFound |= oldModsCheck(context);
-                issueFound |= misplacedModsCheck(context);
-                issueFound |= misplacedPluginsCheck(context);
-                issueFound |= modsHasPendingCheck(context);
-                issueFound |= outdatedPluginCheck(context);
-                issueFound |= outdatedModsCheck(context);
-                issueFound |= newerModsCheck(context);
-                issueFound |= unknownModsCheck(context);
-                issueFound |= modsThrowingErrorsCheck(context);
-                issueFound |= minorErrorsHandling(context);
+                mlOutdatedCheck(context);
+                missingEpicCompat(context);
+                knownErrorsCheck(context);
+                duplicatedModsCheck(context);
+                missingModsCheck(context);
+                incompatibleModsCheck(context);
+                corruptedModsCheck(context);
+                modFileNameCheck(context);
+                brokenModsCheck(context);
+                retiredModsCheck(context);
+                oldModsCheck(context);
+                misplacedModsCheck(context);
+                misplacedPluginsCheck(context);
+                modsHasPendingCheck(context);
+                outdatedPluginCheck(context);
+                outdatedModsCheck(context);
+                newerModsCheck(context);
+                unknownModsCheck(context);
+                modsThrowingErrorsCheck(context);
+                minorErrorsHandling(context);
 
+                boolean issueFound = !context.embedBuilder.getFields().isEmpty();
                 if (issueFound) {
                     if (context.isMLOutdated || context.modifiedML)
                         context.embedColor = melonPink;
@@ -309,6 +309,7 @@ public final class MelonScanner {
                 context.retiredMods.add(modName);
             }
             else if (deprecatedName || modVersion.isLowerThan(latestModVersion)) {
+                //noinspection StatementWithEmptyBody
                 if (latestModHash != null && latestModHash.equalsIgnoreCase(logsModDetails.hash));
                 else if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
                     context.outdatedPlugins.add(new MelonOutdatedMod(modName, latestModName, modVersion, latestModVersion, latestModDownloadUrl));
@@ -520,12 +521,9 @@ public final class MelonScanner {
             int result = context.mlVersion.compareTo(context.latestMLVersion);
             System.out.println("ML Outdated, isMLOutdated:" + context.isMLOutdated + " modifiedML:" + context.modifiedML + " Result:" + result + " Installed:" + context.mlVersion);
             switch (result) {
-                case -1 ->
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.update", context.lang, context.mlVersion, context.latestMLVersion), false);
-                case 0 ->
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, context.latestMLVersion), false);
-                case 1 ->
-                        context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.latestMLVersion), false);
+                case -1 -> context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.update", context.lang, context.mlVersion, context.latestMLVersion), false);
+                case 0  -> context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.reinstall", context.lang, context.latestMLVersion), false);
+                case 1  -> context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.downgrade", context.lang, context.latestMLVersion), false);
                 default -> {
                 }
             }
@@ -586,6 +584,9 @@ public final class MelonScanner {
         }
         if (context.missingMods.remove("UnhollowerBaseLib") && context.mlVersion != null && context.mlVersion.isLowerThanOrEquivalentTo(Version.parse("0.6.0"))) {
             addToError(context, Localization.get("\n- A mod needs a version of MelonLoader before 0.6.x maybe try downgrading to 0.5.7 or updating that mod.", context.lang));
+        }
+        if (context.missingMods.remove("Il2Cppmscorlib")) {
+            addToError(context, Localization.get("\n- A plugin ran before Il2Cpp. Please launch MelonLoader once without any plugins.", context.lang));
         }
         if (!context.missingMods.isEmpty()) {
             context.missingMods.sort(String.CASE_INSENSITIVE_ORDER);
@@ -963,7 +964,7 @@ public final class MelonScanner {
         if (context.line.contains("Contacting RemoteAPI...")) {
             error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
         }
-        if (context.line.contains("Deleting Il2Cppmscorlib.dll") && context.game.equalsIgnoreCase("TheLongDark")) {
+        if ("TheLongDark".equalsIgnoreCase(context.game) && context.line.contains("Deleting Il2Cppmscorlib.dll")) {
             error += Localization.get("- MelonLoader likely crashed because of AutoUpdatingPlugin. MelonLoader needs to run atleast once without it.\n", context.lang);
         }
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
@@ -1087,6 +1088,8 @@ public final class MelonScanner {
         if (index == -1)
             context.embedBuilder.addField(field);
         else
-            context.embedBuilder.getFields().set(index, field);
+            context.embedBuilder.getFields().set(index, field);  // TODO: check if error is already in the field
+        context.embedColor = Color.RED;
+        context.hasErrors = true;
     }
 }
