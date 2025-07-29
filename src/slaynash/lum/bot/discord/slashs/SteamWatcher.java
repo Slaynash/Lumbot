@@ -53,8 +53,13 @@ public class SteamWatcher extends Slash {
         if (gameID.isEmpty()) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = ?", guildID);
-                while (rs.next())
-                    channels.add(new SteamChannel(rs.getString("GameID"), guildID, rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                while (rs.next()) {
+                    String cID = rs.getString("ChannelID");
+                    if (event.getJDA().getGuildChannelById(cID) == null)
+                        DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", cID);
+                    else
+                        channels.add(new SteamChannel(rs.getString("GameID"), guildID, cID, rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                }
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (SQLException e) {
