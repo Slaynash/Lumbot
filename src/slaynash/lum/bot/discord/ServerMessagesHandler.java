@@ -314,6 +314,8 @@ public class ServerMessagesHandler {
         try {
             if (content == null || content.isBlank())
                 return false;
+            if (event.getChannelType() == ChannelType.PRIVATE) // Possible to get here from MelonScanner in DMs
+                return MessageProxy.handleDMReplies(event, content);
             content = content.toLowerCase();
             if (event.getAuthor().equals(event.getJDA().getSelfUser()))
                 return true;

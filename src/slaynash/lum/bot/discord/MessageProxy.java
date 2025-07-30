@@ -392,16 +392,15 @@ public class MessageProxy {
         return false;
     }
 
-    private static void handleDMReplies(MessageReceivedEvent event, String content) {
+    public static boolean handleDMReplies(MessageReceivedEvent event, String content) {
         try {
             if (content == null || content.isBlank())
-                return;
+                return false;
             content = content.toLowerCase();
             if (event.getAuthor().equals(event.getJDA().getSelfUser()))
-                return;
-            String guildID = "0";
+                return false;
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = ?", guildID);
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = 0");
 
                 while (rs.next()) {
                     int ukey = rs.getInt("ukey");
@@ -468,8 +467,12 @@ public class MessageProxy {
                         event.getMessage().reply(message).queue();
                         Guild mainGuild = JDAManager.getJDA().getGuildById(JDAManager.mainGuildID);
                         if (mainGuild == null)
-                            return;
+                            return true;
                         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(event.getAuthor().getId())).findFirst().orElse(null);
+                        if (guildchannel == null) {
+                            System.out.println("Creating DM Channel " + event.getAuthor().getId());
+                            guildchannel = mainGuild.createTextChannel("dm-" + event.getAuthor().getEffectiveName() + "-" + event.getAuthor().getId(), mainGuild.getCategoryById(924780998124798022L)).complete();
+                        }
                         guildchannel.sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
                     if (report) {
@@ -493,8 +496,8 @@ public class MessageProxy {
                         }
                     }
                 }
-
                 DBConnectionManagerLum.closeRequest(rs);
+                return true;
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getChannel());
@@ -503,5 +506,6 @@ public class MessageProxy {
         catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 }
