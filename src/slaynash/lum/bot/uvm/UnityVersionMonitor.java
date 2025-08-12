@@ -35,6 +35,8 @@ import slaynash.lum.bot.utils.Utils;
 public class UnityVersionMonitor {
     public static final String LOG_IDENTIFIER = "UnityVersionMonitor";
 
+    private static final boolean CHECKS_ENABLED = false;
+
     private static final List<UnityICall> icalls = new ArrayList<>();
 
     private static final List<MonoStructInfo> monoStructs = new ArrayList<>() {
@@ -108,6 +110,13 @@ public class UnityVersionMonitor {
             return;
         initialisingUnityVersions = remoteVersions.size() >= 10;
 
+        if (!CHECKS_ENABLED)
+        {
+            for (UnityVersion newVersion : remoteVersions)
+                UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
+            return;
+        }
+
         if (isRunningCheck) {
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage("Waiting for running check to finish").queue();
             try {
@@ -118,10 +127,7 @@ public class UnityVersionMonitor {
                 return;
             }
         }
-
         isRunningCheck = true;
-
-        loadIcalls();
 
         if (new File(UnityUtils.downloadPath).list() == null) {
             ExceptionUtils.reportException("Unity download path is missing");
@@ -129,6 +135,8 @@ public class UnityVersionMonitor {
                 UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
             return;
         }
+
+        loadIcalls();
 
         for (UnityVersion newVersion : remoteVersions) {
             UnityDownloader.downloadUnity(newVersion);
