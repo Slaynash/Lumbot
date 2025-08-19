@@ -48,10 +48,18 @@ public class ServerMessagesHandler {
                 if (event.getMessage().getType() == MessageType.THREAD_CREATED)
                     event.getMessage().delete().queue();
                 else if (!event.getAuthor().isBot() && event.getMessage().getAttachments().isEmpty() && !event.getMessage().getContentRaw().contains("http")) {
-                    event.getMessage().reply("No chat in this channel, please upload a photo or create a thread to chat in.")
-                        .delay(Duration.ofSeconds(6)).flatMap(Message::delete).flatMap(t -> event.getMessage().delete()).queue();
+
+                    event.getChannel().getHistoryBefore(event.getMessage(), 1).queue(history -> {
+                        if (history.getRetrievedHistory().isEmpty() || history.getRetrievedHistory().get(0).getAuthor() != event.getAuthor()
+                            || history.getRetrievedHistory().get(0).getAttachments().isEmpty() || history.getRetrievedHistory().get(0).getContentRaw().contains("http")
+                            || event.getMessage().getTimeCreated().isAfter(history.getRetrievedHistory().get(0).getTimeCreated().plusMinutes(5)))
+                        {
+                            event.getMessage().reply("No chat in this channel, please upload a photo or create a thread to chat in.")
+                                .delay(Duration.ofSeconds(6)).flatMap(Message::delete).flatMap(t -> event.getMessage().delete()).queue();
+                        }
+                    });
+                    return;
                 }
-                return;
             }
             if (MessageProxy.fromDev(event))
                 return;

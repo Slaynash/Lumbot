@@ -918,6 +918,9 @@ public final class MelonScanner {
 
     private static boolean modsThrowingErrorsCheck(MelonScanContext context) {
         context.modsThrowingErrors.removeAll(context.brokenMods);
+        if (context.modsThrowingErrors.remove("Il2CppAssemblyGenerator")) {
+            addToError(context, Localization.get("\n- Il2CppAssemblyGenerator failed to generate correctly. Please delete the MelonLoader folder and reinstall MelonLoader.", context.lang));
+        }
         if (!context.modsThrowingErrors.isEmpty() && !context.isMLOutdated) {
             context.modsThrowingErrors.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();

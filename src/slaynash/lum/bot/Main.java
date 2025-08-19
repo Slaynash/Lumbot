@@ -6,9 +6,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.http.HttpRequest;
 import java.time.Duration;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -39,6 +41,9 @@ import net.dv8tion.jda.api.events.session.SessionResumeEvent;
 import net.dv8tion.jda.api.events.user.UserTypingEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.jetbrains.annotations.NotNull;
 import slaynash.lum.bot.api.API;
 import slaynash.lum.bot.discord.CommandManager;
@@ -141,55 +146,57 @@ public class Main extends ListenerAdapter {
         }
         System.out.println("LUM Started!");
 
-        HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
-
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
-            boolean mainBotOnline = true;
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                Thread.sleep(1000 * (mainBotOnline ? 15 : 1));
-                if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED) {
-                    System.out.println("Not Connected to Discord...");
-                    continue;
-                }
-                int statusCode;
-                try {
-                    statusCode = Utils.downloadRequest(pingCheckRequest, "PingChecker").statusCode();
-                }
-                catch (Exception e) {
-                    statusCode = 0;
-                }
-                if (statusCode == 200) {
-                    System.out.println("PingChecker: Ping successful to main bot, everything is fine");
-                    if (JDAManager.isEventsEnabled())
-                        JDAManager.disableEvents();
-                    if (!mainBotOnline) {
-                        JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup is shutting down").queue();
-                        mainBotOnline = true;
-                    }
-                }
-                else {
-                    //check if internet is available
-                    try {
-                        URL url = new URL("http://www.google.com");
-                        URLConnection connection = url.openConnection();
-                        connection.connect();
-                        System.out.println("Internet is connected");
-                    }
-                    catch (Exception e) {
-                        System.out.println("Internet is not connected");
-                        continue;
-                    }
+            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.scheduleAtFixedRate(Main::backupCheckMain, 15, 15, TimeUnit.SECONDS);
+        }
+    }
 
-                    if (mainBotOnline) {
-                        System.out.println("PingChecker: Ping failed, starting backup...");
-                        JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
-                        mainBotOnline = false;
-                    }
-                    if (!JDAManager.isEventsEnabled())
-                        JDAManager.enableEvents();
-                }
+    static boolean mainBotOnline = true;
+    static final OkHttpClient client = new OkHttpClient();
+    private static void backupCheckMain() {
+        HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
+        if (JDAManager.getJDA().getStatus() != JDA.Status.CONNECTED) {
+            System.out.println("Not Connected to Discord...");
+            return;
+        }
+        int statusCode;
+        try {
+            statusCode = Utils.downloadRequest(pingCheckRequest, "PingChecker").statusCode();
+        }
+        catch (Exception e) {
+            statusCode = 0;
+        }
+        if (statusCode == 200) {
+            System.out.println("PingChecker: Ping successful to main bot, everything is fine");
+            if (JDAManager.isEventsEnabled())
+                JDAManager.disableEvents();
+            if (!mainBotOnline) {
+                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup is shutting down").queue();
+                mainBotOnline = true;
             }
+        }
+        else {
+            //check if internet is available
+            try {
+                URL url = new URL("http://www.google.com");
+                Request request = new Request.Builder().url(url).build();
+                Response response = client.newCall(request).execute();
+                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                System.out.println("Internet is available so can not reach main bot");
+            }
+            catch (Exception e) {
+                System.out.println("Internet is not available");
+                return;
+            }
+
+            if (mainBotOnline) {
+                System.out.println("PingChecker: Ping failed, starting backup...");
+                JDAManager.getJDA().getGuildById(633588473433030666L).getTextChannelById(1184560349039575152L).sendMessage("Backup can't contact Lum and starting up").queue();
+                mainBotOnline = false;
+            }
+            if (!JDAManager.isEventsEnabled())
+                JDAManager.enableEvents();
         }
     }
 
@@ -367,8 +374,9 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
             else {
-                net.dv8tion.jda.api.entities.Member owner = event.getGuild().retrieveOwner().complete();
-                owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
+                event.getGuild().retrieveOwner().queue(owner -> {
+                    owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
+                });
             }
         }
         catch (Exception e) {

@@ -67,10 +67,15 @@ public class MessageProxy {
                     });
             guildchannel = mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L)).complete();
 
+            String mutuals = author.getAsMention() + "\n\n" + "Mutuals:\n" + CrossServerUtils.getMutualGuilds(author);
+            if (mutuals.length() > Message.MAX_CONTENT_LENGTH) {
+                mutuals = mutuals.substring(0, Message.MAX_CONTENT_LENGTH);
+            }
+
             if (sb.toString().isBlank())
-                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + CrossServerUtils.getMutualGuilds(author)).queue();
+                guildchannel.sendMessage(mutuals).queue();
             else
-                guildchannel.sendMessage(author.getAsMention() + "\n\n" + "Mutuals:\n" + CrossServerUtils.getMutualGuilds(author)).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
+                guildchannel.sendMessage(mutuals).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
 
         }
         guildchannel.sendMessage(message).queue(s -> saveIDs(event.getMessageIdLong(), s.getIdLong()));
