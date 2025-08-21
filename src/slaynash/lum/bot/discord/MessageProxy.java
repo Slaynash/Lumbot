@@ -407,6 +407,7 @@ public class MessageProxy {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = 0");
 
+                boolean found = false;
                 while (rs.next()) {
                     int ukey = rs.getInt("ukey");
                     String regex = rs.getString("regex");
@@ -471,8 +472,10 @@ public class MessageProxy {
                     else if (message != null && !message.isBlank()) {
                         event.getMessage().reply(message).queue();
                         Guild mainGuild = JDAManager.getJDA().getGuildById(JDAManager.mainGuildID);
-                        if (mainGuild == null)
+                        if (mainGuild == null) {
+                            System.out.println("Main guild not found");
                             return true;
+                        }
                         TextChannel guildchannel = mainGuild.getTextChannels().stream().filter(c -> c.getName().contains(event.getAuthor().getId())).findFirst().orElse(null);
                         if (guildchannel == null) {
                             System.out.println("Creating DM Channel " + event.getAuthor().getId());
@@ -480,6 +483,7 @@ public class MessageProxy {
                         }
                         guildchannel.sendMessage(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                     }
+                    found = true;
                     if (report) {
                         MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "reply");
                         if (reportChannel != null) {
@@ -502,7 +506,7 @@ public class MessageProxy {
                     }
                 }
                 DBConnectionManagerLum.closeRequest(rs);
-                return true;
+                return found;
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getChannel());
