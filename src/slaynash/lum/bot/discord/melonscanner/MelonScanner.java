@@ -791,28 +791,6 @@ public final class MelonScanner {
 
     private static boolean outdatedModsCheck(MelonScanContext context) {
         if (!context.outdatedMods.isEmpty()) {
-            String muMessage;
-            switch (context.game) {
-                case "ChilloutVR" -> {
-                    if (context.misplacedPlugins.contains("CVRModUpdater.Loader"))
-                        muMessage = "";
-                    else if (context.loadedMods.containsKey("CVRModUpdater.Loader"))
-                        muMessage = "";
-                    else if (context.loadedMods.containsKey("UpdateChecker"))
-                        muMessage = "";
-                    else
-                        muMessage = Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
-                }
-                case "TheLongDark" -> {
-                    if (context.misplacedPlugins.contains("AutoUpdatingPlugin"))
-                        muMessage = "";
-                    else if (context.loadedMods.containsKey("AutoUpdatingPlugin"))
-                        muMessage = "";
-                    else
-                        muMessage = Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
-                }
-                default -> muMessage = "";
-            }
 
             StringBuilder error = new StringBuilder();
             String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0));
@@ -824,13 +802,11 @@ public final class MelonScanner {
                 else
                     break; // no next outdated Mod
 
-                if (error.length() + nextModLine.length() + muMessage.length() + 18 > MessageEmbed.VALUE_MAX_LENGTH) {
+                if (error.length() + nextModLine.length() + 18 > MessageEmbed.VALUE_MAX_LENGTH) {
                     error.append(Localization.getFormat("melonscanner.outdatedmods.more", context.lang, context.outdatedMods.size() - i)).append("\n"); //length is about 17 char
                     break;
                 }
             }
-            if (context.outdatedMods.size() >= 2)
-                error.insert(0, muMessage + "\n");
 
             context.embedBuilder.addField(Localization.get("melonscanner.outdatedmods.fieldname", context.lang), error.substring(0, Math.min(error.toString().length(), MessageEmbed.VALUE_MAX_LENGTH)), false);
             context.embedColor = Color.ORANGE;
@@ -943,6 +919,18 @@ public final class MelonScanner {
 
         if (context.missingMods.contains("Assembly-CSharp"))
             error += Localization.get("- Missing crucial assemblies, check for antivirus file tampering and regenerate assemblies or reinstall melonloader\n", context.lang);
+
+        switch (context.game) {
+            case "ChilloutVR" -> {
+                if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))
+                    error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
+            }
+            case "TheLongDark" -> {
+                if (!context.loadedMods.containsKey("AutoUpdatingPlugin") && !context.misplacedPlugins.contains("AutoUpdatingPlugin"))
+                    error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
+            }
+            default -> { }
+        }
 
         if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
             long guildID = context.messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : context.messageReceivedEvent.getGuild().getIdLong();
