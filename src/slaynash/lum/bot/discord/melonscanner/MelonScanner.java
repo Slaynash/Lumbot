@@ -920,16 +920,18 @@ public final class MelonScanner {
         if (context.missingMods.contains("Assembly-CSharp"))
             error += Localization.get("- Missing crucial assemblies, check for antivirus file tampering and regenerate assemblies or reinstall melonloader\n", context.lang);
 
-        switch (context.game) {
-            case "ChilloutVR" -> {
-                if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))
-                    error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
+        if (context.game != null) {
+            switch (context.game) {
+                case "ChilloutVR" -> {
+                    if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))
+                        error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
+                }
+                case "TheLongDark" -> {
+                    if (!context.loadedMods.containsKey("AutoUpdatingPlugin") && !context.misplacedPlugins.contains("AutoUpdatingPlugin"))
+                        error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
+                }
+                default -> { }
             }
-            case "TheLongDark" -> {
-                if (!context.loadedMods.containsKey("AutoUpdatingPlugin") && !context.misplacedPlugins.contains("AutoUpdatingPlugin"))
-                    error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
-            }
-            default -> { }
         }
 
         if (context.noMods && context.misplacedMods.isEmpty() && !context.preListingModsPlugins && context.errors.isEmpty()) {
