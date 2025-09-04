@@ -47,7 +47,7 @@ public class Reminders extends TimerTask {
                         continue;
                     GuildChannel gchannel = guild.getGuildChannelById(channelID);
                     MessageChannel channel = (MessageChannel) gchannel;
-                    if (!channel.canTalk()) {
+                    if (channel == null || !channel.canTalk()) {
                         user.openPrivateChannel().queue(pchannel -> pchannel.sendMessageEmbeds(embedBuilder.build()).queue());
                     }
                     else if (guild.getSelfMember().hasPermission(gchannel, Permission.MESSAGE_EMBED_LINKS)) {
