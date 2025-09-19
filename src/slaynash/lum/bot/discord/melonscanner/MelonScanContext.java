@@ -64,6 +64,7 @@ public class MelonScanContext {
     // Game Infos
     public String game;
     public Version gameBuild;
+    public String gameBuildRaw;
     public boolean epic = false;
 
     // Mod listing - temp

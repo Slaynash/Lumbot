@@ -509,7 +509,7 @@ public final class MelonScanner {
                 if (context.overrideMLVersion.isHigherThan(context.mlVersion) && context.overrideMLVersion.isHigherThan(context.latestMLVersion))
                     context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.overridenightly", context.lang, context.arch), false);
                 else
-                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion), false);
+                    context.embedBuilder.addField(Localization.get("melonscanner.mloutdated.fieldname", context.lang), Localization.getFormat("melonscanner.mloutdated.override", context.lang, context.overrideMLVersion, context.mlVersion), false);
                 context.isMLOutdated = true;
                 return true;
             }
@@ -914,6 +914,10 @@ public final class MelonScanner {
 
     private static boolean minorErrorsHandling(MelonScanContext context) {
         String error = "";
+
+        if ("BloonsTD6".equalsIgnoreCase(context.game) && "UNKNOWN".equals(context.gameBuildRaw))
+            error += "Latest BTD6 update has broken MelonLoader. Please wait for a fix.\n";
+
         if (context.noMods && context.missingMods.isEmpty() && context.preListingModsPlugins && !context.errors.contains(MelonLoaderError.incompatibleAssemblyError))
             error += Localization.get("melonscanner.othererrors.partiallog", context.lang) + "\n";
 

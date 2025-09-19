@@ -628,7 +628,8 @@ public final class MelonScannerReadPass {
                 context.errors.add(new MelonLoaderError("Your Game Version is blank. Please verify that both " + context.game + " and MelonLoader are installed properly."));
                 return true;
             }
-            context.gameBuild = Version.tryParse(split[1].trim().replaceAll("\\.0(\\d)", ".$1"), false).orElse(null);
+            context.gameBuildRaw = split[1].trim();
+            context.gameBuild = Version.tryParse(context.gameBuildRaw.replaceAll("\\.0(\\d)", ".$1"), false).orElse(null);
             System.out.println("Game version " + context.gameBuild);
             return true;
         }

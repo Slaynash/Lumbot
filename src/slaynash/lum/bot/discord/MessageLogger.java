@@ -95,11 +95,20 @@ public class MessageLogger {
             MessageChannelUnion report = CommandManager.getModReportChannels(guild, "message");
             if (report != null) {
                 User user = event.getJDA().getUserById(author);
+                if (user == null) {
+                    user = event.getJDA().retrieveUserById(author).complete();
+                }
                 EmbedBuilder embed = new EmbedBuilder();
                 embed.setTitle("Message Updated");
                 embed.setColor(Color.decode("#337fd5"));
-                embed.setAuthor(user.getEffectiveName(), null, user.getEffectiveAvatarUrl());
-                embed.addField("User", user.getAsMention() + " | " + user.getEffectiveName(), false);
+                if (user == null) {
+                    embed.setAuthor("<@" + author + ">", null, null);
+                    embed.addField("User", "<@" + author + "> | Unknown User", false);
+                }
+                else {
+                    embed.setAuthor(user.getEffectiveName(), null, user.getEffectiveAvatarUrl());
+                    embed.addField("User", user.getAsMention() + " | " + user.getEffectiveName(), false);
+                }
                 if (messageOldContent == null) {
                     embed.addField("Content", "Message content was not cached.", false);
                 }

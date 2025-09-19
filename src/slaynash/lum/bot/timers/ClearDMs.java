@@ -16,7 +16,7 @@ public class ClearDMs extends TimerTask {
             return;
         List<TextChannel> channels = mainGuild.getCategoryById(924780998124798022L).getTextChannels();
         channels.forEach(c -> c.retrieveMessageById(c.getLatestMessageId()).queue(m -> {
-            if (m.getTimeCreated().isBefore(OffsetDateTime.now().minusDays(7))) {
+            if (m.getTimeCreated().isBefore(OffsetDateTime.now().minusDays(14))) {
                 c.delete().queue();
             }
         }, e -> System.out.println("Failed to retrieve message from channel " + c.getName())));

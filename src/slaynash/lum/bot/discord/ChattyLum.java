@@ -69,7 +69,7 @@ public class ChattyLum {
     private static final ArrayList<String> thankedSentencesRare = new ArrayList<>(Arrays.asList(
         "https://tenor.com/view/barrack-obama-youre-welcome-welcome-gif-12542858",
         "https://tenor.com/view/obama-pew-deal-with-it-finger-pistol-gif-18056062",
-        "https://tenor.com/view/your-welcome-gif-23991412",
+        "https://tenor.com/view/keanu-reeves-you%27re-welcome-your-welcome-welcome-gif-14530451123339000551",
         "https://tenor.com/view/sparrow-welcome-pirate-pirates-of-the-caribbean-film-series-gif-17171224",
         "https://tenor.com/view/dance-party-dance-off-dance-moves-anime-dress-gif-13775278",
         "Notices you senpai <:cirHappy:829458722634858496>"
@@ -347,7 +347,7 @@ public class ChattyLum {
             event.getChannel().sendMessage("<:Neko_Rule_the_World:949548832302194718>").queue();
             return true;
         }
-        if (message.matches(".*\\b(cookie)\\b.*")) {
+        if (message.matches(".*\\b(cookie(|s))\\b.*")) {
             System.out.println("Lum Cookie");
             event.getMessage().addReaction(Emoji.fromUnicode("🍪")).queue();
             return true;
