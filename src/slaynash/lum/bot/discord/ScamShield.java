@@ -90,7 +90,7 @@ public class ScamShield {
             put("download", 1);
             put("whatsapp", 2);
             put("telegram", 2);
-            put("/t.me/", 2);
+            put("/tme/", 2); //telegram link
             put("askme(how)", 1);
             put("asking(how)", 1);
             put("100%", 1);
@@ -102,7 +102,7 @@ public class ScamShield {
             put("family-world", 3);
             put("hotteen", 1);
             put("onlyfans", 1);
-            put("checkmybio...", 2);
+            put("checkmybio", 2);
             put("checkthis", 1);
             put("linkforyou", 1);
             put("joinmyserver", 1);
