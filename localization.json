@@ -241,7 +241,7 @@
         "melonscanner.othererrors.fieldname": "Andere Fehler:",
         "melonscanner.othererrors.partiallog": "- Die Log Datei ist unvollständig. Entweder ist MelonLoader abgestürzt oder du hast den Bearbeitungsmodus in der MelonLoader-Konsole aufgerufen und musst in der Konsole rechtsklicken.",
         "melonscanner.othererrors.nomods": "- Du hast keine Mods in deinem Mods-Ordner installiert.",
-        "melonscanner.othererrors.nomodscvrmg": "- Du hast keine Mods in deinem Mods-Ordner installiert. Verfügbare Mods findest du in <#1002058238545641542> und im [VRCMelonAssistant](https://github.com/knah/VRCMelonAssistant/releases/latest/download/VRCMelonAssistant.exe)",
+        "melonscanner.othererrors.nomodscvrmg": "- You have no mods installed in your Mods folder. Take a look at <#1002058238545641542> for some mods to install.",
         "melonscanner.othererrors.nomodstld": "- Du hast keine Mods in deinem Mods-Ordner installiert. [*Nur ZUUL*](https://tldmods.com/)",
         "melonscanner.othererrors.unidentifiederrors": "- Es gibt einige nicht identifizierte Fehler. Bitte warte bis ein Moderator oder ein Helfer die Datei manuell überprüft.",
 

@@ -433,9 +433,14 @@ public final class MelonScanner {
                     }
 
                     if (result.getString("MLoverride") != null) {
-                        Version override = Version.parse(result.getString("MLoverride"), false);
-                        System.out.println("ML override for " + context.game + ": " + override);
-                        context.overrideMLVersion = override;
+                        String override = result.getString("MLoverride");
+
+                        if (override.equalsIgnoreCase("nightly"))
+                            context.overrideMLVersion = context.latestMLNightly;
+                        else
+                            context.overrideMLVersion = Version.parse(override, false);
+
+                        System.out.println("ML override for " + context.game + ": " + context.overrideMLVersion);
                     }
                 }
                 else {

@@ -16,6 +16,7 @@ import slaynash.lum.bot.DBConnectionManagerLum;
 
 public class MelonScanContext {
     public Version latestMLVersion = null;
+    public Version latestMLNightly = null;
     public Version overrideMLVersion = null;
 
     public final Attachment attachment;
@@ -132,18 +133,25 @@ public class MelonScanContext {
         this.messageReceivedEvent = messageReceivedEvent;
         this.lang = lang;
 
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Nightly = 0 AND Android = 0 ORDER BY `TS` DESC LIMIT 1");
-            if (rs.next()) {
+            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Nightly = 0 AND Android = 0 ORDER BY `TS` DESC LIMIT 1");
+            if (rs.next())
                 this.latestMLVersion = Version.parse(rs.getString("Version"));
-            }
-            else {
+            else
                 this.latestMLVersion = Version.of(6, 9, 0);
-            }
             DBConnectionManagerLum.closeRequest(rs);
+            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE Android = 0 ORDER BY `TS` DESC LIMIT 1");
+            if (rs.next())
+                this.latestMLNightly = Version.parse(rs.getString("Version"));
+            else
+                this.latestMLNightly = Version.of(6, 9, 0);
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
         }
     }
 
