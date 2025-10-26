@@ -131,7 +131,7 @@ public class ScamShield {
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put(".*(1(jpg|png).*)", 1); // weird crypto scam
+            put(".*(1(jpg|png).*)", 2); // weird crypto scam
             put(".*(\\d(jpg|png).*){4}", 2); // weird crypto scam
             put(".*(image(jpg|png).*){4}", 2); // weird crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
