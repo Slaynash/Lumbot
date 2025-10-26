@@ -131,7 +131,9 @@ public class ScamShield {
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put(".*(\\djpg.*){4}", 2); // weird MrBeast crypto scam
+            put(".*(1(jpg|png).*)", 1); // weird crypto scam
+            put(".*(\\d(jpg|png).*){4}", 2); // weird crypto scam
+            put(".*(\\image(jpg|png).*){4}", 2); // weird crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
@@ -203,6 +205,7 @@ public class ScamShield {
             message.append(poll.getQuestion());
             poll.getAnswers().forEach(answer -> message.append(answer.getText()));
         }
+        if (!event.getMessage().getEmbeds().isEmpty()) System.out.println("Message has " + event.getMessage().getEmbeds().size() + " embeds");
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             if (embed.getTitle() != null)
                 message.append(embed.getTitle());
