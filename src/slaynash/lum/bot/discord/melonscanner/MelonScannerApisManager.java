@@ -4,7 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.zip.GZIPInputStream;
 
 import com.github.zafarkhaja.semver.Version;
@@ -157,14 +157,7 @@ public class MelonScannerApisManager {
 
                             HttpRequest request = builder.build();
 
-                            HttpResponse<byte[]> response;
-                            try {
-                                response = Utils.downloadRequest(request, api.game + " : " + api.name);
-                            }
-                            catch (ConnectException e) {
-                                System.out.println("MLAPI: " + e.getMessage());
-                                break;
-                            }
+                            HttpResponse<byte[]> response = Utils.downloadRequest(request, api.game + " : " + api.name);
                             byte[] responseBody = response.body();
                             if (api.isGZip) {
                                 ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
@@ -205,7 +198,7 @@ public class MelonScannerApisManager {
                             if (modsLuaRaw == LuaValue.FALSE || modsLuaRaw == LuaValue.NIL) {
                                 if (apiMods.isEmpty())
                                     apiMods = api.cachedMods;
-                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.game + " : " + api.name, constructedURI);
+                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.game + " : (" + api.name + ")[" + constructedURI + "]");
                                 doneFetching = true;
                             }
                             else {
@@ -374,19 +367,28 @@ public class MelonScannerApisManager {
                         else
                             Thread.sleep(100);
                     }
-                    catch (HttpTimeoutException exception) {
-                        ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + api.name + ", " + constructedURI);
-                    }
-                    catch (IOException exception) {
-                        if (exception.getMessage().contains("GOAWAY")) {
-                            ExceptionUtils.reportException(api.game + " : " + api.name + " is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
-                        }
-                        else
-                            ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + api.name + ", " + constructedURI, exception.getMessage());
-                    }
-                    catch (Exception exception) {
+                    catch (Exception baseexception) {
+                        Throwable throwable = baseexception;
+                        if (baseexception.getCause() instanceof ExecutionException executionException)
+                            throwable = executionException.getCause();
+                        
                         if (erroringAPIs.stream().noneMatch(entry -> entry.getKey() == api)) {
-                            ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + api.name + ", " + constructedURI, exception);
+                            if (throwable instanceof HttpTimeoutException) {
+                                ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + "(" + api.name + ")[" + constructedURI + "]");
+                            }
+                            else if (throwable instanceof IOException ioexception)
+                            {
+                                if (ioexception.getMessage().contains("Network is unreachable")) {
+                                    ExceptionUtils.reportException("MelonScanner API Network Error when fetching " + api.game + " : " + "(" + api.name + ")[" + constructedURI + "]");
+                                }
+                                else if (ioexception.getMessage().contains("GOAWAY")) {
+                                    ExceptionUtils.reportException(api.game + " : " + "(" + api.name + ")[" + constructedURI + "] is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
+                                }
+                                else
+                                    ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + "(" + api.name + ")[" + constructedURI + "]", ioexception.getMessage());
+                            }
+                            else
+                                ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + "(" + api.name + ")[" + constructedURI + "]", throwable);
                         }
                         erroringAPIs.add(Map.entry(api, Instant.now()));
                     }
