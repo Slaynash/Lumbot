@@ -64,7 +64,7 @@ public class Members {
                 embed.addField("", "Sussy Username", false);
             }
 
-            if (rejoinCount > 1) {
+            if (rejoinCount > 0) {
                 embed.setTitle("User Rejoining");
                 embed.setColor(Color.decode("42069"));
                 if (time_left > 0) {
