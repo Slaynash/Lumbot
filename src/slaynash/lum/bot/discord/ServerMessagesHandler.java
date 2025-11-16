@@ -44,6 +44,30 @@ public class ServerMessagesHandler {
 
     public static void mainHandle(MessageReceivedEvent event) {
         try {
+            long guildID = event.getGuild().getIdLong();
+            String guildIDstr = event.getGuild().getId();
+            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
+            String message = Junidecode.unidecode(event.getMessage().getContentStripped()).toLowerCase();
+            String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
+            Message replied = event.getMessage().getReferencedMessage();
+            List<Attachment> attachments = event.getMessage().getAttachments();
+            if (message.startsWith(ConfigManager.discordPrefix + "ping"))
+                message = message.substring(ConfigManager.discordPrefix.length() + 4).trim();
+
+            System.out.println(String.format("[%s][%s][%s] %s%s%s: %s%s",
+                    event.getGuild().getName(),
+                    event.getChannel().getName(),
+                    event.getChannelType(),
+                    event.getAuthor().getEffectiveName(),
+                    event.getMessage().isEdited() ? " *edited*" : "",
+                    event.getMessage().getType().isSystem() ? " *system*" : "",
+                    event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
+                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
+
+            if (attachments.size() > 0) {  // temp debug for scam bot breaking bots
+                System.out.println(event.getRawData().toString());
+            }
+
             if (event.getChannel().getName().contains("no-chat")) {
                 if (event.getMessage().getType() == MessageType.THREAD_CREATED)
                     event.getMessage().delete().queue();
@@ -61,13 +85,7 @@ public class ServerMessagesHandler {
                     return;
                 }
             }
-            if (MessageProxy.fromDev(event))
-                return;
-            CommandManager.runAsServer(event);
-            if (event.getChannel().getType() == ChannelType.NEWS) {
-                handleAP(event);
-                return;
-            }
+
             if (event.getMessage().getType().isSystem() || event.isWebhookMessage()) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
@@ -75,36 +93,37 @@ public class ServerMessagesHandler {
                 }
                 return;
             }
+
+            if (MessageProxy.fromDev(event))
+                return;
+            if (guildconfig.ScamShield())
+                new Thread(() -> ScamShield.checkForFishing(event)).start();
+
+            if (event.getChannel().getType() == ChannelType.NEWS) {
+                handleAP(event);
+                return;
+            }
+
             if (ABCpolice.abcPolice(event))
                 return;
             if (Memes.memeRecieved(event))
                 return;
 
-            long guildID = event.getGuild().getIdLong();
-            String guildIDstr = event.getGuild().getId();
-            GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
-            String message = Junidecode.unidecode(event.getMessage().getContentStripped()).toLowerCase();
-            String memberMention = event.getMessage().getMember() == null ? "" : event.getMessage().getMember().getAsMention();
-            Message replied = event.getMessage().getReferencedMessage();
-            List<Attachment> attachments = event.getMessage().getAttachments();
-            if (message.startsWith(ConfigManager.discordPrefix + "ping"))
-                message = message.substring(6).trim();
+            if (event.getChannel().getType() == ChannelType.TEXT && !event.getChannel().canTalk())
+                return;
 
-            System.out.println(String.format("[%s][%s][%s] %s%s%s: %s%s",
-                    event.getGuild().getName(),
-                    event.getChannel().getName(),
-                    event.getChannelType(),
-                    event.getAuthor().getEffectiveName(),
-                    event.getMessage().isEdited() ? " *edited*" : "",
-                    event.getMessage().getType().isSystem() ? " *system*" : "",
-                    event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
-                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
+            CommandManager.runAsServer(event);
 
-            if (attachments.size() == 1) {  // temp debug for scam bot breaking bots
-                System.out.println(event.getRawData().toString());
+            if (replied != null && replied.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
+                MelonScanner.translateLog(event);
+
+            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
+                event.getMessage().delete().queue();
+                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
+                return;
             }
 
-            if (event.getChannel().getType() == ChannelType.TEXT && !event.getChannel().canTalk())
+            if (message.startsWith("."))
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
@@ -132,26 +151,6 @@ public class ServerMessagesHandler {
                         }
                     }).start();
                 }
-            }
-
-            if (replied != null && replied.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
-                MelonScanner.translateLog(event);
-
-            if (guildconfig.ScamShield())
-                new Thread(() -> ScamShield.checkForFishing(event)).start();
-
-            if (guildconfig.DLLRemover() && !event.getMessage().isEdited() && !checkDllPostPermission(event) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
-                event.getMessage().delete().queue();
-                event.getChannel().sendMessageEmbeds(Utils.wrapMessageInEmbed(memberMention + " tried to post a " + fileExt + " file which is not allowed." + (fileExt.equals("dll") ? "\nPlease only download mods from trusted sources." : ""), Color.YELLOW)).queue();
-                return;
-            }
-
-            if (message.startsWith("."))
-                return;
-
-            if (guildconfig.LumReplies()) {
-                if (event.getAuthor().getIdLong() == 381571564098813964L) // Miku Hatsune#6969
-                    event.getMessage().addReaction(Emoji.fromCustom("baka", 828070018935685130L, false)).queue(); // was requested https://discord.com/channels/600298024425619456/600299027476643860/855140894171856936
             }
 
             if (handleReplies(event, message))
