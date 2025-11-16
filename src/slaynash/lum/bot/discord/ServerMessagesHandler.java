@@ -100,6 +100,10 @@ public class ServerMessagesHandler {
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
                     attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
 
+            if (attachments.size() == 1) {  // temp debug for scam bot breaking bots
+                System.out.println(event.getRawData().toString());
+            }
+
             if (event.getChannel().getType() == ChannelType.TEXT && !event.getChannel().canTalk())
                 return;
 
