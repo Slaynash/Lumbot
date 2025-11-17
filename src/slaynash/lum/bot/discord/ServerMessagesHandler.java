@@ -62,7 +62,7 @@ public class ServerMessagesHandler {
                     event.getMessage().isEdited() ? " *edited*" : "",
                     event.getMessage().getType().isSystem() ? " *system*" : "",
                     event.getMessage().getContentRaw().replace("\n", "\n\t\t"),
-                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.get(0).getUrl()));
+                    attachments.isEmpty() ? "" : " *has attachments* " + attachments.stream().map(Attachment::getUrl).collect(java.util.stream.Collectors.joining(" "))));
 
             if (attachments.size() > 0) {  // temp debug for scam bot breaking bots
                 System.out.println(event.getRawData().toString());

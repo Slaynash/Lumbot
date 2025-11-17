@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
@@ -206,7 +207,9 @@ public class ScamShield {
             message.append(poll.getQuestion());
             poll.getAnswers().forEach(answer -> message.append(answer.getText()));
         }
-        if (!event.getMessage().getEmbeds().isEmpty()) System.out.println("Message has " + event.getMessage().getEmbeds().size() + " embeds");
+        for (Attachment file : event.getMessage().getAttachments()) {
+            message.append(file.getFileName());
+        }
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             if (embed.getTitle() != null)
                 message.append(embed.getTitle());
