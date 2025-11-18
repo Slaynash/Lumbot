@@ -389,9 +389,8 @@ public class MelonScannerApisManager {
                             }
                             else
                                 ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", throwable);
-
-                            erroringAPIs.add(Map.entry(api, Instant.now()));
                         }
+                        erroringAPIs.add(Map.entry(api, Instant.now()));
                     }
 
                 }
