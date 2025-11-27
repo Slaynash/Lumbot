@@ -108,6 +108,7 @@ public class ScamShield {
             put("linkforyou", 1);
             put("joinmyserver", 1);
             put("takeit)", 2);
+            put("imagesdscom", 2);
             put("withdrawyourwinnings", 2);
             put("asubscription!", 2);
             put("10%ofyourprofits", 2);
