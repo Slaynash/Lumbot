@@ -127,6 +127,7 @@ public class ScamShield {
             put("standoutinyourfavoritediscord", 2);
             put("standoutinyourfavoritesdiscord", 2);
             put("ifinterestedsendmeadirectmessage", 2);
+            put("dmmeif", 1);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*invest.*crypto.*", 1);

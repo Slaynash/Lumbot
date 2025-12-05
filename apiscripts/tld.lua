@@ -1,22 +1,22 @@
-local apiData = data:getAsJsonObject():entrySet():iterator()
+local apiData = data:getAsJsonArray()
 local mods = {}
 
-while apiData:hasNext() do
-    local entry = apiData:next()
+for i = 0, apiData:size() - 1, 1 do
+    local entry = apiData:get(i)
 
     -- convert the aliases to a LuaTable
-    local srcAliases = entry:getValue():get("Aliases")
+    local srcAliases = entry:get("Aliases")
     local aliases = {}
     for iAlias = 0, srcAliases:size() - 1, 1 do
         table.insert(aliases, srcAliases:get(iAlias):getAsString()) -- lua arrays start at 1
     end
 
     table.insert(mods, {
-        name = entry:getKey(),
-        version = entry:getValue():get("Version"):getAsString(),
-        downloadLink = entry:getValue():get("Download"):get("browser_download_url"):getAsString(),
-        isbroken = entry:getValue():get("Error"):getAsBoolean(),
-        modtype = entry:getValue():get("Type"):getAsString(),
+        name = entry:get("Name"):getAsString(),
+        version = entry:get("Version"):getAsString(),
+        downloadLink = entry:get("Download"):getAsString(),
+        isbroken = entry:get("Error"):getAsBoolean(),
+        modtype = entry:get("Type"):getAsString(),
         aliases = aliases
     })
 end

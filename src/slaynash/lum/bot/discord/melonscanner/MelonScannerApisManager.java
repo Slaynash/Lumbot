@@ -173,7 +173,7 @@ public class MelonScannerApisManager {
 
                                 responseBody = decompressedStream.toByteArray();
                             }
-                            String responseString = new String(responseBody);
+                            String responseString = new String(responseBody).trim();
                             if (responseString.charAt(0) == '<') {
                                 ExceptionUtils.reportException("Received HTML for " + api.name);
                                 break;
@@ -371,7 +371,7 @@ public class MelonScannerApisManager {
                         Throwable throwable = baseexception;
                         if (baseexception.getCause() instanceof ExecutionException executionException)
                             throwable = executionException.getCause();
-                        
+
                         if (erroringAPIs.stream().noneMatch(entry -> entry.getKey() == api)) {
                             if (throwable instanceof HttpTimeoutException) {
                                 ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
