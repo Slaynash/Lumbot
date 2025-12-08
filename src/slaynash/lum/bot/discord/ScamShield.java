@@ -139,7 +139,7 @@ public class ScamShield {
             put(".*(\\d(jpg|png).*){4}", 2); // weird crypto scam
             put(".*(image(jpg|png).*){4}", 2); // weird crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
-            put(".*_(https//imgurcom/\\w{7}){4}", 4); // weird crypto scam
+            put(".*_(https//imgurcom/.{7}){4}", 4); // weird crypto scam
         }};
     private static final Map<String, Integer> ssTermsPlus = new HashMap<>() {{
             put("ru/", 1);
