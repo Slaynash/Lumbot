@@ -108,6 +108,7 @@ public class Main extends ListenerAdapter {
         API.start();
 
         MelonScanner.init();
+        ScamShield.init();
 
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);

@@ -1,7 +1,9 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -30,6 +32,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -46,6 +50,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
+import net.sourceforge.tess4j.Tesseract;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -128,6 +133,11 @@ public class ScamShield {
             put("standoutinyourfavoritesdiscord", 2);
             put("ifinterestedsendmeadirectmessage", 2);
             put("dmmeif", 1);
+            put("$2,500", 1);
+            put("withdrawtocrypto", 1);
+            put("dontmissyourchances", 1);
+            put("cusewin", 3);
+            put("launchofmyowncryptocurrencycasino", 3);
         }};
     private static final Map<String, Integer> ssTermsMatches = new HashMap<>() {{
             put(".*invest.*crypto.*", 1);
@@ -196,6 +206,14 @@ public class ScamShield {
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
+    private static Tesseract tesseract;
+
+    public static void init()
+    {
+        tesseract = new Tesseract();
+        tesseract.setTessVariable("user_defined_dpi", "300");
+    }
+
     public static ScamResults ssValue(MessageReceivedEvent event) {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
         String msg = event.getMessage().getContentStripped();
@@ -219,6 +237,26 @@ public class ScamShield {
             if (embed.getUrl() != null)
                 message.append(embed.getUrl());
         }
+
+        
+        for (Attachment file : event.getMessage().getAttachments()) {
+            if (file.isImage()) {
+                try
+                {
+                    InputStream is = file.getProxy().download().get();
+                    BufferedImage img = ImageIO.read(is);
+                    String ocrResult = tesseract.doOCR(img);
+
+                    System.out.println("OCR Result: " + ocrResult);
+
+                    message.append(ocrResult);
+                }
+                catch (Exception e) {
+                    ExceptionUtils.reportException("Failed OCR in SS", "source: " + file.getUrl(), e);
+                }
+            }
+        }
+
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
         long crossPost = 0;
