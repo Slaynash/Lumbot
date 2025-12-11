@@ -53,10 +53,13 @@ public class LumLogOutput extends PrintStream {
                 break;
             }
         }
-
-        if (loggingElement != null)
-            super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] [" + loggingElement + "] " + obj);
-        else
-            super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] " + obj);
+        
+        String[] lines = obj.split("\n");
+        for (String line : lines) {
+            if (loggingElement != null)
+                super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] [" + loggingElement + "] " + line);
+            else
+                super.println("[" + TimeManager.getTimeForLog() + "] [" + name + "] " + line);
+        }
     }
 }
