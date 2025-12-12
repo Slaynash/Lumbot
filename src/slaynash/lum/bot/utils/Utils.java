@@ -282,6 +282,15 @@ public class Utils {
         return fileResponse;
     }
 
+    public static String extractFileName(String url) {
+        String fileName = url.substring(url.lastIndexOf('/') + 1);
+        // also remove the query parameters if they exist
+        if (fileName.contains("?")) {
+            fileName = fileName.substring(0, fileName.indexOf('?'));
+        }
+        return fileName;
+    }
+
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
     public static String bytesToHex(byte[] bytes) {
         byte[] hexChars = new byte[bytes.length * 2];

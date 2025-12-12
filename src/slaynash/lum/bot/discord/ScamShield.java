@@ -3,10 +3,12 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -236,15 +238,18 @@ public class ScamShield {
 
         for (Attachment file : event.getMessage().getAttachments()) {
             if (file.isImage()) {
-                String url = file.getProxy().getUrl();
-                try {
+                String url = file.getUrl();
+                try {  // Don't use proxy, it regenerates the image into a different format
                     System.out.println("[OCR] Downloading " + url);
-                    File img = file.getProxy().downloadToPath().get().toFile();
 
-                    if (img == null) {
-                        System.out.println("[OCR] failed to download image " + url);
-                        continue;
-                    }
+                    InputStream response = Utils.downloadRequestIS(url);
+                    byte[] bytes = response.readAllBytes();
+                    response.close();
+                    String filename = Utils.extractFileName(url);
+                    String extension = filename.contains(".") ? filename.substring(filename.lastIndexOf('.')) : "png";
+                    String nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.'));
+                    File img = File.createTempFile(nameWithoutExtension, extension);
+                    Files.write(img.toPath(), bytes);
 
                     System.out.println("[OCR] Running OCR on " + url);
                     Instant start = Instant.now();

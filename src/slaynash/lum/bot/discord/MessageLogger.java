@@ -255,11 +255,7 @@ public class MessageLogger {
                 return null; // Return null if the file is too big
             }
 
-            String fileName = refreshedURL.substring(refreshedURL.lastIndexOf('/') + 1);
-            // also remove the query parameters if they exist
-            if (fileName.contains("?")) {
-                fileName = fileName.substring(0, fileName.indexOf('?'));
-            }
+            String fileName = Utils.extractFileName(url);
 
             return FileUpload.fromData(bytes, fileName).asSpoiler();
         }
