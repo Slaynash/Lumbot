@@ -248,6 +248,11 @@ public class ScamShield {
                     InputStream is = file.getProxy().download().get();
                     BufferedImage img = ImageIO.read(is);
 
+                    if (img == null) {
+                        System.out.println("[OCR] failed to read image " + url);
+                        continue;
+                    }
+
                     System.out.println("[OCR] Running OCR on " + url);
                     Instant start = Instant.now();
                     String ocrResult = tesseract.doOCR(img);
