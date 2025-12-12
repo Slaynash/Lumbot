@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -30,6 +32,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
 
 public class Utils {
@@ -40,6 +43,7 @@ public class Utils {
         }
         return translation;
     }
+
     public static String translate(String langFrom, String langTo, String text) {
         if (langFrom == null || langTo == null || text == null)
             return "";
@@ -66,12 +70,15 @@ public class Utils {
         }
         return response.toString().trim().replace("] (", "](").replace(" /", "/").replace("/ ", "/").replace(" .", ".");
     }
+
     public static MessageEmbed wrapMessageInEmbed(String message) {
         return wrapMessageInEmbed(message, null, null);
     }
+
     public static MessageEmbed wrapMessageInEmbed(String message, Color color) {
         return wrapMessageInEmbed(message, color, null);
     }
+
     public static MessageEmbed wrapMessageInEmbed(String message, Color color, String imageURL) {
         EmbedBuilder eb = new EmbedBuilder();
         if (color != null)
@@ -88,6 +95,7 @@ public class Utils {
     public static void replyEmbed(String message, Color color, MessageReceivedEvent event) {
         replyEmbed(message, color, null, event);
     }
+
     public static void replyEmbed(String message, Color color, String imageURL, MessageReceivedEvent event) {
         MessageEmbed embed = wrapMessageInEmbed(message, color, imageURL);
 
@@ -99,6 +107,7 @@ public class Utils {
             event.getMessage().reply(embed.getDescription()).queue();
         }
     }
+
     public static void replyEmbed(MessageEmbed embed, MessageReceivedEvent event) {
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))
             return;
@@ -120,6 +129,7 @@ public class Utils {
             event.getChannel().sendMessage(embed.getDescription()).queue();
         }
     }
+
     public static void sendEmbed(MessageEmbed embed, MessageReceivedEvent event) {
         if (!event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_SEND))
             return;
@@ -129,6 +139,7 @@ public class Utils {
             event.getChannel().sendMessage(embed.getDescription()).queue();
         }
     }
+
     public static void sendEmbed(MessageEmbed embed, MessageChannelUnion channel) {
         if (channel == null)
             return;
@@ -163,6 +174,7 @@ public class Utils {
             }
         }
     }
+
     public static void sendMessage(String message, MessageChannelUnion channel) {
         if (channel == null)
             return;
@@ -228,7 +240,8 @@ public class Utils {
         }
         throw new Exception(exception);
     }
-    public static HttpResponse<InputStream> downloadRequestIS(HttpRequest request, String source) throws Exception {
+
+    public static InputStream downloadRequestIS(HttpRequest request, String source) throws Exception {
         int attempts = 3; // Number of attempts to make
         HttpResponse<InputStream> response;
         Exception exception = null;
@@ -253,9 +266,20 @@ public class Utils {
                 Thread.sleep(1000 * 15); // Sleep for half a minute
                 continue;
             }
-            return response;
+            return response.body();
         }
         throw new Exception(exception);
+    }
+
+    public static InputStream downloadRequestIS(String url) throws Exception {
+        HttpRequest fileRequest = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(url))
+                .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
+                .timeout(Duration.ofSeconds(30))
+                .build();
+        InputStream fileResponse = downloadRequestIS(fileRequest, "MessageLogger Media Download");
+        return fileResponse;
     }
 
     private static final byte[] HEX_ARRAY = "0123456789ABCDEF".getBytes(StandardCharsets.US_ASCII);
@@ -314,6 +338,7 @@ public class Utils {
         }
         return costs[s2.length()];
     }
+
     public static List<String> extractUrls(String text) {
         //https://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
         List<String> containedUrls = new ArrayList<>();
@@ -351,6 +376,7 @@ public class Utils {
             }
         }).start();
     }
+
     public static String secToTime(long sec) {
         long seconds = sec % 60;
         long minutes = sec / 60;
@@ -364,5 +390,32 @@ public class Utils {
             return String.format("%02d:%02d:%02d", hours, minutes, seconds);
         }
         return String.format("00:%02d:%02d", minutes, seconds);
+    }
+
+    public static String refreshMediaURL(String mediaURL) {
+        try {
+            // Refresh the URL to get the latest version of the attachment
+            HttpRequest request = HttpRequest.newBuilder()
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"attachment_urls\":[\"" + mediaURL + "\"]}"))
+                    .uri(URI.create("https://discord.com/api/v10/attachments/refresh-urls"))
+                    .setHeader("Authorization", "Bot " + ConfigManager.discordToken)
+                    .setHeader("Content-Type", "application/json")
+                    .header("User-Agent", "LUM Bot " + ConfigManager.commitHash)
+                    .timeout(Duration.ofSeconds(30))
+                    .build();
+            HttpResponse<byte[]> response = downloadRequest(request, "MessageLogger Media Refresh");
+            String refreshedURL = JsonParser.parseString(new String(response.body()))
+                    .getAsJsonObject()
+                    .getAsJsonArray("refreshed_urls")
+                    .get(0)
+                    .getAsJsonObject()
+                    .get("refreshed")
+                    .getAsString();
+            return refreshedURL;
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("refreshMediaURL Failed", e);
+        }
+        return mediaURL;
     }
 }

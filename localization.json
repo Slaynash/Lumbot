@@ -24,7 +24,7 @@
         "melonscanner.mloutdated.update": "- Please update MelonLoader using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)\nThe installed MelonLoader is outdated: %1$s -> %2$s.",
         "melonscanner.mloutdated.downgrade": "- Please downgrade MelonLoader to %1$s. We can not guarantee that newer versions will work reliably. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
         "melonscanner.mloutdated.override": "- The modding community for this game is using MelonLoader %1$s and you are on %2$s. [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
-        "melonscanner.mloutdated.overridenightly": "- The modding community for this game is using Nightly MelonLoader. Please reinstall MelonLoader with [this download](https://nightly.link/LavaGang/MelonLoader/workflows/build/alpha-development/MelonLoader.Windows.%1$s.CI.Release.zip) If using the installer, select the Manual Zip tab.",
+        "melonscanner.mloutdated.overridenightly": "- The modding community for this game is using Nightly MelonLoader. Please reinstall MelonLoader with nightly version using the [official installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)",
 
         "melonscanner.knownerrors.fieldname": "Known Errors:",
 

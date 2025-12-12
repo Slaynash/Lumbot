@@ -2,12 +2,8 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
@@ -16,7 +12,6 @@ import java.util.List;
 import com.github.difflib.text.DiffRow;
 import com.github.difflib.text.DiffRowGenerator;
 import com.google.gson.Gson;
-import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message.Attachment;
@@ -28,7 +23,6 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
-import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -249,38 +243,12 @@ public class MessageLogger {
     }
 
     private static FileUpload fetchMedia(String url, long maxSize) {
-        // TODO: Check if the URL is a currently valid Discord attachment URL
         try {
-            // Refresh the URL to get the latest version of the attachment
-            HttpRequest request = HttpRequest.newBuilder()
-                    .POST(HttpRequest.BodyPublishers.ofString("{\"attachment_urls\":[\"" + url + "\"]}"))
-                    .uri(URI.create("https://discord.com/api/v10/attachments/refresh-urls"))
-                    .setHeader("Authorization", "Bot " + ConfigManager.discordToken)
-                    .setHeader("Content-Type", "application/json")
-                    .header("User-Agent", "LUM Bot " + ConfigManager.commitHash)
-                    .timeout(Duration.ofSeconds(30))
-                    .build();
-            HttpResponse<byte[]> response = Utils.downloadRequest(request, "MessageLogger Media Refresh");
-            String refreshedURL = JsonParser.parseString(new String(response.body()))
-                    .getAsJsonObject()
-                    .getAsJsonArray("refreshed_urls")
-                    .get(0)
-                    .getAsJsonObject()
-                    .get("refreshed")
-                    .getAsString();
+            String refreshedURL = Utils.refreshMediaURL(url);
+            InputStream response = Utils.downloadRequestIS(refreshedURL);
 
-            // TODO: Check if the refreshed URL is a valid Discord attachment URL
-
-            //download the file from the refreshed URL
-            HttpRequest fileRequest = HttpRequest.newBuilder()
-                    .GET()
-                    .uri(URI.create(refreshedURL))
-                    .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
-                    .timeout(Duration.ofSeconds(30))
-                    .build();
-            HttpResponse<InputStream> fileResponse = Utils.downloadRequestIS(fileRequest, "MessageLogger Media Download");
-
-            byte[] bytes = fileResponse.body().readAllBytes();
+            byte[] bytes = response.readAllBytes();
+            response.close();
 
             if (bytes.length > maxSize) {
                 System.err.println("File size exceeds the maximum allowed size of " + maxSize + " bytes. File size: " + bytes.length + " bytes");
@@ -296,7 +264,6 @@ public class MessageLogger {
             return FileUpload.fromData(bytes, fileName).asSpoiler();
         }
         catch (Exception e) {
-            System.err.println("Failed to fetch media from URL: " + url);
             ExceptionUtils.reportException("Failed to fetch media for Log", e);
             return null;
         }

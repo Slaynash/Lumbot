@@ -1,9 +1,8 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
@@ -31,8 +30,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import javax.imageio.ImageIO;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -208,8 +205,7 @@ public class ScamShield {
 
     private static Tesseract tesseract;
 
-    public static void init()
-    {
+    public static void init() {
         tesseract = new Tesseract();
         tesseract.setTessVariable("user_defined_dpi", "300");
     }
@@ -238,18 +234,15 @@ public class ScamShield {
                 message.append(embed.getUrl());
         }
 
-        
         for (Attachment file : event.getMessage().getAttachments()) {
             if (file.isImage()) {
-                try
-                {
-                    String url = file.getProxy().getUrl();
+                String url = file.getProxy().getUrl();
+                try {
                     System.out.println("[OCR] Downloading " + url);
-                    InputStream is = file.getProxy().download().get();
-                    BufferedImage img = ImageIO.read(is);
+                    File img = file.getProxy().downloadToPath().get().toFile();
 
                     if (img == null) {
-                        System.out.println("[OCR] failed to read image " + url);
+                        System.out.println("[OCR] failed to download image " + url);
                         continue;
                     }
 
@@ -259,11 +252,11 @@ public class ScamShield {
                     Instant end = Instant.now();
 
                     System.out.println("[OCR] Took " + Duration.between(start, end).toMillis() + "ms. Result: " + ocrResult);
-
+                    img.delete();
                     message.append(ocrResult);
                 }
                 catch (Exception e) {
-                    ExceptionUtils.reportException("Failed OCR in SS", "source: " + file.getUrl(), e);
+                    ExceptionUtils.reportException("Failed OCR in SS", "source: " + url, e);
                 }
             }
         }
@@ -376,8 +369,6 @@ public class ScamShield {
         if (event.getAuthor().isBot())
             return false;
         if (CrossServerUtils.checkIfStaff(event))
-            return false;
-        if (event.getMessage().getContentRaw().length() < 2)
             return false;
 
         long guildID = event.getGuild().getIdLong();
