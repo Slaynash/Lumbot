@@ -86,6 +86,14 @@ public class ServerMessagesHandler {
                 }
             }
 
+            if (guildconfig.ScamShield())
+                new Thread(() -> ScamShield.checkForFishing(event)).start();
+            CommandManager.runAsServer(event);
+            if (event.getChannel().getType() == ChannelType.NEWS) {
+                handleAP(event);
+                return;
+            }
+
             if (event.getMessage().getType().isSystem() || event.isWebhookMessage()) return; //prevents Webhooks and deleted accounts
             if (event.getAuthor().isBot()) {
                 if (event.getAuthor().getIdLong() != event.getJDA().getSelfUser().getIdLong()) {
@@ -96,24 +104,13 @@ public class ServerMessagesHandler {
 
             if (MessageProxy.fromDev(event))
                 return;
-            if (guildconfig.ScamShield())
-                new Thread(() -> ScamShield.checkForFishing(event)).start();
-
-            if (event.getChannel().getType() == ChannelType.NEWS) {
-                handleAP(event);
-                return;
-            }
 
             if (ABCpolice.abcPolice(event))
                 return;
             if (Memes.memeRecieved(event))
                 return;
-
             if (event.getChannel().getType() == ChannelType.TEXT && !event.getChannel().canTalk())
                 return;
-
-            CommandManager.runAsServer(event);
-
             if (replied != null && replied.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong())
                 MelonScanner.translateLog(event);
 
@@ -306,7 +303,7 @@ public class ServerMessagesHandler {
         if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong() || event.getMessage().getContentRaw().startsWith(ConfigManager.discordPrefix))
             return;
         try {
-            if (event.getChannel().getType() == ChannelType.NEWS && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asNewsChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE, Permission.VIEW_CHANNEL) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {
+            if (event.getChannel().getType() == ChannelType.NEWS && CommandManager.apChannels.contains(event.getChannel().getIdLong()) && event.getGuild().getSelfMember().hasPermission(event.getChannel().asNewsChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_MANAGE) && !event.getMessage().getFlags().contains(MessageFlag.CROSSPOSTED) && !event.getMessage().getFlags().contains(MessageFlag.IS_CROSSPOST)) {
                 System.out.println("Crossposting in " + event.getGuild().getName() + ", " + event.getChannel().getName());
                 event.getMessage().crosspost().queue(null, e -> { });
             }

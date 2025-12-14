@@ -219,7 +219,7 @@ public class Utils {
                 .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
                 .connectTimeout(Duration.ofSeconds(15)).build();
             try {
-                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(6, java.util.concurrent.TimeUnit.MINUTES);
+                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(30, java.util.concurrent.TimeUnit.SECONDS);
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
                     System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
@@ -250,7 +250,7 @@ public class Utils {
                 .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
                 .connectTimeout(Duration.ofSeconds(15)).build();
             try {
-                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).get(6, java.util.concurrent.TimeUnit.MINUTES);
+                response = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).get(30, java.util.concurrent.TimeUnit.SECONDS);
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
                     System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
                     throw new Exception("Lum gotten status code: " + response.statusCode() + " from " + source);
