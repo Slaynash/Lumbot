@@ -144,7 +144,7 @@ public class ScamShield {
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
             put(".*(/[a-z]{10}(jpg|png|webp).*)", 2); // weird crypto scam
-            put(".*(\\d(jpg|png|webp).*){4}", 2); // weird crypto scam
+            put(".*(\\D\\d(jpg|png|webp).*){4}", 2); // weird crypto scam
             put(".*(image(jpg|png|webp).*){4}", 2); // weird crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
             put(".*_(https//imgurcom/.{7}){4}", 4); // weird crypto scam
@@ -207,8 +207,8 @@ public class ScamShield {
     private static Tesseract tesseract;
 
     public static void init() {
-        tesseract = new Tesseract();
-        tesseract.setTessVariable("user_defined_dpi", "300");
+        // tesseract = new Tesseract();
+        // tesseract.setTessVariable("user_defined_dpi", "300");
     }
 
     public static ScamResults ssValue(MessageReceivedEvent event) {
@@ -220,14 +220,6 @@ public class ScamShield {
             }
         }
         StringBuilder message = new StringBuilder(msg);
-        if (event.getMessage().getPoll() != null) {
-            MessagePoll poll = event.getMessage().getPoll();
-            message.append(poll.getQuestion());
-            poll.getAnswers().forEach(answer -> message.append(answer.getText()));
-        }
-        for (Attachment file : event.getMessage().getAttachments()) {
-            message.append(file.getFileName());
-        }
         for (MessageEmbed embed : event.getMessage().getEmbeds()) {
             if (embed.getTitle() != null)
                 message.append(embed.getTitle());
@@ -235,35 +227,35 @@ public class ScamShield {
                 message.append(embed.getUrl());
         }
 
-        for (Attachment file : event.getMessage().getAttachments()) {
-            if (file.isImage()) {
-                String url = file.getUrl();
-                try {  // Don't use proxy, it regenerates the image into a different format
-                    System.out.println("[OCR] Downloading " + url);
+        // for (Attachment file : event.getMessage().getAttachments()) {
+        //     if (file.isImage()) {
+        //         String url = file.getUrl();
+        //         try {  // Don't use proxy, it regenerates the image into a different format
+        //             System.out.println("[OCR] Downloading " + url);
 
-                    InputStream response = Utils.downloadRequestIS(url);
-                    byte[] bytes = response.readAllBytes();
-                    response.close();
-                    String filename = Utils.extractFileName(url);
-                    String extension = filename.contains(".") ? filename.substring(filename.lastIndexOf('.')) : "png";
-                    String nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.'));
-                    File img = File.createTempFile(nameWithoutExtension, extension);
-                    Files.write(img.toPath(), bytes);
+        //             InputStream response = Utils.downloadRequestIS(url);
+        //             byte[] bytes = response.readAllBytes();
+        //             response.close();
+        //             String filename = Utils.extractFileName(url);
+        //             String extension = filename.contains(".") ? filename.substring(filename.lastIndexOf('.')) : "png";
+        //             String nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.'));
+        //             File img = File.createTempFile(nameWithoutExtension, extension);
+        //             Files.write(img.toPath(), bytes);
 
-                    System.out.println("[OCR] Running OCR on " + url);
-                    Instant start = Instant.now();
-                    String ocrResult = tesseract.doOCR(img);
-                    Instant end = Instant.now();
+        //             System.out.println("[OCR] Running OCR on " + url);
+        //             Instant start = Instant.now();
+        //             String ocrResult = tesseract.doOCR(img);
+        //             Instant end = Instant.now();
 
-                    System.out.println("[OCR] Took " + Duration.between(start, end).toMillis() + "ms. Result: " + ocrResult);
-                    img.delete();
-                    message.append(ocrResult);
-                }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("Failed OCR in SS", "source: " + url, e);
-                }
-            }
-        }
+        //             System.out.println("[OCR] Took " + Duration.between(start, end).toMillis() + "ms. Result: " + ocrResult);
+        //             img.delete();
+        //             message.append(ocrResult);
+        //         }
+        //         catch (Exception e) {
+        //             ExceptionUtils.reportException("Failed OCR in SS", "source: " + url, e);
+        //         }
+        //     }
+        // }
 
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
