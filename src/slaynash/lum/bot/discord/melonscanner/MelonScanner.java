@@ -968,7 +968,6 @@ public final class MelonScanner {
         }
 		if("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null && context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.50"))) {
 			error += Localization.get("- TheLongDark 2.50+ cannot currently be modded, please see https://discord.com/channels/322211727192358914/426083940676141058/1452743642606211125 for updates\n", context.lang);
-			return false;
 		}
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
             long buildInt = context.gameBuild.patchVersion();
