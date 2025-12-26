@@ -984,7 +984,7 @@ public final class MelonScanner {
             else if (buildInt < 33000 && context.loadedMods.containsKey("JeviLib") && context.loadedMods.get("JeviLib").version.isHigherThanOrEquivalentTo(Version.parse("2.2.1"))) {
                 error += Localization.get("- JeviLib is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
             }
-            else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && context.loadedMods.get("JeviLib").version. isLowerThan(Version.parse("2.2.1"))) {
+            else if (buildInt > 33000 && context.loadedMods.containsKey("JeviLib") && context.loadedMods.get("JeviLib").version.isLowerThan(Version.parse("2.2.1"))) {
                 error += Localization.get("- JeviLib is not compatible with this version of the game. Please downgrade BL to public release branch.\n", context.lang);
             }
         }
