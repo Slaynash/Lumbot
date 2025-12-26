@@ -930,11 +930,11 @@ public final class MelonScanner {
             switch (context.game) {
                 case "ChilloutVR" -> {
                     if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))
-                        error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang);
+                        error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang) + "\n";
                 }
                 case "TheLongDark" -> {
                     if (!context.loadedMods.containsKey("AutoUpdatingPlugin") && !context.misplacedPlugins.contains("AutoUpdatingPlugin"))
-                        error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang);
+                        error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang) + "\n";
                 }
                 default -> { }
             }
@@ -967,7 +967,8 @@ public final class MelonScanner {
             error += Localization.get("- MelonLoader likely crashed because of AutoUpdatingPlugin. MelonLoader needs to run atleast once without it.\n", context.lang);
         }
 		if("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null && context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.50.0"))) {
-			error += Localization.get("- TheLongDark 2.50+ cannot currently be modded, please see https://discord.com/channels/322211727192358914/426083940676141058/1452743642606211125 for updates\n", context.lang);
+            context.embedBuilder.clearFields();
+			error = Localization.get("- TheLongDark 2.50+ cannot currently be modded, please see https://discord.com/channels/322211727192358914/426083940676141058/1452743642606211125 for updates\n", context.lang);
 		}
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
             long buildInt = context.gameBuild.patchVersion();
