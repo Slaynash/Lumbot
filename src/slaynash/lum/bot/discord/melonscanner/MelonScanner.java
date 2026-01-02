@@ -450,7 +450,7 @@ public final class MelonScanner {
                         if(context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
                             context.overrideMLVersion = Version.parse("0.6.6");
                         }
-                        if(context.gameBuild.isEquivalentTo(Version.parse("2.02.0"))) {
+                        if(context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
                             context.overrideMLVersion = Version.parse("0.5.7");
                         }
                         System.out.println("[TLD]ML override for " + context.game + ":"+context.gameBuild+" => " + context.overrideMLVersion);
