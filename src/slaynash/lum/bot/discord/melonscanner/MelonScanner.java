@@ -443,17 +443,17 @@ public final class MelonScanner {
                         System.out.println("ML override for " + context.game + ": " + context.overrideMLVersion);
                     }
 
-                    if("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null) {
-                        if(context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.50.0"))) {
+                    if ("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null) {
+                        if (context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.50.0"))) {
                             context.overrideMLVersion = context.latestMLNightly;
                         }
-                        if(context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
+                        if (context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
                             context.overrideMLVersion = Version.parse("0.6.6");
                         }
-                        if(context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
+                        if (context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
                             context.overrideMLVersion = Version.parse("0.5.7");
                         }
-                        System.out.println("[TLD]ML override for " + context.game + ":"+context.gameBuild+" => " + context.overrideMLVersion);
+                        System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
                     }
                 }
                 else {
@@ -979,7 +979,7 @@ public final class MelonScanner {
         if ("TheLongDark".equalsIgnoreCase(context.game) && context.line.contains("Deleting Il2Cppmscorlib.dll")) {
             error += Localization.get("- MelonLoader likely crashed because of AutoUpdatingPlugin. MelonLoader needs to run atleast once without it.\n", context.lang);
         }
-		if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
+        if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
             long buildInt = context.gameBuild.patchVersion();
             if (buildInt < 33000 && context.loadedMods.containsKey("LabFusion")) {
                 error += Localization.get("- LabFusion is not compatible with this version of the game. Please update BL to public beta branch.\n", context.lang);
