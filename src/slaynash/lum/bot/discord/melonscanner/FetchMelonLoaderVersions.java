@@ -37,6 +37,7 @@ public class FetchMelonLoaderVersions {
     }
 
     public static void mlReleases() {
+        System.out.println("Fetching MelonLoader releases from GitHub...");
         try {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LavaGang/MelonLoader/releases"))
@@ -49,6 +50,7 @@ public class FetchMelonLoaderVersions {
                 return;
             }
             JsonArray json = JsonParser.parseString(response.body()).getAsJsonArray();
+            System.out.println("Found " + json.size() + " MelonLoader releases");
             for (JsonElement element : json) {
                 JsonObject obj = element.getAsJsonObject();
                 if (obj.get("draft").getAsBoolean()) continue;
@@ -76,6 +78,7 @@ public class FetchMelonLoaderVersions {
     }
 
     public static void llReleases() {
+        System.out.println("Fetching LemonLoader releases from GitHub...");
         try {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LemonLoader/MelonLoader/releases"))
@@ -88,6 +91,7 @@ public class FetchMelonLoaderVersions {
                 return;
             }
             JsonArray json = JsonParser.parseString(response.body()).getAsJsonArray();
+            System.out.println("Found " + json.size() + " LemonLoader releases");
             for (JsonElement element : json) {
                 JsonObject obj = element.getAsJsonObject();
                 if (obj.get("draft").getAsBoolean()) continue;
@@ -128,6 +132,7 @@ public class FetchMelonLoaderVersions {
                 return;
             }
             JsonArray json = JsonParser.parseString(response.body()).getAsJsonObject().getAsJsonArray("workflow_runs");
+            System.out.println("Found " + json.size() + " MelonLoader nightly builds");
             for (JsonElement element : json) {
                 JsonObject obj = element.getAsJsonObject();
                 if (!obj.get("name").getAsString().contains("ci")) continue;

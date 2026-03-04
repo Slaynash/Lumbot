@@ -233,6 +233,8 @@ public class Utils {
             catch (Exception e) {
                 exception = e;
                 System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
+                if (e.getLocalizedMessage() == null)
+                    e.printStackTrace();
                 Thread.sleep(1000 * 15); // Sleep for half a minute
                 continue;
             }
@@ -263,9 +265,12 @@ public class Utils {
             catch (Exception e) {
                 exception = e;
                 System.out.println("Lum got " + e.getLocalizedMessage() + " from " + source + " and is retrying");
+                if (e.getLocalizedMessage() == null)
+                    e.printStackTrace();
                 Thread.sleep(1000 * 15); // Sleep for half a minute
                 continue;
             }
+            System.out.println("Headers: " + response.headers().map());
             return response.body();
         }
         throw new Exception(exception);
