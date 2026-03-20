@@ -80,7 +80,7 @@ public class MelonScannerApisManager {
         // apis.add(new MelonScannerApi("MuseDash", "musedash", "https://mdmc.moe/api/v5/mods"));
         apis.add(new MelonScannerApi("MuseDash", "musedashgh", "https://raw.githubusercontent.com/MDModsDev/ModLinks/main/ModLinks.json"));
         apis.add(new ThunderstoreApi("RUMBLE", "rumble"));
-        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tldmods.com/api.json"));
+        apis.add(new MelonScannerApi("TheLongDark", "tld", "https://tldmods.net/api.json"));
     }
 
     public static void startFetchingThread() {
