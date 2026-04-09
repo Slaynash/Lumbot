@@ -152,6 +152,10 @@ public class MessageLogger {
                     // Send update to Report channels
                     MessageChannelUnion report = CommandManager.getModReportChannels(Long.parseLong(guild), "message");
                     if (report != null) {
+                        if (!event.getGuild().getSelfMember().hasPermission((GuildChannel) report, Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND, Permission.MESSAGE_EMBED_LINKS)) {
+                            System.out.println("Missing permissions to send message delete report in guild: " + guild);
+                            return;
+                        }
                         User user = event.getJDA().getUserById(rs.getString("author_id"));
                         if (user == null) {
                             user = event.getJDA().retrieveUserById(rs.getString("author_id")).complete();

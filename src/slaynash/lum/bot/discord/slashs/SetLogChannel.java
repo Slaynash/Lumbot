@@ -46,6 +46,9 @@ public class SetLogChannel extends Slash {
         else if (!event.getGuildChannel().canTalk()) {
             event.reply("Lum can not talk in this channel").setEphemeral(true).queue();
         }
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.VIEW_CHANNEL)) {
+            event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.VIEW_CHANNEL.getName() + " permission").setEphemeral(true).queue();
+        }
         else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_EMBED_LINKS)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_EMBED_LINKS.getName() + " permission").setEphemeral(true).queue();
         }
