@@ -444,16 +444,14 @@ public final class MelonScanner {
                     }
 
                     if ("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null) {
-                        if (context.gameBuild.isHigherThanOrEquivalentTo(Version.parse("2.50.0"))) {
-                            context.overrideMLVersion = context.latestMLNightly;
-                        }
                         if (context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
                             context.overrideMLVersion = Version.parse("0.6.6");
+                            System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
                         }
-                        if (context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
+                        else if (context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
                             context.overrideMLVersion = Version.parse("0.5.7");
+                            System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
                         }
-                        System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
                     }
                 }
                 else {
