@@ -2,13 +2,10 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,17 +36,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Invite;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
-import net.dv8tion.jda.api.entities.messages.MessagePoll;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.utils.FileUpload;
 import net.gcardone.junidecode.Junidecode;
-import net.sourceforge.tess4j.Tesseract;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
@@ -143,9 +137,9 @@ public class ScamShield {
             put(".*left.*game.*", 2);
             put(".*free.*nitro.*(steam|epic).*", 2);
             put(".*nitro.*free.*(steam|epic).*", 2);
-            put(".*(/[a-z]{10}(jpg|png|webp).*)", 2); // weird crypto scam
+            put(".*(/[a-z0-9]{8,10}\\.(jpg|png|webp).*)", 2); // weird crypto scam
             put(".*(\\D\\d(jpg|png|webp).*){4}", 2); // weird crypto scam
-            put(".*(image(jpg|png|webp).*){4}", 2); // weird crypto scam
+            put(".*(image\\.(jpg|png|webp).*){4}", 2); // weird crypto scam
             put("@everyone(Hey,)?(join(((this|my)(friend's)?server)|now))?(https?//)?(discordgg|(discord(app|watchanimeattheoffice)?(com?|media)))(/invite)?/[\\w-_~$&+\\d]+(joinnow)?", 10);
             put(".*_(https//imgurcom/.{7}){4}", 4); // weird crypto scam
         }};
@@ -204,11 +198,7 @@ public class ScamShield {
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
-    private static Tesseract tesseract;
-
     public static void init() {
-        // tesseract = new Tesseract();
-        // tesseract.setTessVariable("user_defined_dpi", "300");
     }
 
     public static ScamResults ssValue(MessageReceivedEvent event) {
@@ -226,36 +216,6 @@ public class ScamShield {
             if (embed.getUrl() != null)
                 message.append(embed.getUrl());
         }
-
-        // for (Attachment file : event.getMessage().getAttachments()) {
-        //     if (file.isImage()) {
-        //         String url = file.getUrl();
-        //         try {  // Don't use proxy, it regenerates the image into a different format
-        //             System.out.println("[OCR] Downloading " + url);
-
-        //             InputStream response = Utils.downloadRequestIS(url);
-        //             byte[] bytes = response.readAllBytes();
-        //             response.close();
-        //             String filename = Utils.extractFileName(url);
-        //             String extension = filename.contains(".") ? filename.substring(filename.lastIndexOf('.')) : "png";
-        //             String nameWithoutExtension = filename.substring(0, filename.lastIndexOf('.'));
-        //             File img = File.createTempFile(nameWithoutExtension, extension);
-        //             Files.write(img.toPath(), bytes);
-
-        //             System.out.println("[OCR] Running OCR on " + url);
-        //             Instant start = Instant.now();
-        //             String ocrResult = tesseract.doOCR(img);
-        //             Instant end = Instant.now();
-
-        //             System.out.println("[OCR] Took " + Duration.between(start, end).toMillis() + "ms. Result: " + ocrResult);
-        //             img.delete();
-        //             message.append(ocrResult);
-        //         }
-        //         catch (Exception e) {
-        //             ExceptionUtils.reportException("Failed OCR in SS", "source: " + url, e);
-        //         }
-        //     }
-        // }
 
         final String finalMessage = Junidecode.unidecode(message.toString()).toLowerCase().replaceAll("[':,. \n\t\\p{Cf}]", "");
 
