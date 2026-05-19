@@ -18,6 +18,8 @@ public class Kick extends Command {
         if (!includeInHelp(event))
             return;
 
+        paramString = paramString.replace("  ", " ").trim();
+
         Member kickMember;
         Message replied = event.getMessage().getReferencedMessage();
         String reason = "";

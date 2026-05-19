@@ -20,6 +20,8 @@ public class Ban extends Command {
         if (!includeInHelp(event))
             return;
 
+        paramString = paramString.replace("  ", " ").trim();
+
         int delDays = 0;
         Member banMember;
         Message replied = event.getMessage().getReferencedMessage();

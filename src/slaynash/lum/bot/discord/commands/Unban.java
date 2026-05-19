@@ -16,6 +16,8 @@ public class Unban extends Command {
         if (!includeInHelp(event))
             return;
 
+        paramString = paramString.replace("  ", " ").trim();
+
         User unbanUser;
         String[] parts = paramString.split(" ", 2);
         if (parts.length < 2) {
