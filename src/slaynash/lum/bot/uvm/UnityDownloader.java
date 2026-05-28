@@ -43,7 +43,7 @@ public class UnityDownloader {
 
     private static final int maxVersions = 100;
     private static final HttpRequest request = HttpRequest.newBuilder()
-        .uri(URI.create("https://services.unity.com/graphql"))
+        .uri(URI.create("https://services.unity.com/api/live-platform/v1/graphql"))
         .header("Content-Type", "application/json")
         .method("POST", HttpRequest.BodyPublishers.ofString("{\"query\":\"query GetRelease($limit:Int!,$skip:Int!){getUnityReleases(limit:$limit,skip:$skip,entitlements:[XLTS]){pageInfo{hasNextPage}edges{node{version,shortRevision,releaseDate,unityHubDeepLink,stream}}}}\",\"operationName\":\"GetRelease\",\"variables\":{\"limit\": " + maxVersions + ",\"skip\": 0}}"))
         .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)

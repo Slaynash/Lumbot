@@ -671,7 +671,7 @@ public final class MelonScanner {
     }
 
     private static boolean modFileNameCheck(MelonScanContext context) {
-        List<LogsModDetails> modAssemblies = new ArrayList<>(context.loadedMods.values().stream().filter(logsModDetails -> logsModDetails.assembly != null && logsModDetails.assembly.matches("[\\w+-.]+\\s\\(\\d*\\)\\.dll")).toList());
+        List<LogsModDetails> modAssemblies = new ArrayList<>(context.loadedMods.values().stream().filter(logsModDetails -> logsModDetails.assembly != null && logsModDetails.assembly.matches("[\\w+-.]+\\s*\\(\\d*\\)\\.dll")).toList());
         if (!modAssemblies.isEmpty()) {
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.modFileName.warning", context.lang) + "\n");
             for (int i = 0; i < modAssemblies.size() && i < (modAssemblies.size() == 11 ? 11 : 10); ++i)
