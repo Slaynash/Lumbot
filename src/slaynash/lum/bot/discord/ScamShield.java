@@ -324,6 +324,8 @@ public class ScamShield {
         }
         if (event.getAuthor().isBot())
             return false;
+        if (event.getAuthor().isSystem())
+            return false;
         if (CrossServerUtils.checkIfStaff(event))
             return false;
 

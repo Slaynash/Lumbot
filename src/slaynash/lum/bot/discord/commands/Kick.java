@@ -39,7 +39,11 @@ public class Kick extends Command {
                 reason = parts[2];
             }
             try {
-                kickMember = event.getGuild().getMemberById(parts[1]);
+                String userId = parts[1];
+                Member cachedMember = event.getGuild().getMemberById(userId);
+                kickMember = (cachedMember != null)
+                    ? cachedMember
+                    : event.getGuild().retrieveMemberById(userId).complete();
             }
             catch (Exception e) {
                 event.getMessage().reply("Invalid snowflake, User was not found!").queue();
