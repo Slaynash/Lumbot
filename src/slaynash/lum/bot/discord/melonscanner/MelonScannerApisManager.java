@@ -106,7 +106,7 @@ public class MelonScannerApisManager {
                 }
             };
 
-            Main.SCHEDULER.scheduleAtFixedRate(task, i++ * 5, 5 * 60, TimeUnit.SECONDS);
+            Main.SCHEDULER.scheduleAtFixedRate(task, i++ * 5L, 5 * 60, TimeUnit.SECONDS);
         }
     }
 

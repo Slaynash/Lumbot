@@ -109,7 +109,6 @@ public class Main extends ListenerAdapter {
         API.start();
 
         MelonScanner.init();
-        ScamShield.init();
 
         CommandManager.init();
         JDAManager.init(ConfigManager.discordToken);
@@ -149,8 +148,7 @@ public class Main extends ListenerAdapter {
         System.out.println("LUM Started!");
 
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
-            ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-            executorService.scheduleAtFixedRate(Main::backupCheckMain, 15, 15, TimeUnit.SECONDS);
+            SCHEDULER.scheduleAtFixedRate(Main::backupCheckMain, 15, 15, TimeUnit.SECONDS);
         }
     }
 

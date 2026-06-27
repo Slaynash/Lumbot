@@ -53,7 +53,7 @@ public class LumLogOutput extends PrintStream {
                 break;
             }
         }
-        
+
         String[] lines = obj.split("\n");
         for (String line : lines) {
             if (loggingElement != null)

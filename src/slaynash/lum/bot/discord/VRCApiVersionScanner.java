@@ -13,7 +13,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -29,7 +28,7 @@ import slaynash.lum.bot.utils.Utils;
 public class VRCApiVersionScanner {
 
     private static String secondLastBVT, lastBVT, lastDG;
-    private static ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
 
     public static void init() {
         Runnable task = () -> {

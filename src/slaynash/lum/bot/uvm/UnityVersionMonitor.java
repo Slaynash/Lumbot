@@ -84,8 +84,7 @@ public class UnityVersionMonitor {
             return;
         initialisingUnityVersions = remoteVersions.size() >= 10;
 
-        if (!CHECKS_ENABLED)
-        {
+        if (!CHECKS_ENABLED) {
             for (UnityVersion newVersion : remoteVersions)
                 UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
             return;
