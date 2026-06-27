@@ -13,8 +13,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.github.zafarkhaja.semver.Version;
@@ -32,6 +30,7 @@ import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import net.dv8tion.jda.api.utils.messages.MessageCreateData;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Localization;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.UrlShortener;
 import slaynash.lum.bot.discord.ChattyLum;
 import slaynash.lum.bot.discord.CommandManager;
@@ -46,19 +45,12 @@ public final class MelonScanner {
 
     private static final Color melonPink = new Color(255, 59, 106);
 
-    private static final ScheduledExecutorService sheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-
     public static void init() {
         MelonLoaderError.init();
         MelonScannerApisManager.startFetchingThread();
 
-        sheduledExecutor.scheduleWithFixedDelay(LogCounter::updateCounter, 30, 10, TimeUnit.SECONDS);
+        Main.SCHEDULER.scheduleWithFixedDelay(LogCounter::updateCounter, 30, 10, TimeUnit.SECONDS);
     }
-
-    public static void shutdown() {
-        sheduledExecutor.shutdown();
-    }
-
 
     public static void scanMessage(MessageReceivedEvent messageReceivedEvent) {
         List<Attachment> attachments = messageReceivedEvent.getMessage().getAttachments();

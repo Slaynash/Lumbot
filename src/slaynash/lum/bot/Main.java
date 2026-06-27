@@ -74,6 +74,7 @@ import slaynash.lum.bot.uvm.UnityVersionMonitor;
 
 
 public class Main extends ListenerAdapter {
+    public static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws Exception {
@@ -90,7 +91,7 @@ public class Main extends ListenerAdapter {
                     .sendMessageEmbeds(Utils.wrapMessageInEmbed("Lum is shutting down", Color.orange))
                     .complete();
 
-            MelonScanner.shutdown();
+            SCHEDULER.shutdownNow();
         }));
 
         ConfigManager.init();

@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.Command;
 import slaynash.lum.bot.discord.CommandManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -20,9 +21,7 @@ public class AddMissingRoles extends Command {
         if (!includeInHelp(event))
             return;
 
-        Thread thread = new Thread(() -> addMissing(event), "APIThread");
-        thread.setDaemon(false);
-        thread.start();
+        Main.SCHEDULER.submit(() -> addMissing(event));
     }
 
     @Override

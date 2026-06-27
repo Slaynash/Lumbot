@@ -20,6 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
 
 import com.github.zafarkhaja.semver.Version;
@@ -43,6 +48,7 @@ import org.luaj.vm2.lib.jse.JseBaseLib;
 import org.luaj.vm2.lib.jse.JseMathLib;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -63,8 +69,6 @@ public class MelonScannerApisManager {
 
     private static final Map<String, List<MelonApiMod>> games = new ConcurrentHashMap<>();
 
-    private static boolean doneFirstInit = false;
-
     private static final List<Entry<MelonScannerApi, Instant>> erroringAPIs = new ArrayList<>();
 
     static {
@@ -84,323 +88,327 @@ public class MelonScannerApisManager {
     }
 
     public static void startFetchingThread() {
-        Thread fetchThread = new Thread(() -> {
-            while (true) {
-
-                // We use a temp Map to avoid clearing the common one
-                //Map<String, List<MelonApiMod>> gamesTemp = new HashMap<>();
-
-                for (MelonScannerApi api : apis) {
-
-                    System.out.println("Fetching " + api.game + " : " + api.name);
-
-                    //timestamp
-                    Instant start = Instant.now();
-
-                    HttpRequest.Builder builder = HttpRequest.newBuilder()
-                        .GET()
-                        .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
-                        .timeout(Duration.ofSeconds(45));
-
-
-                    if (api.isGZip)
-                        builder.header("Accept-Encoding", "gzip");
-
-                    for (String header : api.customHeaders) {
-                        builder.setHeader(header.split(":")[0], header.split(":")[1]);
-                    }
-
-                    String constructedURI = api.endpoint;
-
-                    try {
-
-                        // Script setup
-
-                        if (server_globals == null) {
-                            server_globals = new Globals();
-                            server_globals.load(new JseBaseLib());
-                            server_globals.load(new PackageLib());
-                            server_globals.load(new JseMathLib());
-
-                            server_globals.set("base64toLowerHexString", new Base64toLowerHexString());
-
-                            LoadState.install(server_globals);
-                            LuaC.install(server_globals);
-                        }
-
-                        Globals user_globals = new Globals();
-                        user_globals.load(new JseBaseLib());
-                        user_globals.load(new PackageLib());
-                        user_globals.load(new Bit32Lib());
-                        user_globals.load(new TableLib());
-                        user_globals.load(new JseMathLib());
-                        user_globals.load(new StringLib());
-
-                        user_globals.set("base64toLowerHexString", new Base64toLowerHexString());
-
-                        // API request
-
-                        int pagingOffset = 0;
-                        boolean doneFetching = false;
-
-                        List<MelonApiMod> apiMods = new ArrayList<>();
-
-                        while (!doneFetching) {
-
-
-                            if (api.maxPagination > 0)
-                                constructedURI = api.endpoint
-                                    .replace("{count}", String.valueOf(api.maxPagination))
-                                    .replace("{offset}", String.valueOf(pagingOffset));
-
-                            builder.uri(URI.create(constructedURI));
-
-                            HttpRequest request = builder.build();
-
-                            HttpResponse<byte[]> response = Utils.downloadRequest(request, api.game + " : " + api.name);
-                            byte[] responseBody = response.body();
-                            if (api.isGZip) {
-                                ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
-                                try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
-                                    int len;
-                                    while ((len = gis.read(responseBody)) > 0)
-                                        decompressedStream.write(responseBody, 0, len);
-                                }
-                                catch (Exception e) {
-                                    ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
-                                    break;
-                                }
-
-                                responseBody = decompressedStream.toByteArray();
-                            }
-                            String responseString = new String(responseBody).trim();
-                            if (responseString.charAt(0) == '<') {
-                                ExceptionUtils.reportException("Received HTML for " + api.name);
-                                break;
-                            }
-                            else if (responseString.length() <= 4) {
-                                ExceptionUtils.reportException("Received empty JSON for " + api.name);
-                                break;
-                            }
-
-                            JsonElement data = gson.fromJson(responseString, JsonElement.class);
-
-                            // Script pass
-
-                            user_globals.set("data", CoerceJavaToLua.coerce(data));
-
-                            FileInputStream fis = new FileInputStream("apiscripts/" + api.getScriptName() + ".lua"); // TODO compile and cache
-                            LuaValue modsLuaRaw = server_globals.load(fis, api.getScriptName() + ".lua", "t", user_globals).call();
-                            fis.close();
-
-                            // Parse data returned by script
-
-                            if (modsLuaRaw == LuaValue.FALSE || modsLuaRaw == LuaValue.NIL) {
-                                if (apiMods.isEmpty())
-                                    apiMods = api.cachedMods;
-                                ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.game + " : (" + api.name + ")[" + constructedURI + "]");
-                                doneFetching = true;
-                            }
-                            else {
-                                int modsCount = 0;
-                                LuaTable mods = modsLuaRaw.checktable();
-
-                                LuaValue k = LuaValue.NIL;
-                                Varargs n;
-                                while (!(k = (n = mods.next(k)).arg1()).isnil()) {
-                                    LuaValue v = n.arg(2);
-                                    try {
-                                        k.checkint();
-                                    }
-                                    catch (LuaError e) {
-                                        System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
-                                        continue;
-                                    }
-
-                                    LuaTable mod;
-                                    try {
-                                        mod = v.checktable();
-                                    }
-                                    catch (LuaError e) {
-                                        System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
-                                        continue;
-                                    }
-
-                                    String name = sanitizeName(mod.get("name").checkjstring());
-                                    // System.out.println("Processing mod " + name);
-                                    String approvalStatus = "0";
-                                    if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
-                                        approvalStatus = mod.get("approvalStatus").checkjstring();
-                                    String id = mod.get("id") == LuaValue.NIL ? null : mod.get("id").checkjstring();
-                                    Version version = Version.tryParse(mod.get("version").checkjstring(), false).orElse(null);
-                                    String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
-                                    String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
-                                    boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
-                                    String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
-                                    String[] aliases = null;
-                                    boolean isbroken = mod.get("isbroken") != LuaValue.NIL && mod.get("isbroken").checkboolean();
-                                    LuaValue aliasesRaw = mod.get("aliases");
-                                    if (aliasesRaw != LuaValue.NIL) {
-                                        LuaTable aliasesTable = aliasesRaw.checktable();
-                                        aliases = new String[aliasesTable.length()];
-                                        int iAlias = 0;
-                                        LuaValue k2 = LuaValue.NIL;
-                                        Varargs n2;
-                                        while (!(k2 = (n2 = aliasesTable.next(k2)).arg1()).isnil()) {
-                                            aliases[iAlias++] = n2.arg(2).checkjstring();
-                                        }
-                                    }
-                                    if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
-                                        approvalStatus = "3";
-
-                                    if (downloadLink != null && downloadLink.equalsIgnoreCase("https://github.com/GrahamKracker/BTD6EpicGamesModCompat/releases/download/1.2.1/BTD6EpicGamesModCompat.dll")) {
-                                        version = Version.parse("1.2.1");
-                                    }
-
-                                    if (isbroken || approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
-                                        if (!brokenMods.contains(name))
-                                            brokenMods.add(name);
-                                    }
-                                    else
-                                        brokenMods.remove(name);
-
-                                    if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
-                                        if (!retiredMods.contains(name))
-                                            retiredMods.add(name);
-                                    }
-                                    else
-                                        retiredMods.remove(name);
-                                    apiMods.add(new MelonApiMod(id, name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
-                                    ++modsCount;
-                                }
-
-                                if (api.maxPagination <= 0 || modsCount < api.maxPagination) {
-                                    doneFetching = true;
-                                }
-                            }
-
-                            if (erroringAPIs.stream().anyMatch(entry -> entry.getKey() == api)) {
-                                EmbedBuilder eb = new EmbedBuilder();
-                                eb.setTitle("MelonScanner API for " + api.game + " : " + api.name + " is no longer erroring");
-                                eb.setDescription("It has been erroring for " + Duration.between(erroringAPIs.stream().filter(entry -> entry.getKey() == api).findFirst().orElseThrow().getValue(), Instant.now())
-                                        .truncatedTo(ChronoUnit.SECONDS).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ")
-                                        + (ConfigManager.mainBot ? "" : "\n\nFrom backup bot"));
-
-                                if (JDAManager.isEventsEnabled())
-                                    JDAManager.getJDA().getTextChannelById("912757433913454612").sendMessageEmbeds(eb.build()).queue();
-                                erroringAPIs.removeIf(entry -> entry.getKey() == api);
-                            }
-
-                            if (!doneFetching)
-                                Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
-                            else if (!apiMods.isEmpty()) {
-                                api.cachedMods = apiMods;
-                            }
-                        }
-
-                        // Update stored api datas
-
-                        List<MelonApiMod> currentMods = games.get(api.game);
-                        if (currentMods == null || currentMods.isEmpty()) //If we are starting up
-                            games.put(api.game, new ArrayList<>(apiMods)); //just add all mods in
-                        else { //check for updates
-                            for (MelonApiMod newMod : apiMods) {
-
-                                MelonApiMod currentMod = null;
-                                for (MelonApiMod mod : currentMods) {
-                                    // TODO compare using aliases too
-                                    if (mod.name.replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name.replaceAll("[-_ ]", ""))) {
-                                        currentMod = mod;
-                                        break;
-                                    }
-                                }
-
-                                if (currentMod == null)
-                                    currentMods.add(newMod);
-                                else {
-                                    if (currentMod.versions == null || currentMod.versions[0].version() == null || newMod.versions[0] != null && newMod.versions[0].version() != null && newMod.versions[0].version().isHigherThanOrEquivalentTo(currentMod.versions[0].version())) {
-                                        currentMods.remove(currentMod);
-                                        currentMods.add(newMod);
-                                    }
-                                }
-                            }
-                            synchronized (games) {
-                                games.put(api.game, currentMods);
-                            }
-                        }
-
-                        /*
-                        for (MelonApiMod replacingMod : currentMods) {
-                            for (String replacedModName : replacingMod.replacingMods) {
-                                for (MelonApiMod replacedMod : currentMods) {
-                                    if (replacedMod.name.equals(replacedModName)) {
-                                        replacedMod.replacedBy = replacingMod.name;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        */
-
-                        ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game IS NULL OR Game = ?", api.game);
-                        while (rs.next()) {
-                            MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
-                            List<MelonApiMod> mods = games.get(api.game);
-                            if (mods == null)
-                                continue;
-                            if (mod.versions[0].version() == null)
-                                continue;
-                            mods.removeIf(modtmp ->
-                                modtmp.name.replaceAll("[-_ ]", "").equals(mod.name.replaceAll("[-_ ]", ""))
-                                && (modtmp.versions[0] == null || mod.versions[0].version().isHigherThan(modtmp.versions[0].version())));
-                            mods.add(mod);
-                            synchronized (games) {
-                                games.put(api.game, mods);
-                            }
-                        }
-                        DBConnectionManagerLum.closeRequest(rs);
-
-                        System.out.println("Done fetching " + api.game + " : " + api.name + " in " + Duration.between(start, Instant.now()).toMillis() + "ms");
-
-                        if (doneFirstInit)
-                            Thread.sleep(6 * 60 * 1000 / apis.size()); // stager sleep so all requests don't come at the same time.
-                        else
-                            Thread.sleep(100);
-                    }
-                    catch (Exception baseexception) {
-                        Throwable throwable = baseexception;
-                        if (baseexception.getCause() instanceof ExecutionException executionException)
-                            throwable = executionException.getCause();
-
-                        if (erroringAPIs.stream().noneMatch(entry -> entry.getKey() == api)) {
-                            if (throwable instanceof HttpTimeoutException) {
-                                ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
-                            }
-                            else if (throwable instanceof IOException ioexception)
-                            {
-                                if (ioexception.getMessage().contains("Network is unreachable")) {
-                                    ExceptionUtils.reportException("MelonScanner API Network Error when fetching " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
-                                }
-                                else if (ioexception.getMessage().contains("GOAWAY")) {
-                                    ExceptionUtils.reportException(api.game + " : " + "[" + api.name + "](" + constructedURI + ") is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
-                                }
-                                else
-                                    ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", ioexception.getMessage());
-                            }
-                            else
-                                ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", throwable);
-                        }
-                        erroringAPIs.add(Map.entry(api, Instant.now()));
-                    }
-
+        int i = 1;
+        for (MelonScannerApi api : apis) {
+            ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
+            Runnable task = () -> {
+                Future<?> future = taskExecutor.submit(() -> fetchAPI(api));
+                try {
+                    future.get(3, TimeUnit.MINUTES);
                 }
-                if (!doneFirstInit)
-                    System.out.println("Done inital fetching");
-                doneFirstInit = true;
+                catch (TimeoutException e) {
+                    ExceptionUtils.reportException("MelonScanner Timeout: " + api.name, e);
+                    future.cancel(true);
+                }
+                catch (Exception e) {
+                    ExceptionUtils.reportException("MelonScanner Error: " + api.name, e);
+                    future.cancel(true);
+                }
+            };
+
+            Main.SCHEDULER.scheduleAtFixedRate(task, i++ * 5, 5 * 60, TimeUnit.SECONDS);
+        }
+    }
+
+    public static void fetchAPI(MelonScannerApi api) {
+        // We use a temp Map to avoid clearing the common one
+        //Map<String, List<MelonApiMod>> gamesTemp = new HashMap<>();
+
+        System.out.println("Fetching " + api.game + " : " + api.name);
+
+        //timestamp
+        Instant start = Instant.now();
+
+        HttpRequest.Builder builder = HttpRequest.newBuilder()
+            .GET()
+            .setHeader("User-Agent", "LUM Bot " + ConfigManager.commitHash)
+            .timeout(Duration.ofSeconds(45));
+
+
+        if (api.isGZip)
+            builder.header("Accept-Encoding", "gzip");
+
+        for (String header : api.customHeaders) {
+            builder.setHeader(header.split(":")[0], header.split(":")[1]);
+        }
+
+        String constructedURI = api.endpoint;
+
+        try {
+
+            // Script setup
+
+            if (server_globals == null) {
+                server_globals = new Globals();
+                server_globals.load(new JseBaseLib());
+                server_globals.load(new PackageLib());
+                server_globals.load(new JseMathLib());
+
+                server_globals.set("base64toLowerHexString", new Base64toLowerHexString());
+
+                LoadState.install(server_globals);
+                LuaC.install(server_globals);
             }
-        }, "MelonScannerApisManagerThread");
-        fetchThread.setDaemon(true);
-        fetchThread.start();
+
+            Globals user_globals = new Globals();
+            user_globals.load(new JseBaseLib());
+            user_globals.load(new PackageLib());
+            user_globals.load(new Bit32Lib());
+            user_globals.load(new TableLib());
+            user_globals.load(new JseMathLib());
+            user_globals.load(new StringLib());
+
+            user_globals.set("base64toLowerHexString", new Base64toLowerHexString());
+
+            // API request
+
+            int pagingOffset = 0;
+            boolean doneFetching = false;
+
+            List<MelonApiMod> apiMods = new ArrayList<>();
+
+            while (!doneFetching) {
+
+
+                if (api.maxPagination > 0)
+                    constructedURI = api.endpoint
+                        .replace("{count}", String.valueOf(api.maxPagination))
+                        .replace("{offset}", String.valueOf(pagingOffset));
+
+                builder.uri(URI.create(constructedURI));
+
+                HttpRequest request = builder.build();
+
+                HttpResponse<byte[]> response = Utils.downloadRequest(request, api.game + " : " + api.name);
+                byte[] responseBody = response.body();
+                if (api.isGZip) {
+                    ByteArrayOutputStream decompressedStream = new ByteArrayOutputStream();
+                    try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(responseBody))) {
+                        int len;
+                        while ((len = gis.read(responseBody)) > 0)
+                            decompressedStream.write(responseBody, 0, len);
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("[API] Failed to decompress GZip response", e);
+                        break;
+                    }
+
+                    responseBody = decompressedStream.toByteArray();
+                }
+                String responseString = new String(responseBody).trim();
+                if (responseString.charAt(0) == '<') {
+                    ExceptionUtils.reportException("Received HTML for " + api.name);
+                    break;
+                }
+                else if (responseString.length() <= 4) {
+                    ExceptionUtils.reportException("Received empty JSON for " + api.name);
+                    break;
+                }
+
+                JsonElement data = gson.fromJson(responseString, JsonElement.class);
+
+                // Script pass
+
+                user_globals.set("data", CoerceJavaToLua.coerce(data));
+
+                FileInputStream fis = new FileInputStream("apiscripts/" + api.getScriptName() + ".lua"); // TODO compile and cache
+                LuaValue modsLuaRaw = server_globals.load(fis, api.getScriptName() + ".lua", "t", user_globals).call();
+                fis.close();
+
+                // Parse data returned by script
+
+                if (modsLuaRaw == LuaValue.FALSE || modsLuaRaw == LuaValue.NIL) {
+                    if (apiMods.isEmpty())
+                        apiMods = api.cachedMods;
+                    ExceptionUtils.reportException("MelonScanner API Script returned FALSE or NIL for " + api.game + " : (" + api.name + ")[" + constructedURI + "]");
+                    doneFetching = true;
+                }
+                else {
+                    int modsCount = 0;
+                    LuaTable mods = modsLuaRaw.checktable();
+
+                    LuaValue k = LuaValue.NIL;
+                    Varargs n;
+                    while (!(k = (n = mods.next(k)).arg1()).isnil()) {
+                        LuaValue v = n.arg(2);
+                        try {
+                            k.checkint();
+                        }
+                        catch (LuaError e) {
+                            System.err.println("Returned table contains an invalid entry: " + n + "\n" + ExceptionUtils.getStackTrace(e));
+                            continue;
+                        }
+
+                        LuaTable mod;
+                        try {
+                            mod = v.checktable();
+                        }
+                        catch (LuaError e) {
+                            System.err.println("Invalid value for key " + k + "\n" + ExceptionUtils.getStackTrace(e));
+                            continue;
+                        }
+
+                        String name = sanitizeName(mod.get("name").checkjstring());
+                        // System.out.println("Processing mod " + name);
+                        String approvalStatus = "0";
+                        if (mod.get("approvalStatus") != null && !mod.get("approvalStatus").isnil())
+                            approvalStatus = mod.get("approvalStatus").checkjstring();
+                        String id = mod.get("id") == LuaValue.NIL ? null : mod.get("id").checkjstring();
+                        Version version = Version.tryParse(mod.get("version").checkjstring(), false).orElse(null);
+                        String downloadLink = mod.get("downloadLink") == LuaValue.NIL ? null : mod.get("downloadLink").checkjstring();
+                        String modtype = mod.get("modtype") == LuaValue.NIL ? null : mod.get("modtype").checkjstring();
+                        boolean haspending = mod.get("haspending") != LuaValue.NIL && mod.get("haspending").checkboolean();
+                        String hash = mod.get("hash") == LuaValue.NIL ? null : mod.get("hash").checkjstring();
+                        String[] aliases = null;
+                        boolean isbroken = mod.get("isbroken") != LuaValue.NIL && mod.get("isbroken").checkboolean();
+                        LuaValue aliasesRaw = mod.get("aliases");
+                        if (aliasesRaw != LuaValue.NIL) {
+                            LuaTable aliasesTable = aliasesRaw.checktable();
+                            aliases = new String[aliasesTable.length()];
+                            int iAlias = 0;
+                            LuaValue k2 = LuaValue.NIL;
+                            Varargs n2;
+                            while (!(k2 = (n2 = aliasesTable.next(k2)).arg1()).isnil()) {
+                                aliases[iAlias++] = n2.arg(2).checkjstring();
+                            }
+                        }
+                        if (mod.get("is_deprecated") != LuaValue.NIL && mod.get("is_deprecated").checkboolean())
+                            approvalStatus = "3";
+
+                        if (downloadLink != null && downloadLink.equalsIgnoreCase("https://github.com/GrahamKracker/BTD6EpicGamesModCompat/releases/download/1.2.1/BTD6EpicGamesModCompat.dll")) {
+                            version = Version.parse("1.2.1");
+                        }
+
+                        if (isbroken || approvalStatus != null && Integer.parseInt(approvalStatus) == 2) {
+                            if (!brokenMods.contains(name))
+                                brokenMods.add(name);
+                        }
+                        else
+                            brokenMods.remove(name);
+
+                        if (approvalStatus != null && Integer.parseInt(approvalStatus) >= 3) {
+                            if (!retiredMods.contains(name))
+                                retiredMods.add(name);
+                        }
+                        else
+                            retiredMods.remove(name);
+                        apiMods.add(new MelonApiMod(id, name, version, downloadLink, aliases, hash, modtype, haspending, isbroken));
+                        ++modsCount;
+                    }
+
+                    if (api.maxPagination <= 0 || modsCount < api.maxPagination) {
+                        doneFetching = true;
+                    }
+                }
+
+                if (erroringAPIs.stream().anyMatch(entry -> entry.getKey() == api)) {
+                    EmbedBuilder eb = new EmbedBuilder();
+                    eb.setTitle("MelonScanner API for " + api.game + " : " + api.name + " is no longer erroring");
+                    eb.setDescription("It has been erroring for " + Duration.between(erroringAPIs.stream().filter(entry -> entry.getKey() == api).findFirst().orElseThrow().getValue(), Instant.now())
+                            .truncatedTo(ChronoUnit.SECONDS).toString().substring(2).replaceAll("(\\d[HMS])(?!$)", "$1 ")
+                            + (ConfigManager.mainBot ? "" : "\n\nFrom backup bot"));
+
+                    if (JDAManager.isEventsEnabled())
+                        JDAManager.getJDA().getTextChannelById("912757433913454612").sendMessageEmbeds(eb.build()).queue();
+                    erroringAPIs.removeIf(entry -> entry.getKey() == api);
+                }
+
+                if (!doneFetching)
+                    Thread.sleep(2 * 1000); // Sleep 2 seconds to avoid API spam
+                else if (!apiMods.isEmpty()) {
+                    api.cachedMods = apiMods;
+                }
+            }
+
+            // Update stored api datas
+
+            List<MelonApiMod> currentMods = games.get(api.game);
+            if (currentMods == null || currentMods.isEmpty()) //If we are starting up
+                games.put(api.game, new ArrayList<>(apiMods)); //just add all mods in
+            else { //check for updates
+                for (MelonApiMod newMod : apiMods) {
+
+                    MelonApiMod currentMod = null;
+                    for (MelonApiMod mod : currentMods) {
+                        // TODO compare using aliases too
+                        if (mod.name.replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name.replaceAll("[-_ ]", ""))) {
+                            currentMod = mod;
+                            break;
+                        }
+                    }
+
+                    if (currentMod == null)
+                        currentMods.add(newMod);
+                    else {
+                        if (currentMod.versions == null || currentMod.versions[0].version() == null || newMod.versions[0] != null && newMod.versions[0].version() != null && newMod.versions[0].version().isHigherThanOrEquivalentTo(currentMod.versions[0].version())) {
+                            currentMods.remove(currentMod);
+                            currentMods.add(newMod);
+                        }
+                    }
+                }
+                synchronized (games) {
+                    games.put(api.game, currentMods);
+                }
+            }
+
+            /*
+            for (MelonApiMod replacingMod : currentMods) {
+                for (String replacedModName : replacingMod.replacingMods) {
+                    for (MelonApiMod replacedMod : currentMods) {
+                        if (replacedMod.name.equals(replacedModName)) {
+                            replacedMod.replacedBy = replacingMod.name;
+                            break;
+                        }
+                    }
+                }
+            }
+            */
+
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game IS NULL OR Game = ?", api.game);
+            while (rs.next()) {
+                MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
+                List<MelonApiMod> mods = games.get(api.game);
+                if (mods == null)
+                    continue;
+                if (mod.versions[0].version() == null)
+                    continue;
+                mods.removeIf(modtmp ->
+                    modtmp.name.replaceAll("[-_ ]", "").equals(mod.name.replaceAll("[-_ ]", ""))
+                    && (modtmp.versions[0] == null || mod.versions[0].version().isHigherThan(modtmp.versions[0].version())));
+                mods.add(mod);
+                synchronized (games) {
+                    games.put(api.game, mods);
+                }
+            }
+            DBConnectionManagerLum.closeRequest(rs);
+
+            System.out.println("Done fetching " + api.game + " : " + api.name + " in " + Duration.between(start, Instant.now()).toMillis() + "ms");
+
+        }
+        catch (Exception baseexception) {
+            Throwable throwable = baseexception;
+            if (baseexception.getCause() instanceof ExecutionException executionException)
+                throwable = executionException.getCause();
+
+            if (erroringAPIs.stream().noneMatch(entry -> entry.getKey() == api)) {
+                if (throwable instanceof HttpTimeoutException) {
+                    ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
+                }
+                else if (throwable instanceof IOException ioexception) {
+                    if (ioexception.getMessage().contains("Network is unreachable")) {
+                        ExceptionUtils.reportException("MelonScanner API Network Error when fetching " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
+                    }
+                    else if (ioexception.getMessage().contains("GOAWAY")) {
+                        ExceptionUtils.reportException(api.game + " : " + "[" + api.name + "](" + constructedURI + ") is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
+                    }
+                    else
+                        ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", ioexception.getMessage());
+                }
+                else
+                    ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", throwable);
+            }
+            erroringAPIs.add(Map.entry(api, Instant.now()));
+        }
     }
 
 

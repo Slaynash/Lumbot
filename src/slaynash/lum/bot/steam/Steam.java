@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import in.dragonbra.javasteam.enums.EResult;
@@ -68,13 +69,8 @@ public class Steam {
         System.out.println("Starting Steam...");
         init();
 
-        Thread thread = new Thread(() -> {
-            while (!Main.isShuttingDown) {
-                callbackManager.runWaitCallbacks(5 * 1000);
-            }
-        }, "Steam Thread");
-        thread.setDaemon(true);
-        thread.start();
+        Main.SCHEDULER.scheduleAtFixedRate(() -> callbackManager.runCallbacks(), 1, 3, TimeUnit.SECONDS);
+        Main.SCHEDULER.scheduleAtFixedRate(() -> requestChanges(), 9, 6, TimeUnit.SECONDS);
     }
 
     public static void init() {
@@ -107,6 +103,18 @@ public class Steam {
         client.connect();
     }
 
+    private static final Random random = new Random(69420);
+    private static void requestChanges() {
+        try {
+            Thread.sleep(random.nextInt(321));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        apps.picsGetChangesSince(previousChangeNumber, true, true);
+        System.out.println("PICS ticker requested " + previousChangeNumber);
+    }
+
     private static void onConnected(ConnectedCallback callback) {
         System.out.println("Connected to Steam, logging in...");
         user.logOnAnonymous();
@@ -123,14 +131,7 @@ public class Steam {
             ExceptionUtils.reportException("Disconnected from Steam. Retrying in 5s...");
         }
 
-        try {
-            Thread.sleep(5 * 1000);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        client.connect();
+        Main.SCHEDULER.schedule(() -> client.connect(), 5, TimeUnit.SECONDS);
     }
 
     private static void onLoggedOn(LoggedOnCallback callback) {
@@ -160,7 +161,6 @@ public class Steam {
         catch (SQLException e) {
             ExceptionUtils.reportException("Failed to initialize all steam depos", e);
         }
-        startChangesRequesterThread();
     }
 
     private static void onLoggedOff(LoggedOffCallback callback) {
@@ -171,13 +171,7 @@ public class Steam {
             ExceptionUtils.reportException("Logged off from Steam, Retrying in a min...");
         }
 
-        try {
-            Thread.sleep(60 * 1000);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-        client.connect();
+        Main.SCHEDULER.schedule(() -> client.connect(), 1, TimeUnit.MINUTES);
     }
 
     private static void onPicsChanges(PICSChangesCallback callback) {
@@ -500,32 +494,6 @@ public class Steam {
         }
     }
 
-    private static void startChangesRequesterThread() {
-        int currentHash = tickerHash;
-
-        Thread thread = new Thread(() -> {
-            Random random = new Random();
-
-            System.out.println("PICS ticker started with #" + currentHash);
-
-            while (currentHash == tickerHash) {
-                apps.picsGetChangesSince(previousChangeNumber, true, true);
-                System.out.println("PICS ticker requested " + previousChangeNumber);
-
-                try {
-                    Thread.sleep(random.nextInt(3210) + 1000);
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            System.out.println("PICS ticker stopped #" + currentHash);
-        }, "PICS ticker #" + currentHash);
-        thread.setDaemon(true);
-        thread.start();
-    }
-
     // Steam Id to Game name
     public static String getGameName(Integer gameID) {
         if (gameID == null)
@@ -541,7 +509,7 @@ public class Steam {
         long timestamp = System.currentTimeMillis();
         while ((gameDetail = getGameDetails(gameID)) == null && System.currentTimeMillis() - timestamp < 6900) {
             try {
-                Thread.sleep(420);
+                Thread.sleep(69);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

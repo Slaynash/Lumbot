@@ -28,6 +28,7 @@ import mono.cecil.TypeDefinition;
 import net.dv8tion.jda.api.utils.FileUpload;
 import org.apache.commons.lang3.NotImplementedException;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -62,41 +63,14 @@ public class UnityVersionMonitor {
         loadMonoStructCache();
         loadIcalls();
 
-        Thread thread = new Thread(() -> {
-
-            boolean firstRun = true;
-
-            while (true) {
-
-                if (firstRun)
-                    firstRun = false;
-                else
-                    try {
-                        Thread.sleep(60 * 60 * 1000);
-                    }
-                    catch (InterruptedException e) {
-                        ExceptionUtils.reportException("UnityVersionMonitor was interrupted", e);
-                        return;
-                    }
-
-                try {
-                    runOnce();
-                }
-                catch (InterruptedException e) {
-                    ExceptionUtils.reportException("UnityVersionMonitor was interrupted", e);
-                    return;
-                }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("Unhandled exception in UnityVersionMonitor", e);
-                    isRunningCheck = false;
-                }
+        Main.SCHEDULER.scheduleAtFixedRate(() -> {
+            try {
+                runOnce();
             }
-
-        }, "UnityVersionMonitor");
-        thread.setDaemon(true);
-        runningThreads.add(thread);
-        mainThread = thread;
-        thread.start();
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed to run UnityVersionMonitor check", e);
+            }
+        }, 1, 15, java.util.concurrent.TimeUnit.MINUTES);
     }
 
     private static void runOnce() throws InterruptedException {

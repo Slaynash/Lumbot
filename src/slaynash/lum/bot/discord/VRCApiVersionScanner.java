@@ -9,6 +9,11 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -17,24 +22,24 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
 public class VRCApiVersionScanner {
 
     private static String secondLastBVT, lastBVT, lastDG;
+    private static ExecutorService taskExecutor = Executors.newSingleThreadExecutor();
 
     public static void init() {
-        Thread t = new Thread(() -> {
-
+        Runnable task = () -> {
             HttpRequest request = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.vrchat.cloud/api/1/config"))
                 .setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)")
                 .timeout(Duration.ofSeconds(30))
                 .build();
-
-            while (true) {
+            Future<?> future = taskExecutor.submit(() -> {
                 try {
                     HttpResponse<byte[]> response = Utils.downloadRequest(request, "VRChat API");
 
@@ -68,7 +73,7 @@ public class VRCApiVersionScanner {
                         lastDG = newDG;
 
                         if (!JDAManager.isEventsEnabled())
-                            continue;
+                            return;
 
                         List<ServerChannel> channels = new ArrayList<>();
                         try {
@@ -80,7 +85,7 @@ public class VRCApiVersionScanner {
                         }
                         catch (SQLException e) {
                             ExceptionUtils.reportException("Failed to fetch VRCAPI channels", e);
-                            continue;
+                            return;
                         }
 
                         for (ServerChannel channel : channels) {
@@ -105,16 +110,15 @@ public class VRCApiVersionScanner {
                 catch (Exception e) {
                     ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);
                 }
-
-                try {
-                    Thread.sleep(45 * 1000);
-                }
-                catch (Exception ignored) { }
+            });
+            try {
+                future.get(25, TimeUnit.SECONDS);
             }
-
-        }, "VRCApiVersionScanner");
-        t.setDaemon(true);
-        t.start();
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed to fetch VRCAPI:", e);
+                future.cancel(true);
+            }
+        };
+        Main.SCHEDULER.scheduleAtFixedRate(task, 0, 30, TimeUnit.SECONDS);
     }
-
 }

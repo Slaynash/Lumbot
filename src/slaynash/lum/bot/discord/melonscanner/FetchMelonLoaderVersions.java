@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipFile;
 
 import com.google.gson.JsonArray;
@@ -16,24 +17,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.utils.Utils;
 
 public class FetchMelonLoaderVersions {
     public static void start() {
         // Fetch MelonLoader releases and nightly builds every 15 minutes
-        Thread t = new Thread(() -> {
-            while (true) {
-                mlReleases();
-                mlNightly();
-                llReleases();
-                try {
-                    Thread.sleep(15 * 60 * 1000);
-                }
-                catch (Exception ignored) { }
-            }
-        }, "FetchMelonLoaderVersions");
-        t.setDaemon(true);
-        t.start();
+        Main.SCHEDULER.scheduleAtFixedRate(() -> {
+            mlReleases();
+            mlNightly();
+            llReleases();
+        }, 3, 15, TimeUnit.MINUTES);
     }
 
     public static void mlReleases() {

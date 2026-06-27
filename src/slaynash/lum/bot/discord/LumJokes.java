@@ -9,7 +9,6 @@ import java.util.Random;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
@@ -134,12 +133,15 @@ public class LumJokes {
                 else {
                     System.out.println(joke + "\n" + punchLine);
                     try {
-                        Message sentJoke = event.getChannel().sendMessage(joke).complete();
-                        event.getChannel().asGuildMessageChannel().sendTyping().queue(); //sends typing for 10 seconds
-                        Thread.sleep(10 * 1000);
-                        sentJoke.editMessage(joke + "\n\n||" + punchLine + "||").queue();
+                        String finalJoke = joke;
+                        String finalPunchLine = punchLine;
+                        event.getChannel().sendMessage(joke).queue(s -> {
+                            s.getChannel().asGuildMessageChannel().sendTyping()
+                            .delay(Duration.ofSeconds(10))
+                            .flatMap(v -> s.editMessage(finalJoke + "\n\n||" + finalPunchLine + "||")).queue();
+                        });
                     }
-                    catch (InterruptedException e) {
+                    catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred sending JokeAPI:", e, event.getChannel());
                     }
                 }
