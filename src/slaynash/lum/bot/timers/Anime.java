@@ -50,6 +50,7 @@ public class Anime extends TimerTask {
                 }
                 if (anime.status.equals("Upcoming")) {
                     time = time + "\\*";
+                    color = new Color(111, 255, 22); // Neon Green for upcoming anime
                     upcomming = true;
                 }
 
