@@ -73,6 +73,7 @@ public final class MelonScannerReadPass {
 
                 if (
                     mlVersionCheck(context) ||
+                    missingMLFileCheck(context) ||
                     gameNameCheck(context) ||
                     gameTypeCheck(context) ||
                     gamePathCheck(context) ||
@@ -82,8 +83,7 @@ public final class MelonScannerReadPass {
                     modPreListingCheck(context) ||
                     misplacedCheck(context) ||
                     duplicateCheck(context) ||
-                    oldModCheck(context) ||
-                    missingMLFileCheck(context)
+                    oldModCheck(context)
                 ) continue;
 
                 if (!(unhollowerErrorCheck(context) || knownErrorCheck(context) || incompatibleAssemblyErrorCheck(context)))
@@ -334,11 +334,8 @@ public final class MelonScannerReadPass {
     private static boolean oldModCheck(MelonScanContext context) {
         String line = context.line;
         if (line.contains("Could not load file or assembly '")) {
-            String[] split = line.split("Could not load file or assembly '");
-            if (split.length < 2) return true;
-            String missingName = split[1].split(",")[0];
-            if (!context.missingMods.contains(missingName))
-                context.missingMods.add(missingName);
+            if (!context.errors.contains(MelonLoaderError.missingFile))
+                context.errors.add(MelonLoaderError.missingFile);
             return true;
         }
         if (line.matches("\\[[\\d.:]+] \\[ERROR] Failed to Resolve Melons for.*")) {

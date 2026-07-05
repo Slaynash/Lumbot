@@ -28,6 +28,7 @@ public class MelonLoaderError {
     public static final MelonLoaderError nkh6 = new MelonLoaderError("A mod is missing NKHook6. NKHook6 is broken and it is recommended to remove the mod that depends on it.");
     public static final MelonLoaderError btd6mh = new MelonLoaderError("A mod is missing BTD Mod Helper. Please unzip [this zip](https://github.com/gurrenm3/BTD-Mod-Helper/releases/latest/) into your Mods folder.");
     public static final MelonLoaderError mlMissing = new MelonLoaderError("A mod is missing a MelonLoader file. Add to your Virus scanner exception list and reinstall MelonLoader.");
+    public static final MelonLoaderError missingFile = new MelonLoaderError("A mod is missing a Dependent file. It could be caused by a virus scanner, inproperly installed mod or missing another mod. Look at log errors for more info.");
     public static final MelonLoaderError mlCompromised = new MelonLoaderError("MelonLoader is in a compromised state and is displaying sensitive information. Please reinstall MelonLoader.");
 
     public static final MelonLoaderError incompatibleAssemblyError = new MelonLoaderError(

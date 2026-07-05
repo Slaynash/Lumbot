@@ -929,7 +929,7 @@ public final class MelonScanner {
         if (context.missingMods.contains("Assembly-CSharp"))
             error += Localization.get("- Missing crucial assemblies, check for antivirus file tampering and regenerate assemblies or reinstall melonloader\n", context.lang);
 
-        if (context.game != null) {
+        if (context.game != null && context.outdatedMods.size() > 1) {
             switch (context.game) {
                 case "ChilloutVR" -> {
                     if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))

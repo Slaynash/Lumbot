@@ -169,7 +169,6 @@ public class MelonScannerApisManager {
 
             while (!doneFetching) {
 
-
                 if (api.maxPagination > 0)
                     constructedURI = api.endpoint
                         .replace("{count}", String.valueOf(api.maxPagination))

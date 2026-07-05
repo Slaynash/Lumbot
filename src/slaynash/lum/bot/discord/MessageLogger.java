@@ -43,6 +43,11 @@ public class MessageLogger {
             guild = event.getGuild().getId();
         }
 
+        if (messageContent.isEmpty() && event.getMessage().getAttachments().isEmpty()) {
+            // Don't log empty messages
+            return;
+        }
+
         // Log the message details in SQL
         try {
             String sql = "INSERT INTO Messages (message_id, content, author_id, channel_id, guild_id, timestamp, attachments) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -67,6 +72,11 @@ public class MessageLogger {
         if (event.isFromGuild()) {
             channel = event.getChannel().getIdLong();
             guild = event.getGuild().getIdLong();
+        }
+
+        if (messageContent.isEmpty() && event.getMessage().getAttachments().isEmpty()) {
+            // Don't log empty messages
+            return;
         }
 
         try {
