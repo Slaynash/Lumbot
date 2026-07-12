@@ -29,7 +29,7 @@ public class Anime extends TimerTask {
             Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS);
 
             StringBuilder sb = new StringBuilder();
-            Color color = Color.GREEN;
+            Color color = new Color(0, 200, 0);
             boolean upcomming = false;
 
             for (AnimeEntry anime : animes) {
@@ -48,7 +48,7 @@ public class Anime extends TimerTask {
                     episode = episode + "F";
                     color = new Color(0, 111, 0); // Dark green for final episodes
                 }
-                if (anime.status.equals("Upcoming")) {
+                else if (anime.status.equals("Upcoming")) {
                     time = time + "\\*";
                     color = new Color(111, 255, 22); // Neon Green for upcoming anime
                     upcomming = true;

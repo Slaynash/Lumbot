@@ -37,6 +37,10 @@
             "error": "Virus Scanner blocked MelonLoader. Please whitelist MelonLoader folder and try again or reinstall MelonLoader."
         },
         {
+            "regex": ".*An Application Control policy has blocked this file.*",
+            "error": "Application Control policy has blocked a file. Please make sure all files have appropriate permissions and check your virus scanner."
+        },
+        {
             "regex": ".*SHA512 Hash from Temp File does not match Repo Hash!",
             "error": "Installer failed to download MelonLoader successfully. Try again later or redownload the [official MelonLoader installer](https://github.com/LavaGang/MelonLoader.Installer/releases/latest/download/MelonLoader.Installer.exe)."
         },
