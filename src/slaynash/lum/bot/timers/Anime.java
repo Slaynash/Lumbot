@@ -33,8 +33,10 @@ public class Anime extends TimerTask {
             boolean upcomming = false;
 
             for (AnimeEntry anime : animes) {
-                String url = "https://animeschedule.net/anime/" + anime.route;
                 Instant date = anime.getEpisodeDateInstant();
+                if (date.isBefore(startOfDay) || date.isAfter(startOfDay.plus(1, ChronoUnit.DAYS)))
+                    continue;
+                String url = "https://animeschedule.net/anime/" + anime.route;
                 String time = " at <t:" + date.getEpochSecond() + ":t>";
                 String episode = "Episode " + (anime.subtractedEpisodeNumber > 0 ? anime.subtractedEpisodeNumber + " - " : "") + anime.episodeNumber;
                 if (anime.delayedText != null && !anime.delayedText.isEmpty())
@@ -54,9 +56,7 @@ public class Anime extends TimerTask {
                     upcomming = true;
                 }
 
-                if (date.isAfter(startOfDay) && date.isBefore(startOfDay.plus(1, ChronoUnit.DAYS))) {
-                    sb.append("* [").append(title).append("](").append(url).append(") ").append(episode).append(time).append("\n");
-                }
+                sb.append("* [").append(title).append("](").append(url).append(") ").append(episode).append(time).append("\n");
             }
 
             if (upcomming)

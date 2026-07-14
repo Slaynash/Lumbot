@@ -85,7 +85,7 @@
         "melonscanner.othererrors.nomods": "- You have no mods installed in your Mods folder.",
         "melonscanner.othererrors.nomodscvrmg": "- You have no mods installed in your Mods folder. Take a look at <#1002058238545641542> for some mods to install.",
         "melonscanner.othererrors.nomodstld": "- You have no mods installed in your Mods folder. [*Only ZUUL*](https://tldmods.com/)",
-        "melonscanner.othererrors.unidentifiederrors": "- There are some unidentified errors. Please wait for a moderator or a helper to manually check the file.",
+        "melonscanner.othererrors.unidentifiederrors": "- There are some unidentified errors. If you are having issues, please ask a helper for help (without using pings)",
 
         "melonscanner.partiallog.fieldname": "Partial Log:",
         "melonscanner.partiallog.field": "- MelonLoader either crashed or paused by the console being clicked on.\nPlease push any key on console to continue, reinstall MelonLoader, or verify integrity of your game.",
