@@ -27,6 +27,7 @@ public class Anime extends TimerTask {
         try {
             List<AnimeEntry> animes = checkSubs();
             Instant startOfDay = Instant.now().truncatedTo(ChronoUnit.DAYS);
+            Instant endOfDay = startOfDay.plus(1, ChronoUnit.DAYS);
 
             StringBuilder sb = new StringBuilder();
             Color color = new Color(0, 200, 0);
@@ -34,7 +35,7 @@ public class Anime extends TimerTask {
 
             for (AnimeEntry anime : animes) {
                 Instant date = anime.getEpisodeDateInstant();
-                if (date.isBefore(startOfDay) || date.isAfter(startOfDay.plus(1, ChronoUnit.DAYS)))
+                if (date.isBefore(startOfDay) || date.isAfter(endOfDay))
                     continue;
                 String url = "https://animeschedule.net/anime/" + anime.route;
                 String time = " at <t:" + date.getEpochSecond() + ":t>";
@@ -68,7 +69,7 @@ public class Anime extends TimerTask {
             }
 
             EmbedBuilder embed = new EmbedBuilder();
-            embed.setTitle("Anime Schedule <t:" + startOfDay.getEpochSecond() + ":D>");
+            embed.setTitle("Anime Schedule <t:" + startOfDay.getEpochSecond() + ":D> - <t:" + endOfDay.getEpochSecond() + ":D>");
             embed.setDescription(sb.toString().strip());
             embed.setColor(color);
             JDAManager.getJDA().getGuildById(627168678471008269L).getTextChannelById(628799325232693248L).sendMessageEmbeds(embed.build()).queue();

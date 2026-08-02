@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jul 12, 2026 at 07:56 PM
+-- Generation Time: Aug 02, 2026 at 10:09 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -217,6 +217,20 @@ CREATE TABLE IF NOT EXISTS `Replies` (
   `ignorerole` bigint DEFAULT NULL,
   `lastedited` bigint DEFAULT NULL,
   PRIMARY KEY (`ukey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ScamHash`
+--
+
+CREATE TABLE IF NOT EXISTS `ScamHash` (
+  `hash` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `points` tinyint NOT NULL DEFAULT '1',
+  `count` int UNSIGNED NOT NULL DEFAULT '1',
+  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

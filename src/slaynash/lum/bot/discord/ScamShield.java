@@ -2,10 +2,16 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -19,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -295,6 +302,9 @@ public class ScamShield {
             if (event.getMessage().getInvites().size() > 1)
                 ssFoundTerms.put("Discord Invite", 1);
         }
+
+        //check if the message has a known scam photo
+        ssFoundTerms.putAll(photoCheck(event));
 
         int suspiciousValue = ssFoundTerms.values().stream().reduce(0, Integer::sum);
 
@@ -703,6 +713,64 @@ public class ScamShield {
         }
         catch (Exception e) {
             return null;
+        }
+    }
+
+    private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
+        Map<String, Integer> results = new HashMap<>();
+        for (Message.Attachment attachment : event.getMessage().getAttachments()) {
+            if (!attachment.isImage())
+                continue;
+            try {
+                String hash = getISHash(attachment.getProxy().download().get());
+                System.out.println("Checking hash: " + hash + " for " + attachment.getUrl() + " from " + event.getAuthor().getEffectiveName());
+                // check database for known scam hashes
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM ScamHash WHERE hash = ?", hash);
+                if (rs.next()) {
+                    results.put(hash, rs.getInt("points"));
+                    DBConnectionManagerLum.sendUpdate("UPDATE ScamHash SET count = count + 1 WHERE hash = ?", hash);
+                }
+                else
+                    reportPhoto(attachment, hash, event);
+                DBConnectionManagerLum.closeRequest(rs);
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed photoCheck in SS", e);
+            }
+        }
+        return results;
+    }
+
+    private static String getISHash(InputStream is) throws NoSuchAlgorithmException, IOException {
+        // Initialize the SHA-256 MessageDigest instance
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        // Stream the file through a DigestInputStream to automatically update the digest
+        new DigestInputStream(is, md).readAllBytes();
+        is.close();
+        // Get the final byte array and format it into a hexadecimal string
+        return HexFormat.of().formatHex(md.digest());
+    }
+
+    private static void reportPhoto(Message.Attachment attachment, String hash, MessageReceivedEvent event) {
+        try {
+            //embed for reporting the photo
+            EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTitle("Photo Hash Report")
+                .setUrl(event.getJumpUrl())
+                .setTimestamp(Instant.now())
+                .addField("Author", event.getAuthor().getAsMention(), true)
+                .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
+                .addField("Channel", event.getChannel().getName(), true);
+            if (!event.getMessage().getContentRaw().isBlank())
+                embedBuilder.addField("Message Content", event.getMessage().getContentRaw(), false);
+            embedBuilder.addField("Hash", hash, false);
+            embedBuilder.setImage(attachment.getUrl());
+            // send the embed to the appropriate channel
+            // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
+            JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed reportPhoto in SS", e);
         }
     }
 }
