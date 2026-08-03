@@ -761,8 +761,6 @@ public class ScamShield {
                 .addField("Author", event.getAuthor().getAsMention(), true)
                 .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
                 .addField("Channel", event.getChannel().getName(), true);
-            if (!event.getMessage().getContentRaw().isBlank())
-                embedBuilder.addField("Message Content", event.getMessage().getContentRaw(), false);
             embedBuilder.addField("Hash", hash, false);
             embedBuilder.setImage(attachment.getUrl());
             // send the embed to the appropriate channel
