@@ -4,6 +4,12 @@ import java.awt.Color;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +20,7 @@ import com.github.zafarkhaja.semver.Version;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.Permission;
-import org.mozilla.universalchardet.ReaderFactory;
+import org.mozilla.universalchardet.UniversalDetector;
 import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
@@ -27,7 +33,7 @@ public final class MelonScannerReadPass {
             Utils.replyEmbed("Failed to download the log file.", Color.red, context.messageReceivedEvent);
             return false;
         }
-        try (BufferedReader br = ReaderFactory.createBufferedReader(file)) {
+        try (BufferedReader br = openLogReader(file)) {
             context.bufferedReader = br;
             context.nextLine = "";
             context.line = "";
@@ -104,6 +110,24 @@ public final class MelonScannerReadPass {
         }
 
         return true;
+    }
+
+    private static BufferedReader openLogReader(File file) throws IOException {
+        String detectedCharsetName = UniversalDetector.detectCharset(file);
+        Charset charset = StandardCharsets.UTF_8;
+        if (detectedCharsetName != null) {
+            try {
+                charset = Charset.forName(detectedCharsetName);
+            }
+            catch (Exception e) {
+                System.out.println("Unknown charset detected: " + detectedCharsetName + ", falling back to UTF-8");
+            }
+        }
+
+        CharsetDecoder decoder = charset.newDecoder()
+            .onMalformedInput(CodingErrorAction.REPLACE)
+            .onUnmappableCharacter(CodingErrorAction.REPLACE);
+        return new BufferedReader(new InputStreamReader(Files.newInputStream(file.toPath()), decoder));
     }
 
     private static boolean shouldOmitLineCheck(MelonScanContext context) {
