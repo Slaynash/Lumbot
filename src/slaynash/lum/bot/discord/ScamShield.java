@@ -1,6 +1,8 @@
 package slaynash.lum.bot.discord;
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +10,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -37,6 +42,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
+
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -55,6 +62,7 @@ import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
+import slaynash.lum.bot.utils.ImageUtils;
 import slaynash.lum.bot.utils.Utils;
 
 public class ScamShield {
@@ -204,6 +212,25 @@ public class ScamShield {
 
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
+
+    private static final List<BufferedImage> scamImages = new ArrayList<>();
+
+    public static void loadScamImages() {
+        try {
+            for (Path path : Files.list(Paths.get("scamImages/")).collect(Collectors.toList())) {
+                // Load each image file
+                if (Files.isRegularFile(path)) {
+                    try {
+                        scamImages.add(ImageIO.read(path.toFile()));
+                    } catch (IOException e) {
+                        ExceptionUtils.reportException("Failed to load scam image: " + path, e);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            ExceptionUtils.reportException("Failed to list scam images in scamImages/ directory", e);
+        }
+    }
 
     public static ScamResults ssValue(MessageReceivedEvent event) {
         Map<String, Integer> ssFoundTerms = new HashMap<>();
@@ -722,7 +749,20 @@ public class ScamShield {
             if (!attachment.isImage())
                 continue;
             try {
-                String hash = getISHash(attachment.getProxy().download().get());
+                InputStream imgIS = attachment.getProxy().download().get();
+                String hash = getISHash(imgIS);
+
+                double closestSimilarity = 0.0;
+                int closestSimilarityIndex = -1;
+                for (int i = 0; i < scamImages.size(); i++)
+                {
+                    double similarity = ImageUtils.getImageSSIM(scamImages.get(i), ImageIO.read(new BufferedInputStream(imgIS)));
+                    if (similarity > closestSimilarity) {
+                        closestSimilarity = similarity;
+                        closestSimilarityIndex = i;
+                    }
+                }
+
                 System.out.println("Checking hash: " + hash + " for " + attachment.getUrl() + " from " + event.getAuthor().getEffectiveName());
                 // check database for known scam hashes
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM ScamHash WHERE hash = ?", hash);
@@ -731,7 +771,7 @@ public class ScamShield {
                     DBConnectionManagerLum.sendUpdate("UPDATE ScamHash SET count = count + 1 WHERE hash = ?", hash);
                 }
                 else
-                    reportPhoto(attachment, hash, event);
+                    reportPhoto(attachment, hash, closestSimilarity, closestSimilarityIndex, event);
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (Exception e) {
@@ -751,7 +791,7 @@ public class ScamShield {
         return HexFormat.of().formatHex(md.digest());
     }
 
-    private static void reportPhoto(Message.Attachment attachment, String hash, MessageReceivedEvent event) {
+    private static void reportPhoto(Message.Attachment attachment, String hash, double closestSimilarity, int closestSimilarityIndex, MessageReceivedEvent event) {
         try {
             //embed for reporting the photo
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -762,7 +802,15 @@ public class ScamShield {
                 .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
+            if (closestSimilarityIndex >= 0) {
+                embedBuilder.addField("Closest Similarity", String.valueOf(closestSimilarity), true)
+                            .addField("Closest Similarity Index", String.valueOf(closestSimilarityIndex), true);
+            }
             embedBuilder.setImage(attachment.getUrl());
+            if (closestSimilarity > 0.8)
+                embedBuilder.setColor(Color.RED);
+            else if (closestSimilarity > 0.3)
+                embedBuilder.setColor(Color.ORANGE);
             // send the embed to the appropriate channel
             // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
             JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
