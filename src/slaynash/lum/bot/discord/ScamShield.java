@@ -759,17 +759,18 @@ public class ScamShield {
 
             double closestSimilarity = 0.0;
             int closestSimilarityIndex = -1;
-            for (int i = 0; i < scamImages.size(); i++) {
-                try (InputStream imgIS = attachment.getProxy().download().get()) {
-                    double similarity = ImageUtils.getImageSSIM(scamImages.get(i), ImageIO.read(new BufferedInputStream(imgIS)));
+            try (InputStream imgIS = attachment.getProxy().download().get()) {
+                BufferedImage attachmentImage = ImageIO.read(new BufferedInputStream(imgIS));
+                for (int i = 0; i < scamImages.size(); i++) {
+                    double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
                     if (similarity > closestSimilarity) {
                         closestSimilarity = similarity;
                         closestSimilarityIndex = i;
                     }
                 }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("Failed photoCheck in SS", e);
-                }
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
             try {
