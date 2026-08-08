@@ -748,8 +748,7 @@ public class ScamShield {
         for (Message.Attachment attachment : event.getMessage().getAttachments()) {
             if (!attachment.isImage())
                 continue;
-            try {
-                InputStream imgIS = attachment.getProxy().download().get();
+            try (InputStream imgIS = attachment.getProxy().download().get()) {
                 String hash = getISHash(imgIS);
 
                 double closestSimilarity = 0.0;
@@ -786,7 +785,6 @@ public class ScamShield {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         // Stream the file through a DigestInputStream to automatically update the digest
         new DigestInputStream(is, md).readAllBytes();
-        is.close();
         // Get the final byte array and format it into a hexadecimal string
         return HexFormat.of().formatHex(md.digest());
     }
