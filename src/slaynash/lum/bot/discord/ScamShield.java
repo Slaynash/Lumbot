@@ -748,11 +748,18 @@ public class ScamShield {
         for (Message.Attachment attachment : event.getMessage().getAttachments()) {
             if (!attachment.isImage())
                 continue;
-            try (InputStream imgIS = attachment.getProxy().download().get()) {
-                String hash = getISHash(imgIS);
 
-                double closestSimilarity = 0.0;
-                int closestSimilarityIndex = -1;
+            String hash = "";
+            try (InputStream imgIS = attachment.getProxy().download().get()) {
+                hash = getISHash(imgIS);
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed photoCheck in SS", e);
+            }
+
+            double closestSimilarity = 0.0;
+            int closestSimilarityIndex = -1;
+            try (InputStream imgIS = attachment.getProxy().download().get()) {
                 for (int i = 0; i < scamImages.size(); i++)
                 {
                     double similarity = ImageUtils.getImageSSIM(scamImages.get(i), ImageIO.read(new BufferedInputStream(imgIS)));
@@ -761,7 +768,12 @@ public class ScamShield {
                         closestSimilarityIndex = i;
                     }
                 }
-
+            }
+            catch (Exception e) {
+                ExceptionUtils.reportException("Failed photoCheck in SS", e);
+            }
+            
+            try {
                 System.out.println("Checking hash: " + hash + " for " + attachment.getUrl() + " from " + event.getAuthor().getEffectiveName());
                 // check database for known scam hashes
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM ScamHash WHERE hash = ?", hash);
