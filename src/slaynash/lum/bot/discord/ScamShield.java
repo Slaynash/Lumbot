@@ -760,18 +760,27 @@ public class ScamShield {
 
             double closestSimilarity = 0.0;
             int closestSimilarityIndex = -1;
+            boolean failedToReadImage = false;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
-                BufferedImage attachmentImage = ImageIO.read(new BufferedInputStream(imgIS));
-                for (int i = 0; i < scamImages.size(); i++) {
-                    double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
-                    System.out.println("Similarity between " + hash + " and scam image " + i + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i), attachmentImage) + ")");
-                    if (similarity > closestSimilarity) {
-                        closestSimilarity = similarity;
-                        closestSimilarityIndex = i;
-                    }
+                BufferedImage attachmentImage = ImageIO.read(imgIS);
+                if (attachmentImage == null) {
+                    System.out.println("Failed to read image from attachment: " + attachment.getUrl());
+                    ExceptionUtils.reportException("Failed to read image with hash " + hash, new IOException("Image.IO.read returned null"));
+                    failedToReadImage = true;
                 }
-                if (closestSimilarity > 0.7) {
-                    results.put("[image " + imageIndex + "]", 2);
+                else
+                {
+                    for (int i = 0; i < scamImages.size(); i++) {
+                        double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
+                        System.out.println("Similarity between " + hash + " and scam image " + i + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i), attachmentImage) + ")");
+                        if (similarity > closestSimilarity) {
+                            closestSimilarity = similarity;
+                            closestSimilarityIndex = i;
+                        }
+                    }
+                    if (closestSimilarity > 0.7) {
+                        results.put("[image " + imageIndex + "]", 2);
+                    }
                 }
             }
             catch (Exception e) {
@@ -787,7 +796,7 @@ public class ScamShield {
                     DBConnectionManagerLum.sendUpdate("UPDATE ScamHash SET count = count + 1 WHERE hash = ?", hash);
                 }
                 else
-                    reportPhoto(attachment, hash, closestSimilarity, closestSimilarityIndex, event);
+                    reportPhoto(attachment, hash, closestSimilarity, closestSimilarityIndex, failedToReadImage, event);
                 DBConnectionManagerLum.closeRequest(rs);
             }
             catch (Exception e) {
@@ -808,7 +817,7 @@ public class ScamShield {
         return HexFormat.of().formatHex(md.digest());
     }
 
-    private static void reportPhoto(Message.Attachment attachment, String hash, double closestSimilarity, int closestSimilarityIndex, MessageReceivedEvent event) {
+    private static void reportPhoto(Message.Attachment attachment, String hash, double closestSimilarity, int closestSimilarityIndex, boolean failedToReadImage, MessageReceivedEvent event) {
         try {
             //embed for reporting the photo
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -824,7 +833,9 @@ public class ScamShield {
                             .addField("Closest Similarity Index", String.valueOf(closestSimilarityIndex), true);
             }
             embedBuilder.setImage(attachment.getUrl());
-            if (closestSimilarity > 0.7)
+            if (failedToReadImage)
+                embedBuilder.setColor(Color.MAGENTA);
+            else if (closestSimilarity > 0.7)
                 embedBuilder.setColor(Color.RED);
             else if (closestSimilarity > 0.3)
                 embedBuilder.setColor(Color.ORANGE);
