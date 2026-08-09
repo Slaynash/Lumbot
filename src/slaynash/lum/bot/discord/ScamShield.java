@@ -763,6 +763,7 @@ public class ScamShield {
                 BufferedImage attachmentImage = ImageIO.read(new BufferedInputStream(imgIS));
                 for (int i = 0; i < scamImages.size(); i++) {
                     double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
+                    System.out.println("Similarity between " + hash + " and scam image " + i + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i), attachmentImage) + ")");
                     if (similarity > closestSimilarity) {
                         closestSimilarity = similarity;
                         closestSimilarityIndex = i;

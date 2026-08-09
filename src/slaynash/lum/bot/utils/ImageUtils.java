@@ -111,4 +111,11 @@ public final class ImageUtils {
         return numerator / denominator;
     }
 
+    public static double getImageRatioDiff(BufferedImage img0, BufferedImage img1) {
+        float img0ratio = (float) img0.getWidth() / img0.getHeight();
+        float img1ratio = (float) img1.getWidth() / img1.getHeight();
+
+        return Math.abs(img0ratio - img1ratio);
+    }
+
 }
