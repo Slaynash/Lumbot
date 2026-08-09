@@ -2,8 +2,8 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -751,22 +752,20 @@ public class ScamShield {
                 continue;
 
             String hash = "";
-            try (InputStream imgIS = attachment.getProxy().download().get()) {
-                hash = getISHash(imgIS);
-            }
-            catch (Exception e) {
-                ExceptionUtils.reportException("Failed photoCheck in SS", e);
-            }
-
             double closestSimilarity = 0.0;
             int closestSimilarityIndex = -1;
             boolean failedToReadImage = false;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
+                hash = getISHash(imgIS);
                 BufferedImage attachmentImage = ImageIO.read(imgIS);
                 if (attachmentImage == null) {
                     System.out.println("Failed to read image from attachment: " + attachment.getUrl());
                     ExceptionUtils.reportException("Failed to read image with hash " + hash, new IOException("Image.IO.read returned null"));
                     failedToReadImage = true;
+                    //save to disk for manual review
+                    File outputfile = new File("failed_to_read_images/" + hash.substring(0, 8) + "_" + attachment.getFileName());
+                    outputfile.getParentFile().mkdirs(); // Create directories if they don't exist
+                    attachment.getProxy().downloadToPath(outputfile.toPath()).get();
                 }
                 else
                 {
