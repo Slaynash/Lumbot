@@ -213,7 +213,17 @@ public class ScamShield {
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
-    private static final List<BufferedImage> scamImages = new ArrayList<>();
+    private static class ScamImageReference {
+        public String name;
+        public BufferedImage image;
+        
+        public ScamImageReference(String name, BufferedImage image) {
+            this.name = name;
+            this.image = image;
+        }
+    }
+
+    private static final List<ScamImageReference> scamImages = new ArrayList<>();
     private static final Path scamImagesFolder = Paths.get("scamImages/");
 
     public static void loadScamImages() {
@@ -225,7 +235,7 @@ public class ScamShield {
                 // Load each image file
                 if (Files.isRegularFile(path)) {
                     try {
-                        scamImages.add(ImageIO.read(path.toFile()));
+                        scamImages.add(new ScamImageReference(path.getFileName().toString(), ImageIO.read(path.toFile())));
                     }
                     catch (IOException e) {
                         ExceptionUtils.reportException("Failed to load scam image: " + path, e);
@@ -777,8 +787,8 @@ public class ScamShield {
                 }
                 else {
                     for (int i = 0; i < scamImages.size(); i++) {
-                        double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
-                        System.out.println("Similarity between " + hash + " and scam image " + i + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i), attachmentImage) + ")");
+                        double similarity = ImageUtils.getImageSSIM(scamImages.get(i).image, attachmentImage);
+                        System.out.println("Similarity between " + hash + " and scam image " + scamImages.get(i).name + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i).image, attachmentImage) + ")");
                         if (similarity > closestSimilarity) {
                             closestSimilarity = similarity;
                             closestSimilarityIndex = i;
@@ -835,8 +845,8 @@ public class ScamShield {
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (closestSimilarityIndex >= 0) {
-                embedBuilder.addField("Closest Similarity", String.valueOf(closestSimilarity), true)
-                            .addField("Closest Similarity Index", String.valueOf(closestSimilarityIndex), true);
+                embedBuilder.addField("Closest Similarity", String.valueOf((int)(closestSimilarity * 1000) * 0.001), true)
+                            .addField("Closest Similarity Image", String.valueOf(scamImages.get(closestSimilarityIndex).name), true);
             }
             embedBuilder.setImage(attachment.getUrl());
             if (failedToReadImage)
