@@ -223,12 +223,14 @@ public class ScamShield {
                 if (Files.isRegularFile(path)) {
                     try {
                         scamImages.add(ImageIO.read(path.toFile()));
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         ExceptionUtils.reportException("Failed to load scam image: " + path, e);
                     }
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             ExceptionUtils.reportException("Failed to list scam images in scamImages/ directory", e);
         }
     }
@@ -756,7 +758,9 @@ public class ScamShield {
             int closestSimilarityIndex = -1;
             boolean failedToReadImage = false;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
+                imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
                 hash = getISHash(imgIS);
+                imgIS.reset(); // Reset the stream to the marked position
                 BufferedImage attachmentImage = ImageIO.read(imgIS);
                 if (attachmentImage == null) {
                     System.out.println("Failed to read image from attachment: " + attachment.getUrl());
