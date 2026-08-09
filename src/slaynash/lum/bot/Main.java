@@ -100,8 +100,6 @@ public class Main extends ListenerAdapter {
         DBConnectionManagerLum.init();
         DBConnectionManagerShortUrls.init();
 
-        ScamShield.loadScamImages();
-
         loadVerifychannelList();
         loadReactionsList();
         loadScreeningRolesList();

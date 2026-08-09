@@ -13,7 +13,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -215,10 +214,14 @@ public class ScamShield {
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
     private static final List<BufferedImage> scamImages = new ArrayList<>();
+    private static final Path scamImagesFolder = Paths.get("scamImages/");
 
     public static void loadScamImages() {
+        int scamImagesCount = scamImagesFolder.toFile().listFiles().length;
+        if (scamImagesCount == scamImages.size()) return; //no need to reload if the count is the same
+        scamImages.clear();
         try {
-            for (Path path : Files.list(Paths.get("scamImages/")).collect(Collectors.toList())) {
+            for (Path path : Files.list(scamImagesFolder).toList()) {
                 // Load each image file
                 if (Files.isRegularFile(path)) {
                     try {
@@ -747,6 +750,7 @@ public class ScamShield {
     }
 
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
+        loadScamImages();
         Map<String, Integer> results = new HashMap<>();
         int imageIndex = 0;
         for (Message.Attachment attachment : event.getMessage().getAttachments()) {
@@ -771,8 +775,7 @@ public class ScamShield {
                     outputfile.getParentFile().mkdirs(); // Create directories if they don't exist
                     attachment.getProxy().downloadToPath(outputfile.toPath()).get();
                 }
-                else
-                {
+                else {
                     for (int i = 0; i < scamImages.size(); i++) {
                         double similarity = ImageUtils.getImageSSIM(scamImages.get(i), attachmentImage);
                         System.out.println("Similarity between " + hash + " and scam image " + i + ": " + similarity + " (ratio diff: " + ImageUtils.getImageRatioDiff(scamImages.get(i), attachmentImage) + ")");
