@@ -745,6 +745,7 @@ public class ScamShield {
 
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
         Map<String, Integer> results = new HashMap<>();
+        int imageIndex = 0;
         for (Message.Attachment attachment : event.getMessage().getAttachments()) {
             if (!attachment.isImage())
                 continue;
@@ -769,6 +770,9 @@ public class ScamShield {
                         closestSimilarityIndex = i;
                     }
                 }
+                if (closestSimilarity > 0.7) {
+                    results.put("[image " + imageIndex + "]", 2);
+                }
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
@@ -789,6 +793,8 @@ public class ScamShield {
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
+
+            imageIndex++;
         }
         return results;
     }
@@ -818,7 +824,7 @@ public class ScamShield {
                             .addField("Closest Similarity Index", String.valueOf(closestSimilarityIndex), true);
             }
             embedBuilder.setImage(attachment.getUrl());
-            if (closestSimilarity > 0.8)
+            if (closestSimilarity > 0.7)
                 embedBuilder.setColor(Color.RED);
             else if (closestSimilarity > 0.3)
                 embedBuilder.setColor(Color.ORANGE);
