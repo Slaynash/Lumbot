@@ -222,20 +222,6 @@ CREATE TABLE IF NOT EXISTS `Replies` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ScamHash`
---
-
-CREATE TABLE IF NOT EXISTS `ScamHash` (
-  `hash` char(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `points` tinyint NOT NULL DEFAULT '1',
-  `count` int UNSIGNED NOT NULL DEFAULT '1',
-  `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `SteamApp`
 --
 

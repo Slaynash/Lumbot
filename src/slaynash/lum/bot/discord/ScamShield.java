@@ -16,7 +16,7 @@ import java.nio.file.Paths;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -216,7 +216,7 @@ public class ScamShield {
     private static class ScamImageReference {
         public String name;
         public BufferedImage image;
-        
+
         public ScamImageReference(String name, BufferedImage image) {
             this.name = name;
             this.image = image;
@@ -229,6 +229,7 @@ public class ScamShield {
     public static void loadScamImages() {
         int scamImagesCount = scamImagesFolder.toFile().listFiles().length;
         if (scamImagesCount == scamImages.size()) return; //no need to reload if the count is the same
+        System.out.println("Loading scam images from scamImages/ folder, found " + scamImagesCount + " images");
         scamImages.clear();
         try {
             for (Path path : Files.list(scamImagesFolder).toList()) {
@@ -803,22 +804,7 @@ public class ScamShield {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
-            try {
-                System.out.println("Checking hash: " + hash + " for " + attachment.getUrl() + " from " + event.getAuthor().getEffectiveName());
-                // check database for known scam hashes
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM ScamHash WHERE hash = ?", hash);
-                if (rs.next()) {
-                    results.put(hash, rs.getInt("points"));
-                    DBConnectionManagerLum.sendUpdate("UPDATE ScamHash SET count = count + 1 WHERE hash = ?", hash);
-                }
-                else
-                    reportPhoto(attachment, hash, closestSimilarity, closestSimilarityIndex, failedToReadImage, event);
-                DBConnectionManagerLum.closeRequest(rs);
-            }
-            catch (Exception e) {
-                ExceptionUtils.reportException("Failed photoCheck in SS", e);
-            }
-
+            reportPhoto(attachment, hash, closestSimilarity, closestSimilarityIndex, failedToReadImage, event);
             imageIndex++;
         }
         return results;
@@ -845,7 +831,8 @@ public class ScamShield {
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (closestSimilarityIndex >= 0) {
-                embedBuilder.addField("Closest Similarity", String.valueOf((int)(closestSimilarity * 1000) * 0.001), true)
+                DecimalFormat df = new DecimalFormat("#.##");
+                embedBuilder.addField("Closest Similarity", df.format(closestSimilarity * 100), true)
                             .addField("Closest Similarity Image", String.valueOf(scamImages.get(closestSimilarityIndex).name), true);
             }
             embedBuilder.setImage(attachment.getUrl());
