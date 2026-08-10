@@ -845,6 +845,8 @@ public class ScamShield {
             // send the embed to the appropriate channel
             // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
             JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
+            if (closestSimilarity > 0.3)
+                JDAManager.getJDA().getTextChannelById(1536358577868898324L).sendMessageEmbeds(embedBuilder.build()).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed reportPhoto in SS", e);
