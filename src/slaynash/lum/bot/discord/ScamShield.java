@@ -458,9 +458,11 @@ public class ScamShield {
             return true;
         });
         boolean status = false;
+        List<Guild> affectedGuilds = new ArrayList<>(mutualGuilds.size());
         for (Guild guild : mutualGuilds) {
             if (handleBan(event, guild.getIdLong(), suspiciousResults))
                 status = true;
+                affectedGuilds.add(guild);
         }
         if (status) {
             String id;
@@ -468,6 +470,8 @@ public class ScamShield {
             else id = event.getGuild().getId();
 
             LogCounter.addSSCounter(event.getAuthor().getId(), event.getMessage().getContentRaw(), id); // add to status counter
+
+            reportCrossbanToDevs(event, suspiciousResults, affectedGuilds);
         }
         return status;
     }
@@ -635,6 +639,43 @@ public class ScamShield {
         return status;
     }
 
+    private static void reportCrossbanToDevs(MessageReceivedEvent event, ScamResults suspiciousResults, List<Guild> mutualGuilds) {
+        String usernameWithTag = event.getAuthor().getEffectiveName();
+        String userId = event.getAuthor().getAsMention();
+        StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " got flagged as scammer");
+
+        EmbedBuilder embedBuilder = new EmbedBuilder()
+            .setDescription(usernameWithTag + " " + userId + " got flagged as scammer")
+            .setTimestamp(Instant.now())
+            .setFooter("Received " + suspiciousResults.totalSuspicionCount + " naughty points.");
+        embedBuilder.setAuthor("Shield Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
+
+        sb.append("Impacted guilds:\n");
+        for (Guild guild : mutualGuilds) {
+            GuildConfiguration guildConfig = DBConnectionManagerLum.getGuildConfig(guild.getIdLong());
+            String actionTaken = guildConfig.ScamShieldBan() ? "Ban" : "Kick";
+            sb.append("\n").append(guild.getName()).append(": ").append(actionTaken);
+        }
+
+        sb.append("\n\n").append("Messages that got flagged as scammer:");
+
+        suspiciousResults.sameauthormessages.forEach(a -> sb
+            .append("\n")
+            .append(Junidecode.unidecode(a.messageReceivedEvent.getMessage().getContentRaw()))
+            .append("\n")
+            .append(a.messageReceivedEvent.getMessage().getAttachments().stream().map(Message.Attachment::getUrl).collect(Collectors.joining("\n")))
+            .append(a.messageReceivedEvent.getMessage().getAttachments().isEmpty() ? "" : "\n")
+            .append(a.suspiciousResults.suspiciousValue)
+            .append(" point")
+            .append(a.suspiciousResults.suspiciousValue > 1 ? "s in " : " in ")
+            .append(a.messageReceivedEvent.getChannel().getName())
+            .append(" for ")
+            .append(a.suspiciousResults.ssFoundTerms)
+            .append("\n"));
+
+        JDAManager.getJDA().getTextChannelById(1536358720118849608L).sendMessageEmbeds(embedBuilder.build()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queue();
+    }
+
     private static final List<String> whitelist = List.of(
         "youtu.be",
         "discord.gg",
@@ -796,7 +837,7 @@ public class ScamShield {
                         }
                     }
                     if (closestSimilarity > 0.7) {
-                        results.put("[image " + imageIndex + "]", 2);
+                        results.put("[ScamImage " + scamImages.get(closestSimilarityIndex).name + "]", 2);
                     }
                 }
             }
