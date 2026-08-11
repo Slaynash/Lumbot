@@ -667,7 +667,7 @@ public class ScamShield {
             .setFooter("Received " + suspiciousResults.totalSuspicionCount + " naughty points.");
         embedBuilder.setAuthor("Shield Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
 
-        sb.append("Impacted guilds:\n");
+        sb.append("\nImpacted guilds:\n");
         for (Guild guild : mutualGuilds) {
             GuildConfiguration guildConfig = DBConnectionManagerLum.getGuildConfig(guild.getIdLong());
             String actionTaken = guildConfig.ScamShieldBan() ? "Ban" : "Kick";
