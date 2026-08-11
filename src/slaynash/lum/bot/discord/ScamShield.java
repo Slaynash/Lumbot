@@ -13,6 +13,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -70,6 +71,9 @@ public class ScamShield {
     public static final String LOG_IDENTIFIER = "ScamShield";
     private static final int instaKick = 7;
     private static final int instaKickDM = 4;
+
+    private static final double SUSPICIOUS_IMAGE_THRESHOLD = 3.0;
+    private static final double CONFIRMED_IMAGE_THRESHOLD = 7.0;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -224,15 +228,26 @@ public class ScamShield {
         }
     }
 
+    private static class SimilarityResult {
+        public final double similarity;
+        public final int index;
+
+        public SimilarityResult(double similarity, int index) {
+            this.similarity = similarity;
+            this.index = index;
+        }
+    }
+
     private static final List<ScamImageReference> scamImages = new ArrayList<>();
     private static final Path scamImagesFolder = Paths.get("scamImages/");
-    private static final HashMap<String, String> savedSuspiciousImages = new HashMap<>();
+    private static final HashMap<String, SimilarityResult> savedSuspiciousImages = new HashMap<>();
 
     public static void loadScamImages() {
         int scamImagesCount = scamImagesFolder.toFile().listFiles().length;
         if (scamImagesCount == scamImages.size()) return; //no need to reload if the count is the same
         System.out.println("Loading scam images from scamImages/ folder, found " + scamImagesCount + " images");
         scamImages.clear();
+        savedSuspiciousImages.clear();
         try {
             for (Path path : Files.list(scamImagesFolder).toList()) {
                 // Load each image file
@@ -803,16 +818,6 @@ public class ScamShield {
         }
     }
 
-    private static class SimilarityResult {
-        public final double similarity;
-        public final int index;
-
-        public SimilarityResult(double similarity, int index) {
-            this.similarity = similarity;
-            this.index = index;
-        }
-    }
-
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
         loadScamImages();
         Map<String, Integer> results = new HashMap<>();
@@ -828,8 +833,10 @@ public class ScamShield {
                 hash = getISHash(imgIS);
 
                 // DIrectly returns if already flagged
-                if (savedSuspiciousImages.containsKey(hash)) {
-                    results.put("[ScamImage " + savedSuspiciousImages.get(hash) + "]", 2);
+                SimilarityResult savedSuspiciousImage = savedSuspiciousImages.get(hash);
+                if (savedSuspiciousImage != null) {
+                    if (savedSuspiciousImage.similarity >= CONFIRMED_IMAGE_THRESHOLD)
+                        results.put("[ScamImage " + scamImages.get(savedSuspiciousImage.index).name + "]", 2);
                     continue;
                 }
 
@@ -842,7 +849,8 @@ public class ScamShield {
                     //save to disk for manual review
                     File outputfile = new File("failed_to_read_images/" + hash.substring(0, 8) + "_" + attachment.getFileName());
                     outputfile.getParentFile().mkdirs(); // Create directories if they don't exist
-                    attachment.getProxy().downloadToPath(outputfile.toPath()).get();
+                    imgIS.reset();
+                    Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
                 else {
                     // Check for similarity against all known images and keep the one with the highest similarity score
@@ -851,17 +859,21 @@ public class ScamShield {
                             .max(Comparator.comparingDouble(result -> result.similarity))
                             .orElse(new SimilarityResult(0.0, -1));
                     
-                    if (similarityResult.similarity > 0.7) {
+                    if (similarityResult.similarity >= CONFIRMED_IMAGE_THRESHOLD)
                         results.put("[ScamImage " + scamImages.get(similarityResult.index).name + "]", 2);
-
-                        try
-                        {
-                            // The list is never cleared but a few strings shouldn't hurt too much
+                    
+                    if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
+                        try {
+                            // The list is never cleared but that shouldn't be that much data
                             if (!savedSuspiciousImages.containsKey(hash))
                             {
-                                savedSuspiciousImages.put(hash, scamImages.get(similarityResult.index).name);
-                                File outputfile = new File("suspiciousImages/" + hash + "_" + attachment.getFileName());
-                                attachment.getProxy().downloadToPath(outputfile.toPath()).get();
+                                savedSuspiciousImages.put(hash, similarityResult);
+
+                                if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD) {
+                                    File outputfile = new File("suspiciousImages/" + hash + "_" + attachment.getFileName());
+                                    imgIS.reset();
+                                    Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                }
                             }
                         }
                         catch (Exception e) {
@@ -899,7 +911,7 @@ public class ScamShield {
                 .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
-            if (similarityResult.index >= 0) {
+            if (similarityResult.similarity > 0) {
                 DecimalFormat df = new DecimalFormat("#.##");
                 embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
                             .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
