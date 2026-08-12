@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.ResultSet;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import net.dv8tion.jda.api.EmbedBuilder;
 import slaynash.lum.bot.ConfigManager;
+import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
@@ -72,7 +74,11 @@ public class Anime extends TimerTask {
             embed.setTitle("Anime Schedule <t:" + startOfDay.getEpochSecond() + ":D> - <t:" + endOfDay.getEpochSecond() + ":D>");
             embed.setDescription(sb.toString().strip());
             embed.setColor(color);
-            JDAManager.getJDA().getGuildById(627168678471008269L).getTextChannelById(628799325232693248L).sendMessageEmbeds(embed.build()).queue();
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE anime > 0");
+            while (rs.next()) {
+                JDAManager.getJDA().getGuildById(rs.getLong("GuildID")).getTextChannelById(rs.getLong("anime")).sendMessageEmbeds(embed.build()).queue();
+            }
+            DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Exception while handling Anime:", e);

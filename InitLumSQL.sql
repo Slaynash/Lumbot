@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 02, 2026 at 10:09 PM
+-- Generation Time: Aug 12, 2026 at 04:29 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `LogChannel` (
   `reply` bigint UNSIGNED DEFAULT NULL,
   `role` bigint UNSIGNED DEFAULT NULL,
   `users` bigint UNSIGNED DEFAULT NULL,
+  `anime` bigint UNSIGNED DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `user` bigint DEFAULT NULL COMMENT 'Who last used command',

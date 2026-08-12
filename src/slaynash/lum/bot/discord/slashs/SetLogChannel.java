@@ -27,7 +27,8 @@ public class SetLogChannel extends Slash {
             new Command.Choice("Join/Leave", "joins"),
             new Command.Choice("Replies", "reply"),
             new Command.Choice("Roles from reaction listener", "role"),
-            new Command.Choice("Users", "users")
+            new Command.Choice("Users", "users"),
+            new Command.Choice("Anime", "anime")
             );
     @Override
     protected CommandData globalSlashData() {

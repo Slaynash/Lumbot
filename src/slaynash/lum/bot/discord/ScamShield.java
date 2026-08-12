@@ -818,6 +818,7 @@ public class ScamShield {
         }
     }
 
+    private static final DecimalFormat df = new DecimalFormat("#.##");
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
         loadScamImages();
         Map<String, Integer> results = new HashMap<>();
@@ -832,7 +833,7 @@ public class ScamShield {
                 imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
                 hash = getISHash(imgIS);
 
-                // DIrectly returns if already flagged
+                // Directly returns if already flagged
                 SimilarityResult savedSuspiciousImage = savedSuspiciousImages.get(hash);
                 if (savedSuspiciousImage != null) {
                     if (savedSuspiciousImage.similarity >= CONFIRMED_IMAGE_THRESHOLD)
@@ -858,19 +859,19 @@ public class ScamShield {
                             .map(scamImage -> new SimilarityResult(ImageUtils.getImageSSIM(scamImage.image, attachmentImage), scamImages.indexOf(scamImage)))
                             .max(Comparator.comparingDouble(result -> result.similarity))
                             .orElse(new SimilarityResult(0.0, -1));
-                    
+
                     if (similarityResult.similarity >= CONFIRMED_IMAGE_THRESHOLD)
                         results.put("[ScamImage " + scamImages.get(similarityResult.index).name + "]", 2);
-                    
+
                     if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
                         try {
-                            // The list is never cleared but that shouldn't be that much data
+                            // The list is rarely cleared but that shouldn't be that much data
                             if (!savedSuspiciousImages.containsKey(hash))
                             {
                                 savedSuspiciousImages.put(hash, similarityResult);
 
                                 if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD) {
-                                    File outputfile = new File("suspiciousImages/" + hash + "_" + attachment.getFileName());
+                                    File outputfile = new File("suspiciousImages/"+ df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
                                     imgIS.reset();
                                     Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                                 }
@@ -912,8 +913,7 @@ public class ScamShield {
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (similarityResult.similarity > 0) {
-                DecimalFormat df = new DecimalFormat("#.##");
-                embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
+                embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * (similarityResult.similarity > 0 ? 100 : 1)), true)
                             .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
             }
             embedBuilder.setImage(attachment.getUrl());
