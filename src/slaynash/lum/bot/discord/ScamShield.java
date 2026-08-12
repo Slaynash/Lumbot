@@ -72,8 +72,8 @@ public class ScamShield {
     private static final int instaKick = 7;
     private static final int instaKickDM = 4;
 
-    private static final double SUSPICIOUS_IMAGE_THRESHOLD = 3.0;
-    private static final double CONFIRMED_IMAGE_THRESHOLD = 7.0;
+    private static final double SUSPICIOUS_IMAGE_THRESHOLD = 0.3;
+    private static final double CONFIRMED_IMAGE_THRESHOLD = 0.7;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -919,14 +919,14 @@ public class ScamShield {
             embedBuilder.setImage(attachment.getUrl());
             if (failedToReadImage)
                 embedBuilder.setColor(Color.MAGENTA);
-            else if (similarityResult.similarity > 0.7)
+            else if (similarityResult.similarity > CONFIRMED_IMAGE_THRESHOLD)
                 embedBuilder.setColor(Color.RED);
-            else if (similarityResult.similarity > 0.3)
+            else if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
                 embedBuilder.setColor(Color.ORANGE);
             // send the embed to the appropriate channel
             // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
             JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
-            if (similarityResult.similarity > 0.3)
+            if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
                 JDAManager.getJDA().getTextChannelById(1536358577868898324L).sendMessageEmbeds(embedBuilder.build()).queue();
         }
         catch (Exception e) {
