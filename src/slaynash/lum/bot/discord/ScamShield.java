@@ -477,9 +477,10 @@ public class ScamShield {
         boolean status = false;
         List<Guild> affectedGuilds = new ArrayList<>(mutualGuilds.size());
         for (Guild guild : mutualGuilds) {
-            if (handleBan(event, guild.getIdLong(), suspiciousResults))
+            if (handleBan(event, guild.getIdLong(), suspiciousResults)) {
                 status = true;
                 affectedGuilds.add(guild);
+            }
         }
         if (status) {
             String id;
@@ -866,12 +867,11 @@ public class ScamShield {
                     if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
                         try {
                             // The list is rarely cleared but that shouldn't be that much data
-                            if (!savedSuspiciousImages.containsKey(hash))
-                            {
+                            if (!savedSuspiciousImages.containsKey(hash)) {
                                 savedSuspiciousImages.put(hash, similarityResult);
 
                                 if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD) {
-                                    File outputfile = new File("suspiciousImages/"+ df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
+                                    File outputfile = new File("suspiciousImages/" + df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
                                     imgIS.reset();
                                     Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                                 }
@@ -913,9 +913,15 @@ public class ScamShield {
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (similarityResult.similarity > 0) {
-                embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * (similarityResult.similarity > 0 ? 100 : 1)), true)
+                embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
                             .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
             }
+
+            if (event.getMessage().getTimeCreated().toLocalDate().isBefore(LocalDate.now().minusDays(1))) {
+                Instant startOfDay = event.getMessage().getTimeCreated().toInstant();
+                embedBuilder.addField("Old Message", "<t:" + startOfDay.getEpochSecond() + ":f>", true);
+            }
+
             embedBuilder.setImage(attachment.getUrl());
             if (failedToReadImage)
                 embedBuilder.setColor(Color.MAGENTA);
