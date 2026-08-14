@@ -283,7 +283,7 @@ public class ScamShield {
                             byte[] ssimData = ImageUtils.getSSIMData(img);
                             byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
 
-                            scamImages.add(new ScamImageReference(path.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
+                            newScamImages.add(new ScamImageReference(path.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("Failed to load scam image: " + path, e);
