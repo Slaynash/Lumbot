@@ -29,6 +29,23 @@ public final class ImageUtils {
         return ssimGrayscaleImages(grayImg0, grayImg1, img0.getWidth(), img0.getHeight());
     }
 
+    public static byte[] getSSIMData(BufferedImage img) {
+        // Convert image to grayscale
+        byte[] grayImg = imageToGrayscale(img);
+        return grayImg;
+    }
+
+    public static double ssimCompare(byte[] grayImg1, int width1, int height1, BufferedImage img2) {
+        // Ensure both images are the same size
+        if (width1 != img2.getWidth() || height1 != img2.getHeight())
+            img2 = resizeImage(img2, width1, height1);
+
+        // Convert second image to grayscale
+        byte[] grayImg2 = imageToGrayscale(img2);
+
+        return ssimGrayscaleImages(grayImg1, grayImg2, width1, height1);
+    }
+
     public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
         BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, originalImage.getType());
         Graphics2D g = resizedImage.createGraphics();

@@ -2,6 +2,7 @@ package slaynash.lum.bot.discord;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -221,11 +222,19 @@ public class ScamShield {
 
     private static class ScamImageReference {
         public String name;
-        public BufferedImage image;
+        public String hash;
+        public int width, height;
 
-        public ScamImageReference(String name, BufferedImage image) {
+        public byte[] ssimData;
+        public byte[] ssimDataOld;
+
+        public ScamImageReference(String name, String hash, int width, int height, byte[] ssimData, byte[] ssimDataOld) {
             this.name = name;
-            this.image = image;
+            this.hash = hash;
+            this.width = width;
+            this.height = height;
+            this.ssimData = ssimData;
+            this.ssimDataOld = ssimDataOld;
         }
     }
 
@@ -247,20 +256,39 @@ public class ScamShield {
         int scamImagesCount = scamImagesFolder.toFile().listFiles().length;
         if (scamImagesCount == scamImages.size()) return; //no need to reload if the count is the same
         System.out.println("Loading scam images from scamImages/ folder, found " + scamImagesCount + " images");
-        scamImages.clear();
+        // scamImages.clear();
+        List<ScamImageReference> newScamImages = new ArrayList<>();
         savedSuspiciousImages.clear();
         try {
             for (Path path : Files.list(scamImagesFolder).toList()) {
                 // Load each image file
                 if (Files.isRegularFile(path)) {
-                    try {
-                        scamImages.add(new ScamImageReference(path.getFileName().toString(), ImageIO.read(path.toFile())));
+                    try (InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
+                        is.mark(Integer.MAX_VALUE);
+                        String hash = getISHash(is);
+
+                        // Check if the image is already in the list
+                        for (ScamImageReference existingImage : scamImages) {
+                            if (existingImage.hash.equals(hash)) {
+                                newScamImages.add(existingImage);
+                                break;
+                            }
+                        }
+
+                        BufferedImage img = ImageIO.read(is);
+                        byte[] ssimData = ImageUtils.getSSIMData(img);
+                        byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
+
+                        scamImages.add(new ScamImageReference(path.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
                     }
-                    catch (IOException e) {
+                    catch (Exception e) {
                         ExceptionUtils.reportException("Failed to load scam image: " + path, e);
                     }
                 }
             }
+
+            scamImages.clear();
+            scamImages.addAll(newScamImages);
         }
         catch (IOException e) {
             ExceptionUtils.reportException("Failed to list scam images in scamImages/ directory", e);
@@ -832,6 +860,7 @@ public class ScamShield {
             SimilarityResult similarityResultOld = new SimilarityResult(0.0, -1);
             SimilarityResult similarityResult = new SimilarityResult(0.0, -1);
             boolean failedToReadImage = false;
+            double elapsedTimeOld = 0, elapsedTime = 0;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
                 imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
                 hash = getISHash(imgIS);
@@ -858,15 +887,19 @@ public class ScamShield {
                 }
                 else {
                     // Check for similarity against all known images and keep the one with the highest similarity score
+                    double startTime = System.nanoTime();
                     similarityResultOld = scamImages.stream().parallel()
-                            .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.getImageSSIM(scamImage.image, attachmentImage), scamImages.indexOf(scamImage)))
+                            .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.ssimCompare(scamImage.ssimDataOld, scamImage.width, scamImage.height, attachmentImage), scamImages.indexOf(scamImage)))
                             .max(Comparator.comparingDouble(result -> result.similarity))
                             .orElse(new SimilarityResult(0.0, -1));
-
+                    elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
+                    
+                    startTime = System.nanoTime();
                     similarityResult = scamImages.stream().parallel()
-                            .map(scamImage -> new SimilarityResult(ImageUtils.getImageSSIM(scamImage.image, attachmentImage), scamImages.indexOf(scamImage)))
+                            .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImages.indexOf(scamImage)))
                             .max(Comparator.comparingDouble(result -> result.similarity))
                             .orElse(new SimilarityResult(0.0, -1));
+                    elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
 
                     if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD)
                         results.put("[ScamImage " + scamImages.get(similarityResultOld.index).name + "]", 3);
@@ -894,7 +927,7 @@ public class ScamShield {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
-            reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, event);
+            reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, elapsedTimeOld, elapsedTime, event);
         }
         return results;
     }
@@ -908,7 +941,7 @@ public class ScamShield {
         return HexFormat.of().formatHex(md.digest());
     }
 
-    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, SimilarityResult similarityResultOld, boolean failedToReadImage, MessageReceivedEvent event) {
+    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, SimilarityResult similarityResultOld, boolean failedToReadImage, double elapsedTimeOld, double elapsedTime, MessageReceivedEvent event) {
         try {
             //embed for reporting the photo
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -922,16 +955,20 @@ public class ScamShield {
             if (similarityResult.similarity > 0 || similarityResultOld.similarity > 0) {
                 if (similarityResult.similarity > 0)
                     embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
+                                .addField("Time: ", df.format(elapsedTime) + " ms", true)
                                 .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
                 else
                     embedBuilder.addField("Closest Similarity", "0", true)
+                                .addField("Time: ", df.format(elapsedTime) + " ms", true)
                                 .addField("Closest Similarity Image", "none", true);
 
                 if (similarityResultOld.similarity > 0)
                     embedBuilder.addField("Closest Similarity (Previous)", df.format(similarityResultOld.similarity * 100), true)
+                                .addField("Time: ", df.format(elapsedTimeOld) + " ms", true)
                                 .addField("Closest Similarity Image (Previous)", String.valueOf(scamImages.get(similarityResultOld.index).name), true);
                 else
                     embedBuilder.addField("Closest Similarity (Previous)", "0", true)
+                                .addField("Time: ", df.format(elapsedTimeOld) + " ms", true)
                                 .addField("Closest Similarity Image (Previous)", "none", true);
             }
 
