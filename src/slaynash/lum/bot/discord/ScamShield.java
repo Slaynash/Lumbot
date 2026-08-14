@@ -862,7 +862,7 @@ public class ScamShield {
                             .orElse(new SimilarityResult(0.0, -1));
 
                     if (similarityResult.similarity >= CONFIRMED_IMAGE_THRESHOLD)
-                        results.put("[ScamImage " + scamImages.get(similarityResult.index).name + "]", 2);
+                        results.put("[ScamImage " + scamImages.get(similarityResult.index).name + "]", 3);
 
                     if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
                         try {
