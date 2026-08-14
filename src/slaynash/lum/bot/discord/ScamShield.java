@@ -275,6 +275,8 @@ public class ScamShield {
                             }
                         }
 
+                        is.reset();
+
                         BufferedImage img = ImageIO.read(is);
                         byte[] ssimData = ImageUtils.getSSIMData(img);
                         byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
