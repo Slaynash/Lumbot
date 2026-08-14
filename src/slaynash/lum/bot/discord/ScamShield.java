@@ -65,6 +65,7 @@ import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.ImageUtils;
+import slaynash.lum.bot.utils.ImageUtilsPrevious;
 import slaynash.lum.bot.utils.Utils;
 
 public class ScamShield {
@@ -828,6 +829,7 @@ public class ScamShield {
                 continue;
 
             String hash = "";
+            SimilarityResult similarityResultOld = new SimilarityResult(0.0, -1);
             SimilarityResult similarityResult = new SimilarityResult(0.0, -1);
             boolean failedToReadImage = false;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
@@ -856,21 +858,26 @@ public class ScamShield {
                 }
                 else {
                     // Check for similarity against all known images and keep the one with the highest similarity score
+                    similarityResultOld = scamImages.stream().parallel()
+                            .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.getImageSSIM(scamImage.image, attachmentImage), scamImages.indexOf(scamImage)))
+                            .max(Comparator.comparingDouble(result -> result.similarity))
+                            .orElse(new SimilarityResult(0.0, -1));
+
                     similarityResult = scamImages.stream().parallel()
                             .map(scamImage -> new SimilarityResult(ImageUtils.getImageSSIM(scamImage.image, attachmentImage), scamImages.indexOf(scamImage)))
                             .max(Comparator.comparingDouble(result -> result.similarity))
                             .orElse(new SimilarityResult(0.0, -1));
 
-                    if (similarityResult.similarity >= CONFIRMED_IMAGE_THRESHOLD)
-                        results.put("[ScamImage " + scamImages.get(similarityResult.index).name + "]", 3);
+                    if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD)
+                        results.put("[ScamImage " + scamImages.get(similarityResultOld.index).name + "]", 3);
 
-                    if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
+                    if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
                         try {
                             // The list is rarely cleared but that shouldn't be that much data
                             if (!savedSuspiciousImages.containsKey(hash)) {
                                 savedSuspiciousImages.put(hash, similarityResult);
 
-                                if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD) {
+                                if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity < CONFIRMED_IMAGE_THRESHOLD) {
                                     File outputfile = new File("suspiciousImages/" + df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
                                     imgIS.reset();
                                     Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -887,7 +894,7 @@ public class ScamShield {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
-            reportPhoto(attachment, hash, similarityResult, failedToReadImage, event);
+            reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, event);
         }
         return results;
     }
@@ -901,7 +908,7 @@ public class ScamShield {
         return HexFormat.of().formatHex(md.digest());
     }
 
-    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, boolean failedToReadImage, MessageReceivedEvent event) {
+    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, SimilarityResult similarityResultOld, boolean failedToReadImage, MessageReceivedEvent event) {
         try {
             //embed for reporting the photo
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -912,9 +919,20 @@ public class ScamShield {
                 .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
-            if (similarityResult.similarity > 0) {
-                embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
-                            .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
+            if (similarityResult.similarity > 0 || similarityResultOld.similarity > 0) {
+                if (similarityResult.similarity > 0)
+                    embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
+                                .addField("Closest Similarity Image", String.valueOf(scamImages.get(similarityResult.index).name), true);
+                else
+                    embedBuilder.addField("Closest Similarity", "0", true)
+                                .addField("Closest Similarity Image", "none", true);
+
+                if (similarityResultOld.similarity > 0)
+                    embedBuilder.addField("Closest Similarity (Previous)", df.format(similarityResultOld.similarity * 100), true)
+                                .addField("Closest Similarity Image (Previous)", String.valueOf(scamImages.get(similarityResultOld.index).name), true);
+                else
+                    embedBuilder.addField("Closest Similarity (Previous)", "0", true)
+                                .addField("Closest Similarity Image (Previous)", "none", true);
             }
 
             if (event.getMessage().getTimeCreated().toLocalDate().isBefore(LocalDate.now().minusDays(1))) {
@@ -925,14 +943,14 @@ public class ScamShield {
             embedBuilder.setImage(attachment.getUrl());
             if (failedToReadImage)
                 embedBuilder.setColor(Color.MAGENTA);
-            else if (similarityResult.similarity > CONFIRMED_IMAGE_THRESHOLD)
+            else if (similarityResult.similarity > CONFIRMED_IMAGE_THRESHOLD || similarityResultOld.similarity > CONFIRMED_IMAGE_THRESHOLD)
                 embedBuilder.setColor(Color.RED);
-            else if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
+            else if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
                 embedBuilder.setColor(Color.ORANGE);
             // send the embed to the appropriate channel
             // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
             JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
-            if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
+            if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
                 JDAManager.getJDA().getTextChannelById(1536358577868898324L).sendMessageEmbeds(embedBuilder.build()).queue();
         }
         catch (Exception e) {

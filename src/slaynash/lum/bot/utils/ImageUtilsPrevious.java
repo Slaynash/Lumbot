@@ -1,15 +1,12 @@
 package slaynash.lum.bot.utils;
 
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-public final class ImageUtils {
+public final class ImageUtilsPrevious {
 
     private static final double SSIM_C1 = 6.5025;
     private static final double SSIM_C2 = 58.5225;
-    private static final int SSIM_WINDOW_SIZE = 11;
-    private static final int SSIM_STRIDE = 4;
+    private static final int SSIM_WINDOW_SIZE = 8;
 
     public static double getImageSSIM(BufferedImage img0, BufferedImage img1) {
         float img0ratio = (float) img0.getWidth() / img0.getHeight();
@@ -31,12 +28,7 @@ public final class ImageUtils {
 
     public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
         BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, originalImage.getType());
-        Graphics2D g = resizedImage.createGraphics();
-        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
-        g.dispose();
+        resizedImage.getGraphics().drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
         return resizedImage;
     }
 
@@ -50,7 +42,7 @@ public final class ImageUtils {
                 int r = (rgb >> 16) & 0xFF;
                 int g = (rgb >> 8) & 0xFF;
                 int b = rgb & 0xFF;
-                gray[y * width + x] = (byte) Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+                gray[y * width + x] = (byte) ((r + g + b) / 3);
             }
         }
         return gray;
@@ -59,8 +51,8 @@ public final class ImageUtils {
     public static double ssimGrayscaleImages(byte[] img1, byte[] img2, int width, int height) {
         double ssimSum = 0.0;
         int windowCount = 0;
-        for (int y = 0; y <= height - SSIM_WINDOW_SIZE; y += SSIM_STRIDE) {
-            for (int x = 0; x <= width - SSIM_WINDOW_SIZE; x += SSIM_STRIDE) {
+        for (int y = 0; y <= height - SSIM_WINDOW_SIZE; y += SSIM_WINDOW_SIZE) {
+            for (int x = 0; x <= width - SSIM_WINDOW_SIZE; x += SSIM_WINDOW_SIZE) {
                 ssimSum += computeSSIMWindow(img1, img2, width, height, x, y);
                 windowCount++;
             }
@@ -72,32 +64,34 @@ public final class ImageUtils {
     }
 
     private static double computeSSIMWindow(byte[] img1, byte[] img2, int width, int height, int startX, int startY) {
-        
-        int windowWidth = Math.min(SSIM_WINDOW_SIZE, width - startX);
-        int windowHeight = Math.min(SSIM_WINDOW_SIZE, height - startY);
-        int n = windowWidth * windowHeight;
-        if (n == 0)
-            return 0.0;
-
+        int n = 0;
         double sum1 = 0, sum2 = 0;
-        for (int j = 0; j < windowHeight; j++) {
+
+        for (int j = 0; j < SSIM_WINDOW_SIZE; j++) {
             int y = startY + j;
-            for (int i = 0; i < windowWidth; i++) {
+            if (y >= height) break;
+            for (int i = 0; i < SSIM_WINDOW_SIZE; i++) {
                 int x = startX + i;
+                if (x >= width) break;
                 int idx = y * width + x;
                 sum1 += img1[idx] & 0xFF;
                 sum2 += img2[idx] & 0xFF;
+                n++;
             }
         }
+
+        if (n == 0) return 0.0;
 
         double mean1 = sum1 / n;
         double mean2 = sum2 / n;
 
         double varSum1 = 0, varSum2 = 0, covarSum = 0;
-        for (int j = 0; j < windowHeight; j++) {
+        for (int j = 0; j < SSIM_WINDOW_SIZE; j++) {
             int y = startY + j;
-            for (int i = 0; i < windowWidth; i++) {
+            if (y >= height) break;
+            for (int i = 0; i < SSIM_WINDOW_SIZE; i++) {
                 int x = startX + i;
+                if (x >= width) break;
                 int idx = y * width + x;
                 double v1 = (img1[idx] & 0xFF) - mean1;
                 double v2 = (img2[idx] & 0xFF) - mean2;
