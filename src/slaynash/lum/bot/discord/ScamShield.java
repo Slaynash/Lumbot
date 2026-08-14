@@ -416,6 +416,7 @@ public class ScamShield {
     }
 
     public static boolean checkForFishing(MessageUpdateEvent event) {
+        if (!event.getMessage().isEdited()) return false;
         return checkForFishing(new MessageReceivedEvent(event.getJDA(), event.getResponseNumber(), event.getMessage()));
     }
 
@@ -855,7 +856,7 @@ public class ScamShield {
 
     private static final DecimalFormat df = new DecimalFormat("#.##");
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
-        loadScamImages();
+        event.getMessage().getAttachments().stream().filter(Message.Attachment::isImage).findFirst().ifPresent(a -> loadScamImages());
         Map<String, Integer> results = new HashMap<>();
         for (Message.Attachment attachment : event.getMessage().getAttachments()) {
             if (!attachment.isImage())
@@ -899,7 +900,7 @@ public class ScamShield {
                                 .max(Comparator.comparingDouble(result -> result.similarity))
                                 .orElse(new SimilarityResult(0.0, "none"));
                         elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
-                        
+
                         startTime = System.nanoTime();
                         similarityResult = scamImages.stream().parallel()
                                 .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
