@@ -1,8 +1,10 @@
 package slaynash.lum.bot.utils;
 
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
 
 public final class ImageUtils {
 
@@ -58,19 +60,17 @@ public final class ImageUtils {
     }
 
     public static byte[] imageToGrayscale(BufferedImage img) {
-        int width = img.getWidth();
-        int height = img.getHeight();
-        byte[] gray = new byte[width * height];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                int rgb = img.getRGB(x, y);
-                int r = (rgb >> 16) & 0xFF;
-                int g = (rgb >> 8) & 0xFF;
-                int b = rgb & 0xFF;
-                gray[y * width + x] = (byte) Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-            }
-        }
-        return gray;
+        BufferedImage grayscale = new BufferedImage(
+            img.getWidth(),
+            img.getHeight(),
+            BufferedImage.TYPE_BYTE_GRAY
+        );
+
+        // Draw the original image onto the grayscale canvas
+        Graphics g = grayscale.getGraphics();
+        g.drawImage(img, 0, 0, null);
+        g.dispose();
+        return ((DataBufferByte) grayscale.getRaster().getDataBuffer()).getData();
     }
 
     public static double ssimGrayscaleImages(byte[] img1, byte[] img2, int width, int height) {
@@ -89,7 +89,7 @@ public final class ImageUtils {
     }
 
     private static double computeSSIMWindow(byte[] img1, byte[] img2, int width, int height, int startX, int startY) {
-        
+
         int windowWidth = Math.min(SSIM_WINDOW_SIZE, width - startX);
         int windowHeight = Math.min(SSIM_WINDOW_SIZE, height - startY);
         int n = windowWidth * windowHeight;
