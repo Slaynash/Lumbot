@@ -872,10 +872,13 @@ public class ScamShield {
                 hash = getISHash(imgIS);
 
                 // Directly returns if already flagged
-                SimilarityResult savedSuspiciousImage = savedSuspiciousImages.get(hash);
+                SimilarityResult savedSuspiciousImage;
+                synchronized (savedSuspiciousImages) {
+                    savedSuspiciousImage = savedSuspiciousImages.get(hash);
+                }
                 if (savedSuspiciousImage != null) {
                     if (savedSuspiciousImage.similarity >= CONFIRMED_IMAGE_THRESHOLD)
-                        results.put("[ScamImage " + savedSuspiciousImage.scamImageName + "]", 2);
+                        results.put("[ScamImage " + savedSuspiciousImage.scamImageName + "]", 3);
                     continue;
                 }
 
@@ -915,13 +918,15 @@ public class ScamShield {
                     if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
                         try {
                             // The list is rarely cleared but that shouldn't be that much data
-                            if (!savedSuspiciousImages.containsKey(hash)) {
-                                savedSuspiciousImages.put(hash, similarityResult);
+                            synchronized (savedSuspiciousImages) {
+                                if (!savedSuspiciousImages.containsKey(hash)) {
+                                    savedSuspiciousImages.put(hash, similarityResult);
 
-                                if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity < CONFIRMED_IMAGE_THRESHOLD) {
-                                    File outputfile = new File("suspiciousImages/" + df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
-                                    imgIS.reset();
-                                    Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                    if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity < CONFIRMED_IMAGE_THRESHOLD) {
+                                        File outputfile = new File("suspiciousImages/" + df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
+                                        imgIS.reset();
+                                        Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                                    }
                                 }
                             }
                         }
