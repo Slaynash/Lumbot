@@ -20,6 +20,12 @@ public final class ImageUtils {
     }
 
     public static double ssimCompare(byte[] grayImg1, int width1, int height1, BufferedImage img2) {
+        float img1Ratio = (float) width1 / height1;
+        float img2Ratio = (float) img2.getWidth() / img2.getHeight();
+
+        if (Math.abs(img1Ratio - img2Ratio) > 0.1)
+            return -1;
+
         // Ensure both images are the same size
         if (width1 != img2.getWidth() || height1 != img2.getHeight())
             img2 = resizeImage(img2, width1, height1);
