@@ -10,24 +10,6 @@ public final class ImageUtilsPrevious {
     private static final double SSIM_C2 = 58.5225;
     private static final int SSIM_WINDOW_SIZE = 8;
 
-    public static double getImageSSIM(BufferedImage img0, BufferedImage img1) {
-        float img0ratio = (float) img0.getWidth() / img0.getHeight();
-        float img1ratio = (float) img1.getWidth() / img1.getHeight();
-
-        if (Math.abs(img0ratio - img1ratio) > 0.1)
-            return -1;
-
-        // Ensure both images are the same size
-        if (img0.getWidth() != img1.getWidth() || img0.getHeight() != img1.getHeight())
-            img1 = resizeImage(img1, img0.getWidth(), img0.getHeight());
-
-        // Convert images to grayscale
-        byte[] grayImg0 = imageToGrayscale(img0);
-        byte[] grayImg1 = imageToGrayscale(img1);
-
-        return ssimGrayscaleImages(grayImg0, grayImg1, img0.getWidth(), img0.getHeight());
-    }
-
     public static byte[] getSSIMData(BufferedImage img) {
         // Convert image to grayscale
         byte[] grayImg = imageToGrayscale(img);
@@ -126,13 +108,6 @@ public final class ImageUtilsPrevious {
         double denominator = (mean1 * mean1 + mean2 * mean2 + SSIM_C1) * (variance1 + variance2 + SSIM_C2);
 
         return numerator / denominator;
-    }
-
-    public static double getImageRatioDiff(BufferedImage img0, BufferedImage img1) {
-        float img0ratio = (float) img0.getWidth() / img0.getHeight();
-        float img1ratio = (float) img1.getWidth() / img1.getHeight();
-
-        return Math.abs(img0ratio - img1ratio);
     }
 
 }
