@@ -904,12 +904,12 @@ public class ScamShield {
                                 .orElse(new SimilarityResult(0.0, "none"));
                         elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
 
-                        startTime = System.nanoTime();
-                        similarityResult = scamImages.stream().parallel()
-                                .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
-                                .max(Comparator.comparingDouble(result -> result.similarity))
-                                .orElse(new SimilarityResult(0.0, "none"));
-                        elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
+                        // startTime = System.nanoTime();
+                        // similarityResult = scamImages.stream().parallel()
+                        //         .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
+                        //         .max(Comparator.comparingDouble(result -> result.similarity))
+                        //         .orElse(new SimilarityResult(0.0, "none"));
+                        // elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
                     }
 
                     if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD)
@@ -937,6 +937,8 @@ public class ScamShield {
                 }
             }
             catch (Exception e) {
+                if (e.getMessage() != null && e.getMessage().contains("404"))
+                    continue;
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
@@ -966,14 +968,14 @@ public class ScamShield {
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (similarityResult.similarity > 0 || similarityResultOld.similarity > 0) {
-                if (similarityResult.similarity > 0)
-                    embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
-                                .addField("Time: ", df.format(elapsedTime) + " ms", true)
-                                .addField("Closest Similarity Image", similarityResult.scamImageName, true);
-                else
-                    embedBuilder.addField("Closest Similarity", "0", true)
-                                .addField("Time: ", df.format(elapsedTime) + " ms", true)
-                                .addField("Closest Similarity Image", "none", true);
+                // if (similarityResult.similarity > 0)
+                //     embedBuilder.addField("Closest Similarity", df.format(similarityResult.similarity * 100), true)
+                //                 .addField("Time: ", df.format(elapsedTime) + " ms", true)
+                //                 .addField("Closest Similarity Image", similarityResult.scamImageName, true);
+                // else
+                //     embedBuilder.addField("Closest Similarity", "0", true)
+                //                 .addField("Time: ", df.format(elapsedTime) + " ms", true)
+                //                 .addField("Closest Similarity Image", "none", true);
 
                 if (similarityResultOld.similarity > 0)
                     embedBuilder.addField("Closest Similarity (Previous)", df.format(similarityResultOld.similarity * 100), true)
