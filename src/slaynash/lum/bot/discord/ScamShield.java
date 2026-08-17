@@ -866,7 +866,7 @@ public class ScamShield {
             SimilarityResult similarityResultOld = new SimilarityResult(0.0, "none");
             SimilarityResult similarityResult = new SimilarityResult(0.0, "none");
             boolean failedToReadImage = false;
-            double elapsedTimeOld = 0, elapsedTime = 0;
+            double elapsedTimeOld = 0, elapsedTime = 0, blackCompare = 0;
             try (InputStream imgIS = attachment.getProxy().download().get()) {
                 imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
                 hash = getISHash(imgIS);
@@ -912,7 +912,11 @@ public class ScamShield {
                         // elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
                     }
 
-                    if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD)
+                    //compare with all black image
+                    byte[] blackImageData = new byte[attachmentImage.getWidth() * attachmentImage.getHeight()];
+                    blackCompare = ImageUtilsPrevious.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight(), attachmentImage);
+
+                    if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity > blackCompare)
                         results.put("[ScamImage " + similarityResultOld.scamImageName + "]", 3);
 
                     if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
@@ -942,7 +946,7 @@ public class ScamShield {
                 ExceptionUtils.reportException("Failed photoCheck in SS", e);
             }
 
-            reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, elapsedTimeOld, elapsedTime, event);
+            reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, blackCompare, elapsedTimeOld, elapsedTime, event);
         }
         return results;
     }
@@ -956,7 +960,7 @@ public class ScamShield {
         return HexFormat.of().formatHex(md.digest());
     }
 
-    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, SimilarityResult similarityResultOld, boolean failedToReadImage, double elapsedTimeOld, double elapsedTime, MessageReceivedEvent event) {
+    private static void reportPhoto(Message.Attachment attachment, String hash, SimilarityResult similarityResult, SimilarityResult similarityResultOld, boolean failedToReadImage, double blackCompare, double elapsedTimeOld, double elapsedTime, MessageReceivedEvent event) {
         try {
             //embed for reporting the photo
             EmbedBuilder embedBuilder = new EmbedBuilder()
@@ -991,6 +995,9 @@ public class ScamShield {
                 Instant startOfDay = event.getMessage().getTimeCreated().toInstant();
                 embedBuilder.addField("Old Message", "<t:" + startOfDay.getEpochSecond() + ":f>", true);
             }
+
+            if (blackCompare > similarityResultOld.similarity)
+                embedBuilder.addField("Similarity to Black Image", df.format(blackCompare * 100), false);
 
             embedBuilder.setImage(attachment.getUrl());
             if (failedToReadImage)
