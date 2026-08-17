@@ -75,7 +75,7 @@ public class ScamShield {
     private static final int instaKickDM = 4;
 
     private static final double SUSPICIOUS_IMAGE_THRESHOLD = 0.3;
-    private static final double CONFIRMED_IMAGE_THRESHOLD = 0.7;
+    private static final double CONFIRMED_IMAGE_THRESHOLD = 0.75;
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
@@ -922,8 +922,8 @@ public class ScamShield {
                                 if (!savedSuspiciousImages.containsKey(hash)) {
                                     savedSuspiciousImages.put(hash, similarityResult);
 
-                                    if (similarityResult.similarity < CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity < CONFIRMED_IMAGE_THRESHOLD) {
-                                        File outputfile = new File("suspiciousImages/" + df.format(similarityResult.similarity) + "_" + hash + "_" + attachment.getFileName());
+                                    if (similarityResultOld.similarity < 0.85) {
+                                        File outputfile = new File("suspiciousImages/" + df.format(similarityResultOld.similarity) + "_" + hash + "_" + attachment.getFileName());
                                         imgIS.reset();
                                         Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                                     }
