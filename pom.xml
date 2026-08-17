@@ -9,8 +9,8 @@
   <description>Lum Discord Bot</description>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.source>26</maven.compiler.source>
+    <maven.compiler.target>26</maven.compiler.target>
     <maven.build.timestamp.format>yyMMdd-HHmm</maven.build.timestamp.format>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -161,6 +161,11 @@
       <groupId>org.sejda.imageio</groupId>
       <artifactId>webp-imageio</artifactId>
       <version>0.1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>io.github.tinolab.whois4j</groupId>
+      <artifactId>whois4j-core</artifactId>
+      <version>1.0.0</version>
     </dependency>
   </dependencies>
 </project>
