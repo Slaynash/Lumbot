@@ -337,7 +337,7 @@ public class ScamShield {
         }
 
         if (crossPost > 0) {
-            ssFoundTerms.put("Crossposted", (int) Math.round(Math.sqrt(crossPost) * 1.4));
+            ssFoundTerms.put("Crossposted", 1);
         }
 
         int spamCount = (int) allMessages.stream()
@@ -452,9 +452,9 @@ public class ScamShield {
         handledMessages.removeIf(m -> event.getMessageIdLong() == m.messageReceivedEvent.getMessageIdLong()); //remove original message if edited
 
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
-        if (suspiciousResults.calulatedValue < 3 && suspiciousResults.calulatedValue > 0)
+        if (suspiciousResults.calulatedValue <= 3 && suspiciousResults.calulatedValue > 0)
             suspiciousResults.calulatedValue--;
-        else if (suspiciousResults.calulatedValue >= 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
+        else if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
