@@ -28,6 +28,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -857,98 +858,100 @@ public class ScamShield {
     private static final DecimalFormat df = new DecimalFormat("#.##");
     private static Map<String, Integer> photoCheck(MessageReceivedEvent event) {
         event.getMessage().getAttachments().stream().filter(Message.Attachment::isImage).findFirst().ifPresent(a -> loadScamImages());
-        Map<String, Integer> results = new HashMap<>();
-        for (Message.Attachment attachment : event.getMessage().getAttachments()) {
-            if (!attachment.isImage())
-                continue;
+        return event.getMessage().getAttachments().stream().parallel()
+            .map(attachment -> scanPhoto(attachment, event))
+            .filter(result -> result != null)
+            .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
+    }
 
-            String hash = "";
-            SimilarityResult similarityResultOld = new SimilarityResult(0.0, "none");
-            SimilarityResult similarityResult = new SimilarityResult(0.0, "none");
-            boolean failedToReadImage = false;
-            double elapsedTimeOld = 0, elapsedTime = 0, blackCompare = 0;
-            try (InputStream imgIS = attachment.getProxy().download().get()) {
-                imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
-                hash = getISHash(imgIS);
+    private static SimpleEntry<String, Integer> scanPhoto(Message.Attachment attachment, MessageReceivedEvent event) {
+        if (!attachment.isImage())
+            return null;
+        String hash = "";
+        SimpleEntry<String, Integer> result = null;
+        SimilarityResult similarityResultOld = new SimilarityResult(0.0, "none");
+        SimilarityResult similarityResult = new SimilarityResult(0.0, "none");
+        boolean failedToReadImage = false;
+        double elapsedTimeOld = 0, elapsedTime = 0, blackCompare = 0;
+        try (InputStream imgIS = attachment.getProxy().download().get()) {
+            imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
+            hash = getISHash(imgIS);
 
-                // Directly returns if already flagged
-                SimilarityResult savedSuspiciousImage;
-                synchronized (savedSuspiciousImages) {
-                    savedSuspiciousImage = savedSuspiciousImages.get(hash);
+            // Directly returns if already flagged
+            SimilarityResult savedSuspiciousImage;
+            synchronized (savedSuspiciousImages) {
+                savedSuspiciousImage = savedSuspiciousImages.get(hash);
+            }
+            if (savedSuspiciousImage != null) {
+                if (savedSuspiciousImage.similarity >= CONFIRMED_IMAGE_THRESHOLD)
+                    return new SimpleEntry<>("[ScamImage " + savedSuspiciousImage.scamImageName + "]", 3);
+            }
+
+            imgIS.reset(); // Reset the stream to the marked position
+            BufferedImage attachmentImage = ImageIO.read(imgIS);
+            if (attachmentImage == null) {
+                System.out.println("Failed to read image from attachment: " + attachment.getUrl());
+                ExceptionUtils.reportException("Failed to read image with hash " + hash, new IOException("Image.IO.read returned null"));
+                failedToReadImage = true;
+                //save to disk for manual review
+                File outputfile = new File("failed_to_read_images/" + hash.substring(0, 8) + "_" + attachment.getFileName());
+                outputfile.getParentFile().mkdirs(); // Create directories if they don't exist
+                imgIS.reset();
+                Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            else {
+                // Check for similarity against all known images and keep the one with the highest similarity score
+                synchronized (scamImages) {
+                    double startTime = System.nanoTime();
+                    similarityResultOld = scamImages.stream().parallel()
+                            .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.ssimCompare(scamImage.ssimDataOld, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
+                            .max(Comparator.comparingDouble(value -> value.similarity))
+                            .orElse(new SimilarityResult(0.0, "none"));
+                    elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
+
+                    // startTime = System.nanoTime();
+                    // similarityResult = scamImages.stream().parallel()
+                    //         .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
+                    //         .max(Comparator.comparingDouble(value -> value.similarity))
+                    //         .orElse(new SimilarityResult(0.0, "none"));
+                    // elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
                 }
-                if (savedSuspiciousImage != null) {
-                    if (savedSuspiciousImage.similarity >= CONFIRMED_IMAGE_THRESHOLD)
-                        results.put("[ScamImage " + savedSuspiciousImage.scamImageName + "]", 3);
-                    continue;
-                }
 
-                imgIS.reset(); // Reset the stream to the marked position
-                BufferedImage attachmentImage = ImageIO.read(imgIS);
-                if (attachmentImage == null) {
-                    System.out.println("Failed to read image from attachment: " + attachment.getUrl());
-                    ExceptionUtils.reportException("Failed to read image with hash " + hash, new IOException("Image.IO.read returned null"));
-                    failedToReadImage = true;
-                    //save to disk for manual review
-                    File outputfile = new File("failed_to_read_images/" + hash.substring(0, 8) + "_" + attachment.getFileName());
-                    outputfile.getParentFile().mkdirs(); // Create directories if they don't exist
-                    imgIS.reset();
-                    Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                }
-                else {
-                    // Check for similarity against all known images and keep the one with the highest similarity score
-                    synchronized (scamImages) {
-                        double startTime = System.nanoTime();
-                        similarityResultOld = scamImages.stream().parallel()
-                                .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.ssimCompare(scamImage.ssimDataOld, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
-                                .max(Comparator.comparingDouble(result -> result.similarity))
-                                .orElse(new SimilarityResult(0.0, "none"));
-                        elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
+                //compare with all black image
+                byte[] blackImageData = new byte[attachmentImage.getWidth() * attachmentImage.getHeight()];
+                blackCompare = ImageUtilsPrevious.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight(), attachmentImage);
 
-                        // startTime = System.nanoTime();
-                        // similarityResult = scamImages.stream().parallel()
-                        //         .map(scamImage -> new SimilarityResult(ImageUtils.ssimCompare(scamImage.ssimData, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
-                        //         .max(Comparator.comparingDouble(result -> result.similarity))
-                        //         .orElse(new SimilarityResult(0.0, "none"));
-                        // elapsedTime = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
-                    }
+                if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity > blackCompare)
+                    result = new SimpleEntry<>("[ScamImage " + similarityResultOld.scamImageName + "]", 3);
 
-                    //compare with all black image
-                    byte[] blackImageData = new byte[attachmentImage.getWidth() * attachmentImage.getHeight()];
-                    blackCompare = ImageUtilsPrevious.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight(), attachmentImage);
+                if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
+                    try {
+                        // The list is rarely cleared but that shouldn't be that much data
+                        synchronized (savedSuspiciousImages) {
+                            if (!savedSuspiciousImages.containsKey(hash)) {
+                                savedSuspiciousImages.put(hash, similarityResult);
 
-                    if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity > blackCompare)
-                        results.put("[ScamImage " + similarityResultOld.scamImageName + "]", 3);
-
-                    if (similarityResult.similarity >= SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity >= SUSPICIOUS_IMAGE_THRESHOLD) {
-                        try {
-                            // The list is rarely cleared but that shouldn't be that much data
-                            synchronized (savedSuspiciousImages) {
-                                if (!savedSuspiciousImages.containsKey(hash)) {
-                                    savedSuspiciousImages.put(hash, similarityResult);
-
-                                    if (similarityResultOld.similarity < 0.85) {
-                                        File outputfile = new File("suspiciousImages/" + df.format(similarityResultOld.similarity) + "_" + hash + "_" + attachment.getFileName());
-                                        imgIS.reset();
-                                        Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-                                    }
+                                if (similarityResultOld.similarity < 0.85) {
+                                    File outputfile = new File("suspiciousImages/" + df.format(similarityResultOld.similarity) + "_" + hash + "_" + attachment.getFileName());
+                                    imgIS.reset();
+                                    Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                                 }
                             }
                         }
-                        catch (Exception e) {
-                            ExceptionUtils.reportException("Failed to save suspicious image with hash " + hash, e);
-                        }
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("Failed to save suspicious image with hash " + hash, e);
                     }
                 }
             }
-            catch (Exception e) {
-                if (e.getMessage() != null && e.getMessage().contains("404"))
-                    continue;
-                ExceptionUtils.reportException("Failed photoCheck in SS", e);
-            }
-
             reportPhoto(attachment, hash, similarityResult, similarityResultOld, failedToReadImage, blackCompare, elapsedTimeOld, elapsedTime, event);
         }
-        return results;
+        catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().contains("404"))
+                return null; //ignore 404 errors, they are usually temporary
+            ExceptionUtils.reportException("Failed photoCheck in SS", e);
+        }
+        return result;
     }
 
     private static String getISHash(InputStream is) throws NoSuchAlgorithmException, IOException {

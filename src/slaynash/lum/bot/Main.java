@@ -148,11 +148,12 @@ public class Main extends ListenerAdapter {
         System.out.println("LUM Started!");
 
         if (!ConfigManager.mainBot) { // If not the main bot, ping the main bot to see if it is online and if not, take over
-            SCHEDULER.scheduleAtFixedRate(Main::backupCheckMain, 15, 15, TimeUnit.SECONDS);
+            SCHEDULER.scheduleAtFixedRate(Main::backupCheckMain, 15, 9, TimeUnit.SECONDS);
         }
     }
 
     static boolean mainBotOnline = true;
+    static boolean lastPoll = true;
     static final OkHttpClient client = new OkHttpClient();
     private static void backupCheckMain() {
         HttpRequest pingCheckRequest = HttpRequest.newBuilder().GET().uri(URI.create(ConfigManager.pingURL)).setHeader("User-Agent", "LUM Bot (https://discord.gg/akFkAG2)").timeout(Duration.ofSeconds(20)).build();
@@ -169,6 +170,7 @@ public class Main extends ListenerAdapter {
         }
         if (statusCode == 200) {
             System.out.println("PingChecker: Ping successful to main bot, everything is fine");
+            lastPoll = true;
             if (JDAManager.isEventsEnabled())
                 JDAManager.disableEvents();
             if (!mainBotOnline) {
@@ -187,6 +189,12 @@ public class Main extends ListenerAdapter {
             }
             catch (Exception e) {
                 System.out.println("Internet is not available");
+                return;
+            }
+
+            if (lastPoll) {
+                System.out.println("PingChecker: Ping failed, main bot is not responding");
+                lastPoll = false;
                 return;
             }
 
