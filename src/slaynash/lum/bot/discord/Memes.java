@@ -120,8 +120,7 @@ public class Memes {
                 List<Message> messages = memeChannel.getHistory().retrievePast(100).complete();
                 for (Message message : messages) {
                     if (message.getAuthor().isBot()) continue;
-                    if (message.getReactions().stream().anyMatch(r -> r.getEmoji().asCustom().equals(upArrow)))
-                        continue;
+                    if (message.getReactions().stream().anyMatch(r -> r.getEmoji().getType() == Emoji.Type.CUSTOM && r.getEmoji().asCustom().equals(upArrow))) continue;
                     message.addReaction(upArrow).queue(c -> message.addReaction(downArrow).queue());
                 }
             }
