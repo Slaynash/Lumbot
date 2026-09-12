@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpClient.Redirect;
 import java.net.http.HttpRequest;
@@ -131,7 +130,7 @@ public class UnityDownloader {
 
             boolean alreadyHasVersion = false;
             for (UnityVersion uv : unityVersions) {
-                if (uv.version.equals(foundVersion)) {
+                if (uv.version().equals(foundVersion)) {
                     alreadyHasVersion = true;
                     break;
                 }
@@ -146,7 +145,7 @@ public class UnityDownloader {
 
     public static void filterNewVersionsAndLog(List<UnityVersion> versions) {
         for (int i = versions.size() - 1; i >= 0; i--) {
-            if (installedVersions.containsKey(versions.get(i).version))
+            if (installedVersions.containsKey(versions.get(i).version()))
                 versions.remove(i);
         }
 
@@ -156,9 +155,9 @@ public class UnityDownloader {
             StringBuilder message = new StringBuilder("New Unity version published:");
             for (UnityVersion newVersion : versions.subList(0, Math.min(20, versions.size()))) {
                 String type = "whats-new/";
-                if (newVersion.fullVersion.contains("a")) type = "alpha/";
-                if (newVersion.fullVersion.contains("b")) type = "beta/";
-                message.append("\n- ").append(newVersion.version).append(" ").append(newVersion.stream).append(" [Release Notes](<https://unity.com/releases/editor/").append(type).append(newVersion.version).append("#notes>)");
+                if (newVersion.fullVersion().contains("a")) type = "alpha/";
+                if (newVersion.fullVersion().contains("b")) type = "beta/";
+                message.append("\n- ").append(newVersion.version()).append(" ").append(newVersion.stream()).append(" [Release Notes](<https://unity.com/releases/editor/").append(type).append(newVersion.version()).append("#notes>)");
             }
             JDAManager.getJDA().getTextChannelById(876466104036393060L /* #lum-status */).sendMessage(message.toString()).queue();  // may want to move this over to just #unity-version-updates
             JDAManager.getJDA().getNewsChannelById(979786573010833418L /* #unity-version-updates */).sendMessage(message.toString()).queue(s -> s.crosspost().queue());
@@ -167,9 +166,9 @@ public class UnityDownloader {
 
     public static void downloadUnity(UnityVersion uv) throws InterruptedException {
 
-        File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version);
-        File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version + "_tmp");
-        installedVersions.remove(uv.version);
+        File targetFile = new File(UnityUtils.downloadPath + "/" + uv.version());
+        File targetFileTmp = new File(UnityUtils.downloadPath + "/" + uv.version() + "_tmp");
+        installedVersions.remove(uv.version());
         if (targetFile.exists()) {
             try (Stream<Path> filesToDelete = Files.walk(targetFile.toPath())) {
                 filesToDelete.sorted(Comparator.reverseOrder())
@@ -178,7 +177,7 @@ public class UnityDownloader {
                 saveInstalledVersionCache();
             }
             catch (IOException e) {
-                ExceptionUtils.reportException("Failed to delete unity folder " + uv.version, e);
+                ExceptionUtils.reportException("Failed to delete unity folder " + uv.version(), e);
                 return;
             }
         }
@@ -190,53 +189,53 @@ public class UnityDownloader {
                     .forEach(File::delete);
             }
             catch (IOException e) {
-                ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
+                ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version(), e);
                 return;
             }
         }
 
-        List<String> installedArchitectures = installedVersions.get(uv.version);
+        List<String> installedArchitectures = installedVersions.get(uv.version());
 
         if (installedArchitectures == null || !installedArchitectures.contains("windows mono")) {
 
-            System.out.println("Downloading " + uv.downloadUrl);
+            System.out.println("Downloading " + uv.downloadUrl());
             try (
-                FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
-                FileChannel fileChannel = fileOutputStream.getChannel())
+                    FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version() + ".dat");
+                    FileChannel fileChannel = fileOutputStream.getChannel())
             {
-                ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrl).openStream());
+                ReadableByteChannel readableByteChannel = Channels.newChannel(URI.create(uv.downloadUrl()).toURL().openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
             catch (IOException e) {
-                ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (mono)", e);
+                ExceptionUtils.reportException("Failed to download unity version " + uv.version() + " (mono)", e);
                 return;
             }
 
             extractFilesFromArchive(uv, false, false);
 
-            saveInstalledVersionCache(uv.version, "windows mono");
+            saveInstalledVersionCache(uv.version(), "windows mono");
 
         }
 
-        if ((installedArchitectures == null || !installedArchitectures.contains("windows il2cpp")) && uv.downloadUrlIl2CppWin != null) {
+        if ((installedArchitectures == null || !installedArchitectures.contains("windows il2cpp")) && uv.downloadUrlIl2CppWin() != null) {
 
-            System.out.println("Downloading " + uv.downloadUrlIl2CppWin);
+            System.out.println("Downloading " + uv.downloadUrlIl2CppWin());
             try (
-                FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version + ".dat");
-                FileChannel fileChannel = fileOutputStream.getChannel())
+                    FileOutputStream fileOutputStream = new FileOutputStream("unityversionsmonitor/unitydownload_" + uv.version() + ".dat");
+                    FileChannel fileChannel = fileOutputStream.getChannel())
             {
-                ReadableByteChannel readableByteChannel = Channels.newChannel(new URL(uv.downloadUrlIl2CppWin).openStream());
+                ReadableByteChannel readableByteChannel = Channels.newChannel(URI.create(uv.downloadUrlIl2CppWin()).toURL().openStream());
                 fileChannel.transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             }
             catch (IOException e) {
-                ExceptionUtils.reportException("Failed to download unity version " + uv.version + " (il2cpp)", e);
+                ExceptionUtils.reportException("Failed to download unity version " + uv.version() + " (il2cpp)", e);
                 return;
             }
 
-            boolean useNSISBIExtractor = uv.version.startsWith("202") && !uv.version.startsWith("2020.1");
+            boolean useNSISBIExtractor = uv.version().startsWith("202") && !uv.version().startsWith("2020.1");
             extractFilesFromArchive(uv, true, useNSISBIExtractor);
 
-            saveInstalledVersionCache(uv.version, "windows il2cpp");
+            saveInstalledVersionCache(uv.version(), "windows il2cpp");
         }
 
         try (Stream<Path> filesToDelete = Files.walk(targetFileTmp.toPath())) {
@@ -245,26 +244,26 @@ public class UnityDownloader {
                 .forEach(File::delete);
         }
         catch (IOException e) {
-            ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version, e);
+            ExceptionUtils.reportException("Failed to delete unity temp folder " + uv.version(), e);
             return;
         }
         finally {
-            new File("unityversionsmonitor/unitydownload_" + uv.version + ".dat").delete();
+            new File("unityversionsmonitor/unitydownload_" + uv.version() + ".dat").delete();
             new File("unityversionsmonitor/Payload~").delete();
         }
     }
 
     public static void extractFilesFromArchive(UnityVersion version, boolean isil2cpp, boolean useNSISExtractor) throws InterruptedException {
         String internalPath = "Variations";
-        String monoManagedSubpath = UnityUtils.getMonoManagedSubpath(version.version);
+        String monoManagedSubpath = UnityUtils.getMonoManagedSubpath(version.version());
 
-        if (version.version.startsWith("3.")) {
+        if (version.version().startsWith("3.")) {
             internalPath = "Data/PlaybackEngines/";
         }
-        else if (version.version.startsWith("4.")) {
-            if (version.version.startsWith("4.5") ||
-                version.version.startsWith("4.6") ||
-                version.version.startsWith("4.7"))
+        else if (version.version().startsWith("4.")) {
+            if (version.version().startsWith("4.5") ||
+                version.version().startsWith("4.6") ||
+                version.version().startsWith("4.7"))
             {
                 internalPath = "Data/PlaybackEngines/windowsstandalonesupport/Variations";
             }
@@ -272,8 +271,8 @@ public class UnityDownloader {
                 internalPath = "Data/PlaybackEngines/";
             }
         }
-        else if (version.version.startsWith("5.")) {
-            if (version.version.startsWith("5.3")) {
+        else if (version.version().startsWith("5.")) {
+            if (version.version().startsWith("5.3")) {
                 internalPath = "Editor/Data/PlaybackEngines/WebPlayer/";
             }
             else {
@@ -287,9 +286,9 @@ public class UnityDownloader {
             internalPathZip = "\\\\$_OUTDIR/Variations/(.*_il2cpp/UnityPlayer.*(dll|pdb)|" + monoManagedSubpath + "/.*dll)";
         }
         else {
-            internalPathZip = version.version.startsWith("20") ? (version.version.startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
+            internalPathZip = version.version().startsWith("20") ? (version.version().startsWith("2017.1") ? "./" : (isil2cpp ? "\\$INSTDIR\\$*/" : "./")) : "";
             internalPathZip += internalPath;
-            internalPathZip = "\"" + internalPathZip + (version.version.startsWith("20") && !version.version.startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\" \"" + internalPathZip + "/" + monoManagedSubpath + "/*.dll\"";
+            internalPathZip = "\"" + internalPathZip + (version.version().startsWith("20") && !version.version().startsWith("2017.1") ? "/*/UnityPlayer.dll" : "/*/*.exe") + "\" \"" + internalPathZip + "/*/UnityPlayer*.pdb\" \"" + internalPathZip + "/" + monoManagedSubpath + "/*.dll\"";
         }
 
         System.out.println("Extracting DLLs from Archive");
@@ -299,26 +298,26 @@ public class UnityDownloader {
                 return;
             }
         try {
-            if (!extractFiles(UnityUtils.downloadPath + "/" + version.version + "_tmp", "unityversionsmonitor/unitydownload_" + version.version + ".dat", internalPathZip, !isil2cpp && version.version.startsWith("20"), useNSISExtractor, true)) {
-                ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")");
+            if (!extractFiles(UnityUtils.downloadPath + "/" + version.version() + "_tmp", "unityversionsmonitor/unitydownload_" + version.version() + ".dat", internalPathZip, !isil2cpp && version.version().startsWith("20"), useNSISExtractor, true)) {
+                ExceptionUtils.reportException("Failed to extract Unity version " + version.version() + " (" + (isil2cpp ? "il2cpp" : "mono") + ")");
                 return;
             }
         }
         catch (IOException e) {
-            ExceptionUtils.reportException("Failed to extract Unity version " + version.version + " (" + (isil2cpp ? "il2cpp" : "mono") + ")", e);
+            ExceptionUtils.reportException("Failed to extract Unity version " + version.version() + " (" + (isil2cpp ? "il2cpp" : "mono") + ")", e);
             return;
         }
-        String tomoveFolder = UnityUtils.downloadPath + "/" + version.version + "_tmp";
+        String tomoveFolder = UnityUtils.downloadPath + "/" + version.version() + "_tmp";
         File tomoveFolderF = new File(tomoveFolder);
         if (tomoveFolderF == null || tomoveFolderF.listFiles() == null || tomoveFolderF.listFiles().length == 0) {
-            ExceptionUtils.reportException("Unity version " + version.version + " Extraction is empty (" + (isil2cpp ? "il2cpp" : "mono") + ")");
+            ExceptionUtils.reportException("Unity version " + version.version() + " Extraction is empty (" + (isil2cpp ? "il2cpp" : "mono") + ")");
             return;
         }
         if (isil2cpp)
             tomoveFolder = tomoveFolderF.listFiles(File::isDirectory)[0].getPath();
         tomoveFolder += "/" + internalPath;
-        System.out.println("Moving " + tomoveFolder + " to " + UnityUtils.downloadPath + "/" + version.version);
-        moveDirectory(tomoveFolderF, new File(UnityUtils.downloadPath + "/" + version.version));
+        System.out.println("Moving " + tomoveFolder + " to " + UnityUtils.downloadPath + "/" + version.version());
+        moveDirectory(tomoveFolderF, new File(UnityUtils.downloadPath + "/" + version.version()));
     }
 
     private static boolean extractFiles(String outputPath, String zipPath, String internalPath, boolean isPkg, boolean useNSISBIExtractor, boolean keepFilePath) throws IOException, InterruptedException {

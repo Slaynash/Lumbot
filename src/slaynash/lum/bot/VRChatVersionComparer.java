@@ -8,7 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -59,7 +59,16 @@ public class VRChatVersionComparer {
             if (event != null)
                 event.getChannel().sendMessage("Downloading VRChat from Steam...").queue();
             try {
-                Process p = Runtime.getRuntime().exec("vrcdecomp/depotdownloader/DepotDownloader -app 438100 -depot 438101 -branch " + branch + " -manifest " + manifestId + " -username hugoflores69 -remember-password -dir vrcdecomp/VRChat");
+                Process p = new ProcessBuilder(
+                    "vrcdecomp/depotdownloader/DepotDownloader",
+                    "-app", "438100",
+                    "-depot", "438101",
+                    "-branch", branch,
+                    "-manifest", manifestId,
+                    "-username", "hugoflores69",
+                    "-remember-password",
+                    "-dir", "vrcdecomp/VRChat"
+                ).start();
                 logAppOutput(p, "DepotDownloader");
                 int returncode = p.waitFor();
                 if (returncode != 0) {
@@ -146,7 +155,7 @@ public class VRChatVersionComparer {
             if (event != null)
                 event.getChannel().sendMessage("Downloading and extracting Unity dependencies...").queue();
             try (
-                BufferedInputStream in = new BufferedInputStream(new URL("https://github.com/LavaGang/Unity-Runtime-Libraries/raw/master/" + unityVersion + ".zip").openStream());
+                BufferedInputStream in = new BufferedInputStream(URI.create("https://github.com/LavaGang/Unity-Runtime-Libraries/raw/master/" + unityVersion + ".zip").toURL().openStream());
                 FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/unitydeps.zip"))
             {
                 byte[] dataBuffer = new byte[1024];
@@ -161,7 +170,9 @@ public class VRChatVersionComparer {
 
             System.out.println("Extracting Unity dependencies");
             try {
-                Process p = Runtime.getRuntime().exec("unzip -o vrcdecomp/unitydeps.zip -d vrcdecomp/unitydeps_" + unityVersion);
+                Process p = new ProcessBuilder(
+                    "unzip", "-o", "vrcdecomp/unitydeps.zip", "-d", "vrcdecomp/unitydeps_" + unityVersion)
+                    .start();
                 logAppOutput(p, "unzip");
                 int returncode = p.waitFor();
                 if (returncode != 0) {
@@ -191,7 +202,7 @@ public class VRChatVersionComparer {
         byte[] buffer = new byte[1024];
 
         ByteArrayOutputStream mapStream = new ByteArrayOutputStream();
-        try (BufferedInputStream in = new BufferedInputStream(new URL(obfMapUrl).openStream());
+        try (BufferedInputStream in = new BufferedInputStream(URI.create(obfMapUrl).toURL().openStream());
             FileOutputStream fileOutputStream = new FileOutputStream("vrcdecomp/deobfmap.csv.gz"))
         {
             int bytesRead;
@@ -234,14 +245,20 @@ public class VRChatVersionComparer {
         if (event != null)
             event.getChannel().sendMessage("Running Il2CppAssemblyUnhollower...").queue();
         try {
-            Process p = Runtime.getRuntime().exec("mono unhollower/AssemblyUnhollower.exe " +
-                "--input=versions/" + branch + "_" + manifestId + "/cpp2il_out " +
-                "--output=versions/" + branch + "_" + manifestId + "/unhollower_out " +
-                "--mscorlib=mscorlib.dll " +
-                "--unity=unitydeps_" + unityVersion + " " +
-                "--gameassembly=versions/" + branch + "_" + manifestId + "/GameAssembly.dll " +
-                "--rename-map=deobfmap.csv.gz " +
-                "--add-prefix-to=ICSharpCode --add-prefix-to=Newtonsoft --add-prefix-to=TinyJson --add-prefix-to=Valve.Newtonsoft", null, new File("vrcdecomp"));
+            Process p = new ProcessBuilder(
+                "mono", "unhollower/AssemblyUnhollower.exe",
+                "--input=versions/" + branch + "_" + manifestId + "/cpp2il_out",
+                "--output=versions/" + branch + "_" + manifestId + "/unhollower_out",
+                "--mscorlib=mscorlib.dll",
+                "--unity=unitydeps_" + unityVersion,
+                "--gameassembly=versions/" + branch + "_" + manifestId + "/GameAssembly.dll",
+                "--rename-map=deobfmap.csv.gz",
+                "--add-prefix-to=ICSharpCode",
+                "--add-prefix-to=Newtonsoft",
+                "--add-prefix-to=TinyJson",
+                "--add-prefix-to=Valve.Newtonsoft")
+                .directory(new File("vrcdecomp"))
+                .start();
             logAppOutput(p, "Il2CppAssemblyUnhollower");
             int returncode = p.waitFor();
             if (returncode != 0) {

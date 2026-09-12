@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +36,7 @@ import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -221,32 +221,10 @@ public class ScamShield {
     // must be lowercase
     private static final List<String> badGuildNames = List.of("18+", "nude", "leak", "celeb", "family");
 
-    private static class ScamImageReference {
-        public String name;
-        public String hash;
-        public int width, height;
-
-        public byte[] ssimData;
-        public byte[] ssimDataOld;
-
-        public ScamImageReference(String name, String hash, int width, int height, byte[] ssimData, byte[] ssimDataOld) {
-            this.name = name;
-            this.hash = hash;
-            this.width = width;
-            this.height = height;
-            this.ssimData = ssimData;
-            this.ssimDataOld = ssimDataOld;
-        }
+    private record ScamImageReference(String name, String hash, int width, int height, byte[] ssimData, byte[] ssimDataOld) {
     }
 
-    private static class SimilarityResult {
-        public final double similarity;
-        public final String scamImageName;
-
-        public SimilarityResult(double similarity, String scamImageName) {
-            this.similarity = similarity;
-            this.scamImageName = scamImageName;
-        }
+    private record SimilarityResult(double similarity, String scamImageName) {
     }
 
     private static final List<ScamImageReference> scamImages = new ArrayList<>();
@@ -770,7 +748,7 @@ public class ScamShield {
                 String domainLower = domain.toLowerCase();
                 if (whitelist.stream().anyMatch(domainLower::contains))
                     continue;
-                Process p = Runtime.getRuntime().exec("whois " + domain);
+                Process p = new ProcessBuilder("whois", domain).start();
                 StringBuilder output = new StringBuilder();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
                 String line;
@@ -844,7 +822,7 @@ public class ScamShield {
             if (grabifylist.stream().anyMatch(url.toLowerCase()::contains)) {
                 return "GrabifyLink";
             }
-            HttpURLConnection con = (HttpURLConnection) (new URL(url).openConnection());
+            HttpURLConnection con = (HttpURLConnection) (URI.create(url).toURL().openConnection());
             con.setInstanceFollowRedirects(false);
             con.setConnectTimeout(5000);
             con.setReadTimeout(5000);
@@ -860,14 +838,14 @@ public class ScamShield {
         event.getMessage().getAttachments().stream().filter(Message.Attachment::isImage).findFirst().ifPresent(a -> loadScamImages());
         return event.getMessage().getAttachments().stream().parallel()
             .map(attachment -> scanPhoto(attachment, event))
-            .filter(result -> result != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue));
     }
 
     private static SimpleEntry<String, Integer> scanPhoto(Message.Attachment attachment, MessageReceivedEvent event) {
         if (!attachment.isImage())
             return null;
-        String hash = "";
+        String hash;
         SimpleEntry<String, Integer> result = null;
         SimilarityResult similarityResultOld = new SimilarityResult(0.0, "none");
         SimilarityResult similarityResult = new SimilarityResult(0.0, "none");

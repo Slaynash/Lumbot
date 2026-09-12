@@ -32,13 +32,13 @@ public class FetchMelonLoaderVersions {
 
     public static void mlReleases() {
         System.out.println("Fetching MelonLoader releases from GitHub...");
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LavaGang/MelonLoader/releases"))
                 .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() >= 400) {
                 System.out.println("Failed to fetch MelonLoader versions from GH: " + response.statusCode());
                 return;
@@ -73,13 +73,13 @@ public class FetchMelonLoaderVersions {
 
     public static void llReleases() {
         System.out.println("Fetching LemonLoader releases from GitHub...");
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LemonLoader/MelonLoader/releases"))
                 .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() >= 400) {
                 System.out.println("Failed to fetch LemonLoader versions from GH: " + response.statusCode());
                 return;
@@ -114,13 +114,13 @@ public class FetchMelonLoaderVersions {
 
     public static void mlNightly() {
         // fetch builds from actions
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LavaGang/MelonLoader/actions/workflows/5411546/runs?status=success&exclude_pull_requests=true"))
                 .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() >= 400) {
                 System.out.println("Failed to fetch MelonLoader versions from Actions: " + response.statusCode());
                 return;
@@ -146,13 +146,13 @@ public class FetchMelonLoaderVersions {
 
     public static void getArtifacts(String runID, String version, String htmlURL) {
         // fetch artifacts from actions
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.github.com/repos/LavaGang/MelonLoader/actions/runs/" + runID + "/artifacts"))
                 .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() >= 400) {
                 System.out.println("Failed to fetch MelonLoader versions from Actions: " + response.statusCode());
                 return;
@@ -175,27 +175,26 @@ public class FetchMelonLoaderVersions {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public static void downloadAndHash(String zipURL, String version, String htmlURL, boolean ci, boolean android) throws Exception {
         System.out.println("Downloading MelonLoader version " + version + " from " + zipURL);
-        HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(zipURL))
-            .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
-            .method("GET", HttpRequest.BodyPublishers.noBody())
-            .build();
-        HttpResponse<byte[]> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
-
-        // If downloading from Azure, you can't have the Authorization header
-        if (response.statusCode() == 302) {
-            request = HttpRequest.newBuilder()
-                .uri(URI.create(response.headers().firstValue("Location").get()))
+        Path ml = Files.createTempFile("ML", ".zip");
+        try (HttpClient client = HttpClient.newHttpClient()) {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(zipURL))
+                .header("Authorization", "Bearer " + ConfigManager.gitHubApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofByteArray());
-        }
+            HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
 
-        Path ml = Files.createTempFile("ML", ".zip");
-        String net35 = "NULL";
-        String net6  = "NULL";
+            // If downloading from Azure, you can't have the Authorization header
+            if (response.statusCode() == 302) {
+                request = HttpRequest.newBuilder()
+                    .uri(URI.create(response.headers().firstValue("Location").get()))
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+                response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            }
 
-        try {
+            String net35 = "NULL";
+            String net6  = "NULL";
             Files.write(ml, response.body());
             ZipFile zipFile = new ZipFile(ml.toString());
             if (zipFile.getEntry("MelonLoader/MelonLoader.dll") != null) {

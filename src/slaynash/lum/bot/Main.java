@@ -182,7 +182,7 @@ public class Main extends ListenerAdapter {
         else {
             //check if internet is available
             try {
-                URL url = new URL("http://www.google.com");
+                URL url = URI.create("http://www.google.com").toURL();
                 Request request = new Request.Builder().url(url).build();
                 Response response = client.newCall(request).execute();
                 if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
@@ -383,9 +383,7 @@ public class Main extends ListenerAdapter {
                 event.getGuild().getSystemChannel().sendMessage(thankyou).queue(null, m -> System.out.println("Failed to send message in System channel"));
             }
             else {
-                event.getGuild().retrieveOwner().queue(owner -> {
-                    owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you"));
-                });
+                event.getGuild().retrieveOwner().queue(owner -> owner.getUser().openPrivateChannel().flatMap(channel -> channel.sendMessage(thankyou)).queue(null, m -> System.out.println("Failed to open dms with guild owner to send thank you")));
             }
         }
         catch (Exception e) {

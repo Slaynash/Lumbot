@@ -18,7 +18,7 @@ import slaynash.lum.bot.Localization;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 
-public class MelonLoaderError {
+public record MelonLoaderError(String regex, String error, String nextLineRegex, String previousLineRegex) {
 
     private static final List<MelonLoaderError> knownUnhollowerErrors = new ArrayList<>();
     private static final List<MelonLoaderError> knownErrors = new ArrayList<>();
@@ -36,34 +36,16 @@ public class MelonLoaderError {
             "You have an invalid or incompatible assembly in your `Mods` or `Plugins` folder.");
 
 
-    public final String nextLineRegex;
-    public final String previousLineRegex;
-    public final String regex;
-    public final String error;
-
     public MelonLoaderError(String error) {
-        this.error = error;
-        this.regex = null;
-        this.nextLineRegex = null;
-        this.previousLineRegex = null;
+        this(null, null, null, error);
     }
+
     public MelonLoaderError(String regex, String error) {
-        this.regex = regex;
-        this.error = error;
-        this.nextLineRegex = null;
-        this.previousLineRegex = null;
+        this(null, null, regex, error);
     }
+
     public MelonLoaderError(String regex, String error, String nextLineRegex) {
-        this.regex = regex;
-        this.error = error;
-        this.nextLineRegex = nextLineRegex;
-        this.previousLineRegex = null;
-    }
-    public MelonLoaderError(String regex, String error, String nextLineRegex, String previousLineRegex) {
-        this.regex = regex;
-        this.error = error;
-        this.nextLineRegex = nextLineRegex;
-        this.previousLineRegex = previousLineRegex;
+        this(nextLineRegex, null, regex, error);
     }
 
     @Override

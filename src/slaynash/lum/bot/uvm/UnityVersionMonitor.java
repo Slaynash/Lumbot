@@ -86,7 +86,7 @@ public class UnityVersionMonitor {
 
         if (!CHECKS_ENABLED) {
             for (UnityVersion newVersion : remoteVersions)
-                UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
+                UnityDownloader.saveInstalledVersionCache(newVersion.version(), null);
             return;
         }
 
@@ -105,7 +105,7 @@ public class UnityVersionMonitor {
         if (new File(UnityUtils.downloadPath).list() == null) {
             ExceptionUtils.reportException("Unity download path is missing");
             for (UnityVersion newVersion : remoteVersions)
-                UnityDownloader.saveInstalledVersionCache(newVersion.version, null);
+                UnityDownloader.saveInstalledVersionCache(newVersion.version(), null);
             return;
         }
 
@@ -117,17 +117,17 @@ public class UnityVersionMonitor {
             // run tools sanity checks
 
             try {
-                runHashChecker(newVersion.version);
+                runHashChecker(newVersion.version());
             }
             catch (InterruptedException e) {
-                ExceptionUtils.reportException("HashChecker run was aborted before start " + newVersion.version, e);
+                ExceptionUtils.reportException("HashChecker run was aborted before start " + newVersion.version(), e);
             }
             catch (Exception e) {
-                ExceptionUtils.reportException("Failed to run HashChecker for Unity " + newVersion.version, e);
+                ExceptionUtils.reportException("Failed to run HashChecker for Unity " + newVersion.version(), e);
             }
             if (!initialisingUnityVersions) {
-                runICallChecker(newVersion.version, null);
-                runMonoStructChecker(newVersion.version);
+                runICallChecker(newVersion.version(), null);
+                runMonoStructChecker(newVersion.version());
             }
             // VFTables Checker
         }
@@ -811,7 +811,7 @@ public class UnityVersionMonitor {
             StringBuilder reportBuilder = new StringBuilder();
 
             List<String> versions = UnityDownloader.fetchUnityVersions().stream()
-                .map(uv -> uv.version)
+                .map(UnityVersion::version)
                 .distinct()
                 .sorted(new UnityVersion.Comparator())
                 .toList();
@@ -874,7 +874,7 @@ public class UnityVersionMonitor {
             List<UnityVersion> versions = UnityDownloader.fetchUnityVersions();
             UnityVersion targetVersion = null;
             for (UnityVersion uv : versions) {
-                if (uv.version.equals(version)) {
+                if (uv.version().equals(version)) {
                     targetVersion = uv;
                     break;
                 }

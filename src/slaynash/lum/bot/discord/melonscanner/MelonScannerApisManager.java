@@ -73,7 +73,7 @@ public class MelonScannerApisManager {
 
     static {
         apis.add(new MelonScannerApi("Audica", "audica_ahriana", "https://raw.githubusercontent.com/Ahriana/AudicaModsDirectory/main/api.json"));
-        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "http://1330studios.com/btd6_info.json"));
+        apis.add(new MelonScannerApi("BloonsTD6", "btd6_inferno", "https://1330studios.com/btd6_info.json"));
         apis.add(new ThunderstoreApi("BONELAB", "bonelab"));
         apis.add(new ThunderstoreApi("BONEWORKS", "boneworks"));
         apis.add(new MelonScannerApi("ChilloutVR", "vrcmg", "https://api.cvrmg.com/v1/mods"));
@@ -330,7 +330,7 @@ public class MelonScannerApisManager {
                     MelonApiMod currentMod = null;
                     for (MelonApiMod mod : currentMods) {
                         // TODO compare using aliases too
-                        if (mod.name.replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name.replaceAll("[-_ ]", ""))) {
+                        if (mod.name().replaceAll("[-_ ]", "").equalsIgnoreCase(newMod.name().replaceAll("[-_ ]", ""))) {
                             currentMod = mod;
                             break;
                         }
@@ -339,7 +339,7 @@ public class MelonScannerApisManager {
                     if (currentMod == null)
                         currentMods.add(newMod);
                     else {
-                        if (currentMod.versions == null || currentMod.versions[0].version() == null || newMod.versions[0] != null && newMod.versions[0].version() != null && newMod.versions[0].version().isHigherThanOrEquivalentTo(currentMod.versions[0].version())) {
+                        if (currentMod.versions() == null || currentMod.versions()[0].version() == null || newMod.versions()[0] != null && newMod.versions()[0].version() != null && newMod.versions()[0].version().isHigherThanOrEquivalentTo(currentMod.versions()[0].version())) {
                             currentMods.remove(currentMod);
                             currentMods.add(newMod);
                         }
@@ -369,11 +369,11 @@ public class MelonScannerApisManager {
                 List<MelonApiMod> mods = games.get(api.game);
                 if (mods == null)
                     continue;
-                if (mod.versions[0].version() == null)
+                if (mod.versions()[0].version() == null)
                     continue;
                 mods.removeIf(modtmp ->
-                    modtmp.name.replaceAll("[-_ ]", "").equals(mod.name.replaceAll("[-_ ]", ""))
-                    && (modtmp.versions[0] == null || mod.versions[0].version().isHigherThan(modtmp.versions[0].version())));
+                    modtmp.name().replaceAll("[-_ ]", "").equals(mod.name().replaceAll("[-_ ]", ""))
+                    && (modtmp.versions()[0] == null || mod.versions()[0].version().isHigherThan(modtmp.versions()[0].version())));
                 mods.add(mod);
                 synchronized (games) {
                     games.put(api.game, mods);
@@ -507,13 +507,13 @@ public class MelonScannerApisManager {
             if (mods == null)
                 return null;
 
-            MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name.equals(missingModName)).findFirst().orElse(null);
+            MelonApiMod mod = mods.stream().filter(modtmp -> modtmp.name().equals(missingModName)).findFirst().orElse(null);
 
             if (mod == null) {
-                mod = mods.stream().filter(modtmp -> modtmp.aliases != null).filter(modtmp -> Arrays.asList(modtmp.aliases).contains(missingModName)).findFirst().orElse(null);
+                mod = mods.stream().filter(modtmp -> modtmp.aliases() != null).filter(modtmp -> Arrays.asList(modtmp.aliases()).contains(missingModName)).findFirst().orElse(null);
             }
 
-            return mod != null ? mod.downloadLink : null;
+            return mod != null ? mod.downloadLink() : null;
         }
     }
 }

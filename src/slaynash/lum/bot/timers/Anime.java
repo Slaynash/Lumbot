@@ -10,10 +10,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -21,10 +19,11 @@ import com.google.gson.reflect.TypeToken;
 import net.dv8tion.jda.api.EmbedBuilder;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
+import slaynash.lum.bot.Main;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
 
-public class Anime extends TimerTask {
+public class Anime implements Runnable {
     public void run() {
         try {
             List<AnimeEntry> animes = checkSubs();
@@ -47,7 +46,7 @@ public class Anime extends TimerTask {
                 String title = anime.title;
                 if (anime.english != null && !anime.english.isEmpty())
                     title = anime.english;
-                if (anime.getMediaTypeName().equals("Movie"))
+                if ("Movie".equals(anime.getMediaTypeName()))
                     episode = "Movie";
                 else if (anime.episodeNumber == anime.episodes && anime.episodes > 1) {
                     episode = episode + "F";
@@ -86,24 +85,23 @@ public class Anime extends TimerTask {
     }
 
     public static void start() {
-        Timer timer = new Timer();
-        timer.schedule(
-            new Anime(),
-            Date.from(Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS)),
-            1000 * 60 * 60 * 24
-        );
+        // seconds to UTC 0
+        long secondsToUTC0 = ChronoUnit.SECONDS.between(Instant.now(), Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS));
+        Main.SCHEDULER.scheduleAtFixedRate(new Anime(), secondsToUTC0, 1, TimeUnit.DAYS);
     }
 
     private static List<AnimeEntry> checkSubs() {
         List<AnimeEntry> animeEntries = new ArrayList<>();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://animeschedule.net/api/v3/timetables/sub"))
                 .header("User-Agent", "LUM Bot " + ConfigManager.commitHash)
                 .header("Authorization", "Bearer " + ConfigManager.animescheduleApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            //'HttpClient' used without 'try'-with-resources statement
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
 
             if (response.statusCode() != 200) {
                 throw new Exception("Failed to fetch anime entries: " + response.statusCode() + " - " + response.body());
@@ -116,7 +114,7 @@ public class Anime extends TimerTask {
                 // add entry to animeEntries if route does not exist in animeEntries
                 boolean exists = false;
                 for (AnimeEntry existingEntry : animeEntries) {
-                    if (existingEntry.route.equals(entry.route)) {
+                    if (existingEntry.route != null && existingEntry.route.equals(entry.route)) {
                         exists = true;
                         break;
                     }
@@ -137,14 +135,14 @@ public class Anime extends TimerTask {
 
     private static List<AnimeEntry> checkRawUpcoming() {
         List<AnimeEntry> animeEntries = new ArrayList<>();
-        try {
+        try (HttpClient client = HttpClient.newHttpClient()) {
             HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://animeschedule.net/api/v3/timetables/raw"))
                 .header("User-Agent", "LUM Bot " + ConfigManager.commitHash)
                 .header("Authorization", "Bearer " + ConfigManager.animescheduleApiKey)
                 .method("GET", HttpRequest.BodyPublishers.noBody())
                 .build();
-            HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() != 200) {
                 throw new Exception("Failed to fetch raw anime entries: " + response.statusCode() + " - " + response.body());
@@ -165,56 +163,11 @@ public class Anime extends TimerTask {
         return animeEntries;
     }
 
-    public static class AnimeEntry {
-        public AnimeEntry(String title,
-                          String english,
-                          String route,
-                          String delayedText,
-                          String delayedFrom,
-                          String delayedUntil,
-                          String status,
-                          String episodeDate,
-                          int episodeNumber,
-                          int subtractedEpisodeNumber,
-                          int episodes,
-                          boolean donghua,
-                          String airType,
-                          JsonArray mediaTypes,
-                          String airingStatus
-        )
-        {
-            this.title = title;
-            this.english = english;
-            this.route = route;
-            this.delayedText = delayedText;
-            this.delayedFrom = delayedFrom;
-            this.delayedUntil = delayedUntil;
-            this.status = status;
-            this.episodeDate = episodeDate;
-            this.episodeNumber = episodeNumber;
-            this.subtractedEpisodeNumber = subtractedEpisodeNumber;
-            this.episodes = episodes;
-            this.donghua = donghua;
-            this.airType = airType;
-            this.mediaTypes = mediaTypes;
-            this.airingStatus = airingStatus;
-        }
-        public final String title;
-        public final String english;
-        public final String route;
-        public final String delayedText;
-        public final String delayedFrom;
-        public final String delayedUntil;
-        public final String status;
-        public final String episodeDate;
-        public final int episodeNumber;
-        public final int subtractedEpisodeNumber;
-        public final int episodes;
-        public final boolean donghua;
-        public final String airType;
-        public final JsonArray mediaTypes;
-        public final String airingStatus;
-
+    public record AnimeEntry(String title, String english, String route, String delayedText, String delayedFrom,
+                             String delayedUntil, String status, String episodeDate, int episodeNumber,
+                             int subtractedEpisodeNumber, int episodes, boolean donghua, String airType,
+                             JsonArray mediaTypes, String airingStatus)
+    {
         public Instant getDelayedFromInstant() {
             return Instant.parse(delayedFrom);
         }

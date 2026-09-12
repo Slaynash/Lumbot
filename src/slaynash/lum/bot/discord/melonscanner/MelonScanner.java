@@ -213,7 +213,7 @@ public final class MelonScanner {
 
         for (LogsModDetails loadedMod : context.loadedMods.values()) {
             String modName = loadedMod.name;
-            MelonApiMod apiMod = context.modDetails.stream().filter(m -> m.name.equals(loadedMod.name) || ArrayUtils.contains(m.aliases, loadedMod.name)).findFirst().orElse(null);
+            MelonApiMod apiMod = context.modDetails.stream().filter(m -> m.name().equals(loadedMod.name) || ArrayUtils.contains(m.aliases(), loadedMod.name)).findFirst().orElse(null);
             /*
             if (!apiMod.name.equals(context.tmpModName) && ArrayUtils.contains(apiMod.aliases, context.tmpModName)) {
                 context.duplicatedMods.add(context.tmpModName.trim());
@@ -221,7 +221,7 @@ public final class MelonScanner {
             }
             */
             if (apiMod != null)
-                modName = apiMod.name;
+                modName = apiMod.name();
 
             LogsModDetails prevLoadedMod = loadedMods.get(modName);
             if (prevLoadedMod != null) {
@@ -248,7 +248,7 @@ public final class MelonScanner {
             final String id = logsModDetails.id;
 
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
-                if (modSpecificError.regex.equals(modName)) {
+                if (modSpecificError.regex().equals(modName)) {
                     context.errors.add(modSpecificError);
                     break;
                 }
@@ -268,21 +268,21 @@ public final class MelonScanner {
             boolean deprecatedName = false;
             boolean latestModBroken = false;
             for (MelonApiMod modDetail : context.modDetails) {
-                if (modDetail.id != null && modDetail.id.equals(id) ||
-                    modDetail.name.replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
-                    (deprecatedName = ArrayUtils.contains(modDetail.aliases, modName)))
+                if (modDetail.id() != null && modDetail.id().equals(id) ||
+                    modDetail.name().replaceAll("[-_ ]", "").equalsIgnoreCase(modName.replaceAll("[-_ ]", "")) ||
+                    (deprecatedName = ArrayUtils.contains(modDetail.aliases(), modName)))
                 {
-                    System.out.println("Mod found in API: " + modDetail.name + " version " + modDetail.versions[0] + (modDetail.id != null ? " id2: " + modDetail.id : ""));
-                    latestModName = modDetail.name;
-                    latestModVersion = modDetail.versions[0].version();
-                    latestModDownloadUrl = modDetail.downloadLink;
-                    latestModType = modDetail.modtype;
-                    latestHasPending = modDetail.haspending;
-                    latestModHash = modDetail.versions[0].hash();
-                    latestModBroken = modDetail.isbroken;
+                    System.out.println("Mod found in API: " + modDetail.name() + " version " + modDetail.versions()[0] + (modDetail.id() != null ? " id2: " + modDetail.id() : ""));
+                    latestModName = modDetail.name();
+                    latestModVersion = modDetail.versions()[0].version();
+                    latestModDownloadUrl = modDetail.downloadLink();
+                    latestModType = modDetail.modtype();
+                    latestHasPending = modDetail.haspending();
+                    latestModHash = modDetail.versions()[0].hash();
+                    latestModBroken = modDetail.isbroken();
                     if (latestModVersion != null && latestModHash != null && latestModVersion.equals(logsModDetails.version) && !latestModHash.equalsIgnoreCase(logsModDetails.hash)) {
                         context.corruptedMods.add(modDetail);
-                        System.out.println("Mod " + modDetail.name + " is corrupted, API hash: " + latestModHash + " vs. logs hash: " + logsModDetails.hash);
+                        System.out.println("Mod " + modDetail.name() + " is corrupted, API hash: " + latestModHash + " vs. logs hash: " + logsModDetails.hash);
                     }
                     break;
                 }
@@ -542,7 +542,7 @@ public final class MelonScanner {
 
     private static boolean knownErrorsCheck(MelonScanContext context) {
         System.out.println("Errors: " + context.errors.size());
-        context.errors.removeIf(e -> e == null || e.error == null || e.error.isBlank());
+        context.errors.removeIf(e -> e == null || e.error() == null || e.error().isBlank());
         if (!context.errors.isEmpty()) {
             StringBuilder error = new StringBuilder();
             for (int i = 0; i < context.errors.size(); ++i) {
@@ -644,14 +644,14 @@ public final class MelonScanner {
     }
 
     private static boolean corruptedModsCheck(MelonScanContext context) {
-        context.corruptedMods.removeIf(m -> context.brokenMods.contains(m.name));
+        context.corruptedMods.removeIf(m -> context.brokenMods.contains(m.name()));
         if (!context.corruptedMods.isEmpty()) {
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.corruptedmods.warning", context.lang) + "\n");
             for (int i = 0; i < context.corruptedMods.size() && i < (context.corruptedMods.size() == 11 ? 11 : 10); ++i)
-                if (context.corruptedMods.get(i).downloadLink != null)
-                    error.append("- [").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name)).append("](").append(context.corruptedMods.get(i).downloadLink).append(")\n");
+                if (context.corruptedMods.get(i).downloadLink() != null)
+                    error.append("- [").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name())).append("](").append(context.corruptedMods.get(i).downloadLink()).append(")\n");
                 else
-                    error.append("- ").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name + "\n"));
+                    error.append("- ").append(CrossServerUtils.sanitizeInputString(context.corruptedMods.get(i).name() + "\n"));
             if (context.corruptedMods.size() > 11)
                 error.append(Localization.getFormat("melonscanner.corruptedmods.more", context.lang, context.corruptedMods.size() - 10));
 
@@ -679,7 +679,7 @@ public final class MelonScanner {
     }
 
     private static boolean brokenModsCheck(MelonScanContext context) {
-        context.brokenMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex).toList());
+        context.brokenMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex()).toList());
         if (!context.brokenMods.isEmpty()) {
             context.brokenMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
@@ -696,7 +696,7 @@ public final class MelonScanner {
     }
 
     private static boolean retiredModsCheck(MelonScanContext context) {
-        context.retiredMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex).toList());
+        context.retiredMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex()).toList());
         if (!context.retiredMods.isEmpty()) {
             context.retiredMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.modretired.field", context.lang) + "\n");
@@ -713,7 +713,7 @@ public final class MelonScanner {
     }
 
     private static boolean oldModsCheck(MelonScanContext context) {
-        boolean reinstallML = context.errors.stream().filter(i -> i.error != null).anyMatch(e -> e.error.contains("reinstall"));
+        boolean reinstallML = context.errors.stream().filter(i -> i.error() != null).anyMatch(e -> e.error().contains("reinstall"));
         if (!context.oldMods.isEmpty() && !context.isMLOutdated || context.modifiedML || reinstallML) {
             context.oldMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();

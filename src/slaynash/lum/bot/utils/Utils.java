@@ -55,7 +55,7 @@ public class Utils {
                 "?q=" + URLEncoder.encode(text, StandardCharsets.UTF_8) +
                 "&target=" + langTo +
                 "&source=" + langFrom;
-            URL url = new URL(urlStr);
+            URL url = URI.create(urlStr).toURL();
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -215,10 +215,10 @@ public class Utils {
         HttpResponse<byte[]> response;
         Exception exception = null;
         for (int i = 0; i < attempts; i++) {
-            HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
+            try (HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
                 .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
-                .connectTimeout(Duration.ofSeconds(15)).build();
-            try {
+                .connectTimeout(Duration.ofSeconds(15)).build())
+            {
                 response = client.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray()).get(30, java.util.concurrent.TimeUnit.SECONDS);
 
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
@@ -247,10 +247,10 @@ public class Utils {
         HttpResponse<InputStream> response;
         Exception exception = null;
         for (int i = 0; i < attempts; i++) {
-            HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
+            try (HttpClient client = HttpClient.newBuilder().followRedirects(Redirect.ALWAYS)
                 .version(HttpClient.Version.HTTP_1_1)  // Some servers will send GOAWAY with HTTP/2 and there is a bug with Java17 handling it https://bugs.openjdk.org/browse/JDK-8335181
-                .connectTimeout(Duration.ofSeconds(15)).build();
-            try {
+                .connectTimeout(Duration.ofSeconds(15)).build())
+            {
                 response = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream()).get(30, java.util.concurrent.TimeUnit.SECONDS);
                 if (response.statusCode() < 200 || response.statusCode() >= 400) {
                     System.out.println("Lum gotten status code: " + response.statusCode() + " from " + source + " and is retrying");
@@ -375,7 +375,7 @@ public class Utils {
             return;
         new Thread(() -> {
             try {
-                HttpURLConnection huc = (HttpURLConnection) new URL(iconURL).openConnection();
+                HttpURLConnection huc = (HttpURLConnection) URI.create(iconURL).toURL().openConnection();
                 huc.setRequestMethod("HEAD");
                 int responseCode = huc.getResponseCode();
                 if (responseCode / 100 == 4) { //4xx

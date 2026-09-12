@@ -135,11 +135,9 @@ public class LumJokes {
                     try {
                         String finalJoke = joke;
                         String finalPunchLine = punchLine;
-                        event.getChannel().sendMessage(joke).queue(s -> {
-                            s.getChannel().asGuildMessageChannel().sendTyping()
+                        event.getChannel().sendMessage(joke).queue(s -> s.getChannel().asGuildMessageChannel().sendTyping()
                             .delay(Duration.ofSeconds(10))
-                            .flatMap(v -> s.editMessage(finalJoke + "\n\n||" + finalPunchLine + "||")).queue();
-                        });
+                            .flatMap(v -> s.editMessage(finalJoke + "\n\n||" + finalPunchLine + "||")).queue());
                     }
                     catch (Exception e) {
                         ExceptionUtils.reportException("An error has occurred sending JokeAPI:", e, event.getChannel());

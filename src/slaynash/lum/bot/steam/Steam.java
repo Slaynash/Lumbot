@@ -70,7 +70,7 @@ public class Steam {
         init();
 
         Main.SCHEDULER.scheduleAtFixedRate(() -> callbackManager.runCallbacks(), 1, 3, TimeUnit.SECONDS);
-        Main.SCHEDULER.scheduleAtFixedRate(() -> requestChanges(), 9, 6, TimeUnit.SECONDS);
+        Main.SCHEDULER.scheduleAtFixedRate(Steam::requestChanges, 9, 6, TimeUnit.SECONDS);
     }
 
     public static void init() {
