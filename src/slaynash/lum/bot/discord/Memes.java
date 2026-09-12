@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Message.Attachment;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
@@ -96,6 +97,28 @@ public class Memes {
                 ma.queue();
             }
             message.delete().reason("Meme was voted out").queue();
+        }
+    }
+
+    public static void startup() {
+        // Loop through all meme channels and add reaction to any messages while Lum was offline
+        try {
+            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `MemeChannel` FROM `Memes`");
+            while (rs.next()) {
+                long memeChannelID = rs.getLong("MemeChannel");
+                MessageChannel memeChannel = JDAManager.getJDA().getTextChannelById(memeChannelID);
+                if (memeChannel == null) continue;
+                List<Message> messages = memeChannel.getHistory().retrievePast(100).complete();
+                for (Message message : messages) {
+                    if (message.getAuthor().isBot()) continue;
+                    if (message.getReactions().stream().anyMatch(r -> r.getEmoji().asCustom().equals(upArrow)))
+                        continue;
+                    message.addReaction(upArrow).queue(c -> message.addReaction(downArrow).queue());
+                }
+            }
+        }
+        catch (Exception e) {
+            ExceptionUtils.reportException("Failed to initialize meme reactions", e);
         }
     }
 

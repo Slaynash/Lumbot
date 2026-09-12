@@ -1011,9 +1011,10 @@ public class ScamShield {
                 embedBuilder.setColor(Color.ORANGE);
             // send the embed to the appropriate channel
             // event.getChannel().sendMessageEmbeds(embedBuilder.build()).queue();
-            JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
             if (similarityResult.similarity > SUSPICIOUS_IMAGE_THRESHOLD || similarityResultOld.similarity > SUSPICIOUS_IMAGE_THRESHOLD)
                 JDAManager.getJDA().getTextChannelById(1536358577868898324L).sendMessageEmbeds(embedBuilder.build()).queue();
+            else
+                JDAManager.getJDA().getTextChannelById(1525606939613200545L).sendMessageEmbeds(embedBuilder.build()).queue();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed reportPhoto in SS", e);

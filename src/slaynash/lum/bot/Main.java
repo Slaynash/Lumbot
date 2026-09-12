@@ -116,6 +116,7 @@ public class Main extends ListenerAdapter {
         System.out.println("Connected to " + JDAManager.getJDA().getGuilds().size() + " Guilds!");
 
         SlashManager.registerCommands();
+        Memes.startup();
 
         if (JDAManager.isProductionBot()) { // Lum (blue)
             if (ConfigManager.mainBot) {
