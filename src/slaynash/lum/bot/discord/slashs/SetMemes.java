@@ -33,6 +33,12 @@ public class SetMemes extends Slash {
         else if (!reportChannel.isEmpty() && reportChannel.get(0).getAsLong() == event.getChannel().getIdLong()) {
             event.reply("You can't set the report channel to the same channel as the meme channel").setEphemeral(true).queue();
         }
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.VIEW_CHANNEL)) {
+            event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.VIEW_CHANNEL.getName() + " permission").setEphemeral(true).queue();
+        }
+        else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_HISTORY)) {
+            event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_HISTORY.getName() + " permission").setEphemeral(true).queue();
+        }
         else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_MANAGE)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_MANAGE.getName() + " permission").setEphemeral(true).queue();
         }

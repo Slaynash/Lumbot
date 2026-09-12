@@ -106,8 +106,17 @@ public class Memes {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `MemeChannel` FROM `Memes`");
             while (rs.next()) {
                 long memeChannelID = rs.getLong("MemeChannel");
-                MessageChannel memeChannel = JDAManager.getJDA().getTextChannelById(memeChannelID);
-                if (memeChannel == null) continue;
+                TextChannel memeChannel = JDAManager.getJDA().getTextChannelById(memeChannelID);
+                if (memeChannel == null) {
+                    System.out.println("Meme channel not found for ID: " + memeChannelID);
+                    DBConnectionManagerLum.sendRequest("DELETE FROM `Memes` WHERE `MemeChannel` = " + memeChannelID);
+                    continue;
+                }
+                if (!memeChannel.getGuild().getSelfMember().hasPermission(memeChannel, Permission.VIEW_CHANNEL, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ADD_REACTION)) {
+                    System.out.println("Missing permission for meme channel ID: " + memeChannelID);
+                    DBConnectionManagerLum.sendRequest("DELETE FROM `Memes` WHERE `MemeChannel` = " + memeChannelID);
+                    continue;
+                }
                 List<Message> messages = memeChannel.getHistory().retrievePast(100).complete();
                 for (Message message : messages) {
                     if (message.getAuthor().isBot()) continue;
