@@ -248,7 +248,7 @@ public final class MelonScanner {
             final String id = logsModDetails.id;
 
             for (MelonLoaderError modSpecificError : MelonLoaderError.getModSpecificErrors()) {
-                if (modSpecificError.regex().equals(modName)) {
+                if (modSpecificError.regex() != null && modSpecificError.regex().equals(modName)) {
                     context.errors.add(modSpecificError);
                     break;
                 }
