@@ -23,6 +23,7 @@ import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.entities.emoji.CustomEmoji;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.entities.emoji.RichCustomEmoji;
+import net.dv8tion.jda.api.entities.messages.MessageSnapshot;
 import net.dv8tion.jda.api.entities.sticker.StickerItem;
 import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -63,6 +64,7 @@ public class MessageProxy {
                                 .append(m.getContentRaw()).append(" ");
                         m.getAttachments().forEach(a -> sb.append(a.getUrl()).append(" "));
                         m.getStickers().forEach(s -> sb.append(s.getIconUrl()).append(" "));
+                        m.getMessageSnapshots().forEach(s -> sb.append("Foward: ").append(s.getContentRaw()).append(" "));
                         sb.append("\n");
                     });
             guildchannel = mainGuild.createTextChannel(channelName, mainGuild.getCategoryById(924780998124798022L)).complete();
@@ -109,6 +111,13 @@ public class MessageProxy {
             if (event.getJDA().getGuilds().stream().noneMatch(g -> g.getStickerById(sticker.getIdLong()) != null))
                 message = message.concat("\n").concat(sticker.getIconUrl());
         }
+
+        if (event.getMessageSnapshots().size() > 0) {
+            for (MessageSnapshot snapshot : event.getMessageSnapshots()) {
+                message = message.concat("\n").concat("Forward: ").concat(snapshot.getContentRaw());
+            }
+        }
+
         if (message.length() > Message.MAX_CONTENT_LENGTH) {
             message = message.substring(0, Message.MAX_CONTENT_LENGTH);
         }

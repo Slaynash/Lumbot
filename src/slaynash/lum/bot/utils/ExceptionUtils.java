@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.JDA.Status;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.ChannelType;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.ThreadChannel;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.discord.JDAManager;
@@ -116,13 +117,20 @@ public final class ExceptionUtils {
                     JDAManager.getJDA().getGuildById(JDAManager.mainGuildID).getTextChannelById(851519891965345845L).sendMessageEmbeds(embed).queue();
             }
 
-            if (channel != null && channel.getType() == ChannelType.TEXT) {
-                TextChannel textChannel = channel.asTextChannel();
-                EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
-                sorryEmbedBuilder.setColor(Color.red);
-                sorryEmbedBuilder.setTitle(title);
-                sorryEmbedBuilder.setDescription("Lum has encountered an error and has notified the devs.");
-                MessageEmbed sorryEmbed = sorryEmbedBuilder.build();
+            if (channel == null)
+                return;
+
+            EmbedBuilder sorryEmbedBuilder = new EmbedBuilder();
+            sorryEmbedBuilder.setColor(Color.red);
+            sorryEmbedBuilder.setTitle(title);
+            sorryEmbedBuilder.setDescription("Lum has encountered an error and has notified the devs.");
+            MessageEmbed sorryEmbed = sorryEmbedBuilder.build();
+            if (channel.getType().isMessage()) {
+                if (!sorryEmbed.isEmpty())
+                    channel.sendMessageEmbeds(sorryEmbed).queue();
+            }
+            if (channel.getType().isThread()) {
+                ThreadChannel textChannel = channel.asThreadChannel();
                 if (!sorryEmbed.isEmpty())
                     textChannel.sendMessageEmbeds(sorryEmbed).queue();
             }

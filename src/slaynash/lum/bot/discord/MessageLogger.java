@@ -152,6 +152,13 @@ public class MessageLogger {
     }
 
     public static void deletedMessage(MessageDeleteEvent event) {
+        // Fetching/refreshing attachment media does blocking HTTP calls (with retries),
+        // so this is run off the JDA event thread to avoid blocking all other event processing
+        // (e.g. heartbeats, other message handling) if Discord's CDN is slow/unresponsive.
+        new Thread(() -> deletedMessageInternal(event), "MessageLogger-deletedMessage").start();
+    }
+
+    private static void deletedMessageInternal(MessageDeleteEvent event) {
         String messageId = event.getMessageId();
 
         try {
