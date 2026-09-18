@@ -400,16 +400,14 @@ public class ScamShield {
     }
 
     public static boolean checkForFishing(MessageReceivedEvent event) {
-        if (event.getMember() == null) {
-            System.out.println("Member is null, skipping SS");
-            return false;
-        }
         if (event.getAuthor().isBot())
             return false;
         if (event.getAuthor().isSystem())
             return false;
-        if (CrossServerUtils.checkIfStaff(event))
+        if (event.getMember() == null) {
+            System.out.println("Member is null, skipping SS");
             return false;
+        }
 
         long guildID = event.getGuild().getIdLong();
         GuildConfiguration guildconfig = DBConnectionManagerLum.getGuildConfig(guildID);
@@ -475,6 +473,15 @@ public class ScamShield {
     private static boolean handleCrossBan(MessageReceivedEvent event, ScamResults suspiciousResults) {
         System.out.println(CrossServerUtils.getMutualGuilds(event.getAuthor()).stream().map(Guild::getName).collect(Collectors.toList()));
         if (event.getAuthor().getIdLong() == 761335833307119658L) return false; //please don't cross ban my alt account, it is annoying to rejoin after every test
+
+        if (CrossServerUtils.checkIfStaff(event)) {
+            System.out.println("Staff member detected: " + event.getAuthor().getId());
+            if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_MANAGE)) {
+                event.getMessage().delete().queue();
+            }
+            return false; // Do not proceed with cross ban for staff members
+        }
+
         List<Guild> mutualGuilds = new ArrayList<>(CrossServerUtils.getMutualGuilds(event.getAuthor()));
         mutualGuilds.removeIf(g -> {
             if (suspiciousResults.sameauthormessages != null && g == event.getGuild())
@@ -509,6 +516,8 @@ public class ScamShield {
     }
 
     private static void handleMassPings(MessageReceivedEvent event, ScamResults suspiciousResults) {
+        if (CrossServerUtils.checkIfStaff(event))
+            return;
         int massPingCount = (int) handledMessages.stream()
             .filter(e -> e.suspiciousResults.massPing)
             .filter(e -> e.messageReceivedEvent.getGuild().getIdLong() == event.getGuild().getIdLong())
@@ -541,7 +550,7 @@ public class ScamShield {
             }
             else {
                 sourceName = event.getGuild().getName();
-                cross = !sourceName.equals(guild.getName());
+                cross = !guild.equals(event.getGuild());
             }
             String usernameWithTag = event.getAuthor().getEffectiveName();
             String userId = event.getAuthor().getAsMention();
