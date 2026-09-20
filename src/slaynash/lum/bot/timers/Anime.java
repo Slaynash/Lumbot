@@ -86,7 +86,7 @@ public class Anime implements Runnable {
 
     public static void start() {
         // seconds to UTC 0
-        long secondsToUTC0 = ChronoUnit.SECONDS.between(Instant.now(), Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS));
+        long secondsToUTC0 = ChronoUnit.SECONDS.between(Instant.now(), Instant.now().plus(1, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS)) + 6;
         Main.SCHEDULER.scheduleAtFixedRate(new Anime(), secondsToUTC0, 24 * 60 * 60, TimeUnit.SECONDS);
     }
 
