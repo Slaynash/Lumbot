@@ -679,7 +679,7 @@ public final class MelonScanner {
     }
 
     private static boolean brokenModsCheck(MelonScanContext context) {
-        context.brokenMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex()).toList());
+        context.brokenMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(MelonLoaderError::regex).toList());
         if (!context.brokenMods.isEmpty()) {
             context.brokenMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder();
@@ -696,7 +696,7 @@ public final class MelonScanner {
     }
 
     private static boolean retiredModsCheck(MelonScanContext context) {
-        context.retiredMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(m -> m.regex()).toList());
+        context.retiredMods.removeAll(MelonLoaderError.getModSpecificErrors().stream().map(MelonLoaderError::regex).toList());
         if (!context.retiredMods.isEmpty()) {
             context.retiredMods.sort(String.CASE_INSENSITIVE_ORDER);
             StringBuilder error = new StringBuilder(Localization.get("melonscanner.modretired.field", context.lang) + "\n");

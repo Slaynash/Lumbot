@@ -391,7 +391,7 @@ public class ScamShield {
             massPing = true;
         }
 
-        return new ScamResults(suspiciousValue, ssFoundTerms, massPing);
+        return new ScamResults(suspiciousValue, ssFoundTerms, massPing, spamCount);
     }
 
     public static boolean checkForFishing(MessageUpdateEvent event) {
@@ -430,8 +430,12 @@ public class ScamShield {
         suspiciousResults.calulatedValue = suspiciousResults.suspiciousValue;
         if (suspiciousResults.calulatedValue <= 3 && suspiciousResults.calulatedValue > 0)
             suspiciousResults.calulatedValue--;
-        else if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue < instaKick) //if one message gets instaKick+ then it is an instant kick on first message
+        else if (suspiciousResults.calulatedValue > 3 && suspiciousResults.calulatedValue < instaKick) { //if one message gets instaKick+ then it is an instant kick on first message
             suspiciousResults.calulatedValue = 3;
+            if (suspiciousResults.spamCount > 1) {
+                event.getMessage().reply(event.getAuthor().getAsMention() + " Do not spam or you will be removed from this server!").delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+            }
+        }
         handledMessages.add(new HandledServerMessageContext(event, suspiciousResults, guildID)); // saves a copy of message and point, should avoid false-positives, force 2 messages
 
         suspiciousResults.sameauthormessages = handledMessages.stream()
@@ -523,7 +527,7 @@ public class ScamShield {
             .filter(e -> e.messageReceivedEvent.getGuild().getIdLong() == event.getGuild().getIdLong())
             .filter(e -> e.messageReceivedEvent.getAuthor().getIdLong() == event.getAuthor().getIdLong()).count();
         if (massPingCount <= 1 && suspiciousResults.massPing) { // maybe TODO: send log to Admins
-            event.getMessage().reply(event.getAuthor().getName() + " Please do not mass ping users or you will be removed from this server!").delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
+            event.getMessage().reply(event.getAuthor().getAsMention() + " Please do not mass ping users or you will be removed from this server!").delay(Duration.ofSeconds(10)).flatMap(Message::delete).queue();
         }
         else if (suspiciousResults.massPing) {
             handleBan(event, event.getGuild().getIdLong(), suspiciousResults);
@@ -813,16 +817,18 @@ public class ScamShield {
     }
 
     public static class ScamResults {
-        public ScamResults(int suspiciousValue, Map<String, Integer> ssFoundTerms, boolean massPing) {
+        public ScamResults(int suspiciousValue, Map<String, Integer> ssFoundTerms, boolean massPing, int spamCount) {
             this.ssFoundTerms = ssFoundTerms;
             this.suspiciousValue = suspiciousValue;
             this.massPing = massPing;
+            this.spamCount = spamCount;
         }
         public int suspiciousValue;
         public int calulatedValue;
         public int totalSuspicionCount;
         public final Map<String, Integer> ssFoundTerms;
         public final boolean massPing;
+        public final int spamCount;
         public List<HandledServerMessageContext> sameauthormessages;
     }
 
