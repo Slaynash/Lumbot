@@ -36,8 +36,7 @@ public final class DBConnectionManagerShortUrls {
                 return;
             }
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
-            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseShortURL, ConfigManager.dbLogin, ConfigManager.dbPassword);
-            System.out.println("Connection to Database initialised");
+            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseShortURL + "?connectTimeout=" + (DATABASE_TIMEOUT * 1000) + "&socketTimeout=" + (DATABASE_TIMEOUT * 1000), ConfigManager.dbLogin, ConfigManager.dbPassword);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to contact database", e);

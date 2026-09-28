@@ -40,7 +40,7 @@ public final class DBConnectionManagerLum {
                 return;
             }
             DriverManager.setLoginTimeout(DATABASE_TIMEOUT);
-            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum + "?useUnicode=true&characterEncoding=UTF-8", ConfigManager.dbLogin, ConfigManager.dbPassword);
+            connection = DriverManager.getConnection("jdbc:mysql://" + ConfigManager.dbAddress + ":" + ConfigManager.dbPort + "/" + ConfigManager.dbDatabaseLum + "?useUnicode=true&characterEncoding=UTF-8&connectTimeout=" + (DATABASE_TIMEOUT * 1000) + "&socketTimeout=" + (DATABASE_TIMEOUT * 1000), ConfigManager.dbLogin, ConfigManager.dbPassword);
             System.out.println("Connection to Database initialised");
         }
         catch (Exception e) {

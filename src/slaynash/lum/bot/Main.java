@@ -8,8 +8,12 @@ import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpRequest;
 import java.time.Duration;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import net.dv8tion.jda.api.JDA;
@@ -74,13 +78,21 @@ import slaynash.lum.bot.uvm.UnityVersionMonitor;
 
 
 public class Main extends ListenerAdapter {
-    public static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(10);
+    private static final List<Thread> schedulerThreads = new CopyOnWriteArrayList<>();
+    private static final ThreadFactory schedulerThreadFactory = runnable -> {
+        Thread thread = new Thread(runnable, "Scheduler-" + schedulerThreads.size());
+        schedulerThreads.add(thread);
+        return thread;
+    };
+    public static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(15, schedulerThreadFactory);
     public static boolean isShuttingDown = false;
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
         LogSystem.init();
+
+        SCHEDULER.scheduleAtFixedRate(Main::logSchedulerState, 1, 15, TimeUnit.MINUTES);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             isShuttingDown = true;
@@ -473,5 +485,29 @@ public class Main extends ListenerAdapter {
     @Override
     public void onUserTyping(@NotNull UserTypingEvent event) {
         MessageProxy.proxyTyping(event);
+    }
+
+    /**
+     * Logs the current state of {@link #SCHEDULER}, including its pool/queue stats
+     * and the stack trace of every scheduler worker thread. This helps diagnose
+     * scheduled tasks that block a worker thread (e.g. hanging network calls),
+     * which can starve the pool and prevent other tasks from running on time.
+     */
+    private static void logSchedulerState() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== Scheduler state ===\n");
+        if (SCHEDULER instanceof ScheduledThreadPoolExecutor pool) {
+            sb.append("Pool size: ").append(pool.getPoolSize())
+                .append(", Active: ").append(pool.getActiveCount())
+                .append(", Queued: ").append(pool.getQueue().size())
+                .append(", Completed: ").append(pool.getCompletedTaskCount())
+                .append("\n");
+        }
+        for (Thread thread : schedulerThreads) {
+            sb.append("--- ").append(thread.getName()).append(" [").append(thread.getState()).append("] ---\n");
+            for (StackTraceElement element : thread.getStackTrace())
+                sb.append("\tat ").append(element).append('\n');
+        }
+        System.out.println(sb);
     }
 }
