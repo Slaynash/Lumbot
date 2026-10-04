@@ -160,7 +160,8 @@ public final class MelonScanner {
                 context.embedColor = Color.RED;
             }
 
-            if (!context.embedBuilder.getFields().isEmpty()) {
+            List<Field> embedFields = context.embedBuilder.getFields();
+            if (!embedFields.isEmpty() && !(embedFields.size() == 1 && MelonScannerReadPass.LOG_TOO_LONG_FIELD.equals(embedFields.get(0)))) {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();

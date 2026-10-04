@@ -20,11 +20,13 @@ import com.github.zafarkhaja.semver.Version;
 import com.google.code.regexp.Matcher;
 import com.google.code.regexp.Pattern;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.MessageEmbed.Field;
 import org.mozilla.universalchardet.UniversalDetector;
 import slaynash.lum.bot.utils.Utils;
 
 public final class MelonScannerReadPass {
 
+    public static final Field LOG_TOO_LONG_FIELD = new Field("Log too long", "Some parts of the log was not scanned.", false);
     private static final int omitLineCount = 1200;
 
     public static boolean doPass(MelonScanContext context) throws IOException, InterruptedException {
@@ -43,7 +45,7 @@ public final class MelonScannerReadPass {
                     continue;
 
                 if (++context.lineCount > 20000) {
-                    context.embedBuilder.addField("Log too long", "Some parts of the log was not scanned.", false);
+                    context.embedBuilder.addField(LOG_TOO_LONG_FIELD);
                     return true;
                 }
 
