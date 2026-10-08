@@ -80,7 +80,7 @@ public class ScamShield {
 
     private static final ConcurrentLinkedQueue<MessageReceivedEvent> allMessages = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<HandledServerMessageContext> handledMessages = new ConcurrentLinkedQueue<>();
-
+    private static final ConcurrentHashMap<Instant, ServerChannel> handledTriggers = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<Long, ScheduledFuture<?>> ssQueuedMap = new ConcurrentHashMap<>();
     private static final Map<String, Integer> ssTerms = new HashMap<>() {{ //Keys must be all lowercase and no space, do test term with Junidecode because it can cause some weird results
             put("@everyone", 2);
@@ -415,6 +415,13 @@ public class ScamShield {
             return false;
         }
         allMessages.removeIf(m -> event.getMessageIdLong() == m.getMessageIdLong()); //remove original message if edited, needs to be before ssValue
+        handledTriggers.entrySet().removeIf(entry -> entry.getKey().until(Instant.now(), ChronoUnit.SECONDS) > 30); //remove all triggers older than 1 minute
+
+        if (handledTriggers.containsValue(new ServerChannel(event.getGuild().getId(), event.getAuthor().getId()))){
+            if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE))
+                event.getMessage().delete().reason("Lum's Scam Shield: sent by a recently kicked member").queue(null, e -> { });
+            return true;
+        }
 
         ScamResults suspiciousResults = ssValue(event);
 
@@ -593,6 +600,8 @@ public class ScamShield {
             else if (guild.getSelfMember().hasPermission(Permission.BAN_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been " + (ssBan ? "Banned" : "Kicked") + " from " + guild.getName() +
                     " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
+                if (!dm)
+                    handledTriggers.put(Instant.now(), new ServerChannel(guild.getId(), event.getAuthor().getId()));
                 if (ssBan)
                     member.ban(1, TimeUnit.DAYS).reason("Banned by Lum's Scam Shield").queue();
                 else
@@ -603,6 +612,8 @@ public class ScamShield {
             else if (guild.getSelfMember().hasPermission(Permission.KICK_MEMBERS)) {
                 event.getAuthor().openPrivateChannel().flatMap(channel -> channel.sendMessage("You have been automatically been Kicked from " + guild.getName() +
                     " by Scam Shield. We highly recommend that you change your password immediately.")).queue(null, m -> System.out.println("Failed to open dms with scammer"));
+                if (!dm)
+                    handledTriggers.put(Instant.now(), new ServerChannel(guild.getId(), event.getAuthor().getId()));
                 member.kick().reason("Kicked by Lum's Scam Shield").queue();
                 embedBuilder.setDescription("User **" + usernameWithTag + "** (*" + userId + "*) was Kicked by the Scam Shield");
 
