@@ -6,12 +6,14 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.audit.ActionType;
 import net.dv8tion.jda.api.audit.AuditLogEntry;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.IMentionable;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.unions.MessageChannelUnion;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
@@ -116,6 +118,10 @@ public class Members {
             embed.setTitle("User Left");
             embed.setColor(Color.red);
             embed.addField("User", event.getUser().getAsMention() + "\n" + displayName, false);
+            Member member = event.getMember();
+            if (member != null && !member.getRoles().isEmpty()) {
+                embed.addField("Roles", member.getRoles().stream().map(IMentionable::getAsMention).collect(Collectors.joining()), false);
+            }
             if (time_joined > 0) {
                 embed.addField("Stay duration", Utils.secToTime(Instant.now().getEpochSecond() - time_joined), false);
             }

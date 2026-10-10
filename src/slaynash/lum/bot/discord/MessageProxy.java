@@ -112,7 +112,7 @@ public class MessageProxy {
                 message = message.concat("\n").concat(sticker.getIconUrl());
         }
 
-        if (event.getMessageSnapshots().size() > 0) {
+        if (!event.getMessageSnapshots().isEmpty()) {
             for (MessageSnapshot snapshot : event.getMessageSnapshots()) {
                 message = message.concat("\n").concat("Forward: ").concat(snapshot.getContentRaw());
             }
