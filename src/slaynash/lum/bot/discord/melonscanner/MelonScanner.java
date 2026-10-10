@@ -78,15 +78,11 @@ public final class MelonScanner {
                 lang = "fr";
             else if (messageReceivedEvent.getChannel().getName().toLowerCase().contains("german"))
                 lang = "de";
-
-            long guildID = messageReceivedEvent.getChannelType() == ChannelType.PRIVATE ? 0L : messageReceivedEvent.getGuild().getIdLong();
-            if ((guildID == 1001388809184870441L/*CVRMG*/ || guildID == 663449315876012052L/*MelonLoader*/) && messageReceivedEvent.getMessage().getContentRaw().isBlank()) {
-                Random random = new Random();
-                if (random.nextInt(1000) == 420)
-                    lang = "sga";
-                if (random.nextInt(420) == 69)
+            Random random = new Random();
+            if (random.nextInt(420) == 69)
                     lang = "owo";
-            }
+            // if (random.nextInt(6900) == 420)
+            //     lang = "sga";
 
             String[] messageParts = messageReceivedEvent.getMessage().getContentRaw().split(" ");
             for (String messagePart : messageParts) {
@@ -292,7 +288,7 @@ public final class MelonScanner {
             if (latestModVersion == null && latestModHash == null && latestModType == null) {
                 context.unknownMods.add(logsModDetails);
             }
-            else if (latestHasPending && modVersion.isEquivalentTo(latestModVersion)) {
+            else if (latestHasPending && latestModVersion != null && modVersion.isEquivalentTo(latestModVersion)) {
                 context.hasPendingMods.add(modName);
             }
             else if (MelonScannerApisManager.brokenMods.contains(modName) || latestModBroken) {
@@ -301,7 +297,7 @@ public final class MelonScanner {
             else if (MelonScannerApisManager.retiredMods.contains(modName)) {
                 context.retiredMods.add(modName);
             }
-            else if (deprecatedName || modVersion.isLowerThan(latestModVersion)) {
+            else if (deprecatedName || latestModVersion != null && modVersion.isLowerThan(latestModVersion)) {
                 //noinspection StatementWithEmptyBody
                 if (latestModHash != null && latestModHash.equalsIgnoreCase(logsModDetails.hash));
                 else if (latestModType != null && latestModType.equalsIgnoreCase("plugin"))
