@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Aug 12, 2026 at 04:29 AM
+-- Generation Time: Oct 11, 2026 at 08:18 PM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -22,6 +22,20 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `lum` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `lum`;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `Domain`
+--
+
+CREATE TABLE IF NOT EXISTS `Domain` (
+  `domain` varchar(253) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `registration` datetime DEFAULT NULL,
+  `counter` int UNSIGNED NOT NULL DEFAULT '1',
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`domain`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 

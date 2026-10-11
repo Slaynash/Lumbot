@@ -3,13 +3,13 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,6 +17,8 @@ import java.nio.file.StandardCopyOption;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.Instant;
@@ -25,16 +27,15 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -48,6 +49,9 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -417,7 +421,7 @@ public class ScamShield {
         allMessages.removeIf(m -> event.getMessageIdLong() == m.getMessageIdLong()); //remove original message if edited, needs to be before ssValue
         handledTriggers.entrySet().removeIf(entry -> entry.getKey().until(Instant.now(), ChronoUnit.SECONDS) > 30); //remove all triggers older than 1 minute
 
-        if (handledTriggers.containsValue(new ServerChannel(event.getGuild().getId(), event.getAuthor().getId()))){
+        if (handledTriggers.containsValue(new ServerChannel(event.getGuild().getId(), event.getAuthor().getId()))) {
             if (event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_MANAGE))
                 event.getMessage().delete().reason("Lum's Scam Shield: sent by a recently kicked member").queue(null, e -> { });
             return true;
@@ -732,29 +736,8 @@ public class ScamShield {
         JDAManager.getJDA().getTextChannelById(1536358720118849608L).sendMessageEmbeds(embedBuilder.build()).addFiles(FileUpload.fromData(sb.toString().getBytes(), usernameWithTag + ".txt")).queue();
     }
 
-    private static final List<String> whitelist = List.of(
-        "youtu.be",
-        "discord.gg",
-        ".jp",
-        ".edu",
-        "telegra.ph",
-        "robydrinks.be",
-        "bxlblog.be",
-        "meap.gg",
-        "bit.ly",
-        "github.io",
-        "twitch.tv",
-        "aka.ms",
-        "com.tw",
-        "u.to",
-        "gg.gg",
-        "fairyte.ch",
-        "rb.gy",
-        "surl.li"
-    );
-
     private static int domainAgeCheck(String message) {
-        int age = 14; //in days, less then but not equal will count
+        final int age = 14; //in days
         int count = 0;
         try {
             List<String> urls = Utils.extractUrls(message);
@@ -766,47 +749,45 @@ public class ScamShield {
                 String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z\\d-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
-                String tld = domain.split("\\.", 2)[1];
-                if (Character.isDigit(tld.charAt(0)))
+                String domainLowerCase = domain.toLowerCase(Locale.ROOT);
+
+                Timestamp cachedRegistration = null;
+                Timestamp lastRdapCheck = null;
+                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `registration`, `ts` FROM `Domain` WHERE `domain` = ?", domainLowerCase);
+                try {
+                    if (rs.next()) {
+                        cachedRegistration = rs.getTimestamp("registration");
+                        lastRdapCheck = rs.getTimestamp("ts");
+                    }
+                }
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
+
+                if (cachedRegistration == null && lastRdapCheck != null) { // whitelisted domain
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Domain` SET `counter` = `counter` + 1 WHERE `domain` = ?", domainLowerCase);
                     continue;
-                String domainLower = domain.toLowerCase();
-                if (whitelist.stream().anyMatch(domainLower::contains))
-                    continue;
-                Process p = new ProcessBuilder("whois", domain).start();
-                StringBuilder output = new StringBuilder();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    output.append(line).append("\n");
                 }
-                String whois = output.toString().replace("+0000", "Z");
-                if (whois.startsWith("No match for domain"))
-                    continue;
-                whois = whois.replaceFirst("(?m)Last update of WHOIS.*$", ""); //for no matches eg. twitch.tv
-                ArrayList<ZonedDateTime> list = new ArrayList<>();
-                Matcher matcher = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
-                while (matcher.find()) {
-                    DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
-                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher.group().strip(), f);
-                    list.add(parsedDate);
+
+                ZonedDateTime registrationDate;
+                boolean cacheIsFresh = cachedRegistration != null && lastRdapCheck != null && lastRdapCheck.toInstant().isAfter(ZonedDateTime.now().minusMonths(1).toInstant());
+                if (cacheIsFresh) {
+                    registrationDate = cachedRegistration.toInstant().atZone(ZoneId.systemDefault());
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Domain` SET `counter` = `counter` + 1 WHERE `domain` = ?", domainLowerCase);
                 }
-                Matcher matcher2 = Pattern.compile(" \\d{2}-[\\da-zA-Z]{3}-\\d{4}").matcher(whois.replace(".", "-"));
-                while (matcher2.find()) {
-                    DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
-                    LocalDate date = LocalDate.parse(matcher2.group().strip(), f);
-                    ZonedDateTime parsedDate = date.atStartOfDay(ZoneId.systemDefault());
-                    list.add(parsedDate);
+                else {
+                    registrationDate = getRdapRegistrationDate(domainLowerCase);
+                    DBConnectionManagerLum.sendUpdate(
+                        "INSERT INTO `Domain` (`domain`, `registration`, `counter`, `ts`) "
+                            + "VALUES (?, ?, 1, CURRENT_TIMESTAMP) "
+                            + "ON DUPLICATE KEY UPDATE `registration` = VALUES(`registration`), "
+                            + "`counter` = `counter` + 1, `ts` = CURRENT_TIMESTAMP",
+                        domainLowerCase,
+                        Timestamp.from(registrationDate.toInstant())
+                    );
                 }
-                Matcher matcher3 = Pattern.compile(" \\d{4}-?\\d{2}-?\\d{2} \\d{2}:\\d{2}:\\d{2}").matcher(whois);
-                while (matcher3.find()) {
-                    DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
-                    ZonedDateTime parsedDate = ZonedDateTime.parse(matcher3.group().strip().replace("-", ""), f);
-                    list.add(parsedDate);
-                }
-                if (list.isEmpty())
-                    throw new Exception("Can not find any dates for " + domain + "\n" + whois);
-                ZonedDateTime mindate = Collections.min(list);
-                if (mindate.isAfter(ZonedDateTime.now().minusDays(age)))
+
+                if (registrationDate.isAfter(ZonedDateTime.now().minusDays(age)))
                     count++;
             }
         }
@@ -815,6 +796,39 @@ public class ScamShield {
             e.printStackTrace();
         }
         return count;
+    }
+
+    private static ZonedDateTime getRdapRegistrationDate(String domain) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) URI.create("https://rdap.org/domain/" + domain).toURL().openConnection();
+        connection.setRequestProperty("Accept", "application/rdap+json");
+        connection.setConnectTimeout(5000);
+        connection.setReadTimeout(5000);
+        try {
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                throw new IOException("RDAP lookup failed for " + domain + " with HTTP status " + connection.getResponseCode());
+
+            try (InputStream input = connection.getInputStream();
+                 InputStreamReader inputReader = new InputStreamReader(input, StandardCharsets.UTF_8))
+            {
+                JsonObject response = JsonParser.parseReader(inputReader).getAsJsonObject();
+                if (response.has("events")) {
+                    for (JsonElement event : response.getAsJsonArray("events")) {
+                        JsonObject eventObject = event.getAsJsonObject();
+                        if (eventObject.has("eventAction")
+                                && "registration".equalsIgnoreCase(eventObject.get("eventAction").getAsString())
+                                && eventObject.has("eventDate"))
+                        {
+                            return ZonedDateTime.parse(eventObject.get("eventDate").getAsString());
+                        }
+                    }
+                }
+            }
+
+            throw new IOException("RDAP response did not include a registration date for " + domain);
+        }
+        finally {
+            connection.disconnect();
+        }
     }
 
     public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete

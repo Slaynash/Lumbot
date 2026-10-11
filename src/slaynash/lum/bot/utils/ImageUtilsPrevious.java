@@ -34,7 +34,8 @@ public final class ImageUtilsPrevious {
     }
 
     public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
-        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight, originalImage.getType());
+        BufferedImage resizedImage = new BufferedImage(targetWidth, targetHeight,
+            originalImage.getType() == BufferedImage.TYPE_CUSTOM ? BufferedImage.TYPE_INT_ARGB : originalImage.getType());
         resizedImage.getGraphics().drawImage(originalImage, 0, 0, targetWidth, targetHeight, null);
         return resizedImage;
     }
