@@ -3,6 +3,7 @@ package slaynash.lum.bot.discord;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,9 +28,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -361,12 +364,10 @@ public class ScamShield {
                 catch (Exception ignored) { }
             }
         }
-        int tempval = ssFoundTerms.values().stream().reduce(0, Integer::sum);
-        if (tempval > 0 && tempval < instaKick) {
-            final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
-            if (domainAge > 0)
-                ssFoundTerms.put("domainAge", domainAge * 3);
-        }
+
+        final int domainAge = domainAgeCheck(event.getMessage().getContentStripped());
+        if (domainAge > 0)
+            ssFoundTerms.put("domainAge", domainAge * 3);
 
         for (String url : Utils.extractUrls(message.toString())) {
             do {
@@ -787,8 +788,10 @@ public class ScamShield {
                     );
                 }
 
-                if (registrationDate.isAfter(ZonedDateTime.now().minusDays(age)))
+                if (registrationDate.isAfter(ZonedDateTime.now().minusDays(age))) {
                     count++;
+                    JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Young domain found: " + domainLowerCase + "\nRegistered: " + registrationDate.toLocalDate(), Color.ORANGE)).queue();
+                }
             }
         }
         catch (Exception e) {
@@ -804,7 +807,9 @@ public class ScamShield {
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         try {
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+                return getWhoisRegistrationDate(domain);
+            else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
                 throw new IOException("RDAP lookup failed for " + domain + " with HTTP status " + connection.getResponseCode());
 
             try (InputStream input = connection.getInputStream();
@@ -829,6 +834,41 @@ public class ScamShield {
         finally {
             connection.disconnect();
         }
+    }
+
+    private static ZonedDateTime getWhoisRegistrationDate(String domain) throws IOException {
+        Process p = new ProcessBuilder("whois", domain).start();
+        StringBuilder output = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null)
+                output.append(line).append("\n");
+        }
+        String whois = output.toString().replace("+0000", "Z");
+        if (whois.startsWith("No match for domain"))
+            return null;
+        whois = whois.replaceFirst("(?m)Last update of WHOIS.*$", ""); //for no matches eg. twitch.tv
+
+        ArrayList<ZonedDateTime> list = new ArrayList<>();
+        Matcher matcher = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
+        while (matcher.find())
+            list.add(ZonedDateTime.parse(matcher.group().strip(), DateTimeFormatter.ISO_DATE_TIME));
+
+        Matcher matcher2 = Pattern.compile(" \\d{2}-[\\da-zA-Z]{3}-\\d{4}").matcher(whois.replace(".", "-"));
+        while (matcher2.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
+            list.add(LocalDate.parse(matcher2.group().strip(), f).atStartOfDay(ZoneId.systemDefault()));
+        }
+
+        Matcher matcher3 = Pattern.compile(" \\d{4}-?\\d{2}-?\\d{2} \\d{2}:\\d{2}:\\d{2}").matcher(whois);
+        while (matcher3.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
+            list.add(ZonedDateTime.parse(matcher3.group().strip().replace("-", ""), f));
+        }
+
+        if (list.isEmpty())
+            throw new IOException("Can not find any dates for " + domain + "\n" + whois);
+        return Collections.min(list);
     }
 
     public static void checkDeleted(MessageDeleteEvent event) { //doesn't do BulkDelete
