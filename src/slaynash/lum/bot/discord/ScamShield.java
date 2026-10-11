@@ -877,7 +877,9 @@ public class ScamShield {
         SimilarityResult similarityResult = new SimilarityResult(0.0, "none");
         boolean failedToReadImage = false;
         double elapsedTimeOld = 0, elapsedTime = 0, blackCompare = 0;
-        try (InputStream imgIS = attachment.getProxy().download().get()) {
+        try (InputStream imgIS = downloadWithRetry(attachment)) {
+            if (imgIS == null)
+                return null;
             imgIS.mark(Integer.MAX_VALUE); // Mark the current position in the stream
             hash = getISHash(imgIS);
 
@@ -956,6 +958,28 @@ public class ScamShield {
             ExceptionUtils.reportException("Failed photoCheck in SS", e);
         }
         return result;
+    }
+
+    /** Downloads an attachment, retrying once on network timeout. Returns null if the download times out twice. */
+    private static InputStream downloadWithRetry(Message.Attachment attachment) throws Exception {
+        for (int attempt = 0; attempt < 2; attempt++) {
+            try {
+                return attachment.getProxy().download().get();
+            }
+            catch (java.util.concurrent.ExecutionException e) {
+                boolean timeout = false;
+                for (Throwable t = e; t != null; t = t.getCause()) {
+                    if (t instanceof java.net.SocketTimeoutException) {
+                        timeout = true;
+                        break;
+                    }
+                }
+                if (!timeout)
+                    throw e;
+            }
+        }
+        System.out.println("Timed out downloading attachment for photoCheck: " + attachment.getUrl());
+        return null;
     }
 
     private static String getISHash(InputStream is) throws NoSuchAlgorithmException, IOException {

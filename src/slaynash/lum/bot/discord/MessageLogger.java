@@ -281,6 +281,12 @@ public class MessageLogger {
             return FileUpload.fromData(bytes, fileName).asSpoiler();
         }
         catch (Exception e) {
+            for (Throwable t = e; t != null; t = t.getCause()) {
+                if (t.getMessage() != null && t.getMessage().contains("status code: 404")) {
+                    System.out.println("Media no longer available (404): " + url);
+                    return null;
+                }
+            }
             ExceptionUtils.reportException("Failed to fetch media for Log", e);
             return null;
         }
