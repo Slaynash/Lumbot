@@ -353,6 +353,7 @@ public class Utils {
 
     public static List<String> extractUrls(String text) {
         //https://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
+        text = text.replace("<@", " ").replace("\\", "/");
         List<String> containedUrls = new ArrayList<>();
         String urlRegex = "(https?:((//)|(\\\\))+[\\w:#@%/;$()~_?+-=\\\\.&]*)";
         Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);

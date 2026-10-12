@@ -95,6 +95,11 @@
       <version>2.14.0</version>
     </dependency>
     <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.7.2-jre</version>
+    </dependency>
+    <dependency>
       <groupId>org.luaj</groupId>
       <artifactId>luaj-jse</artifactId>
       <version>3.0.1</version>

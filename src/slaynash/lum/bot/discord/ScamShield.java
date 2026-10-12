@@ -52,6 +52,7 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import com.google.common.net.InternetDomainName;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -744,16 +745,16 @@ public class ScamShield {
             List<String> urls = Utils.extractUrls(message);
 
             for (String url : urls) {
-                url = url.replace("<@", " ").replace("\\", "/");
-                if (URI.create(url).getHost() == null)
+                String host = URI.create(url).getHost();
+                if (host == null || !InternetDomainName.isValid(host))
                     continue;
-                String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z\\d-._~/?#:%]", "");
-                while (domain.split("\\.").length > 2)
-                    domain = domain.split("\\.", 2)[1]; //remove all subdomains
-                String topLevelDomain = domain.substring(domain.lastIndexOf('.') + 1);
-                if (topLevelDomain.length() == 1 || topLevelDomain.matches("\\d+"))
+                InternetDomainName internetDomain = InternetDomainName.from(host);
+                if (!internetDomain.hasPublicSuffix() || !internetDomain.isUnderPublicSuffix())
                     continue;
-                String domainLowerCase = domain.toLowerCase(Locale.ROOT);
+                String publicSuffix = internetDomain.publicSuffix().toString();
+                if (publicSuffix.length() == 1 || publicSuffix.matches("\\d+"))
+                    continue;
+                String domainLowerCase = internetDomain.topPrivateDomain().toString().toLowerCase(Locale.ROOT);
 
                 Timestamp cachedRegistration = null;
                 Timestamp lastRdapCheck = null;
