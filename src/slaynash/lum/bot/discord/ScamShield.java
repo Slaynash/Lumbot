@@ -750,6 +750,9 @@ public class ScamShield {
                 String domain = URI.create(url).getHost().replaceAll("[^a-zA-Z\\d-._~/?#:%]", "");
                 while (domain.split("\\.").length > 2)
                     domain = domain.split("\\.", 2)[1]; //remove all subdomains
+                String topLevelDomain = domain.substring(domain.lastIndexOf('.') + 1);
+                if (topLevelDomain.length() == 1 || topLevelDomain.matches("\\d+"))
+                    continue;
                 String domainLowerCase = domain.toLowerCase(Locale.ROOT);
 
                 Timestamp cachedRegistration = null;
