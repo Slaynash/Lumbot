@@ -9,6 +9,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -71,6 +76,24 @@ public class Steam {
 
         Main.SCHEDULER.scheduleAtFixedRate(() -> callbackManager.runCallbacks(), 1, 3, TimeUnit.SECONDS);
         Main.SCHEDULER.scheduleAtFixedRate(Steam::requestChanges, 9, 6, TimeUnit.SECONDS);
+        scheduleMaintenanceNotice();
+    }
+
+    // Steam weekly maintenance is expected around 00:00 UTC on Wednesday
+    private static void scheduleMaintenanceNotice() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
+        ZonedDateTime next = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        if (!next.isAfter(now))
+            next = next.plusWeeks(1);
+        long delay = Duration.between(now, next).toMillis();
+        Main.SCHEDULER.schedule(() -> {
+            try {
+                ExceptionUtils.reportException("Steam weekly maintenance expected to start around now. Steam may be unavailable for a few minutes.");
+            }
+            finally {
+                scheduleMaintenanceNotice();
+            }
+        }, delay, TimeUnit.MILLISECONDS);
     }
 
     public static void init() {

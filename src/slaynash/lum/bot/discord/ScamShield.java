@@ -811,10 +811,8 @@ public class ScamShield {
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
         try {
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_NOT_FOUND)
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
                 return getWhoisRegistrationDate(domain);
-            else if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                throw new IOException("RDAP lookup failed for " + domain + " with HTTP status " + connection.getResponseCode());
 
             try (InputStream input = connection.getInputStream();
                  InputStreamReader inputReader = new InputStreamReader(input, StandardCharsets.UTF_8))
@@ -1057,7 +1055,7 @@ public class ScamShield {
                 .setUrl(event.getJumpUrl())
                 .setTimestamp(Instant.now())
                 .addField("Author", event.getAuthor().getAsMention(), true)
-                .addField("Guild", event.getGuild() != null ? event.getGuild().getName() : "DM", true)
+                .addField("Guild", event.isFromGuild() ? event.getGuild().getName() : "DM", true)
                 .addField("Channel", event.getChannel().getName(), true);
             embedBuilder.addField("Hash", hash, false);
             if (similarityResult.similarity > 0 || similarityResultOld.similarity > 0) {
