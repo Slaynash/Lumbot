@@ -17,6 +17,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import slaynash.lum.bot.ConfigManager;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.Main;
@@ -75,7 +77,13 @@ public class Anime implements Runnable {
             embed.setColor(color);
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE anime > 0");
             while (rs.next()) {
-                JDAManager.getJDA().getGuildById(rs.getLong("GuildID")).getTextChannelById(rs.getLong("anime")).sendMessageEmbeds(embed.build()).queue();
+                Guild guild = JDAManager.getJDA().getGuildById(rs.getLong("GuildID"));
+                if (guild == null)
+                    continue;
+                TextChannel channel = guild.getTextChannelById(rs.getLong("anime"));
+                if (channel == null)
+                    continue;
+                channel.sendMessageEmbeds(embed.build()).queue();
             }
             DBConnectionManagerLum.closeRequest(rs);
         }

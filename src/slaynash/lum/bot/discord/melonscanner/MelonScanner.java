@@ -161,7 +161,8 @@ public final class MelonScanner {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-                messageBuilder.setContent((messageReceivedEvent.getAuthor().getAsMention() + " " + getMentions(context)).strip());
+                if (messageReceivedEvent.isFromGuild())
+                    messageBuilder.setContent((messageReceivedEvent.getAuthor().getAsMention() + " " + getMentions(context)).strip());
                 messageCreateData = messageBuilder.setEmbeds(context.embedBuilder.build()).build();
                 if (context.addToChatty && !context.pirate && !(Objects.equals(context.game, "Phasmophobia") || Objects.equals(context.game, "Crab Game"))) {
                     ChattyLum.addNewHelpedRecently(messageReceivedEvent);

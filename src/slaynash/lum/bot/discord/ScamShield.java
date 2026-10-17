@@ -852,20 +852,32 @@ public class ScamShield {
         whois = whois.replaceFirst("(?m)Last update of WHOIS.*$", ""); //for no matches eg. twitch.tv
 
         ArrayList<ZonedDateTime> list = new ArrayList<>();
-        Matcher matcher = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
-        while (matcher.find())
-            list.add(ZonedDateTime.parse(matcher.group().strip(), DateTimeFormatter.ISO_DATE_TIME));
+        Matcher matcher1 = Pattern.compile(" [\\d-]+T[\\d-:.]+(Z|\\+[\\d:]+)").matcher(whois);
+        while (matcher1.find())
+            list.add(ZonedDateTime.parse(matcher1.group().strip(), DateTimeFormatter.ISO_DATE_TIME));
 
-        Matcher matcher2 = Pattern.compile(" \\d{2}-[\\da-zA-Z]{3}-\\d{4}").matcher(whois.replace(".", "-"));
+        Matcher matcher2 = Pattern.compile(" \\d{4}-?\\d{2}-?\\d{2} \\d{2}:\\d{2}:\\d{2}").matcher(whois);
         while (matcher2.find()) {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-[MM][MMM]-yyyy"); //EU standard date example is uillinois.edu
-            list.add(LocalDate.parse(matcher2.group().strip(), f).atStartOfDay(ZoneId.systemDefault()));
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
+            list.add(ZonedDateTime.parse(matcher2.group().strip().replace("-", ""), f));
         }
 
-        Matcher matcher3 = Pattern.compile(" \\d{4}-?\\d{2}-?\\d{2} \\d{2}:\\d{2}:\\d{2}").matcher(whois);
+        Matcher matcher3 = Pattern.compile("\\b\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2}\\b").matcher(whois);
         while (matcher3.find()) {
-            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault()); //example is chng.it and pimaker.at
-            list.add(ZonedDateTime.parse(matcher3.group().strip().replace("-", ""), f));
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"); //example is amplify.pt
+            list.add(LocalDateTime.parse(matcher3.group(), f).atZone(ZoneId.systemDefault()));
+        }
+
+        Matcher matcher4 = Pattern.compile("\\b\\d{4}/\\d{2}/\\d{2}\\b").matcher(whois);
+        while (matcher4.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy/MM/dd"); //example is mi-journey.jp
+            list.add(LocalDate.parse(matcher4.group(), f).atStartOfDay(ZoneId.systemDefault()));
+        }
+
+        Matcher matcher5 = Pattern.compile(" \\d{2}-[\\da-zA-Z]{3}-\\d{4}").matcher(whois.replace(".", "-"));
+        while (matcher5.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MMM-yyyy"); //example is uillinois.edu
+            list.add(LocalDate.parse(matcher5.group().strip(), f).atStartOfDay(ZoneId.systemDefault()));
         }
 
         if (list.isEmpty())
