@@ -707,7 +707,7 @@ public class ScamShield {
         StringBuilder sb = new StringBuilder(usernameWithTag + " " + userId + " got flagged as scammer");
 
         EmbedBuilder embedBuilder = new EmbedBuilder()
-            .setDescription(usernameWithTag + " " + userId + " got flagged as scammer")
+            .setDescription(usernameWithTag + " " + userId + "\n" + suspiciousResults.ssFoundTerms)
             .setTimestamp(Instant.now())
             .setFooter("Received " + suspiciousResults.totalSuspicionCount + " naughty points.");
         embedBuilder.setAuthor("Shield Report", null, "https://cdn.discordapp.com/avatars/275759980752273418/05d2f38ca37928426f7c49b191b8b552.webp");
@@ -792,6 +792,10 @@ public class ScamShield {
                     );
                 }
 
+                // RDAP didn't provide a registration date: nothing to compare
+                if (registrationDate == null)
+                    continue;
+
                 if (registrationDate.isAfter(ZonedDateTime.now().minusDays(age))) {
                     count++;
                     JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Young domain found: " + domainLowerCase + "\nRegistered: " + registrationDate.toLocalDate(), Color.ORANGE)).queue();
@@ -847,8 +851,11 @@ public class ScamShield {
                 output.append(line).append("\n");
         }
         String whois = output.toString().replace("+0000", "Z");
-        if (whois.startsWith("No match for domain"))
+        if (whois.startsWith("No match for domain")) {
+            System.err.println("No match for domain: " + domain);
+            System.err.println("Whois output: " + whois);
             return null;
+        }
         whois = whois.replaceFirst("(?m)Last update of WHOIS.*$", ""); //for no matches eg. twitch.tv
 
         ArrayList<ZonedDateTime> list = new ArrayList<>();
@@ -879,6 +886,10 @@ public class ScamShield {
             DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MMM-yyyy"); //example is uillinois.edu
             list.add(LocalDate.parse(matcher5.group().strip(), f).atStartOfDay(ZoneId.systemDefault()));
         }
+
+        Matcher matcher6 = Pattern.compile("\\b\\d{4}-\\d{2}-\\d{2}\\b").matcher(whois);
+        while (matcher6.find())
+            list.add(LocalDate.parse(matcher6.group()).atStartOfDay(ZoneId.systemDefault()));
 
         if (list.isEmpty())
             throw new IOException("Can not find any dates for " + domain + "\n" + whois);
