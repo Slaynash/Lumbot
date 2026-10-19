@@ -72,6 +72,7 @@ import slaynash.lum.bot.steam.Steam;
 import slaynash.lum.bot.timers.Anime;
 import slaynash.lum.bot.timers.ClearDMs;
 import slaynash.lum.bot.timers.Reminders;
+import slaynash.lum.bot.timers.TemporaryBans;
 import slaynash.lum.bot.utils.ExceptionUtils;
 import slaynash.lum.bot.utils.Utils;
 import slaynash.lum.bot.uvm.UnityVersionMonitor;
@@ -141,6 +142,7 @@ public class Main extends ListenerAdapter {
                 ClearDMs.start();
                 Steam.start();
                 Reminders.start();
+                TemporaryBans.start();
                 Anime.start();
             }
             else

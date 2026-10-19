@@ -66,6 +66,8 @@ public class SlashManager {
         JDA jda = JDAManager.getJDA();
 
         registerSlash(new SlashConfig());
+        registerSlash(new BanSlash());
+        registerSlash(new KickSlash());
         registerSlash(new SteamWatcher());
         registerSlash(new Replies());
         registerSlash(new Reminder());

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 11, 2026 at 08:18 PM
+-- Generation Time: Oct 19, 2026 at 04:36 AM
 -- Server version: 8.0.28
 -- PHP Version: 8.0.16
 
@@ -275,6 +275,20 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
   `otherMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `ukey` (`ukey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `TemporaryBans`
+--
+
+CREATE TABLE IF NOT EXISTS `TemporaryBans` (
+  `GuildID` bigint UNSIGNED NOT NULL,
+  `UserID` bigint UNSIGNED NOT NULL,
+  `ExpiresAt` datetime NOT NULL,
+  PRIMARY KEY (`GuildID`,`UserID`),
+  KEY `ExpiresAt` (`ExpiresAt`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
