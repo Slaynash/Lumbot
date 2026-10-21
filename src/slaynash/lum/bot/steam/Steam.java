@@ -79,10 +79,10 @@ public class Steam {
         scheduleMaintenanceNotice();
     }
 
-    // Steam weekly maintenance is expected around 00:00 UTC on Wednesday
+    // Steam weekly maintenance is expected around 22:00 UTC on Tuesday
     private static void scheduleMaintenanceNotice() {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        ZonedDateTime next = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.WEDNESDAY)).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        ZonedDateTime next = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY)).withHour(22).withMinute(0).withSecond(0).withNano(0);
         if (!next.isAfter(now))
             next = next.plusWeeks(1);
         long delay = Duration.between(now, next).toMillis();

@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -745,7 +746,14 @@ public class ScamShield {
             List<String> urls = Utils.extractUrls(message);
 
             for (String url : urls) {
-                String host = URI.create(url).getHost();
+                String host;
+                try {
+                    host = URI.create(url).getHost();
+                }
+                catch (IllegalArgumentException e) {
+                    JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessage("Malformed URL: " + url).queue();
+                    continue;
+                }
                 if (host == null || !InternetDomainName.isValid(host))
                     continue;
                 InternetDomainName internetDomain = InternetDomainName.from(host);
@@ -890,6 +898,17 @@ public class ScamShield {
         Matcher matcher6 = Pattern.compile("\\b\\d{4}-\\d{2}-\\d{2}\\b").matcher(whois);
         while (matcher6.find())
             list.add(LocalDate.parse(matcher6.group()).atStartOfDay(ZoneId.systemDefault()));
+
+        Matcher matcher7 = Pattern.compile("\\b(\\d{1,2})(?:st|nd|rd|th) ([A-Za-z]+) (\\d{4}) at (\\d{2}:\\d{2}:\\d{2})(?:\\.\\d+)?").matcher(whois);
+        while (matcher7.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm:ss", Locale.ENGLISH); //example is allstar.gg
+            try {
+                list.add(LocalDateTime.parse(matcher7.group(1) + " " + matcher7.group(2) + " " + matcher7.group(3) + " " + matcher7.group(4), f).atZone(ZoneId.systemDefault()));
+            }
+            catch (DateTimeParseException ignored) {
+                // not a date
+            }
+        }
 
         if (list.isEmpty())
             throw new IOException("Can not find any dates for " + domain + "\n" + whois);
