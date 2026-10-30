@@ -74,10 +74,16 @@ public class MessageProxy {
                 mutuals = mutuals.substring(0, Message.MAX_CONTENT_LENGTH);
             }
 
-            if (sb.toString().isBlank())
+            if (sb.toString().isBlank()) {
+                EmbedBuilder welcomeEmbed = new EmbedBuilder()
+                        .setTitle("Your messages are proxied to the devs")
+                        .setDescription("All messages you send here are forwarded to the devs. It is okay to send MelonLoader logs, ask questions, or memes.");
+                event.getChannel().sendMessageEmbeds(welcomeEmbed.build()).queue();
                 guildchannel.sendMessage(mutuals).queue();
-            else
+            }
+            else {
                 guildchannel.sendMessage(mutuals).addFiles(FileUpload.fromData(sb.toString().getBytes(), author.getName() + ".txt")).queue();
+            }
 
         }
         guildchannel.sendMessage(message).queue(s -> saveIDs(event.getMessageIdLong(), s.getIdLong()));
