@@ -394,14 +394,15 @@ public class MelonScannerApisManager {
                     ExceptionUtils.reportException("MelonScanner API Timed Out for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
                 }
                 else if (throwable instanceof IOException ioexception) {
-                    if (ioexception.getMessage().contains("Network is unreachable")) {
+                    String ioMessage = ioexception.getMessage() == null ? "" : ioexception.getMessage();
+                    if (ioMessage.contains("Network is unreachable")) {
                         ExceptionUtils.reportException("MelonScanner API Network Error when fetching " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")");
                     }
-                    else if (ioexception.getMessage().contains("GOAWAY")) {
+                    else if (ioMessage.contains("GOAWAY")) {
                         ExceptionUtils.reportException(api.game + " : " + "[" + api.name + "](" + constructedURI + ") is a meanie and told me to go away <a:kanna_cry:851143700297941042>");
                     }
                     else
-                        ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", ioexception.getMessage());
+                        ExceptionUtils.reportException("MelonScanner API Connection Error for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", ioexception);
                 }
                 else
                     ExceptionUtils.reportException("MelonScanner API Exception for " + api.game + " : " + "[" + api.name + "](" + constructedURI + ")", throwable);

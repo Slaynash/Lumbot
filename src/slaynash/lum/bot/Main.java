@@ -90,6 +90,8 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
+        // Let the JVM download missing intermediate certificates (AIA), as browsers do
+        System.setProperty("com.sun.security.enableAIAcaIssuers", "true");
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> ExceptionUtils.reportException("Exception in thread " + thread.getName() + ":", throwable));
         LogSystem.init();
 

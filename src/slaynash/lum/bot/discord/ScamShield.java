@@ -764,6 +764,27 @@ public class ScamShield {
                     continue;
                 String domainLowerCase = internetDomain.topPrivateDomain().toString().toLowerCase(Locale.ROOT);
 
+                // whitelist entries starting with * match any host containing the rest of the entry
+                String hostLowerCase = host.toLowerCase(Locale.ROOT);
+                String wildcardMatch = null;
+                ResultSet wrs = DBConnectionManagerLum.sendRequest("SELECT `domain` FROM `Domain` WHERE `domain` LIKE '*%' AND `registration` IS NULL");
+                try {
+                    while (wrs.next()) {
+                        String pattern = wrs.getString("domain").substring(1).toLowerCase(Locale.ROOT);
+                        if (!pattern.isEmpty() && hostLowerCase.contains(pattern)) {
+                            wildcardMatch = wrs.getString("domain");
+                            break;
+                        }
+                    }
+                }
+                finally {
+                    DBConnectionManagerLum.closeRequest(wrs);
+                }
+                if (wildcardMatch != null) {
+                    DBConnectionManagerLum.sendUpdate("UPDATE `Domain` SET `counter` = `counter` + 1 WHERE `domain` = ?", wildcardMatch);
+                    continue;
+                }
+
                 Timestamp cachedRegistration = null;
                 Timestamp lastRdapCheck = null;
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `registration`, `ts` FROM `Domain` WHERE `domain` = ?", domainLowerCase);
@@ -851,7 +872,13 @@ public class ScamShield {
     }
 
     private static ZonedDateTime getWhoisRegistrationDate(String domain) throws IOException {
-        Process p = new ProcessBuilder("whois", domain).start();
+        return getWhoisRegistrationDate(domain, null);
+    }
+
+    private static ZonedDateTime getWhoisRegistrationDate(String domain, String referral) throws IOException {
+        Process p = (referral == null
+            ? new ProcessBuilder("whois", domain)
+            : new ProcessBuilder("whois", "-h", referral.split(":")[0], "-p", referral.contains(":") ? referral.split(":")[1] : "4321", domain)).start();
         StringBuilder output = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream(), StandardCharsets.UTF_8))) {
             String line;
@@ -908,6 +935,18 @@ public class ScamShield {
             catch (DateTimeParseException ignored) {
                 // not a date
             }
+        }
+
+        Matcher matcher8 = Pattern.compile("\\b\\d{2}\\.\\d{2}\\.\\d{4} \\d{2}:\\d{2}:\\d{2}\\b").matcher(whois);
+        while (matcher8.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"); //example is nullpt.rs
+            list.add(LocalDateTime.parse(matcher8.group(), f).atZone(ZoneId.systemDefault()));
+        }
+
+        if (list.isEmpty() && referral == null) {
+            Matcher ref = Pattern.compile("ReferralServer:\\s*r?whois://([\\w.-]+(?::\\d+)?)").matcher(whois);
+            if (ref.find())
+                return getWhoisRegistrationDate(domain, ref.group(1));
         }
 
         if (list.isEmpty())
@@ -1063,6 +1102,11 @@ public class ScamShield {
         for (int attempt = 0; attempt < 2; attempt++) {
             try {
                 return attachment.getProxy().download().get();
+            }
+            catch (InterruptedException e) {
+                // Scan was cancelled (e.g. message handling interrupted); not an error
+                Thread.currentThread().interrupt();
+                return null;
             }
             catch (java.util.concurrent.ExecutionException e) {
                 boolean timeout = false;

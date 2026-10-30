@@ -50,7 +50,9 @@ public class MessageLogger {
 
         // Log the message details in SQL
         try {
-            String sql = "INSERT INTO Messages (message_id, content, author_id, channel_id, guild_id, timestamp, attachments) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // The message may be redelivered by JDA, or already stored by an edit event, so update the existing row
+            String sql = "INSERT INTO Messages (message_id, content, author_id, channel_id, guild_id, timestamp, attachments) VALUES (?, ?, ?, ?, ?, ?, ?) "
+                + "ON DUPLICATE KEY UPDATE content = VALUES(content), attachments = VALUES(attachments)";
             DBConnectionManagerLum.sendUpdate(sql, messageId, messageContent, author, channel, guild, timestamp, attachmentJson);
         }
         catch (Exception e) {
