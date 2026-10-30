@@ -15,18 +15,18 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
+        uses: styfle/cancel-workflow-action@0.13.1
         with:
           access_token: ${{ github.token }}
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
       - name: Set up JDK 26
-        uses: actions/setup-java@v4.7.1
+        uses: actions/setup-java@v6.1.0
         with:
           distribution: 'zulu'
           java-version: 26
       - name: Cache local Maven repository
-        uses: actions/cache@main
+        uses: actions/cache@v6.1.0
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -38,20 +38,20 @@ jobs:
         run: echo buildname=$(ls /home/runner/work/Lumbot/Lumbot/target | grep bot) >> $GITHUB_ENV
 
       - name: Upload to artifacts
-        uses: actions/upload-artifact@v4.6.2
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}
       - name: Upload to server
         if: github.event.repository.fork == false
         run: |
-          curl \
+          curl --fail \
           -F 'buildfile=@target/${{ env.buildname }}' \
           https://${{ secrets.SSH_HOST }}/uploadlum.php?key=${{ secrets.UPLOAD_KEY }}
         shell: bash
 
       - name: Running remote script
-        uses: garygrossgarten/github-action-ssh@release
+        uses: garygrossgarten/github-action-ssh@0.9.0
         if: github.event.repository.fork == false
         with:
           command: |

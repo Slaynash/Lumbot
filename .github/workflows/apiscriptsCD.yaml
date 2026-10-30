@@ -16,16 +16,16 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.12.1
+        uses: styfle/cancel-workflow-action@0.13.1
         with:
           access_token: ${{ github.token }}
       - name: Checkout
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v7.0.1
 
       - name: Upload to server
         if: github.event.repository.fork == false
         run: |
-          curl \
+          curl --fail \
           -F 'apiscripts/audica_ahriana=@apiscripts/audica_ahriana.lua' \
           -F 'apiscripts/btd6_gurrenm4=@apiscripts/btd6_gurrenm4.lua' \
           -F 'apiscripts/btd6_inferno=@apiscripts/btd6_inferno.lua' \
@@ -39,7 +39,7 @@ jobs:
         shell: bash
 
       - name: Running remote script
-        uses: garygrossgarten/github-action-ssh@release
+        uses: garygrossgarten/github-action-ssh@0.9.0
         if: github.event.repository.fork == false
         with:
           command: |
