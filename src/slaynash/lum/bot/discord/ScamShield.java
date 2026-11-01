@@ -1031,7 +1031,15 @@ public class ScamShield {
             }
 
             imgIS.reset(); // Reset the stream to the marked position
-            BufferedImage attachmentImage = ImageIO.read(imgIS);
+            BufferedImage attachmentImage;
+            try {
+                attachmentImage = ImageIO.read(imgIS);
+            }
+            catch (javax.imageio.IIOException e) {
+                // Corrupt or truncated image data sent by a user, nothing we can scan
+                System.out.println("Corrupt image in attachment: " + attachment.getUrl() + " (" + e.getMessage() + ")");
+                return null;
+            }
             if (attachmentImage == null) {
                 System.out.println("Failed to read image from attachment: " + attachment.getUrl());
                 ExceptionUtils.reportException("Failed to read image with hash " + hash, new IOException("Image.IO.read returned null"));
@@ -1075,6 +1083,7 @@ public class ScamShield {
                                 savedSuspiciousImages.put(hash, similarityResult);
 
                                 if (similarityResultOld.similarity < 0.85) {
+                                    cleanSuspiciousImages();
                                     File outputfile = new File("suspiciousImages/" + df.format(similarityResultOld.similarity) + "_" + hash + "_" + attachment.getFileName());
                                     imgIS.reset();
                                     Files.copy(imgIS, outputfile.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -1188,6 +1197,17 @@ public class ScamShield {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed reportPhoto in SS", e);
+        }
+    }
+
+    private static void cleanSuspiciousImages() {
+        File[] files = new File("suspiciousImages").listFiles();
+        if (files == null)
+            return;
+        long cutoff = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7);
+        for (File file : files) {
+            if (file.isFile() && file.lastModified() < cutoff && !file.delete())
+                System.out.println("Failed to delete old suspicious image: " + file.getName());
         }
     }
 }

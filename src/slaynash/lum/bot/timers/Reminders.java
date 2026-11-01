@@ -12,6 +12,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.exceptions.ErrorResponseException;
 import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.JDAManager;
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -33,7 +34,17 @@ public class Reminders extends TimerTask {
                 long serverID = rs.getLong("ServerID");
                 long channelID = rs.getLong("ChannelID");
                 if (user == null) {
-                    user = JDAManager.getJDA().retrieveUserById(userID).complete();
+                    try {
+                        user = JDAManager.getJDA().retrieveUserById(userID).complete();
+                    }
+                    catch (ErrorResponseException e) {
+                        if (e.getCause() instanceof java.net.SocketTimeoutException) {
+                            // Reminder stays in the DB and is retried on the next run
+                            System.out.println("Timed out retrieving user for reminder, will retry: " + userID);
+                            continue;
+                        }
+                        throw e;
+                    }
                 }
                 if (message == null) {
                     message = user.getAsMention();

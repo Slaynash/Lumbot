@@ -164,6 +164,7 @@ public class MelonScannerApisManager {
 
             int pagingOffset = 0;
             boolean doneFetching = false;
+            boolean retriedEmpty = false;
 
             List<MelonApiMod> apiMods = new ArrayList<>();
 
@@ -195,12 +196,18 @@ public class MelonScannerApisManager {
                     responseBody = decompressedStream.toByteArray();
                 }
                 String responseString = new String(responseBody).trim();
-                if (responseString.charAt(0) == '<') {
-                    ExceptionUtils.reportException("Received HTML for " + api.name);
+                if (responseString.length() <= 4) {
+                    // Empty responses are sometimes transient, so only report if the retry is empty too
+                    if (!retriedEmpty) {
+                        retriedEmpty = true;
+                        continue;
+                    }
+                    ExceptionUtils.reportException("Received empty JSON for " + api.name);
                     break;
                 }
-                else if (responseString.length() <= 4) {
-                    ExceptionUtils.reportException("Received empty JSON for " + api.name);
+                retriedEmpty = false;
+                if (responseString.charAt(0) == '<') {
+                    ExceptionUtils.reportException("Received HTML for " + api.name);
                     break;
                 }
 
