@@ -83,20 +83,24 @@ public class MessageLogger {
 
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM Messages WHERE message_id = ?", messageId);
-            if (rs.next()) {
-                messageOldContent = rs.getString("content");
-            }
-            else {
-                // Add the message to the database if it doesn't exist
-                try {
-                    String sql = "INSERT INTO Messages (message_id, content, author_id, channel_id, guild_id, timestamp, attachments) VALUES (?, ?, ?, ?, ?, ?, ?)";
-                    DBConnectionManagerLum.sendUpdate(sql, messageId, messageContent, author, channel, guild, timestamp, attachmentJson);
+            try {
+                if (rs.next()) {
+                    messageOldContent = rs.getString("content");
                 }
-                catch (Exception e) {
-                    ExceptionUtils.reportException("Failed to log message", e);
+                else {
+                    // Add the message to the database if it doesn't exist
+                    try {
+                        String sql = "INSERT INTO Messages (message_id, content, author_id, channel_id, guild_id, timestamp, attachments) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                        DBConnectionManagerLum.sendUpdate(sql, messageId, messageContent, author, channel, guild, timestamp, attachmentJson);
+                    }
+                    catch (Exception e) {
+                        ExceptionUtils.reportException("Failed to log message", e);
+                    }
                 }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
 
             MessageChannelUnion report = CommandManager.getModReportChannels(guild, "message");
             if (report != null) {
@@ -163,8 +167,9 @@ public class MessageLogger {
     private static void deletedMessageInternal(MessageDeleteEvent event) {
         String messageId = event.getMessageId();
 
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM Messages WHERE message_id = ?", messageId);
+            rs = DBConnectionManagerLum.sendRequest("SELECT * FROM Messages WHERE message_id = ?", messageId);
             if (rs.next()) {
                 String guild = rs.getString("guild_id");
                 if (guild != null) {
@@ -230,12 +235,12 @@ public class MessageLogger {
                 // TODO: Maybe send log message for unknown message deletion
                 System.out.println("Message not found in database: " + messageId);
             }
-            DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to send message delete report", e);
         }
         finally {
+            DBConnectionManagerLum.closeRequest(rs);
             // delete the message log in SQL
             try {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM Messages WHERE message_id = ?", messageId);

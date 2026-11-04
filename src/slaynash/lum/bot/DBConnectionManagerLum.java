@@ -11,7 +11,6 @@ import java.sql.Types;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import slaynash.lum.bot.discord.GuildConfiguration;
@@ -32,7 +31,7 @@ public final class DBConnectionManagerLum {
     private static final AtomicInteger requestClosedCount = new AtomicInteger(0);
     private static final AtomicInteger updateClosedCount = new AtomicInteger(0);
 
-    public static void init() {
+    public static synchronized void init() {
         try {
             System.out.println("Connecting to Database...");
             if (ConfigManager.dbAddress.isBlank() || ConfigManager.dbPort.isBlank() || ConfigManager.dbDatabaseLum.isBlank() || ConfigManager.dbLogin.isBlank() || ConfigManager.dbPassword.isBlank()) {
@@ -48,22 +47,35 @@ public final class DBConnectionManagerLum {
         }
     }
 
-    private static Connection getConnection() {
-        try {
-            if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
-                if (connection != null && !connection.isClosed()) connection.close();
-                init();
+    private static synchronized Connection getConnection() throws SQLException {
+        if (connection != null) {
+            try {
+                if (!connection.isClosed() && connection.isValid(DATABASE_TIMEOUT))
+                    return connection;
             }
-            return connection;
+            catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to validate database connection", e);
+            }
+
+            try {
+                connection.close();
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to close invalid database connection", e);
+            }
+            finally {
+                connection = null;
+            }
         }
-        catch (SQLException e) {
-            ExceptionUtils.reportException("Failed to get database connection", e);
-        }
-        return null;
+
+        init();
+        if (connection == null || connection.isClosed())
+            throw new SQLException("Failed to establish database connection");
+        return connection;
     }
 
     public static PreparedStatement formatStatement(String statement, Object... args) throws SQLException {
-        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
+        PreparedStatement ps = getConnection().prepareStatement(statement);
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 ps.setNull(i + 1, Types.VARCHAR);
@@ -114,15 +126,17 @@ public final class DBConnectionManagerLum {
 
     public static String getString(String table, String keycolumn, String valuecolumn, String keyrow) {
         String pString = "";
-        ResultSet rs;
+        ResultSet rs = null;
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT " + valuecolumn + " FROM `" + table + "` WHERE " + keycolumn + " = '" + keyrow + "' LIMIT 1");
             if (rs.next())
                 pString = rs.getString(valuecolumn);
-            closeRequest(rs);
         }
         catch (SQLException e) {
             ExceptionUtils.reportException("Exception while fetching SQL string", e);
+        }
+        finally {
+            closeRequest(rs);
         }
         return pString;
     }
@@ -135,7 +149,7 @@ public final class DBConnectionManagerLum {
         Timestamp ts;
         boolean scamShield, scamShieldBan, scamShieldCross, scamShieldDm, mLLogScan, mLLogReaction, mLReplies,
             mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes;
-        ResultSet rs;
+        ResultSet rs = null;
         try {
             rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = '" + guildID + "' LIMIT 1");
             if (rs.next()) {
@@ -155,16 +169,20 @@ public final class DBConnectionManagerLum {
             }
             else {
                 System.out.println("No guild configuration found for guild and creating " + guildID);
+                closeRequest(rs);
+                rs = null;
                 PreparedStatement ps = getConnection().prepareStatement("INSERT INTO `GuildConfigurations` (`GuildID`) VALUES ('" + guildID + "');");
                 ps.executeUpdate();
                 ps.close();
                 return getGuildConfig(guildID);
             }
-            closeRequest(rs);
         }
         catch (SQLException e) {
             ExceptionUtils.reportException("Exception while fetching Guild Config", e);
             return null;
+        }
+        finally {
+            closeRequest(rs);
         }
         return new GuildConfiguration(guildID, ts, scamShield, scamShieldBan, scamShieldCross, scamShieldDm, mLLogScan, mLLogReaction, mLReplies, mLPartialRemover, mLGeneralRemover, dLLRemover, lumReplies, dadJokes);
     }

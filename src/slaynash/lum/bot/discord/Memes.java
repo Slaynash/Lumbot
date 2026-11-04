@@ -28,8 +28,9 @@ public class Memes {
     public static boolean memeRecieved(MessageReceivedEvent event) {
         MessageChannel channel = event.getChannel();
         if (event.getAuthor().isBot()) return false;
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
+            rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", channel.getIdLong());
             if (rs.next()) {
                 if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_EXT_EMOJI)) {
                     if (channel.getType() == ChannelType.GUILD_PUBLIC_THREAD || channel.getType() == ChannelType.GUILD_PRIVATE_THREAD ? event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND_IN_THREADS) : event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), Permission.MESSAGE_SEND))
@@ -37,13 +38,14 @@ public class Memes {
                     return false;
                 }
                 event.getMessage().addReaction(upArrow).queue(c -> event.getMessage().addReaction(downArrow).queue());
-                DBConnectionManagerLum.closeRequest(rs);
                 return true;
             }
-            DBConnectionManagerLum.closeRequest(rs);
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to check if channel is meme channel", e);
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
         }
         return false;
     }
@@ -52,8 +54,9 @@ public class Memes {
         if (event.getUser().isBot()) return;
         if (event.getMember().hasPermission(Permission.MESSAGE_MANAGE)) return;
         long memeReportChannelID;
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", event.getChannel().getIdLong());
+            rs = DBConnectionManagerLum.sendRequest("SELECT `ReportChannel` FROM `Memes` WHERE MemeChannel = ?", event.getChannel().getIdLong());
             if (rs.next()) {
                 memeReportChannelID = rs.getLong("ReportChannel");
             }
@@ -62,6 +65,9 @@ public class Memes {
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to check if channel is a meme channel", e);
             return;
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
         }
         Message message = event.retrieveMessage().complete();
         if (message == null) return;
@@ -102,8 +108,9 @@ public class Memes {
 
     public static void startup() {
         // Loop through all meme channels and add reaction to any messages while Lum was offline
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `MemeChannel` FROM `Memes`");
+            rs = DBConnectionManagerLum.sendRequest("SELECT `MemeChannel` FROM `Memes`");
             while (rs.next()) {
                 long memeChannelID = rs.getLong("MemeChannel");
                 TextChannel memeChannel = JDAManager.getJDA().getTextChannelById(memeChannelID);
@@ -127,6 +134,9 @@ public class Memes {
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to initialize meme reactions", e);
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
         }
     }
 

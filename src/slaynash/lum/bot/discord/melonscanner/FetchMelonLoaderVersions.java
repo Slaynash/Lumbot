@@ -51,11 +51,15 @@ public class FetchMelonLoaderVersions {
                 String version = obj.get("tag_name").getAsString().substring(1);
                 String htmlURL = obj.get("html_url").getAsString();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 0 AND `Android` = 0", version);
-                if (rs.next()) {
-                    DBConnectionManagerLum.closeRequest(rs);
-                    continue;
+                try {
+                    if (rs.next()) {
+                        DBConnectionManagerLum.closeRequest(rs);
+                        continue;
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 for (JsonElement asset : obj.get("assets").getAsJsonArray()) {
                     JsonObject assetObj = asset.getAsJsonObject();
                     if (assetObj.get("name").getAsString().equals("MelonLoader.x64.zip")) {
@@ -92,11 +96,15 @@ public class FetchMelonLoaderVersions {
                 String version = obj.get("tag_name").getAsString();
                 String htmlURL = obj.get("html_url").getAsString();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 0 AND `Android` = 1", version);
-                if (rs.next()) {
-                    DBConnectionManagerLum.closeRequest(rs);
-                    continue;
+                try {
+                    if (rs.next()) {
+                        DBConnectionManagerLum.closeRequest(rs);
+                        continue;
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 for (JsonElement asset : obj.get("assets").getAsJsonArray()) {
                     JsonObject assetObj = asset.getAsJsonObject();
                     if (assetObj.get("name").getAsString().equals("melon_data.zip")) {
@@ -134,9 +142,13 @@ public class FetchMelonLoaderVersions {
                 String version = obj.get("name").getAsString().split(" ")[0];
                 String htmlURL = obj.get("html_url").getAsString();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MLhash` WHERE `Version` = ? AND `Nightly` = 1 AND `Android` = 0", version);
-                if (!rs.next())
-                    getArtifacts(runID, version, htmlURL);
-                DBConnectionManagerLum.closeRequest(rs);
+                try {
+                    if (!rs.next())
+                        getArtifacts(runID, version, htmlURL);
+                }
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
         }
         catch (Exception e) {

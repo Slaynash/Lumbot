@@ -322,14 +322,18 @@ public final class MelonScanner {
         try {
             boolean found = false;
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT Version FROM `MLhash` WHERE Hash35 = ? OR Hash6 = ?", context.mlHashCode, context.mlHashCode);
-            while (rs.next()) {
-                String version = rs.getString("Version");
-                if (version != null && context.mlVersion != null && context.mlVersion.toString().startsWith(version)) {
-                    found = true;
-                    break;
+            try {
+                while (rs.next()) {
+                    String version = rs.getString("Version");
+                    if (version != null && context.mlVersion != null && context.mlVersion.toString().startsWith(version)) {
+                        found = true;
+                        break;
+                    }
                 }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
             if (found)
                 System.out.println("ML hash found in DB");
             else {
@@ -408,48 +412,52 @@ public final class MelonScanner {
                 return;
             try {
                 ResultSet result = DBConnectionManagerLum.sendRequest("SELECT * FROM Icons WHERE `UnityName` = ?", unityName);
-                if (result.next()) {
-                    String url;
-                    if (context.pirate)
-                        url = result.getString("PirateURL");
-                    else
-                        url = result.getString("IconURL");
-                    if (url == null)
-                        context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
-                                Utils.wrapMessageInEmbed("No " + (context.pirate ? "pirated " : "") + "logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
-                    else if (url.length() > 1) { // allows me to disable messages for edited/test games
-                        context.embedBuilder.setThumbnail(url);
-                        new Utils().checkIconURL(url, unityName);
-                    }
-
-                    if (result.getString("MLoverride") != null) {
-                        String override = result.getString("MLoverride");
-
-                        if (override.equalsIgnoreCase("nightly"))
-                            context.overrideMLVersion = context.latestMLNightly;
+                try {
+                    if (result.next()) {
+                        String url;
+                        if (context.pirate)
+                            url = result.getString("PirateURL");
                         else
-                            context.overrideMLVersion = Version.parse(override, false);
+                            url = result.getString("IconURL");
+                        if (url == null)
+                            context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
+                                    Utils.wrapMessageInEmbed("No " + (context.pirate ? "pirated " : "") + "logo found for " + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.ORANGE)).queue();
+                        else if (url.length() > 1) { // allows me to disable messages for edited/test games
+                            context.embedBuilder.setThumbnail(url);
+                            new Utils().checkIconURL(url, unityName);
+                        }
 
-                        System.out.println("ML override for " + context.game + ": " + context.overrideMLVersion);
+                        if (result.getString("MLoverride") != null) {
+                            String override = result.getString("MLoverride");
+
+                            if (override.equalsIgnoreCase("nightly"))
+                                context.overrideMLVersion = context.latestMLNightly;
+                            else
+                                context.overrideMLVersion = Version.parse(override, false);
+
+                            System.out.println("ML override for " + context.game + ": " + context.overrideMLVersion);
+                        }
+
+                        if ("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null) {
+                            if (context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
+                                context.overrideMLVersion = Version.parse("0.6.6");
+                                System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
+                            }
+                            else if (context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
+                                context.overrideMLVersion = Version.parse("0.5.7");
+                                System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
+                            }
+                        }
                     }
-
-                    if ("TheLongDark".equalsIgnoreCase(context.game) && context.gameBuild != null) {
-                        if (context.gameBuild.isEquivalentTo(Version.parse("2.44.0"))) {
-                            context.overrideMLVersion = Version.parse("0.6.6");
-                            System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
-                        }
-                        else if (context.gameBuild.isEquivalentTo(Version.parse("2.2.0"))) {
-                            context.overrideMLVersion = Version.parse("0.5.7");
-                            System.out.println("[TLD]ML override for " + context.game + ":" + context.gameBuild + " => " + context.overrideMLVersion);
-                        }
+                    else {
+                        context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
+                                Utils.wrapMessageInEmbed("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.RED)).queue();
+                        DBConnectionManagerLum.sendUpdate("INSERT INTO `Icons` (`UnityName`) VALUES (?)", unityName);
                     }
                 }
-                else {
-                    context.messageReceivedEvent.getJDA().getTextChannelById("1001529648569659432").sendMessageEmbeds(
-                            Utils.wrapMessageInEmbed("No thumbnail found for " + context.game + "\n" + unityName + "\n" + context.messageReceivedEvent.getMessage().getJumpUrl(), Color.RED)).queue();
-                    DBConnectionManagerLum.sendUpdate("INSERT INTO `Icons` (`UnityName`) VALUES (?)", unityName);
+                finally {
+                    DBConnectionManagerLum.closeRequest(result);
                 }
-                DBConnectionManagerLum.closeRequest(result);
                 try {
                     DBConnectionManagerLum.sendUpdate("UPDATE Icons SET `Counter` = `Counter`+1, `LastUsed` = CURRENT_TIMESTAMP WHERE `UnityName` = ?", unityName);
                 }

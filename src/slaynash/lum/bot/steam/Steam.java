@@ -175,11 +175,15 @@ public class Steam {
 
         try { //initialize all missing depos
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT DISTINCT s.`GameID` FROM `SteamWatch` s WHERE s.`GameID` NOT IN (SELECT `GameID` FROM `SteamApp`)");
-            while (rs.next()) {
-                int gameID = rs.getInt("GameID");
-                apps.picsGetProductInfo(new PICSRequest(gameID), null);
+            try {
+                while (rs.next()) {
+                    int gameID = rs.getInt("GameID");
+                    apps.picsGetProductInfo(new PICSRequest(gameID), null);
+                }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
         }
         catch (SQLException e) {
             ExceptionUtils.reportException("Failed to initialize all steam depos", e);
@@ -218,10 +222,14 @@ public class Steam {
             System.out.println(gameID + ": " + changeDataPair.getValue().getId());
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
-                while (rs.next()) {
-                    channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                try {
+                    while (rs.next()) {
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to fetch SteamWatch in Changes", e);
@@ -273,10 +281,14 @@ public class Steam {
             List<SteamChannel> channels = new ArrayList<>();
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", app.getKey());
-                while (rs.next()) {
-                    channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                try {
+                    while (rs.next()) {
+                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to fetch SteamWatch in Info", e);
@@ -506,11 +518,15 @@ public class Steam {
     public static void intDetails(Integer gameID) {
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TS` FROM `SteamApp` WHERE `GameID` = ?", gameID);
-            if (!rs.next()) {
-                System.out.println("Init SteamApp for " + gameID);
-                apps.picsGetProductInfo(new PICSRequest(gameID), null);
+            try {
+                if (!rs.next()) {
+                    System.out.println("Init SteamApp for " + gameID);
+                    apps.picsGetProductInfo(new PICSRequest(gameID), null);
+                }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to int Steam Details", e);
@@ -552,12 +568,16 @@ public class Steam {
         SteamAppDetails appDetails = null;
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamApp` WHERE `GameID` = ?", gameID);
-            if (rs.next()) {
-                appDetails = new Gson().fromJson(rs.getString("Depot"), SteamAppDetails.class);
+            try {
+                if (rs.next()) {
+                    appDetails = new Gson().fromJson(rs.getString("Depot"), SteamAppDetails.class);
+                }
+                else
+                    System.out.println("SteamApp not found for " + gameID);
             }
-            else
-                System.out.println("SteamApp not found for " + gameID);
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to get Game Details", e);
@@ -573,11 +593,15 @@ public class Steam {
         try {
             String json = new Gson().toJson(appDetails);
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TS` FROM `SteamApp` WHERE `GameID` = ?", gameID);
-            if (rs.next())
-                DBConnectionManagerLum.sendUpdate("UPDATE `SteamApp` SET `Depot` = ? WHERE `SteamApp`.`GameID` = ?", json, gameID);
-            else
-                DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamApp` (`GameID`, `Depot`) VALUES (?, ?)", gameID, json);
-            DBConnectionManagerLum.closeRequest(rs);
+            try {
+                if (rs.next())
+                    DBConnectionManagerLum.sendUpdate("UPDATE `SteamApp` SET `Depot` = ? WHERE `SteamApp`.`GameID` = ?", json, gameID);
+                else
+                    DBConnectionManagerLum.sendUpdate("INSERT INTO `SteamApp` (`GameID`, `Depot`) VALUES (?, ?)", gameID, json);
+            }
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
             return true;
         }
         catch (Exception e) {

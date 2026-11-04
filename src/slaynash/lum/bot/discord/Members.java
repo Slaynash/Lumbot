@@ -44,11 +44,15 @@ public class Members {
             try {
                 String sql = "SELECT * FROM Users WHERE user_id = ? AND guild_id = ?";
                 ResultSet rs = DBConnectionManagerLum.sendRequest(sql, event.getUser().getId(), event.getGuild().getId());
-                if (rs.next()) {
-                    time_left = rs.getLong("time_left");
-                    rejoinCount = rs.getInt("rejoin_count") + 1;
+                try {
+                    if (rs.next()) {
+                        time_left = rs.getLong("time_left");
+                        rejoinCount = rs.getInt("rejoin_count") + 1;
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to check if user is rejoining", e);
@@ -99,10 +103,14 @@ public class Members {
             try {
                 String sql = "SELECT * FROM Users WHERE user_id = ? AND guild_id = ?";
                 ResultSet rs = DBConnectionManagerLum.sendRequest(sql, event.getUser().getId(), event.getGuild().getId());
-                if (rs.next()) {
-                    time_joined = rs.getLong("time_joined");
+                try {
+                    if (rs.next()) {
+                        time_joined = rs.getLong("time_joined");
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to check if user is rejoining", e);

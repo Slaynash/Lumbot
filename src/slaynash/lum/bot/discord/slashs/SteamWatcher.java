@@ -53,14 +53,18 @@ public class SteamWatcher extends Slash {
         if (gameID.isEmpty()) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `ServerID` = ?", guildID);
-                while (rs.next()) {
-                    String cID = rs.getString("ChannelID");
-                    if (event.getJDA().getGuildChannelById(cID) == null)
-                        DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", cID);
-                    else
-                        channels.add(new SteamChannel(rs.getString("GameID"), guildID, cID, rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                try {
+                    while (rs.next()) {
+                        String cID = rs.getString("ChannelID");
+                        if (event.getJDA().getGuildChannelById(cID) == null)
+                            DBConnectionManagerLum.sendUpdate("DELETE FROM `SteamWatch` WHERE `ChannelID` = ?", cID);
+                        else
+                            channels.add(new SteamChannel(rs.getString("GameID"), guildID, cID, rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to list server's steam watch", e, event.getChannel());

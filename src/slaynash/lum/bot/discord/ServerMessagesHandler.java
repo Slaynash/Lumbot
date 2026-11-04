@@ -331,125 +331,127 @@ public class ServerMessagesHandler {
             if (event.getChannelType() == ChannelType.TEXT && event.getChannel().asTextChannel().getParentCategoryIdLong() == 924780998124798022L) guildID = "0";
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = ?", guildID);
+                try {
+                    while (rs.next()) {
+                        int ukey = rs.getInt("ukey");
+                        String regex = rs.getString("regex");
+                        String contains = rs.getString("contains");
+                        String equals = rs.getString("equals");
+                        long user = rs.getLong("user");
+                        long channel = rs.getLong("channel");
+                        long ignorerole = rs.getLong("ignorerole");
+                        String message = rs.getString("message");
+                        boolean delete = rs.getBoolean("bdelete");
+                        boolean kick = rs.getBoolean("bkick");
+                        boolean ban = rs.getBoolean("bban");
+                        boolean edit = rs.getBoolean("bedit");
+                        boolean report = rs.getBoolean("breport");
+                        if (!edit && event.getMessage().isEdited()) {
+                            continue;
+                        }
+                        if (regex != null && !regex.isBlank()) {
+                            if (!content.matches("(?s)".concat(regex))) { //TODO prevent Catastrophic backtracking
+                                continue;
+                            }
+                        }
+                        if (contains != null && !contains.isBlank()) {
+                            if (!content.contains(contains)) {
+                                continue;
+                            }
+                        }
+                        if (equals != null && !equals.isBlank()) {
+                            if (!content.equals(equals)) {
+                                continue;
+                            }
+                        }
+                        if (user > 69420) {
+                            if (event.getAuthor().getIdLong() != user) {
+                                continue;
+                            }
+                        }
+                        if (channel > 69420) {
+                            System.out.println("Channel: " + channel + " " + event.getChannel().getIdLong());
+                            if (event.getChannel().getIdLong() != channel && (event.getChannel().asTextChannel() == null || event.getChannel().asTextChannel().getParentCategory() == null || event.getChannel().asTextChannel().getParentCategory().getIdLong() != channel)) {
+                                continue;
+                            }
+                        }
+                        if (ignorerole > 69420) {
+                            if (event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == ignorerole)) {
+                                continue;
+                            }
+                        }
+                        if (event.getAuthor().isBot() && !rs.getBoolean("bbot")) {
+                            continue;
+                        }
 
-                while (rs.next()) {
-                    int ukey = rs.getInt("ukey");
-                    String regex = rs.getString("regex");
-                    String contains = rs.getString("contains");
-                    String equals = rs.getString("equals");
-                    long user = rs.getLong("user");
-                    long channel = rs.getLong("channel");
-                    long ignorerole = rs.getLong("ignorerole");
-                    String message = rs.getString("message");
-                    boolean delete = rs.getBoolean("bdelete");
-                    boolean kick = rs.getBoolean("bkick");
-                    boolean ban = rs.getBoolean("bban");
-                    boolean edit = rs.getBoolean("bedit");
-                    boolean report = rs.getBoolean("breport");
-                    if (!edit && event.getMessage().isEdited()) {
-                        continue;
-                    }
-                    if (regex != null && !regex.isBlank()) {
-                        if (!content.matches("(?s)".concat(regex))) { //TODO prevent Catastrophic backtracking
-                            continue;
+                        if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
+                            event.getMessage().delete().queue();
                         }
-                    }
-                    if (contains != null && !contains.isBlank()) {
-                        if (!content.contains(contains)) {
-                            continue;
+                        if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.KICK_MEMBERS)) {
+                            event.getMember().kick().queue();
                         }
-                    }
-                    if (equals != null && !equals.isBlank()) {
-                        if (!content.equals(equals)) {
-                            continue;
+                        if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.BAN_MEMBERS)) {
+                            event.getMember().ban(0, TimeUnit.DAYS).queue();
                         }
-                    }
-                    if (user > 69420) {
-                        if (event.getAuthor().getIdLong() != user) {
-                            continue;
+                        if (EmojiUtils.isOneEmoji(message))
+                            event.getMessage().addReaction(Emoji.fromUnicode(message)).queue();
+                        else if (message != null && message.matches("^<a?:\\w+:\\d+>$")) {
+                            System.out.println("Emoji: " + message);
+                            RichCustomEmoji emote = event.getJDA().getEmojiById(message.replace(">", "").split(":")[2]);
+                            try {
+                                if (emote.canInteract(emote.getGuild().getSelfMember()))
+                                    event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
+                                else
+                                    event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
+                            }
+                            catch (Exception e) {
+                                event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
+                            }
                         }
-                    }
-                    if (channel > 69420) {
-                        System.out.println("Channel: " + channel + " " + event.getChannel().getIdLong());
-                        if (event.getChannel().getIdLong() != channel && (event.getChannel().asTextChannel() == null || event.getChannel().asTextChannel().getParentCategory() == null || event.getChannel().asTextChannel().getParentCategory().getIdLong() != channel)) {
-                            continue;
-                        }
-                    }
-                    if (ignorerole > 69420) {
-                        if (event.getMember().getRoles().stream().anyMatch(r -> r.getIdLong() == ignorerole)) {
-                            continue;
-                        }
-                    }
-                    if (event.getAuthor().isBot() && !rs.getBoolean("bbot")) {
-                        continue;
-                    }
-
-                    if (delete && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.MESSAGE_MANAGE)) {
-                        event.getMessage().delete().queue();
-                    }
-                    if (kick && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.KICK_MEMBERS)) {
-                        event.getMember().kick().queue();
-                    }
-                    if (ban && event.getGuild().getSelfMember().hasPermission(event.getChannel().asGuildMessageChannel(), Permission.BAN_MEMBERS)) {
-                        event.getMember().ban(0, TimeUnit.DAYS).queue();
-                    }
-                    if (EmojiUtils.isOneEmoji(message))
-                        event.getMessage().addReaction(Emoji.fromUnicode(message)).queue();
-                    else if (message != null && message.matches("^<a?:\\w+:\\d+>$")) {
-                        System.out.println("Emoji: " + message);
-                        RichCustomEmoji emote = event.getJDA().getEmojiById(message.replace(">", "").split(":")[2]);
-                        try {
-                            if (emote.canInteract(emote.getGuild().getSelfMember()))
-                                event.getMessage().addReaction(emote).queue(); //This could error if too many reactions on message
+                        else if (message != null && !message.isBlank()) {
+                            if (guildID.equals("0")) {
+                                String[] userID = event.getChannel().getName().split("-");
+                                User privuser = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
+                                if (privuser == null) {
+                                    Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
+                                }
+                                else {
+                                    privuser.openPrivateChannel().queue(
+                                        privchannel -> privchannel.sendMessage(message).queue(s -> MessageProxy.saveIDs(s.getIdLong(), event.getMessageIdLong()),
+                                                e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
+                                        error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
+                                }
+                            }
                             else
-                                event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use emote in reply " + ukey).queue();
+                                event.getMessage().reply(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
                         }
-                        catch (Exception e) {
-                            event.getChannel().asGuildMessageChannel().sendMessage("Lum can not use that emote from reply " + ukey + " as I need to be in that emote's server.").queue();
+                        if (report) {
+                            MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "reply");
+                            if (reportChannel != null) {
+                                if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
+                                    event.getMessage().reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
+                                }
+                                else {
+                                    EmbedBuilder eb = new EmbedBuilder();
+                                    eb.setTitle("Reply Report");
+                                    eb.addField("User", event.getAuthor().getEffectiveName() + " (" + event.getAuthor().getId() + ")", false);
+                                    eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
+                                    eb.addField("Message", event.getMessage().getContentRaw(), false);
+                                    eb.addField("Reply", message, false);
+                                    eb.setFooter("Reply ID: " + ukey);
+                                    eb.setColor(Color.orange);
+                                    eb.setTimestamp(Instant.now());
+                                    Utils.sendEmbed(eb.build(), reportChannel);
+                                }
+                            }
                         }
+                        return true;
                     }
-                    else if (message != null && !message.isBlank()) {
-                        if (guildID.equals("0")) {
-                            String[] userID = event.getChannel().getName().split("-");
-                            User privuser = JDAManager.getJDA().retrieveUserById(userID[userID.length - 1]).complete();
-                            if (privuser == null) {
-                                Utils.replyEmbed("Can not find user, maybe there are no mutual servers.", Color.red, event);
-                            }
-                            else {
-                                privuser.openPrivateChannel().queue(
-                                    privchannel -> privchannel.sendMessage(message).queue(s -> MessageProxy.saveIDs(s.getIdLong(), event.getMessageIdLong()),
-                                            e -> Utils.sendEmbed("Failed to send message to target user: " + e.getMessage(), Color.red, event)),
-                                    error -> Utils.sendEmbed("Failed to open DM with target user: " + error.getMessage(), Color.red, event));
-                            }
-                        }
-                        else
-                            event.getMessage().reply(message).setAllowedMentions(Arrays.asList(MentionType.USER, MentionType.ROLE)).queue();
-                    }
-                    if (report) {
-                        MessageChannelUnion reportChannel = CommandManager.getModReportChannels(event, "reply");
-                        if (reportChannel != null) {
-                            if (!event.getGuild().getSelfMember().hasPermission(reportChannel.asGuildMessageChannel(), Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND)) {
-                                event.getMessage().reply("I can not send reports to the report channel as I do not have permission to view or send messages in that channel.").queue();
-                            }
-                            else {
-                                EmbedBuilder eb = new EmbedBuilder();
-                                eb.setTitle("Reply Report");
-                                eb.addField("User", event.getAuthor().getEffectiveName() + " (" + event.getAuthor().getId() + ")", false);
-                                eb.addField("Channel", event.getChannel().getName() + " (" + event.getChannel().getId() + ")\n" + event.getMessage().getJumpUrl(), false);
-                                eb.addField("Message", event.getMessage().getContentRaw(), false);
-                                eb.addField("Reply", message, false);
-                                eb.setFooter("Reply ID: " + ukey);
-                                eb.setColor(Color.orange);
-                                eb.setTimestamp(Instant.now());
-                                Utils.sendEmbed(eb.build(), reportChannel);
-                            }
-                        }
-                    }
-                    DBConnectionManagerLum.closeRequest(rs);
-                    return true;
-                }
 
-                DBConnectionManagerLum.closeRequest(rs);
+                }
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getChannel());

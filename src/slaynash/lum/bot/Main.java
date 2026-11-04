@@ -200,9 +200,10 @@ public class Main extends ListenerAdapter {
             try {
                 URL url = URI.create("http://www.google.com").toURL();
                 Request request = new Request.Builder().url(url).build();
-                Response response = client.newCall(request).execute();
-                if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-                System.out.println("Internet is available so can not reach main bot");
+                try (Response response = client.newCall(request).execute()) {
+                    if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
+                    System.out.println("Internet is available so can not reach main bot");
+                }
             }
             catch (Exception e) {
                 System.out.println("Internet is not available");

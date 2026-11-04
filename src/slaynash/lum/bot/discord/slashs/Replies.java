@@ -126,41 +126,45 @@ public class Replies extends Slash {
             try {
                 String sql = "SELECT * FROM `Replies` WHERE `guildID` = '" + event.getGuild().getId() + "' ORDER BY `ukey` ASC";
                 ResultSet rs = DBConnectionManagerLum.sendRequest(sql);
-                sb.append("Current replies in this guild:\n");
+                try {
+                    sb.append("Current replies in this guild:\n");
 
-                while (rs.next()) {
-                    sb.append("Reply ukey: ").append(rs.getInt("ukey"));
-                    sb.append(rs.getBoolean("bdelete") ? "\tdelete " : "");
-                    sb.append(rs.getBoolean("bkick") ? "\tkick " : "");
-                    sb.append(rs.getBoolean("bban") ? "\tban" : "");
-                    sb.append(rs.getBoolean("bbot") ? "\tbot" : "");
-                    sb.append(rs.getBoolean("bedit") ? "\tedit" : "");
-                    sb.append(rs.getBoolean("breport") ? "\treport" : "");
-                    sb.append("\n");
-                    if (rs.getString("regex") != null) {
-                        sb.append("\tRegex: ").append(rs.getString("regex").replace("\n", "\n\t\t")).append("\n");
+                    while (rs.next()) {
+                        sb.append("Reply ukey: ").append(rs.getInt("ukey"));
+                        sb.append(rs.getBoolean("bdelete") ? "\tdelete " : "");
+                        sb.append(rs.getBoolean("bkick") ? "\tkick " : "");
+                        sb.append(rs.getBoolean("bban") ? "\tban" : "");
+                        sb.append(rs.getBoolean("bbot") ? "\tbot" : "");
+                        sb.append(rs.getBoolean("bedit") ? "\tedit" : "");
+                        sb.append(rs.getBoolean("breport") ? "\treport" : "");
+                        sb.append("\n");
+                        if (rs.getString("regex") != null) {
+                            sb.append("\tRegex: ").append(rs.getString("regex").replace("\n", "\n\t\t")).append("\n");
+                        }
+                        if (rs.getString("contains") != null) {
+                            sb.append("\tContains: ").append(rs.getString("contains").replace("\n", "\n\t\t")).append("\n");
+                        }
+                        if (rs.getString("equals") != null) {
+                            sb.append("\tEquals: ").append(rs.getString("equals").replace("\n", "\n\t\t")).append("\n");
+                        }
+                        if (rs.getString("user") != null) {
+                            sb.append("\tUser: ").append(event.getJDA().getUserById(rs.getString("user")).getEffectiveName()).append("\n");
+                        }
+                        if (rs.getString("channel") != null) {
+                            sb.append("\tChannel: ").append(event.getJDA().getGuildChannelById(rs.getString("channel")).getName()).append("\n");
+                        }
+                        if (rs.getString("ignorerole") != null) {
+                            sb.append("\tIgnored Role: ").append(event.getJDA().getRoleById(rs.getString("ignorerole")).getName()).append("\n");
+                        }
+                        if (rs.getString("message") != null) {
+                            sb.append("\tMessage: ").append(rs.getString("message").replace("\n", "\n\t\t")).append("\n");
+                        }
+                        c++;
                     }
-                    if (rs.getString("contains") != null) {
-                        sb.append("\tContains: ").append(rs.getString("contains").replace("\n", "\n\t\t")).append("\n");
-                    }
-                    if (rs.getString("equals") != null) {
-                        sb.append("\tEquals: ").append(rs.getString("equals").replace("\n", "\n\t\t")).append("\n");
-                    }
-                    if (rs.getString("user") != null) {
-                        sb.append("\tUser: ").append(event.getJDA().getUserById(rs.getString("user")).getEffectiveName()).append("\n");
-                    }
-                    if (rs.getString("channel") != null) {
-                        sb.append("\tChannel: ").append(event.getJDA().getGuildChannelById(rs.getString("channel")).getName()).append("\n");
-                    }
-                    if (rs.getString("ignorerole") != null) {
-                        sb.append("\tIgnored Role: ").append(event.getJDA().getRoleById(rs.getString("ignorerole")).getName()).append("\n");
-                    }
-                    if (rs.getString("message") != null) {
-                        sb.append("\tMessage: ").append(rs.getString("message").replace("\n", "\n\t\t")).append("\n");
-                    }
-                    c++;
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to get reply to List", e, event.getChannel());
@@ -220,12 +224,16 @@ public class Replies extends Slash {
                     DBConnectionManagerLum.sendUpdate("INSERT INTO `Replies` (`guildID`, `regex`, `contains`, `equals`, `message`, `user`, `channel`, `ignorerole`, `bdelete`, `bkick`, `bban`, `bbot`, `bedit`, `breport`, `lastedited`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", guildid, regex, contains, equals, message, user, channel, ignorerole, delete, kick, ban, bot, edit, report, muserid);
 
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `ukey` FROM `Replies` WHERE `guildID` = ? ORDER BY `ukey` DESC LIMIT 1", guildid);
-                    rs.next();
-                    int ukey = rs.getInt("ukey");
+                    try {
+                        rs.next();
+                        int ukey = rs.getInt("ukey");
 
-                    event.reply("Added reply, ukey: " + ukey).queue();
+                        event.reply("Added reply, ukey: " + ukey).queue();
 
-                    DBConnectionManagerLum.closeRequest(rs);
+                    }
+                    finally {
+                        DBConnectionManagerLum.closeRequest(rs);
+                    }
                 }
                 catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to Add reply", e, event.getChannel());
@@ -235,12 +243,16 @@ public class Replies extends Slash {
                 long ukey = event.getOption("ukey").getAsLong();
                 try {
                     ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `Replies`.`guildID` FROM `Replies` WHERE `Replies`.`ukey` = ? LIMIT 1", ukey);
-                    if (!rs.next() || rs.getLong("guildID") != guildid) {
-                        event.reply("Invalid ukey or reply not found!").setEphemeral(true).queue();
-                        DBConnectionManagerLum.closeRequest(rs);
-                        return;
+                    try {
+                        if (!rs.next() || rs.getLong("guildID") != guildid) {
+                            event.reply("Invalid ukey or reply not found!").setEphemeral(true).queue();
+                            DBConnectionManagerLum.closeRequest(rs);
+                            return;
+                        }
                     }
-                    DBConnectionManagerLum.closeRequest(rs);
+                    finally {
+                        DBConnectionManagerLum.closeRequest(rs);
+                    }
                 }
                 catch (SQLException e) {
                     ExceptionUtils.reportException("Failed to check for reply", e, event.getChannel());

@@ -163,15 +163,18 @@ public class CommandManager {
     }
     public static MessageChannelUnion getModReportChannels(Long guildID, String type) {
         MessageChannelUnion channel = null;
+        ResultSet rs = null;
         try {
-            ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `" + type + "` FROM `LogChannel` WHERE GuildID = ?", guildID);
+            rs = DBConnectionManagerLum.sendRequest("SELECT `" + type + "` FROM `LogChannel` WHERE GuildID = ?", guildID);
             if (rs.next()) {
                 channel = (MessageChannelUnion) JDAManager.getJDA().getGuildChannelById(rs.getLong(1));
             }
-            rs.close();
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Failed to get Mod Report Channels", e);
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
         }
         return channel;
     }
@@ -179,8 +182,15 @@ public class CommandManager {
     public enum SetModReportChannelsResult { insert, delete, error }
     public static SetModReportChannelsResult setModReportChannels(Long guildId, Long channelId) {
         try {
+            boolean exists;
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE Channel = ?", channelId);
-            if (rs.next()) {
+            try {
+                exists = rs.next();
+            }
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
+            if (exists) {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `LogChannel` WHERE Channel = ?", channelId);
                 return SetModReportChannelsResult.delete;
             }

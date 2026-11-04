@@ -36,15 +36,19 @@ public class SetVRCAPI extends Slash {
                 String guildID = event.getGuild().getId();
                 String channelID = event.getChannel().getId();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE GuildID = ?", guildID);
-                if (rs.next() && channelID.equals(rs.getString("VRCAPI"))) {
-                    DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = NULL WHERE GuildID = ?", guildID);
-                    event.reply("VRChat API monitor is now disabled").setEphemeral(true).queue();
+                try {
+                    if (rs.next() && channelID.equals(rs.getString("VRCAPI"))) {
+                        DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = NULL WHERE GuildID = ?", guildID);
+                        event.reply("VRChat API monitor is now disabled").setEphemeral(true).queue();
+                    }
+                    else {
+                        DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = ? WHERE GuildID = ?", channelID, guildID);
+                        event.reply("VRChat API monitor is now enabled in this channel and reports will be sent to " + event.getChannel().getName()).setEphemeral(true).queue();
+                    }
                 }
-                else {
-                    DBConnectionManagerLum.sendUpdate("UPDATE `GuildConfigurations` SET `VRCAPI` = ? WHERE GuildID = ?", channelID, guildID);
-                    event.reply("VRChat API monitor is now enabled in this channel and reports will be sent to " + event.getChannel().getName()).setEphemeral(true).queue();
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
                 }
-                DBConnectionManagerLum.closeRequest(rs);
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to set meme channel", e, event.getChannel());

@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import slaynash.lum.bot.utils.ExceptionUtils;
@@ -28,7 +27,7 @@ public final class DBConnectionManagerShortUrls {
     private static final AtomicInteger requestClosedCount = new AtomicInteger(0);
     private static final AtomicInteger updateClosedCount = new AtomicInteger(0);
 
-    public static void init() {
+    public static synchronized void init() {
         try {
             System.out.println("Connecting to Database...");
             if (ConfigManager.dbAddress.isBlank() || ConfigManager.dbPort.isBlank() || ConfigManager.dbDatabaseShortURL.isBlank() || ConfigManager.dbLogin.isBlank() || ConfigManager.dbPassword.isBlank()) {
@@ -43,22 +42,35 @@ public final class DBConnectionManagerShortUrls {
         }
     }
 
-    private static Connection getConnection() {
-        try {
-            if (connection == null || !connection.isValid(DATABASE_TIMEOUT)) {
-                if (connection != null && !connection.isClosed()) connection.close();
-                init();
+    private static synchronized Connection getConnection() throws SQLException {
+        if (connection != null) {
+            try {
+                if (!connection.isClosed() && connection.isValid(DATABASE_TIMEOUT))
+                    return connection;
             }
-            return connection;
+            catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to validate database connection", e);
+            }
+
+            try {
+                connection.close();
+            }
+            catch (SQLException e) {
+                ExceptionUtils.reportException("Failed to close invalid database connection", e);
+            }
+            finally {
+                connection = null;
+            }
         }
-        catch (SQLException e) {
-            ExceptionUtils.reportException("Failed to get database connection", e);
-        }
-        return null;
+
+        init();
+        if (connection == null || connection.isClosed())
+            throw new SQLException("Failed to establish database connection");
+        return connection;
     }
 
     public static PreparedStatement formatStatement(String statement, Object... args) throws SQLException {
-        PreparedStatement ps = Objects.requireNonNull(getConnection()).prepareStatement(statement);
+        PreparedStatement ps = getConnection().prepareStatement(statement);
         for (int i = 0; i < args.length; i++) {
             if (args[i] == null)
                 ps.setNull(i + 1, Types.VARCHAR);

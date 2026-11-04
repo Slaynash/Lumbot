@@ -49,9 +49,13 @@ public final class TemporaryBans {
         List<BanKey> expiredBans = new ArrayList<>();
         try {
             ResultSet results = DBConnectionManagerLum.sendRequest("SELECT `GuildID`, `UserID` FROM `TemporaryBans` WHERE `ExpiresAt` <= CURRENT_TIMESTAMP");
-            while (results.next())
-                expiredBans.add(new BanKey(results.getLong("GuildID"), results.getLong("UserID")));
-            DBConnectionManagerLum.closeRequest(results);
+            try {
+                while (results.next())
+                    expiredBans.add(new BanKey(results.getLong("GuildID"), results.getLong("UserID")));
+            }
+            finally {
+                DBConnectionManagerLum.closeRequest(results);
+            }
         }
         catch (SQLException e) {
             ExceptionUtils.reportException("Failed to find expired temporary bans", e);

@@ -77,10 +77,14 @@ public class VRCApiVersionScanner {
                         List<ServerChannel> channels = new ArrayList<>();
                         try {
                             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `GuildConfigurations` WHERE VRCAPI IS NOT NULL");
-                            while (rs.next()) {
-                                channels.add(new ServerChannel(rs.getString("GuildID"), rs.getString("VRCAPI")));
+                            try {
+                                while (rs.next()) {
+                                    channels.add(new ServerChannel(rs.getString("GuildID"), rs.getString("VRCAPI")));
+                                }
                             }
-                            DBConnectionManagerLum.closeRequest(rs);
+                            finally {
+                                DBConnectionManagerLum.closeRequest(rs);
+                            }
                         }
                         catch (SQLException e) {
                             ExceptionUtils.reportException("Failed to fetch VRCAPI channels", e);

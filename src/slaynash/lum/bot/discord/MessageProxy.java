@@ -225,10 +225,14 @@ public class MessageProxy {
 
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    guildchannel.editMessageById(rs.getLong("DevMessage"), message).queue();
+                try {
+                    while (rs.next()) {
+                        guildchannel.editMessageById(rs.getLong("DevMessage"), message).queue();
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -247,10 +251,14 @@ public class MessageProxy {
             try {
                 PrivateChannel pmChannel = user.openPrivateChannel().complete();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    pmChannel.editMessageById(rs.getLong("OGMessage"), prepareMessage(event.getMessage()).getContent()).queue();
+                try {
+                    while (rs.next()) {
+                        pmChannel.editMessageById(rs.getLong("OGMessage"), prepareMessage(event.getMessage()).getContent()).queue();
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -271,16 +279,20 @@ public class MessageProxy {
 
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    guildchannel.retrieveMessageById(rs.getLong("DevMessage")).queue(message -> {
-                        String mesString = "Deleted\n".concat(message.getContentRaw());
-                        if (mesString.length() > MessageEmbed.TEXT_MAX_LENGTH) {
-                            mesString = mesString.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
-                        }
-                        message.editMessage(mesString).queue();
-                    });
+                try {
+                    while (rs.next()) {
+                        guildchannel.retrieveMessageById(rs.getLong("DevMessage")).queue(message -> {
+                            String mesString = "Deleted\n".concat(message.getContentRaw());
+                            if (mesString.length() > MessageEmbed.TEXT_MAX_LENGTH) {
+                                mesString = mesString.substring(0, MessageEmbed.TEXT_MAX_LENGTH);
+                            }
+                            message.editMessage(mesString).queue();
+                        });
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("failed to remove proxy message", e);
@@ -297,10 +309,14 @@ public class MessageProxy {
             try {
                 PrivateChannel pmChannel = user.openPrivateChannel().complete();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
+                try {
+                    while (rs.next()) {
+                        pmChannel.deleteMessageById(rs.getLong("OGMessage")).queue();
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("failed to remove proxy message", e);
@@ -327,16 +343,20 @@ public class MessageProxy {
 
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    if (event.getEmoji().getType() == Emoji.Type.CUSTOM) {
-                        long devMessage = rs.getLong("DevMessage");
-                        guildchannel.addReactionById(devMessage, event.getEmoji()).queue(null, e -> guildchannel.retrieveMessageById(devMessage).queue(message -> message.reply(event.getEmoji().asCustom().getImageUrl()).queue()));
-                    }
-                    else {
-                        guildchannel.addReactionById(rs.getLong("DevMessage"), event.getEmoji().asUnicode()).queue();
+                try {
+                    while (rs.next()) {
+                        if (event.getEmoji().getType() == Emoji.Type.CUSTOM) {
+                            long devMessage = rs.getLong("DevMessage");
+                            guildchannel.addReactionById(devMessage, event.getEmoji()).queue(null, e -> guildchannel.retrieveMessageById(devMessage).queue(message -> message.reply(event.getEmoji().asCustom().getImageUrl()).queue()));
+                        }
+                        else {
+                            guildchannel.addReactionById(rs.getLong("DevMessage"), event.getEmoji().asUnicode()).queue();
+                        }
                     }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -354,10 +374,14 @@ public class MessageProxy {
             try {
                 PrivateChannel pmChannel = user.openPrivateChannel().complete();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    pmChannel.addReactionById(rs.getLong("OGMessage"), event.getEmoji()).queue(null, e -> event.getChannel().sendMessage("Unable to react with that emote").queue());
+                try {
+                    while (rs.next()) {
+                        pmChannel.addReactionById(rs.getLong("OGMessage"), event.getEmoji()).queue(null, e -> event.getChannel().sendMessage("Unable to react with that emote").queue());
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -378,10 +402,14 @@ public class MessageProxy {
 
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `OGMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    guildchannel.removeReactionById(rs.getLong("DevMessage"), event.getEmoji()).queue(null, e -> { });
+                try {
+                    while (rs.next()) {
+                        guildchannel.removeReactionById(rs.getLong("DevMessage"), event.getEmoji()).queue(null, e -> { });
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -399,10 +427,14 @@ public class MessageProxy {
             try {
                 PrivateChannel pmChannel = user.openPrivateChannel().complete();
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `MessagePairs` WHERE `DevMessage` = ?", event.getMessageIdLong());
-                while (rs.next()) {
-                    pmChannel.removeReactionById(rs.getLong("OGMessage"), event.getEmoji()).queue(null, e -> { });
+                try {
+                    while (rs.next()) {
+                        pmChannel.removeReactionById(rs.getLong("OGMessage"), event.getEmoji()).queue(null, e -> { });
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 return true;
             }
             catch (SQLException e) {
@@ -419,8 +451,9 @@ public class MessageProxy {
             content = content.toLowerCase();
             if (event.getAuthor().equals(event.getJDA().getSelfUser()))
                 return false;
+            ResultSet rs = null;
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = 0");
+                rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Replies` WHERE `guildID` = 0");
 
                 boolean found = false;
                 while (rs.next()) {
@@ -520,11 +553,13 @@ public class MessageProxy {
                         }
                     }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
                 return found;
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to check replies", e, event.getChannel());
+            }
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
             }
         }
         catch (Exception e) {

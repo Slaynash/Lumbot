@@ -104,8 +104,13 @@ public class SteamAppDetails {
         List<SteamTag> savedTags = new ArrayList<>();
         try {
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamTags` where tagid in (?)", String.join(",", tags));
-            while (rs.next()) {  // fetch relevant tags from DB
-                savedTags.add(new SteamTag(rs.getString("tagid"), rs.getString("name")));
+            try {
+                while (rs.next()) {  // fetch relevant tags from DB
+                    savedTags.add(new SteamTag(rs.getString("tagid"), rs.getString("name")));
+                }
+            }
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
             }
             if (savedTags.size() != tags.size()) {
                 // fetch new tags from steam in English only (for now)

@@ -53,10 +53,12 @@ public class SetLogChannel extends Slash {
         else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.MESSAGE_EMBED_LINKS)) {
             event.reply("Lum does not have " + net.dv8tion.jda.api.Permission.MESSAGE_EMBED_LINKS.getName() + " permission").setEphemeral(true).queue();
         }
-        else try {
+        else {
+            ResultSet rs = null;
+            try {
                 String guildID = event.getGuild().getId();
                 String channelID = event.getChannel().getId();
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE GuildID = ?", guildID);
+                rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE GuildID = ?", guildID);
                 if (rs.next()) {
                     if (event.getOptions().isEmpty()) {
                         StringBuilder logs = new StringBuilder("Moderation logs are set in this channel for:\n");
@@ -85,10 +87,13 @@ public class SetLogChannel extends Slash {
                         event.reply("Moderation logs is now enabled in this channel for " + type).queue();
                     }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("Failed to set log channel", e, event.getChannel());
             }
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
+        }
     }
 }

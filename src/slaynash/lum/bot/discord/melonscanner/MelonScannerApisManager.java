@@ -371,22 +371,26 @@ public class MelonScannerApisManager {
             */
 
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `Mods` WHERE Game IS NULL OR Game = ?", api.game);
-            while (rs.next()) {
-                MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
-                List<MelonApiMod> mods = games.get(api.game);
-                if (mods == null)
-                    continue;
-                if (mod.versions()[0].version() == null)
-                    continue;
-                mods.removeIf(modtmp ->
-                    modtmp.name().replaceAll("[-_ ]", "").equals(mod.name().replaceAll("[-_ ]", ""))
-                    && (modtmp.versions()[0] == null || mod.versions()[0].version().isHigherThan(modtmp.versions()[0].version())));
-                mods.add(mod);
-                synchronized (games) {
-                    games.put(api.game, mods);
+            try {
+                while (rs.next()) {
+                    MelonApiMod mod = new MelonApiMod(rs.getString("ID"), rs.getString("Name"), Version.parse(rs.getString("Version")), rs.getString("DownloadLink"), rs.getString("Aliases") == null ? null : rs.getString("Aliases").split(","), rs.getString("Hash"), rs.getString("Type"), rs.getBoolean("HasPending"), rs.getBoolean("IsBroken"));
+                    List<MelonApiMod> mods = games.get(api.game);
+                    if (mods == null)
+                        continue;
+                    if (mod.versions()[0].version() == null)
+                        continue;
+                    mods.removeIf(modtmp ->
+                        modtmp.name().replaceAll("[-_ ]", "").equals(mod.name().replaceAll("[-_ ]", ""))
+                        && (modtmp.versions()[0] == null || mod.versions()[0].version().isHigherThan(modtmp.versions()[0].version())));
+                    mods.add(mod);
+                    synchronized (games) {
+                        games.put(api.game, mods);
+                    }
                 }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
 
             System.out.println("Done fetching " + api.game + " : " + api.name + " in " + Duration.between(start, Instant.now()).toMillis() + "ms");
 

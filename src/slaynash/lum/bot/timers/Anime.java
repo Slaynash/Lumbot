@@ -76,16 +76,20 @@ public class Anime implements Runnable {
             embed.setDescription(sb.toString().strip());
             embed.setColor(color);
             ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `LogChannel` WHERE anime > 0");
-            while (rs.next()) {
-                Guild guild = JDAManager.getJDA().getGuildById(rs.getLong("GuildID"));
-                if (guild == null)
-                    continue;
-                TextChannel channel = guild.getTextChannelById(rs.getLong("anime"));
-                if (channel == null)
-                    continue;
-                channel.sendMessageEmbeds(embed.build()).queue();
+            try {
+                while (rs.next()) {
+                    Guild guild = JDAManager.getJDA().getGuildById(rs.getLong("GuildID"));
+                    if (guild == null)
+                        continue;
+                    TextChannel channel = guild.getTextChannelById(rs.getLong("anime"));
+                    if (channel == null)
+                        continue;
+                    channel.sendMessageEmbeds(embed.build()).queue();
+                }
             }
-            DBConnectionManagerLum.closeRequest(rs);
+            finally {
+                DBConnectionManagerLum.closeRequest(rs);
+            }
         }
         catch (Exception e) {
             ExceptionUtils.reportException("Exception while handling Anime:", e);

@@ -62,21 +62,25 @@ public class Reminder extends Slash {
         if (time == 0) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TSend`, CURRENT_TIMESTAMP, `Message` FROM `Reminders` WHERE `UserID` = ? AND `ServerID` = ?", userid, guildid);
-                boolean hasReminder = false;
-                StringBuilder sb = new StringBuilder();
-                while (rs.next()) {
-                    hasReminder = true;
-                    long diff = rs.getTimestamp("TSend").getTime() - rs.getTimestamp("CURRENT_TIMESTAMP").getTime();
-                    sb.append(rs.getString("Message")).append("\n").append("Time Remaining: ");
-                    if (TimeUnit.MILLISECONDS.toDays(diff) > 0)
-                        sb.append(TimeUnit.MILLISECONDS.toDays(diff)).append(" days ");
-                    if (TimeUnit.MILLISECONDS.toHours(diff) > 0)
-                        sb.append(TimeUnit.MILLISECONDS.toHours(diff) % 24).append(" hours ");
-                    if (TimeUnit.MILLISECONDS.toMinutes(diff) > 0)
-                        sb.append(TimeUnit.MILLISECONDS.toMinutes(diff) % 60).append(" minutes ");
-                    sb.append("\n\n");
+                try {
+                    boolean hasReminder = false;
+                    StringBuilder sb = new StringBuilder();
+                    while (rs.next()) {
+                        hasReminder = true;
+                        long diff = rs.getTimestamp("TSend").getTime() - rs.getTimestamp("CURRENT_TIMESTAMP").getTime();
+                        sb.append(rs.getString("Message")).append("\n").append("Time Remaining: ");
+                        if (TimeUnit.MILLISECONDS.toDays(diff) > 0)
+                            sb.append(TimeUnit.MILLISECONDS.toDays(diff)).append(" days ");
+                        if (TimeUnit.MILLISECONDS.toHours(diff) > 0)
+                            sb.append(TimeUnit.MILLISECONDS.toHours(diff) % 24).append(" hours ");
+                        if (TimeUnit.MILLISECONDS.toMinutes(diff) > 0)
+                            sb.append(TimeUnit.MILLISECONDS.toMinutes(diff) % 60).append(" minutes ");
+                        sb.append("\n\n");
+                    }
                 }
-                DBConnectionManagerLum.closeRequest(rs);
+                finally {
+                    DBConnectionManagerLum.closeRequest(rs);
+                }
                 if (hasReminder) {
                     EmbedBuilder eb = new EmbedBuilder();
                     eb.setTitle("Your reminders");
