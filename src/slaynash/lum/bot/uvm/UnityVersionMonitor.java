@@ -156,7 +156,7 @@ public class UnityVersionMonitor {
 
         // MonoStruct init check
         boolean originalInitialisingUnityVersions = initialisingUnityVersions;
-        if (!monoStructs.isEmpty() && monoStructs.get(0).rows.isEmpty())
+        if (!monoStructs.isEmpty() && monoStructs.getFirst().rows.isEmpty())
             initialisingUnityVersions = true;
 
         if (initialisingUnityVersions) {
@@ -374,7 +374,7 @@ public class UnityVersionMonitor {
                             })
                             .collect(Collectors.toList());
                         if (!md.isStatic())
-                            parameterDefsTranslated.add(0, icallParts[0]);
+                            parameterDefsTranslated.addFirst(icallParts[0]);
 
                         if (!returnTypeTranslated.equals(icall.returnType) || parameterDefsTranslated.size() != icall.parameters.length) {
                             valid = false;
@@ -592,7 +592,7 @@ public class UnityVersionMonitor {
             }
             else {
                 // Add new row on the beginning
-                msi.rows.add(0, new MonoStructRow(unityVersion, fields));
+                msi.rows.addFirst(new MonoStructRow(unityVersion, fields));
 
                 StringBuilder report = new StringBuilder(msi.name + "\n```\n");
                 for (String field : fields)

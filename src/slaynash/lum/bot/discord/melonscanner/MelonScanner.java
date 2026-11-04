@@ -157,7 +157,7 @@ public final class MelonScanner {
             }
 
             List<Field> embedFields = context.embedBuilder.getFields();
-            if (!embedFields.isEmpty() && !(embedFields.size() == 1 && MelonScannerReadPass.LOG_TOO_LONG_FIELD.equals(embedFields.get(0)))) {
+            if (!embedFields.isEmpty() && !(embedFields.size() == 1 && MelonScannerReadPass.LOG_TOO_LONG_FIELD.equals(embedFields.getFirst()))) {
                 context.embedBuilder.setColor(context.embedColor);
                 String description = context.embedBuilder.getDescriptionBuilder().toString();
                 MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
@@ -807,7 +807,7 @@ public final class MelonScanner {
         if (!context.outdatedMods.isEmpty()) {
 
             StringBuilder error = new StringBuilder();
-            String nextModLine = computeOutdatedModLine(context.outdatedMods.get(0));
+            String nextModLine = computeOutdatedModLine(context.outdatedMods.getFirst());
             for (int i = 0; i < context.outdatedMods.size() && i < 20; ++i) {
                 error.append(nextModLine);
 
@@ -833,7 +833,7 @@ public final class MelonScanner {
         if (!context.outdatedPlugins.isEmpty()) {
 
             StringBuilder error = new StringBuilder();
-            String nextModLine = computeOutdatedModLine(context.outdatedPlugins.get(0));
+            String nextModLine = computeOutdatedModLine(context.outdatedPlugins.getFirst());
             for (int i = 0; i < context.outdatedPlugins.size() && i < 20; ++i) {
                 error.append(nextModLine);
 
@@ -859,7 +859,7 @@ public final class MelonScanner {
         if (!context.newerMods.isEmpty()) {
 
             StringBuilder error = new StringBuilder("-# These mods are newer than in the API but it doesn't mean they are bad:\n");
-            String nextModLine = computeOutdatedModLine(context.newerMods.get(0));
+            String nextModLine = computeOutdatedModLine(context.newerMods.getFirst());
             for (int i = 0; i < context.newerMods.size() && i < 10; ++i) {
                 error.append(nextModLine);
 
@@ -1044,7 +1044,7 @@ public final class MelonScanner {
             Message referenced = event.getMessage().getReferencedMessage();
             if (referenced == null || referenced.isEdited() || !message.startsWith("tr:"))
                 return;
-            MessageEmbed embed = referenced.getEmbeds().get(0);
+            MessageEmbed embed = referenced.getEmbeds().getFirst();
             if (embed == null || embed.getFooter() == null || !"Lum Log Scanner".equals(embed.getFooter().getText()))
                 return;
             String lan = message.substring(3).trim();

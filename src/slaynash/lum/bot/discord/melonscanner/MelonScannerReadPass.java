@@ -751,7 +751,7 @@ public final class MelonScannerReadPass {
             Matcher m = Pattern.compile(knownError.regex()).matcher(context.line);
             if (m.matches()) {
                 if (!m.namedGroups().isEmpty()) {
-                    for (Entry<String, String> entry : m.namedGroupsList().get(0).entrySet())
+                    for (Entry<String, String> entry : m.namedGroupsList().getFirst().entrySet())
                         errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownError.regex(), errorMess);
@@ -779,7 +779,7 @@ public final class MelonScannerReadPass {
             Matcher m = Pattern.compile(knownError.regex()).matcher(context.line);
             if (m.matches()) {
                 if (!m.namedGroups().isEmpty()) {
-                    for (Entry<String, String> entry : m.namedGroupsList().get(0).entrySet())
+                    for (Entry<String, String> entry : m.namedGroupsList().getFirst().entrySet())
                         errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                 }
                 MelonLoaderError newerror = new MelonLoaderError(knownError.regex(), errorMess);
@@ -804,7 +804,7 @@ public final class MelonScannerReadPass {
                 Matcher m = Pattern.compile(knownGameError.regex()).matcher(context.line);
                 if (m.matches()) {
                     if (!m.namedGroups().isEmpty()) {
-                        for (Entry<String, String> entry : m.namedGroupsList().get(0).entrySet())
+                        for (Entry<String, String> entry : m.namedGroupsList().getFirst().entrySet())
                             errorMess = errorMess.replace(entry.getKey(), entry.getValue());
                     }
                     MelonLoaderError newerror = new MelonLoaderError(knownGameError.regex(), errorMess);

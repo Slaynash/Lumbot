@@ -12,8 +12,7 @@ public final class ImageUtilsPrevious {
 
     public static byte[] getSSIMData(BufferedImage img) {
         // Convert image to grayscale
-        byte[] grayImg = imageToGrayscale(img);
-        return grayImg;
+        return imageToGrayscale(img);
     }
 
     public static double ssimCompare(byte[] grayImg1, int width1, int height1, BufferedImage img2) {

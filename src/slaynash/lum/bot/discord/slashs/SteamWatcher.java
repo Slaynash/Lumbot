@@ -85,7 +85,7 @@ public class SteamWatcher extends Slash {
             }
             return;
         }
-        String gameIDstr = gameID.get(0).getAsString();
+        String gameIDstr = gameID.getFirst().getAsString();
         if (gameIDstr == null || !gameIDstr.matches("^\\d+$")) {
             interactionhook.sendMessage("Invalid GameID, please check your game ID and try again. For example, use `438100` for VRChat.").setEphemeral(true).queue();
             return;
@@ -106,15 +106,15 @@ public class SteamWatcher extends Slash {
         if (publicMess.isEmpty())
             publicString = null;
         else
-            publicString = "'" + publicMess.get(0).getAsString() + "'";
+            publicString = "'" + publicMess.getFirst().getAsString() + "'";
         if (betaMess.isEmpty())
             betaString = null;
         else
-            betaString = "'" + betaMess.get(0).getAsString() + "'";
+            betaString = "'" + betaMess.getFirst().getAsString() + "'";
         if (otherMess.isEmpty())
             otherString = null;
         else
-            otherString = "'" + otherMess.get(0).getAsString() + "'";
+            otherString = "'" + otherMess.getFirst().getAsString() + "'";
 
         if (found == 0) {
             try {

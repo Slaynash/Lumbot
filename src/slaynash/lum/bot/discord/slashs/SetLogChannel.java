@@ -69,7 +69,7 @@ public class SetLogChannel extends Slash {
                         event.reply(logs.toString()).queue();
                     }
                     else {
-                        String type = event.getOptions().get(0).getAsString();
+                        String type = event.getOptions().getFirst().getAsString();
                         long current = rs.getLong(type);
                         boolean isCurrent = current == event.getChannel().getIdLong();
                         DBConnectionManagerLum.sendUpdate("UPDATE `LogChannel` SET `" + type + "`=?,`user`=? WHERE GuildID = ?", isCurrent ? null : channelID, event.getUser().getIdLong(), guildID);
@@ -82,7 +82,7 @@ public class SetLogChannel extends Slash {
                         return;
                     }
                     else {
-                        String type = event.getOptions().get(0).getAsString();
+                        String type = event.getOptions().getFirst().getAsString();
                         DBConnectionManagerLum.sendUpdate("INSERT INTO `LogChannel` (`GuildID`, `" + type + "`, `user`) VALUES (?, ?, ?)", guildID, channelID, event.getUser().getIdLong());
                         event.reply("Moderation logs is now enabled in this channel for " + type).queue();
                     }

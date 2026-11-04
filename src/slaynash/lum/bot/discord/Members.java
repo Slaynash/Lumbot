@@ -172,7 +172,7 @@ public class Members {
         }
         if (event.getGuild().getSelfMember().hasPermission(Permission.VIEW_AUDIT_LOGS)) {
             event.getGuild().retrieveAuditLogs().queue(auditLogs -> {
-                AuditLogEntry auditLog = auditLogs.get(0); // Get the most recent audit log entry, may not work for larger guilds
+                AuditLogEntry auditLog = auditLogs.getFirst(); // Get the most recent audit log entry, may not work for larger guilds
                 if (auditLog.getType().equals(ActionType.MEMBER_UPDATE) && auditLog.getTargetIdLong() == event.getMember().getIdLong() && auditLog.getUser() != event.getUser()) {
                     embed.addField("Changed by staff", auditLog.getUser().getAsMention(), false);
                 }

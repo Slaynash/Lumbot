@@ -24,7 +24,7 @@ public class MelonDuplicateMod {
 
     @Override
     public String toString() {
-        StringBuilder r = new StringBuilder(names.get(0));
+        StringBuilder r = new StringBuilder(names.getFirst());
         for (int i = 1; i < names.size(); ++i)
             r.append("/").append(names.get(i));
         return r.toString();

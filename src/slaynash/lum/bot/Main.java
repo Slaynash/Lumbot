@@ -88,7 +88,7 @@ public class Main extends ListenerAdapter {
     public static final ScheduledExecutorService SCHEDULER = Executors.newScheduledThreadPool(15, schedulerThreadFactory);
     public static boolean isShuttingDown = false;
 
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         System.out.println("Starting Lum...");
         // Let the JVM download missing intermediate certificates (AIA), as browsers do
         System.setProperty("com.sun.security.enableAIAcaIssuers", "true");

@@ -77,8 +77,7 @@ public final class TemporaryBans {
         guild.unban(UserSnowflake.fromId(ban.userId())).reason("Temporary ban expired").queue(
             ignored -> deleteExpiredBan(ban),
             error -> {
-                if (error instanceof ErrorResponseException responseError
-                    && responseError.getErrorCode() == ErrorResponse.UNKNOWN_BAN.getCode()) {
+                if (error instanceof ErrorResponseException responseError && responseError.getErrorCode() == ErrorResponse.UNKNOWN_BAN.getCode()) {
                     deleteExpiredBan(ban);
                     return;
                 }

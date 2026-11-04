@@ -142,7 +142,7 @@ public class VRChatVersionComparer {
         }
         else {
             try {
-                unityVersion = Files.readAllLines(new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/unityversion.txt").toPath()).get(0);
+                unityVersion = Files.readAllLines(new File("vrcdecomp/versions/" + branch + "_" + manifestId + "/unityversion.txt").toPath()).getFirst();
             }
             catch (Exception e) {
                 ExceptionUtils.reportException("VRChat deobf map check failed", "Failed to read unityversion.txt", e);

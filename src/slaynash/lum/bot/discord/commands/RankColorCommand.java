@@ -46,11 +46,11 @@ public class RankColorCommand extends Command {
                         event.getChannel().sendMessage("Please add a default role named `_COLOR_DEFAULT_` to enable color roles").queue();
                     }
                     else {
-                        System.out.println("_COLOR_DEFAULT_ position: " + cr.get(0).getPosition() + " | " + cr.get(0).getPositionRaw());
+                        System.out.println("_COLOR_DEFAULT_ position: " + cr.getFirst().getPosition() + " | " + cr.getFirst().getPositionRaw());
                         try {
-                            RoleAction r = event.getGuild().createCopyOfRole(cr.get(0)).setName(arg).setColor(CommandManager.hex2Rgb(arg));
+                            RoleAction r = event.getGuild().createCopyOfRole(cr.getFirst()).setName(arg).setColor(CommandManager.hex2Rgb(arg));
                             r.queue(
-                                role -> event.getGuild().modifyRolePositions().selectPosition(0).moveTo(cr.get(0).getPosition() - 1).queue(// insecure
+                                role -> event.getGuild().modifyRolePositions().selectPosition(0).moveTo(cr.getFirst().getPosition() - 1).queue(// insecure
                                     success -> event.getGuild().addRoleToMember(event.getMember(), role).queue(
                                         success2 -> { },
                                         error -> event.getChannel().sendMessage("I don't have enough permission to this role to you").queue()
@@ -66,7 +66,7 @@ public class RankColorCommand extends Command {
                     }
                 }
                 else {
-                    event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRolesByName(arg, true).get(0)).queue();
+                    event.getGuild().addRoleToMember(event.getMember(), event.getGuild().getRolesByName(arg, true).getFirst()).queue();
                 }
             }
         }

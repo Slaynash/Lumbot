@@ -78,7 +78,7 @@ public class Purge extends Command {
                 // removing the messages
                 if (!messageList.isEmpty()) {
                     if (messageList.size() == 1) {
-                        messageList.get(0).delete().queue();
+                        messageList.getFirst().delete().queue();
                     }
                     else if (messageList.size() <= 100) {
                         event.getChannel().asGuildMessageChannel().deleteMessages(messageList).queue();

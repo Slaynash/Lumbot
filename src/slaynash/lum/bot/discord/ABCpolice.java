@@ -19,10 +19,10 @@ public class ABCpolice {
             return true;
         String message = event.getMessage().getContentStripped().trim();
         if (!event.getMessage().getStickers().isEmpty())
-            message = event.getMessage().getStickers().get(0).getName() +  " " + message;
+            message = event.getMessage().getStickers().getFirst().getName() +  " " + message;
         System.out.println("abc " + event.getMember().getEffectiveName() + ": " + message);
         List<Message> history = new ArrayList<>(event.getChannel().asGuildMessageChannel().getHistoryBefore(event.getMessage(), 20).complete().getRetrievedHistory());
-        boolean brokenChain = !history.isEmpty() && history.get(0).getAuthor().equals(event.getJDA().getSelfUser()) && history.get(0).getContentStripped().contains("tart back to");
+        boolean brokenChain = !history.isEmpty() && history.getFirst().getAuthor().equals(event.getJDA().getSelfUser()) && history.getFirst().getContentStripped().contains("tart back to");
         Optional<Message> find = history.stream().filter(h -> h.getContentStripped().contains("tart back to")).findFirst();
         find.ifPresent(value -> history.subList(history.indexOf(value), history.size()).clear());
         history.removeIf(m -> m.getAuthor().isBot());
@@ -30,7 +30,7 @@ public class ABCpolice {
             return true;
         Message previousAuthorMessage = history.stream().filter(f -> f.getAuthor().equals(event.getAuthor())).findFirst().orElse(null);
         char currentLetter = convertChar(message);
-        char previousLetter = !history.isEmpty() ? convertChar(history.get(0).getContentStripped()) : 0;
+        char previousLetter = !history.isEmpty() ? convertChar(history.getFirst().getContentStripped()) : 0;
         boolean timing = previousAuthorMessage != null && previousAuthorMessage.getTimeCreated().isAfter(OffsetDateTime.now().minusHours(30));  // if the previous message was sent less than 30 hours ago
 
         if (brokenChain || previousLetter == 0 || previousLetter == 'z')

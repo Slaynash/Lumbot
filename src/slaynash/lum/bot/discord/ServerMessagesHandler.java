@@ -74,9 +74,9 @@ public class ServerMessagesHandler {
                 else if (!event.getAuthor().isBot() && event.getMessage().getAttachments().isEmpty() && !event.getMessage().getContentRaw().contains("http")) {
 
                     event.getChannel().getHistoryBefore(event.getMessage(), 1).queue(history -> {
-                        if (history.getRetrievedHistory().isEmpty() || history.getRetrievedHistory().get(0).getAuthor() != event.getAuthor()
-                            || history.getRetrievedHistory().get(0).getAttachments().isEmpty() || history.getRetrievedHistory().get(0).getContentRaw().contains("http")
-                            || event.getMessage().getTimeCreated().isAfter(history.getRetrievedHistory().get(0).getTimeCreated().plusMinutes(5)))
+                        if (history.getRetrievedHistory().isEmpty() || history.getRetrievedHistory().getFirst().getAuthor() != event.getAuthor()
+                            || history.getRetrievedHistory().getFirst().getAttachments().isEmpty() || history.getRetrievedHistory().getFirst().getContentRaw().contains("http")
+                            || event.getMessage().getTimeCreated().isAfter(history.getRetrievedHistory().getFirst().getTimeCreated().plusMinutes(5)))
                         {
                             event.getMessage().reply("No chat in this channel, please upload a photo or create a thread to chat in.")
                                 .delay(Duration.ofSeconds(6)).flatMap(Message::delete).flatMap(t -> event.getMessage().delete()).queue();
@@ -124,7 +124,7 @@ public class ServerMessagesHandler {
                 return;
 
             if (!event.getMessage().isEdited()) { //log handler
-                if (guildconfig.MLGeneralRemover() && event.getChannel().getName().toLowerCase().contains("general") && event.getChannelType() == ChannelType.TEXT && !CrossServerUtils.checkIfStaff(event) && !attachments.isEmpty() && MelonScanner.isValidFileFormat(attachments.get(0), false)) {
+                if (guildconfig.MLGeneralRemover() && event.getChannel().getName().toLowerCase().contains("general") && event.getChannelType() == ChannelType.TEXT && !CrossServerUtils.checkIfStaff(event) && !attachments.isEmpty() && MelonScanner.isValidFileFormat(attachments.getFirst(), false)) {
                     String mess = switch (guildIDstr) {
                         case "663449315876012052" -> //MelonLoader
                             memberMention + " Please reupload this log to <#733305093264375849> instead.";

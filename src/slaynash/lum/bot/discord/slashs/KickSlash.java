@@ -67,8 +67,6 @@ public class KickSlash extends Slash {
                 ExceptionUtils.reportException("Failed to kick user from slash command", error);
                 hook.editOriginal("The kick failed. Please check that I can kick this user and that my role is high enough.").queue();
             });
-        }, error -> {
-            hook.editOriginal("That user is not a member of this server and can't be kicked.").queue();
-        }));
+        }, error -> hook.editOriginal("That user is not a member of this server and can't be kicked.").queue()));
     }
 }

@@ -318,7 +318,7 @@ public class ScamShield {
                     ||
                         !event.getMessage().getAttachments().isEmpty()
                         && !m.getMessage().getAttachments().isEmpty()
-                        && event.getMessage().getAttachments().get(0).getFileName().equalsIgnoreCase(m.getMessage().getAttachments().get(0).getFileName())) //count crossposted files
+                        && event.getMessage().getAttachments().getFirst().getFileName().equalsIgnoreCase(m.getMessage().getAttachments().getFirst().getFileName())) //count crossposted files
                 .filter(e -> nameSet.add(e.getChannel().getId())) //filter one per channel
                 .count();
         }
@@ -943,6 +943,12 @@ public class ScamShield {
             list.add(LocalDateTime.parse(matcher8.group(), f).atZone(ZoneId.systemDefault()));
         }
 
+        Matcher matcher9 = Pattern.compile("\\s*(\\d{2}-\\d{2}-\\d{4})").matcher(whois);
+        while (matcher9.find()) {
+            DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy"); //example is hkeaa.edu.hk
+            list.add(LocalDate.parse(matcher9.group(1), f).atStartOfDay(ZoneId.systemDefault()));
+        }
+
         if (list.isEmpty() && referral == null) {
             Matcher ref = Pattern.compile("ReferralServer:\\s*r?whois://([\\w.-]+(?::\\d+)?)").matcher(whois);
             if (ref.find())
@@ -1113,7 +1119,7 @@ public class ScamShield {
                 return attachment.getProxy().download().get();
             }
             catch (InterruptedException e) {
-                // Scan was cancelled (e.g. message handling interrupted); not an error
+                // Scan was canceled (e.g. message handling interrupted); not an error
                 Thread.currentThread().interrupt();
                 return null;
             }

@@ -91,13 +91,13 @@ public class SlashConfig extends Slash {
                 return;
             }
             else
-                guildID = guildOption.get(0).getAsString();
+                guildID = guildOption.getFirst().getAsString();
         }
         else {
             if (guildOption.isEmpty())
                 guildID = event.getGuild().getId();
             else
-                guildID = guildOption.get(0).getAsString();
+                guildID = guildOption.getFirst().getAsString();
         }
         new SlashConfig().sendReply(event, guildID);
     }

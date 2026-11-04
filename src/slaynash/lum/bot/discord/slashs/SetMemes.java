@@ -30,7 +30,7 @@ public class SetMemes extends Slash {
         else if (!ConfigManager.mainBot) {
             event.reply("This command is not available on backup bot, please wait for main bot to come back online.").setEphemeral(true).queue();
         }
-        else if (!reportChannel.isEmpty() && reportChannel.get(0).getAsLong() == event.getChannel().getIdLong()) {
+        else if (!reportChannel.isEmpty() && reportChannel.getFirst().getAsLong() == event.getChannel().getIdLong()) {
             event.reply("You can't set the report channel to the same channel as the meme channel").setEphemeral(true).queue();
         }
         else if (!event.getGuild().getSelfMember().hasPermission(event.getGuildChannel(), net.dv8tion.jda.api.Permission.VIEW_CHANNEL)) {
@@ -58,12 +58,12 @@ public class SetMemes extends Slash {
                         event.reply("Meme moderation is now disabled in this channel").setEphemeral(true).queue();
                     }
                     else {
-                        DBConnectionManagerLum.sendUpdate("INSERT INTO `Memes` (`GuildID`, `user`, `MemeChannel`, `ReportChannel`) VALUES (?, ?, ?, ?)", guildID, event.getUser().getIdLong(), channelID, reportChannel.isEmpty() ? null : reportChannel.get(0).getAsChannel().getId());
+                        DBConnectionManagerLum.sendUpdate("INSERT INTO `Memes` (`GuildID`, `user`, `MemeChannel`, `ReportChannel`) VALUES (?, ?, ?, ?)", guildID, event.getUser().getIdLong(), channelID, reportChannel.isEmpty() ? null : reportChannel.getFirst().getAsChannel().getId());
                         if (reportChannel.isEmpty()) {
                             event.reply("Meme moderation is now enabled in this channel").setEphemeral(true).queue();
                         }
                         else {
-                            event.reply("Meme moderation is now enabled in this channel and reports will be sent to " + reportChannel.get(0).getAsChannel().getAsMention()).setEphemeral(true).queue();
+                            event.reply("Meme moderation is now enabled in this channel and reports will be sent to " + reportChannel.getFirst().getAsChannel().getAsMention()).setEphemeral(true).queue();
                         }
                     }
                 }
