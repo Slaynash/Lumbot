@@ -62,9 +62,9 @@ public class Reminder extends Slash {
         if (time == 0) {
             try {
                 ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT `TSend`, CURRENT_TIMESTAMP, `Message` FROM `Reminders` WHERE `UserID` = ? AND `ServerID` = ?", userid, guildid);
+                boolean hasReminder = false;
+                StringBuilder sb = new StringBuilder();
                 try {
-                    boolean hasReminder = false;
-                    StringBuilder sb = new StringBuilder();
                     while (rs.next()) {
                         hasReminder = true;
                         long diff = rs.getTimestamp("TSend").getTime() - rs.getTimestamp("CURRENT_TIMESTAMP").getTime();
