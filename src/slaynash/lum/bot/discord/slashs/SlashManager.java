@@ -68,6 +68,7 @@ public class SlashManager {
         registerSlash(new SlashConfig());
         registerSlash(new BanSlash());
         registerSlash(new KickSlash());
+        registerSlash(new WhoisSlash());
         registerSlash(new SteamWatcher());
         registerSlash(new Replies());
         registerSlash(new Reminder());
