@@ -76,6 +76,14 @@ public class MessageLogger {
             guild = event.getGuild().getIdLong();
         }
 
+        if (updateTS == null) {
+            // If the message hasn't been edited, no need to update
+            return;
+        }
+        else if (updateTS.isBefore(OffsetDateTime.now().minusHours(1))) {
+            // Ignore if edit is older then an hour
+            return;
+        }
         if (messageContent.isEmpty() && event.getMessage().getAttachments().isEmpty()) {
             // Don't log empty messages
             return;
