@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -79,10 +79,10 @@ public class Steam {
         scheduleMaintenanceNotice();
     }
 
-    // Steam weekly maintenance is expected around 22:00 UTC on Tuesday
+    // Steam weekly maintenance is expected around 15:00 Pacific Time on Tuesday
     private static void scheduleMaintenanceNotice() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
-        ZonedDateTime next = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY)).withHour(22).withMinute(0).withSecond(0).withNano(0);
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("America/Los_Angeles"));
+        ZonedDateTime next = now.with(TemporalAdjusters.nextOrSame(DayOfWeek.TUESDAY)).withHour(15).withMinute(0).withSecond(0).withNano(0);
         if (!next.isAfter(now))
             next = next.plusWeeks(1);
         long delay = Duration.between(now, next).toMillis();

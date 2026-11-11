@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -246,32 +247,39 @@ public class ScamShield {
             if (scamImagesCount == scamImages.size()) return; //no need to reload if the count is the same
 
             System.out.println("Loading scam images from scamImages/ folder, found " + scamImagesCount + " images");
-            // scamImages.clear();
             List<ScamImageReference> newScamImages = new ArrayList<>();
             savedSuspiciousImages.clear();
-            try {
-                for (Path path : Files.list(scamImagesFolder).toList()) {
+            try (var paths = Files.list(scamImagesFolder)) {
+                for (Path path : paths.toList()) {
                     // Load each image file
                     if (Files.isRegularFile(path)) {
-                        try (InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
-                            is.mark(Integer.MAX_VALUE);
-                            String hash = getISHash(is);
+                        try {
+                            String hash;
+                            try (InputStream is = Files.newInputStream(path)) {
+                                hash = getISHash(is);
+                            }
 
-                            // Check if the image is already in the list
-                            for (ScamImageReference existingImage : scamImages) {
-                                if (existingImage.hash.equals(hash)) {
-                                    newScamImages.add(existingImage);
-                                    break;
+                            Path imagePath = path;
+                            String fileName = path.getFileName().toString();
+                            int extensionIndex = fileName.lastIndexOf('.');
+                            String extension = extensionIndex > 0 ? fileName.substring(extensionIndex) : "";
+                            Path hashPath = path.resolveSibling(hash + extension);
+                            if (!fileName.equals(hashPath.getFileName().toString())) {
+                                try {
+                                    imagePath = Files.move(path, hashPath);
+                                }
+                                catch (FileAlreadyExistsException e) {
+                                    ExceptionUtils.reportException("Failed to rename scam image to " + hashPath + " because it already exists", e);
                                 }
                             }
 
-                            is.reset();
+                            try (InputStream is = new BufferedInputStream(Files.newInputStream(imagePath))) {
+                                BufferedImage img = ImageIO.read(is);
+                                byte[] ssimData = ImageUtils.getSSIMData(img);
+                                byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
 
-                            BufferedImage img = ImageIO.read(is);
-                            byte[] ssimData = ImageUtils.getSSIMData(img);
-                            byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
-
-                            newScamImages.add(new ScamImageReference(path.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
+                                newScamImages.add(new ScamImageReference(imagePath.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
+                            }
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("Failed to load scam image: " + path, e);

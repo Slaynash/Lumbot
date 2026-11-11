@@ -9,15 +9,15 @@ on:
       - 'pom.xml'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.13.1
-        with:
-          access_token: ${{ github.token }}
       - name: Checkout
         uses: actions/checkout@v7.0.1
       - name: Set up JDK 26
@@ -42,6 +42,7 @@ jobs:
         with:
           name: ${{ env.buildname }}
           path: target/${{ env.buildname }}
+          compression-level: 0
       - name: Upload to server
         if: github.event.repository.fork == false
         run: |
