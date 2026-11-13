@@ -941,10 +941,6 @@ public final class MelonScanner {
                     if (!context.loadedMods.containsKey("CVRModUpdater.Loader") && !context.misplacedPlugins.contains("CVRModUpdater.Loader") && !context.loadedMods.containsKey("UpdateChecker"))
                         error += Localization.get("melonscanner.outdatedmods.cvrmuwarning", context.lang) + "\n";
                 }
-                case "TheLongDark" -> {
-                    if (!context.loadedMods.containsKey("AutoUpdatingPlugin") && !context.misplacedPlugins.contains("AutoUpdatingPlugin"))
-                        error += Localization.get("melonscanner.outdatedmods.tldmuwarning", context.lang) + "\n";
-                }
                 default -> { }
             }
         }
@@ -963,17 +959,11 @@ public final class MelonScanner {
         if (context.mlVersion != null && context.latestMLVersion.isEquivalentTo(context.mlVersion) && context.missingMods.contains("XUnity.AutoTranslator.Plugin.Core")) {
             error += Localization.get("- Make sure that you installed all of XUnity.AutoTranslator including the UserLibs folder\n", context.lang);
         }
-        if (context.line.contains("Applied USER32.dll::SetTimer patch")) {
-            error += Localization.get("- MelonLoader most likely crashed because of Start Screen. Try adding the launch option `--melonloader.disablestartscreen` and see if that helps.\n", context.lang);
-        }
         if (context.line.contains("Downloading")) {
             error += Localization.get("- MelonLoader gotten stuck downloading, make sure that nothing is blocking downloads.\n", context.lang);
         }
         if (context.line.contains("Contacting RemoteAPI...")) {
             error += Localization.get("- Unity failed to initialize graphics. Please make sure that your GPU drivers are up to date.\n", context.lang);
-        }
-        if ("TheLongDark".equalsIgnoreCase(context.game) && context.line.contains("Deleting Il2Cppmscorlib.dll")) {
-            error += Localization.get("- MelonLoader likely crashed because of AutoUpdatingPlugin. MelonLoader needs to run atleast once without it.\n", context.lang);
         }
         if ("BONELAB".equalsIgnoreCase(context.game) && context.gameBuild != null) {
             long buildInt = context.gameBuild.patchVersion();
