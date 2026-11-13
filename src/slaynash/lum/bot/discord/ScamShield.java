@@ -76,7 +76,6 @@ import slaynash.lum.bot.DBConnectionManagerLum;
 import slaynash.lum.bot.discord.melonscanner.LogCounter;
 import slaynash.lum.bot.discord.utils.CrossServerUtils;
 import slaynash.lum.bot.utils.ExceptionUtils;
-import slaynash.lum.bot.utils.ImageUtils;
 import slaynash.lum.bot.utils.ImageUtilsPrevious;
 import slaynash.lum.bot.utils.Utils;
 
@@ -273,13 +272,7 @@ public class ScamShield {
                                 }
                             }
 
-                            try (InputStream is = new BufferedInputStream(Files.newInputStream(imagePath))) {
-                                BufferedImage img = ImageIO.read(is);
-                                byte[] ssimData = ImageUtils.getSSIMData(img);
-                                byte[] ssimDataPrevious = ImageUtilsPrevious.getSSIMData(img);
-
-                                newScamImages.add(new ScamImageReference(imagePath.getFileName().toString(), hash, img.getWidth(), img.getHeight(), ssimData, ssimDataPrevious));
-                            }
+                            newScamImages.add(readScamImage(imagePath, hash));
                         }
                         catch (Exception e) {
                             ExceptionUtils.reportException("Failed to load scam image: " + path, e);
@@ -293,6 +286,17 @@ public class ScamShield {
             catch (IOException e) {
                 ExceptionUtils.reportException("Failed to list scam images in scamImages/ directory", e);
             }
+        }
+    }
+
+    private static ScamImageReference readScamImage(Path path, String hash) throws IOException {
+        try (InputStream is = new BufferedInputStream(Files.newInputStream(path))) {
+            BufferedImage img = ImageIO.read(is);
+            if (img == null)
+                throw new IOException("Unsupported or unreadable image: " + path);
+            return new ScamImageReference(path.getFileName().toString(), hash, img.getWidth(), img.getHeight(),
+                // ImageUtils.getSSIMData(img), ImageUtilsPrevious.getSSIMData(img));
+                null, ImageUtilsPrevious.getSSIMData(img));
         }
     }
 
@@ -819,6 +823,11 @@ public class ScamShield {
                 }
                 else {
                     registrationDate = getRdapRegistrationDate(domainLowerCase);
+                    if (registrationDate == null) {
+                        JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to get registration date for domain: " + domainLowerCase, Color.LIGHT_GRAY)).queue();
+                        continue;
+                    }
+
                     DBConnectionManagerLum.sendUpdate(
                         "INSERT INTO `Domain` (`domain`, `registration`, `counter`, `ts`) "
                             + "VALUES (?, ?, 1, CURRENT_TIMESTAMP) "
@@ -828,10 +837,6 @@ public class ScamShield {
                         Timestamp.from(registrationDate.toInstant())
                     );
                 }
-
-                // RDAP didn't provide a registration date: nothing to compare
-                if (registrationDate == null)
-                    continue;
 
                 if (registrationDate.isAfter(ZonedDateTime.now().minusDays(age))) {
                     count++;
@@ -951,7 +956,7 @@ public class ScamShield {
             list.add(LocalDateTime.parse(matcher8.group(), f).atZone(ZoneId.systemDefault()));
         }
 
-        Matcher matcher9 = Pattern.compile("\\s*(\\d{2}-\\d{2}-\\d{4})").matcher(whois);
+        Matcher matcher9 = Pattern.compile("(?<![\\d-])(\\d{2}-\\d{2}-\\d{4})(?![\\d-])").matcher(whois);
         while (matcher9.find()) {
             DateTimeFormatter f = DateTimeFormatter.ofPattern("dd-MM-yyyy"); //example is hkeaa.edu.hk
             list.add(LocalDate.parse(matcher9.group(1), f).atStartOfDay(ZoneId.systemDefault()));
@@ -1066,12 +1071,10 @@ public class ScamShield {
             }
             else {
                 // Check for similarity against all known images and keep the one with the highest similarity score
+                ImageUtilsPrevious.PreparedComparison comparisonImage = ImageUtilsPrevious.prepareComparison(attachmentImage);
                 synchronized (scamImages) {
                     double startTime = System.nanoTime();
-                    similarityResultOld = scamImages.stream().parallel()
-                            .map(scamImage -> new SimilarityResult(ImageUtilsPrevious.ssimCompare(scamImage.ssimDataOld, scamImage.width, scamImage.height, attachmentImage), scamImage.name))
-                            .max(Comparator.comparingDouble(value -> value.similarity))
-                            .orElse(new SimilarityResult(0.0, "none"));
+                    similarityResultOld = findClosestScamImage(comparisonImage, scamImages);
                     elapsedTimeOld = (System.nanoTime() - startTime) / 1_000_000.0; // Convert to milliseconds
 
                     // startTime = System.nanoTime();
@@ -1084,7 +1087,7 @@ public class ScamShield {
 
                 //compare with all black image
                 byte[] blackImageData = new byte[attachmentImage.getWidth() * attachmentImage.getHeight()];
-                blackCompare = ImageUtilsPrevious.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight(), attachmentImage);
+                blackCompare = comparisonImage.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight());
 
                 if (similarityResultOld.similarity >= CONFIRMED_IMAGE_THRESHOLD && similarityResultOld.similarity > blackCompare)
                     result = new SimpleEntry<>("[ScamImage " + similarityResultOld.scamImageName + "]", 3);
@@ -1118,6 +1121,43 @@ public class ScamShield {
             ExceptionUtils.reportException("Failed photoCheck in SS", e);
         }
         return result;
+    }
+
+    private static SimilarityResult findClosestScamImage(ImageUtilsPrevious.PreparedComparison comparisonImage, List<ScamImageReference> images) {
+        return images.stream().parallel()
+            .map(scamImage -> new SimilarityResult(comparisonImage.ssimCompare(scamImage.ssimDataOld, scamImage.width, scamImage.height), scamImage.name))
+            .max(Comparator.comparingDouble(value -> value.similarity))
+            .orElse(new SimilarityResult(0.0, "none"));
+    }
+
+    public static String checkClosestScamImage(BufferedImage attachmentImage) throws IOException, NoSuchAlgorithmException {
+        Objects.requireNonNull(attachmentImage, "attachmentImage");
+        long startTime = System.nanoTime();
+        List<ScamImageReference> references = new ArrayList<>();
+        try (var paths = Files.list(scamImagesFolder)) {
+            for (Path path : paths.filter(Files::isRegularFile).toList()) {
+                String hash;
+                try (InputStream is = Files.newInputStream(path)) {
+                    hash = getISHash(is);
+                }
+                references.add(readScamImage(path, hash));
+            }
+        }
+        if (references.isEmpty())
+            throw new IOException("No scam images found in " + scamImagesFolder);
+
+        double loadMillis = (System.nanoTime() - startTime) / 1_000_000.0;
+        startTime = System.nanoTime();
+        ImageUtilsPrevious.PreparedComparison comparisonImage = ImageUtilsPrevious.prepareComparison(attachmentImage);
+        SimilarityResult closest = findClosestScamImage(comparisonImage, references);
+        double comparisonMillis = (System.nanoTime() - startTime) / 1_000_000.0;
+        startTime = System.nanoTime();
+        byte[] blackImageData = new byte[attachmentImage.getWidth() * attachmentImage.getHeight()];
+        double blackCompare = comparisonImage.ssimCompare(blackImageData, attachmentImage.getWidth(), attachmentImage.getHeight());
+        double blackCompareMillis = (System.nanoTime() - startTime) / 1_000_000.0;
+        boolean confirmed = closest.similarity >= CONFIRMED_IMAGE_THRESHOLD && closest.similarity > blackCompare;
+        return String.format(Locale.ROOT, "Closest image: %s%nSimilarity: %.2f%%%nBlack image similarity: %.2f%%%nConfirmed scam image: %s%nReference loading: %.2f ms%nReference comparison: %.2f ms%nBlack image comparison: %.2f ms",
+            closest.scamImageName, closest.similarity * 100, blackCompare * 100, confirmed, loadMillis, comparisonMillis, blackCompareMillis);
     }
 
     /** Downloads an attachment, retrying once on network timeout. Returns null if the download times out twice. */
