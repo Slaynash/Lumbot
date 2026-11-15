@@ -371,6 +371,9 @@ public final class MelonScanner {
         else if (context.game == null || context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.5.0"))) {
             context.pirate = false;
         }
+        else if (context.gamePath == null) {
+            return;
+        }
         else if (gamePath.contains("steamrip") || gamePath.contains("repack") || gamePath.contains("fitgirl") || gamePath.contains("inclalldlc") || gamePath.contains("onedrive") || context.gamePath.split("\\.").length > 5) {
             context.pirate = true;
         }
@@ -378,7 +381,7 @@ public final class MelonScanner {
             if (!gamePath.contains("steamapps\\common") && !gamePath.contains("program files\\windowsapps") && !context.epic) {
                 context.pirate = true;
             }
-            else if (context.gameBuild != null && context.gameBuild.toString().startsWith("34") && context.mlVersion.isLowerThan(Version.parse("0.6.0"))) {
+            else if (context.gameBuild != null && context.gameBuild.toString().startsWith("34") && context.mlVersion != null && context.mlVersion.isLowerThan(Version.parse("0.6.0"))) {
                 context.embedBuilder.addField("BTD6 34", "For BTD6 version 34, Please upgrade to atleast MelonLoader 0.6.0, you may also need to update your mods.", false);
             }
         }
