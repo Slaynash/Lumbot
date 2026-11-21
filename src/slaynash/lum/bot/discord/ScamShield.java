@@ -769,12 +769,14 @@ public class ScamShield {
                 if (host == null || !InternetDomainName.isValid(host))
                     continue;
                 InternetDomainName internetDomain = InternetDomainName.from(host);
-                if (!internetDomain.hasPublicSuffix() || !internetDomain.isUnderPublicSuffix())
+                if (!internetDomain.hasPublicSuffix() || !internetDomain.isUnderPublicSuffix() || !internetDomain.isUnderRegistrySuffix())
                     continue;
                 String publicSuffix = internetDomain.publicSuffix().toString();
                 if (publicSuffix.length() == 1 || publicSuffix.matches("\\d+"))
                     continue;
                 String domainLowerCase = internetDomain.topPrivateDomain().toString().toLowerCase(Locale.ROOT);
+                // Private suffixes can identify hosted sites rather than domains registered with a registry.
+                String registeredDomain = internetDomain.topDomainUnderRegistrySuffix().toString().toLowerCase(Locale.ROOT);
 
                 // whitelist entries starting with * match any host containing the rest of the entry
                 String hostLowerCase = host.toLowerCase(Locale.ROOT);
@@ -822,7 +824,14 @@ public class ScamShield {
                     DBConnectionManagerLum.sendUpdate("UPDATE `Domain` SET `counter` = `counter` + 1 WHERE `domain` = ?", domainLowerCase);
                 }
                 else {
-                    registrationDate = getRdapRegistrationDate(domainLowerCase);
+                    try {
+                        registrationDate = getRdapRegistrationDate(registeredDomain);
+                    }
+                    catch (IOException e) {
+                        JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to check domain age for " + registeredDomain + "\n" + e.getMessage(), Color.RED)).queue();
+                        e.printStackTrace();
+                        continue;
+                    }
                     if (registrationDate == null) {
                         JDAManager.getJDA().getTextChannelById(927044970278453300L).sendMessageEmbeds(Utils.wrapMessageInEmbed("Failed to get registration date for domain: " + domainLowerCase, Color.LIGHT_GRAY)).queue();
                         continue;
@@ -877,7 +886,7 @@ public class ScamShield {
                 }
             }
 
-            throw new IOException("RDAP response did not include a registration date for " + domain);
+            throw new IOException("RDAP response did not include a registration date");
         }
         finally {
             connection.disconnect();
@@ -969,7 +978,7 @@ public class ScamShield {
         }
 
         if (list.isEmpty())
-            throw new IOException("Can not find any dates for " + domain + "\n" + whois);
+            throw new IOException("Can not find any dates\n" + whois);
         return Collections.min(list);
     }
 

@@ -355,13 +355,14 @@ public class Utils {
         //https://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
         text = text.replace("<@", " ").replace("\\", "/");
         List<String> containedUrls = new ArrayList<>();
-        String urlRegex = "(https?:((//)|(\\\\))+[\\w:#@%/;$()~_?+-=\\\\.&]*)";
+        String urlRegex = "(https?:((//)|(\\\\))+[\\w:#@%/;$()~_?+\\-=\\\\.&]*)";
         Pattern pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE);
         Matcher urlMatcher = pattern.matcher(text);
 
         while (urlMatcher.find()) {
-            containedUrls.add(text.substring(urlMatcher.start(0),
-                    urlMatcher.end(0)));
+            String url = urlMatcher.group();
+            if (!url.matches("(?i)https?://+"))
+                containedUrls.add(url);
         }
 
         return containedUrls;

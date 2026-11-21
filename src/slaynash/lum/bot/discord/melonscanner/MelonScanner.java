@@ -1083,13 +1083,14 @@ public final class MelonScanner {
             index = context.embedBuilder.getFields().lastIndexOf(optField.get());
             value = optField.get().getValue();
         }
-        value += error;
+        if (value.lines().noneMatch(error.strip()::equals))
+            value += error;
         value = value.substring(0, Math.min(value.length(), MessageEmbed.VALUE_MAX_LENGTH));
         Field field = new Field(Localization.get("melonscanner.knownerrors.fieldname", context.lang), value, false);
         if (index == -1)
             context.embedBuilder.addField(field);
         else
-            context.embedBuilder.getFields().set(index, field);  // TODO: check if error is already in the field
+            context.embedBuilder.getFields().set(index, field);
         context.embedColor = Color.RED;
         context.hasErrors = true;
     }

@@ -130,10 +130,12 @@ public class Reminder extends Slash {
         java.sql.Timestamp sqlTimestamp = new java.sql.Timestamp(timestamp);
         try {
             DBConnectionManagerLum.sendUpdate("INSERT INTO Reminders (UserID, ServerID, ChannelID, Message, TSend, Color) VALUES (?, ?, ?, ?, ?, ?)", userid, guildid, channelid, message, sqlTimestamp, color.getRGB());
+            System.out.println("Reminder scheduled; userId=" + userid + ", serverId=" + guildid + ", channelId=" + channelid + ", due=" + sqlTimestamp.toInstant());
         }
         catch (SQLException e) {
             ExceptionUtils.reportException("Error saving Reminder", e);
             event.reply("Error saving Reminder, Sent a message to devs").queue();
+            return;
         }
         event.replyEmbeds(new EmbedBuilder().setColor(color).setTitle("Reminder set").setDescription(message).setTimestamp(sqlTimestamp.toInstant()).build()).queue();
     }
