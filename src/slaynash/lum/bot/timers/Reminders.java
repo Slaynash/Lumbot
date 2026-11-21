@@ -28,13 +28,13 @@ public class Reminders extends TimerTask {
     private record Reminder(long id, long userId, long serverId, long channelId, String message, int color, Instant due) { }
 
     private static final Set<Long> inFlight = ConcurrentHashMap.newKeySet();
-    private static final Set<Long> delivered = ConcurrentHashMap.newKeySet();
+    private static final Set<Long> completed = ConcurrentHashMap.newKeySet();
 
     public void run() {
         System.out.println("Running Reminders task...");
-        // Delete only here, before reading due reminders, so a stale query cannot requeue a delivered reminder.
-        for (long id : delivered)
-            deleteDelivered(id);
+        // Delete only here, before reading due reminders, so a stale query cannot requeue a completed reminder.
+        for (long id : completed)
+            deleteCompleted(id);
 
         List<Reminder> reminders = new ArrayList<>();
         ResultSet rs = null;
@@ -78,6 +78,7 @@ public class Reminders extends TimerTask {
     }
 
     private static void sendReminder(Reminder reminder, User user) {
+        boolean directMessage = false;
         try {
             String message = reminder.message();
             if (message != null)
@@ -88,36 +89,54 @@ public class Reminders extends TimerTask {
 
             RestAction<Message> action;
             if (reminder.serverId() == 0) {
+                directMessage = true;
                 action = user.openPrivateChannel().flatMap(channel -> channel.sendMessageEmbeds(embed));
             }
             else {
                 Guild guild = JDAManager.getJDA().getGuildById(reminder.serverId());
                 if (guild == null) {
-                    deliveryFailed(reminder.id(), new IllegalStateException("Guild " + reminder.serverId() + " is unavailable"));
-                    return;
-                }
-                GuildChannel guildChannel = guild.getGuildChannelById(reminder.channelId());
-                MessageChannel channel = (MessageChannel) guildChannel;
-                if (channel == null || !channel.canTalk()) {
+                    directMessage = true;
                     action = user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessageEmbeds(embed));
                 }
-                else if (guild.getSelfMember().hasPermission(guildChannel, Permission.MESSAGE_EMBED_LINKS)) {
-                    action = channel.sendMessageEmbeds(embed).addContent(user.getAsMention());
-                }
                 else {
-                    action = channel.sendMessage(message).addContent("\n" + user.getAsMention());
+                    GuildChannel guildChannel = guild.getGuildChannelById(reminder.channelId());
+                    MessageChannel channel = (MessageChannel) guildChannel;
+                    if (channel == null || !channel.canTalk()) {
+                        directMessage = true;
+                        action = user.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessageEmbeds(embed));
+                    }
+                    else if (guild.getSelfMember().hasPermission(guildChannel, Permission.MESSAGE_EMBED_LINKS)) {
+                        action = channel.sendMessageEmbeds(embed).addContent(user.getAsMention());
+                    }
+                    else {
+                        action = channel.sendMessage(message).addContent("\n" + user.getAsMention());
+                    }
                 }
             }
 
             System.out.println("Reminder " + reminder.id() + " queued; due=" + reminder.due() + ", queued=" + Instant.now());
+            boolean isDirectMessage = directMessage;
             action.queue(sent -> {
-                delivered.add(reminder.id());
+                completed.add(reminder.id());
                 System.out.println("Reminder " + reminder.id() + " delivered; due=" + reminder.due() + ", delivered=" + Instant.now() + ", messageId=" + sent.getId());
-            }, error -> deliveryFailed(reminder.id(), error));
+            }, error -> {
+                if (isDirectMessage)
+                    directMessageFailed(reminder.id(), error);
+                else
+                    deliveryFailed(reminder.id(), error);
+            });
         }
         catch (RuntimeException e) {
-            deliveryFailed(reminder.id(), e);
+            if (directMessage)
+                directMessageFailed(reminder.id(), e);
+            else
+                deliveryFailed(reminder.id(), e);
         }
+    }
+
+    private static void directMessageFailed(long id, Throwable error) {
+        completed.add(id);
+        ExceptionUtils.reportException("Failed to DM reminder " + id + "; will delete it", error);
     }
 
     private static void deliveryFailed(long id, Throwable error) {
@@ -125,17 +144,17 @@ public class Reminders extends TimerTask {
         ExceptionUtils.reportException("Failed to deliver reminder " + id + "; will retry", error);
     }
 
-    private static void deleteDelivered(long id) {
-        synchronized (delivered) {
-            if (!delivered.contains(id))
+    private static void deleteCompleted(long id) {
+        synchronized (completed) {
+            if (!completed.contains(id))
                 return;
             try {
                 DBConnectionManagerLum.sendUpdate("DELETE FROM `Reminders` WHERE `ID` = ?", id);
-                delivered.remove(id);
+                completed.remove(id);
                 inFlight.remove(id);
             }
             catch (SQLException e) {
-                ExceptionUtils.reportException("Failed to delete delivered reminder " + id + "; will retry deletion", e);
+                ExceptionUtils.reportException("Failed to delete completed reminder " + id + "; will retry deletion", e);
             }
         }
     }
