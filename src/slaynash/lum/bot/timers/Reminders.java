@@ -136,7 +136,8 @@ public class Reminders extends TimerTask {
 
     private static void directMessageFailed(long id, Throwable error) {
         completed.add(id);
-        ExceptionUtils.reportException("Failed to DM reminder " + id + "; will delete it", error);
+        System.err.println("Failed to DM reminder " + id + "; will delete it");
+        error.printStackTrace();
     }
 
     private static void deliveryFailed(long id, Throwable error) {

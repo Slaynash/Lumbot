@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 19, 2026 at 04:36 AM
+-- Generation Time: Nov 25, 2026 at 08:14 AM
 -- Server version: 8.0.28
--- PHP Version: 8.0.16
+-- PHP Version: 8.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -274,7 +274,8 @@ CREATE TABLE IF NOT EXISTS `SteamWatch` (
   `betaMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `otherMention` varchar(1024) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `TS` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY `ukey` (`ukey`)
+  UNIQUE KEY `ukey` (`ukey`),
+  UNIQUE KEY `uq_SteamWatch_Game_Server_Channel` (`GameID`,`ServerID`,`ChannelID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------

@@ -17,10 +17,11 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -64,10 +65,14 @@ public class Steam {
     private static SteamClient client;
     private static SteamUser user;
     private static SteamApps apps;
-    private static boolean isLoggedOn;
+    private static volatile boolean isConnected;
+    private static volatile boolean isLoggedOn;
     private static int tickerHash;
+    private static ScheduledFuture<?> reconnectTask;
+    private static boolean changesRequestPending;
+    private static ScheduledFuture<?> changesRequestTimeout;
 
-    private static int previousChangeNumber;
+    private static volatile int previousChangeNumber;
     private static EResult errorResult = EResult.OK;
 
     public static void start() {
@@ -126,35 +131,66 @@ public class Steam {
         client.connect();
     }
 
-    private static final Random random = new Random(69420);
     private static void requestChanges() {
+        if (!beginChangesRequest())
+            return;
         try {
-            Thread.sleep(random.nextInt(321));
+            apps.picsGetChangesSince(previousChangeNumber, true, true);
+            System.out.println("PICS ticker requested " + previousChangeNumber);
         }
-        catch (Exception e) {
-            e.printStackTrace();
+        catch (RuntimeException e) {
+            finishChangesRequest();
+            ExceptionUtils.reportException("Failed to request Steam changelist", e);
         }
-        apps.picsGetChangesSince(previousChangeNumber, true, true);
-        System.out.println("PICS ticker requested " + previousChangeNumber);
+    }
+
+    private static synchronized boolean beginChangesRequest() {
+        if (!isLoggedOn || Main.isShuttingDown || changesRequestPending)
+            return false;
+        changesRequestPending = true;
+        changesRequestTimeout = Main.SCHEDULER.schedule(Steam::timeoutChangesRequest, 30, TimeUnit.SECONDS);
+        return true;
+    }
+
+    private static synchronized void finishChangesRequest() {
+        changesRequestPending = false;
+        if (changesRequestTimeout != null) {
+            changesRequestTimeout.cancel(false);
+            changesRequestTimeout = null;
+        }
+    }
+
+    private static synchronized void timeoutChangesRequest() {
+        changesRequestPending = false;
+        changesRequestTimeout = null;
     }
 
     private static void onConnected(ConnectedCallback callback) {
+        synchronized (Steam.class) {
+            isConnected = true;
+            if (reconnectTask != null) {
+                reconnectTask.cancel(false);
+                reconnectTask = null;
+            }
+        }
         System.out.println("Connected to Steam, logging in...");
         user.logOnAnonymous();
     }
 
     private static void onDisconnected(DisconnectedCallback callback) {
         System.out.println("Disconnected from Steam. Retrying in 5s...");
+        boolean wasLoggedOn = isLoggedOn;
+        isConnected = false;
+        isLoggedOn = false;
+        finishChangesRequest();
         if (Main.isShuttingDown)
             return;
 
-        if (isLoggedOn) {
-            isLoggedOn = false;
+        if (wasLoggedOn) {
             ++tickerHash;
             ExceptionUtils.reportException("Disconnected from Steam. Retrying in 5s...");
         }
-
-        Main.SCHEDULER.schedule(() -> client.connect(), 5, TimeUnit.SECONDS);
+        scheduleReconnect(5, TimeUnit.SECONDS);
     }
 
     private static void onLoggedOn(LoggedOnCallback callback) {
@@ -163,7 +199,9 @@ public class Steam {
             if (result != errorResult)
                 ExceptionUtils.reportException("Failed to login to Steam: " + result);
             errorResult = result;
+            isLoggedOn = false;
             client.disconnect();
+            scheduleReconnect(5, TimeUnit.SECONDS);
             return;
         }
 
@@ -192,17 +230,41 @@ public class Steam {
 
     private static void onLoggedOff(LoggedOffCallback callback) {
         System.out.println("Logged off from Steam Result: " + callback.getResult());
-        if (isLoggedOn) {
-            isLoggedOn = false;
+        boolean wasLoggedOn = isLoggedOn;
+        isLoggedOn = false;
+        finishChangesRequest();
+        if (wasLoggedOn) {
             ++tickerHash;
             ExceptionUtils.reportException("Logged off from Steam, Retrying in a min...");
         }
+        scheduleReconnect(1, TimeUnit.MINUTES);
+    }
 
-        Main.SCHEDULER.schedule(() -> client.connect(), 1, TimeUnit.MINUTES);
+    private static synchronized void scheduleReconnect(long delay, TimeUnit unit) {
+        if (Main.isShuttingDown)
+            return;
+        if (reconnectTask != null && !reconnectTask.isDone()) {
+            if (reconnectTask.getDelay(TimeUnit.MILLISECONDS) <= unit.toMillis(delay))
+                return;
+            reconnectTask.cancel(false);
+        }
+        reconnectTask = Main.SCHEDULER.schedule(Steam::reconnect, delay, unit);
+    }
+
+    private static synchronized void reconnect() {
+        reconnectTask = null;
+        if (Main.isShuttingDown || isLoggedOn)
+            return;
+        if (isConnected) {
+            client.disconnect();
+            return;
+        }
+        client.connect();
     }
 
     private static void onPicsChanges(PICSChangesCallback callback) {
-        if (previousChangeNumber == callback.getCurrentChangeNumber())
+        finishChangesRequest();
+        if (callback.getCurrentChangeNumber() <= previousChangeNumber)
             return;
 
         System.out.println("Changelist " + previousChangeNumber + " -> " + callback.getCurrentChangeNumber() + " (" + callback.getAppChanges().size() + " apps, " + callback.getPackageChanges().size() + " packages)");
@@ -218,18 +280,10 @@ public class Steam {
 
         for (Entry<Integer, PICSChangeData> changeDataPair : callback.getAppChanges().entrySet()) {
             Integer gameID = changeDataPair.getKey();
-            List<SteamChannel> channels = new ArrayList<>();
+            List<SteamChannel> channels;
             System.out.println(gameID + ": " + changeDataPair.getValue().getId());
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
-                try {
-                    while (rs.next()) {
-                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
-                    }
-                }
-                finally {
-                    DBConnectionManagerLum.closeRequest(rs);
-                }
+                channels = getWatchedChannels(gameID);
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to fetch SteamWatch in Changes", e);
@@ -278,17 +332,9 @@ public class Steam {
         System.out.println("[PICSProductInfoCallback] apps: ");
         for (Entry<Integer, PICSProductInfo> app : callback.getApps().entrySet()) {
             System.out.println("[PICSProductInfoCallback]  - (" + app.getKey() + ") " + app.getValue().getChangeNumber());
-            List<SteamChannel> channels = new ArrayList<>();
+            List<SteamChannel> channels;
             try {
-                ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", app.getKey());
-                try {
-                    while (rs.next()) {
-                        channels.add(new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention")));
-                    }
-                }
-                finally {
-                    DBConnectionManagerLum.closeRequest(rs);
-                }
+                channels = getWatchedChannels(app.getKey());
             }
             catch (SQLException e) {
                 ExceptionUtils.reportException("Failed to fetch SteamWatch in Info", e);
@@ -465,6 +511,21 @@ public class Steam {
             }
             setGameDetails(app.getKey(), newAppDetails);
         }
+    }
+
+    private static List<SteamChannel> getWatchedChannels(Integer gameID) throws SQLException {
+        Map<String, SteamChannel> channels = new LinkedHashMap<>();
+        ResultSet rs = DBConnectionManagerLum.sendRequest("SELECT * FROM `SteamWatch` WHERE `SteamWatch`.GameID = ?", gameID);
+        try {
+            while (rs.next()) {
+                SteamChannel channel = new SteamChannel(rs.getString("GameID"), rs.getString("ServerID"), rs.getString("ChannelID"), rs.getString("publicMention"), rs.getString("betaMention"), rs.getString("otherMention"));
+                channels.putIfAbsent(channel.channelId(), channel);
+            }
+        }
+        finally {
+            DBConnectionManagerLum.closeRequest(rs);
+        }
+        return new ArrayList<>(channels.values());
     }
 
     // *
